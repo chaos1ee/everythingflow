@@ -8,8 +8,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "pnpm run -r build",
-    "version": "changeset version",
-    "release": "changeset publish",
+    "ci:version": "changeset version",
+    "ci:release": "changeset publish",
     "format": "pnpm rome format --write .",
     "preinstall": "npx only-allow pnpm",
     "clear": "rimraf 'packages/*/node_modules' && rimraf node_modules"
