@@ -1,0 +1,28 @@
+{
+  "name": "everythingflow",
+  "version": "0.0.0",
+  "description": "",
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "pnpm run -r build",
+    "version": "changeset version",
+    "release": "changeset publish",
+    "format": "pnpm rome format --write .",
+    "preinstall": "npx only-allow pnpm",
+    "clear": "rimraf 'packages/*/node_modules' && rimraf node_modules"
+  },
+  "keywords": [],
+  "repository": "git@github.com:chaos1ee/everythingflow.git",
+  "author": "chaos1ee <chaos.maybeeee@gmail.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "@changesets/changelog-github": "^0.4.8",
+    "@changesets/cli": "^2.26.0",
+    "prettier": "^2.8.4",
+    "rimraf": "^4.1.2",
+    "rome": "^11.0.0"
+  }
+}

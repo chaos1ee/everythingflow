@@ -1,0 +1,42 @@
+{
+  "$schema": "./node_modules/rome/configuration_schema.json",
+  "files": {
+    "ignore": ["dist", "public", "node_modules"]
+  },
+  "formatter": {
+    "enabled": true,
+    "indentSize": 2,
+    "formatWithErrors": false,
+    "lineWidth": 80,
+    "indentStyle": "space"
+  },
+  "javascript": {
+    "formatter": {
+      "trailingComma": "none",
+      "semicolons": "asNeeded",
+      "quoteStyle": "single"
+    }
+  },
+  "linter": {
+    "enabled": true,
+    "ignore": ["*.d.ts"],
+    "rules": {
+      "recommended": true,
+      "security": {
+        "noDangerouslySetInnerHtml": "off"
+      },
+      "suspicious": {
+        "noImportAssign": "error"
+      },
+      "correctness": {
+        "noUnusedVariables": "error"
+      },
+      "nursery": {
+        "useCamelCase": "error",
+        "useConst": "error",
+        "noUnsafeFinally": "error",
+        "noVar": "error"
+      }
+    }
+  }
+}
