@@ -7,11 +7,12 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "author": "chaos1ee <chaos.maybeeee@gmail.com>",
+  "license": "MIT",
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^5.54.1",
     "@typescript-eslint/parser": "^5.54.1",
+    "eslint": "^8.35.0",
     "eslint-config-prettier": "^8.7.0",
     "eslint-config-standard": "^17.0.0",
     "eslint-import-resolver-typescript": "^3.5.3",
@@ -20,5 +21,18 @@
     "eslint-plugin-prettier": "^4.2.1",
     "eslint-plugin-react": "^7.32.2",
     "eslint-plugin-react-hooks": "^4.6.0"
+  },
+  "homepage": "https://github.com/chaos1ee/everythingflow/tree/main/packages/eslint-config-react#readme",
+  "repository": {
+    "type": "git",
+    "url": "ssh://git@github.com/chaos1ee/everythingflow.git",
+    "directory": "packages/eslint-config-react"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "peerDependencies": {
+    "eslint": "^8.35.0"
   }
 }
