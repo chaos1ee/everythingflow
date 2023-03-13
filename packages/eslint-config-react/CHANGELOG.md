@@ -1,5 +1,11 @@
 # @everythingflow/eslint-config-react
 
+## 0.0.3
+
+### Patch Changes
+
+- b1091f0: Release eslint-config-react v0.0.2
+
 ## 0.0.2
 
 ### Patch Changes
