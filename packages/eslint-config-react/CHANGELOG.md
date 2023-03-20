@@ -1,5 +1,11 @@
 # @everythingflow/eslint-config-react
 
+## 0.0.5
+
+### Patch Changes
+
+- 11716d9: Relase eslint-config-react
+
 ## 0.0.4
 
 ### Patch Changes
