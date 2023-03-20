@@ -1,6 +1,5 @@
 module.exports = {
   extends: [
-    'plugin:prettier/recommended',
     'eslint:recommended',
     'standard',
     'plugin:import/recommended',
@@ -129,7 +128,6 @@ module.exports = {
     },
   ],
   rules: {
-    'prettier/prettier': 'error',
     'array-callback-return': 'off',
     'default-case': ['warn', { commentPattern: '^no default$' }],
     'dot-location': ['warn', 'property'],
