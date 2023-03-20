@@ -2,16 +2,14 @@
   "name": "everythingflow",
   "version": "0.0.0",
   "description": "",
-  "workspaces": [
-    "packages/*"
-  ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "pnpm run -r build",
+    "lint:script": "eslint --fix --cache --ext .ts,.tsx,.js,.jsx .",
     "ci:version": "changeset version",
     "ci:release": "changeset publish",
     "preinstall": "npx only-allow pnpm",
-    "clear": "pnpm dlx rimraf 'packages/*/node_modules' && pnpm dlx rimraf node_modules"
+    "clear": "rimraf -g 'packages/*/node_modules' && rimraf node_modules"
   },
   "keywords": [],
   "repository": "git@github.com:chaos1ee/everythingflow.git",
@@ -20,7 +18,11 @@
   "devDependencies": {
     "@changesets/changelog-github": "^0.4.8",
     "@changesets/cli": "^2.26.0",
+    "@everythingflow/eslint-config-react": "^0.0.3",
+    "@everythingflow/prettier-config": "workspace:^0.0.1",
+    "eslint": "^8.35.0",
     "prettier": "^2.8.4",
-    "rimraf": "^4.1.2"
-  }
+    "rimraf": "^4.4.0"
+  },
+  "prettier": "@everythingflow/prettier-config"
 }
