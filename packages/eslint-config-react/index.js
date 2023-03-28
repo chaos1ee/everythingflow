@@ -7,6 +7,7 @@ module.exports = {
     'plugin:jsx-a11y/recommended',
     'plugin:react/recommended',
     'plugin:react-hooks/recommended',
+    'prettier',
   ],
   parser: '@typescript-eslint/parser',
   parserOptions: {
@@ -17,7 +18,7 @@ module.exports = {
     ecmaVersion: 'latest',
     sourceType: 'module',
   },
-  plugins: ['prettier', '@typescript-eslint'],
+  plugins: ['@typescript-eslint'],
   root: true,
   settings: {
     'import/extensions': ['.js', '.jsx', '.ts', '.tsx'],
