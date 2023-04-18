@@ -1,5 +1,11 @@
 # @everythingflow/eslint-config-react
 
+## 0.0.8
+
+### Patch Changes
+
+- 62c2243: upgrade eslint-config-react dependencies versions
+
 ## 0.0.7
 
 ### Patch Changes
