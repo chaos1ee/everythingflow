@@ -18,7 +18,7 @@
   "devDependencies": {
     "@changesets/changelog-github": "^0.4.8",
     "@changesets/cli": "^2.26.0",
-    "@everythingflow/eslint-config-react": "workspace:^0.0.6",
+    "@everythingflow/eslint-config-react": "workspace:^0.0.7",
     "@everythingflow/prettier-config": "workspace:^0.0.1",
     "eslint": "^8.35.0",
     "prettier": "^2.8.4",
