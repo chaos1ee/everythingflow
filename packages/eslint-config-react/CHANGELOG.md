@@ -1,5 +1,11 @@
 # @everythingflow/eslint-config-react
 
+## 0.0.7
+
+### Patch Changes
+
+- c6da2ef: add 'react/jsx-curly-brace-presence' rule
+
 ## 0.0.6
 
 ### Patch Changes
