@@ -1,27 +1,29 @@
 import { useQuery } from '@tanstack/react-query'
 import { TOKEN_FLAG } from '../constants'
 import type { PermissionCheckResult } from '../types'
+import { useSearchParams } from 'react-router-dom'
 import { createHttpClient } from '../libs/client'
 import { useGames } from '../layouts'
 
 const client = createHttpClient()
 const globalClient = createHttpClient({ headers: { 'app-id': 'global' } })
 
-export function useToken(ticket?: string) {
+export function useToken() {
+  const [searchParams] = useSearchParams()
   const path = '/usystem/user/login'
 
   const { data, isLoading, fetchStatus } = useQuery({
-    queryKey: [path, ticket],
+    queryKey: [path, searchParams.get('ticket')],
     queryFn: async () => {
       const { token } = await globalClient.get<{ token: string }>(path, {
-        params: { ticket },
+        params: { ticket: searchParams.get('ticket') },
       })
       return token
     },
     onSuccess: value => {
       localStorage.setItem(TOKEN_FLAG, value)
     },
-    enabled: !!ticket,
+    enabled: searchParams.has('ticket'),
   })
 
   return { token: data ?? localStorage.getItem(TOKEN_FLAG) ?? '', isLoading: isLoading && fetchStatus !== 'idle' }

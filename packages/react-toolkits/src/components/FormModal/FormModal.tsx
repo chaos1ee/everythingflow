@@ -1,8 +1,8 @@
-/* eslint-disable react/jsx-indent */
 import type { FormInstance, FormProps, ModalProps } from 'antd'
 import { Button, Form, Modal } from 'antd'
 import type { ForwardedRef } from 'react'
-import React, { forwardRef, useEffect, useId, useImperativeHandle, useRef, useState } from 'react'
+import { forwardRef, useEffect, useId, useImperativeHandle, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 
 type RenderChildren<T> = (props: {
   form: FormInstance<T>
@@ -39,6 +39,7 @@ export interface FormModalRefType<T = object> {
 const InternalFormModal = <T extends object>(props: FormModalProps<T>, ref: ForwardedRef<FormModalRefType<T>>) => {
   const { width, children, title, open, footer, layout, labelCol, initialValues, closeFn, afterClose, onConfirm } =
     props
+  const { t } = useTranslation()
   const id = useId()
   const [form] = Form.useForm<T>()
   const formRef = useRef<FormInstance<T>>(null)
@@ -73,17 +74,17 @@ const InternalFormModal = <T extends object>(props: FormModalProps<T>, ref: Forw
         typeof footer === 'object'
           ? footer
           : [
-              <Button
+            <Button
                 key="cancel"
                 onClick={() => {
                   closeFn?.()
                 }}
-              >
-                取消
-              </Button>,
-              <Button form={id} key="submit" type="primary" htmlType="submit" loading={confirmLoading}>
-                确定
-              </Button>,
+            >
+              {t('cancel')}
+            </Button>,
+            <Button form={id} key="submit" type="primary" htmlType="submit" loading={confirmLoading}>
+              {t('confirm')}
+            </Button>,
             ]
       }
       afterClose={() => {
