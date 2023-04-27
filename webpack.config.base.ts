@@ -67,6 +67,9 @@ export default {
       },
     ],
   },
+  plugins: [
+    new MiniCssExtractPlugin({}),
+  ],
   optimization: {
     minimize: false,
   },

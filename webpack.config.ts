@@ -1,5 +1,4 @@
 import * as path from 'path'
-import * as MiniCssExtractPlugin from 'mini-css-extract-plugin'
 import type { Configuration } from 'webpack'
 import { merge } from 'webpack-merge'
 import baseConfig from './webpack.config.base'
@@ -58,19 +57,12 @@ function buildConfigs(opts: {
     }
   }
 
-  const plugins = [
-    new MiniCssExtractPlugin({
-      filename: 'static/css/[name].[contenthash].css',
-      chunkFilename: 'static/css/[name].[contenthash].chunk.css',
-    }),
-  ]
 
   return merge<Configuration>(baseConfig, {
     ...restOpts,
     entry,
     output,
     resolve,
-    plugins,
     module,
   })
 }
