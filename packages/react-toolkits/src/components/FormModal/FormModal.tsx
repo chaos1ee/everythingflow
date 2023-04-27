@@ -1,8 +1,7 @@
-/* eslint-disable react/jsx-indent */
 import type { FormInstance, FormProps, ModalProps } from 'antd'
 import { Button, Form, Modal } from 'antd'
 import type { ForwardedRef } from 'react'
-import { useEffect, useImperativeHandle, useRef, forwardRef, useId } from 'react'
+import { forwardRef, useEffect, useId, useImperativeHandle, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 type RenderChildren<T> = (props: {
@@ -21,7 +20,7 @@ export type RecursivePartial<T> = T extends object
         ? RecursivePartial<T[P]>
         : T[P]
     }
-  : unknown
+  : any
 
 export interface FormModalProps<T>
   extends Pick<ModalProps, 'width' | 'title' | 'open' | 'afterClose'>,
@@ -45,6 +44,7 @@ const InternalFormModal = <T extends object>(props: FormModalProps<T>, ref: Forw
   const [form] = Form.useForm<T>()
   const formRef = useRef<FormInstance<T>>(null)
   const isRenderProps = typeof children === 'function'
+  const [confirmLoading, setConfirmLoading] = useState(false)
 
   useEffect(() => {
     if (initialValues && open) {
@@ -64,6 +64,7 @@ const InternalFormModal = <T extends object>(props: FormModalProps<T>, ref: Forw
   return (
     <Modal
       destroyOnClose
+      style={{ textAlign: 'start' }}
       width={width}
       open={open}
       title={title}
@@ -73,17 +74,17 @@ const InternalFormModal = <T extends object>(props: FormModalProps<T>, ref: Forw
         typeof footer === 'object'
           ? footer
           : [
-              <Button
+            <Button
                 key="cancel"
                 onClick={() => {
                   closeFn?.()
                 }}
-              >
-                {t('cancel')}
-              </Button>,
-              <Button form={id} key="submit" type="primary" htmlType="submit">
-                {t('confirm')}
-              </Button>,
+            >
+              {t('cancel')}
+            </Button>,
+            <Button form={id} key="submit" type="primary" htmlType="submit" loading={confirmLoading}>
+              {t('confirm')}
+            </Button>,
             ]
       }
       afterClose={() => {
@@ -106,9 +107,14 @@ const InternalFormModal = <T extends object>(props: FormModalProps<T>, ref: Forw
             flex: !layout || layout === 'horizontal' ? '120px' : '0',
           }
         }
-        onFinish={values => {
-          onConfirm?.(values)
-          form.resetFields()
+        onFinish={async values => {
+          try {
+            setConfirmLoading(true)
+            await onConfirm?.(values)
+            form.resetFields()
+          } finally {
+            setConfirmLoading(false)
+          }
         }}
       >
         {isRenderProps ? children({ form, open, closeFn }) : children}

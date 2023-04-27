@@ -1,162 +1,152 @@
-import { NoPermissionCover } from '..'
-import { SearchOutlined } from '@ant-design/icons'
+import type { QueryFunction, QueryKey } from '@tanstack/react-query'
 import { useQuery } from '@tanstack/react-query'
 import type { FormInstance, FormProps } from 'antd'
-import { Button, Col, Form, Row, Spin, theme, Table } from 'antd'
+import { Button, Col, Form, Row, Space, Spin, Table } from 'antd'
 import type { TableProps } from 'antd/es/table'
-import { useState } from 'react'
-import { useTranslation } from 'react-i18next'
-import type { Merge } from 'ts-essentials'
+import { useEffect, useMemo, useState } from 'react'
 import { usePermission } from '../../hooks'
+import NoPermissionCover from '../NoPermissionCover/NoPermissionCover'
+import type { PaginationProps } from 'antd/es/pagination'
+import { SearchOutlined } from '@ant-design/icons'
+import { useGames } from '../../layouts'
 
 type RenderChildren<T> = (form: FormInstance<T>) => JSX.Element
 
-export interface QueryListPaginationParams {
-  page: number
-  size: number
-}
-
-export interface QueryListResponse {
-  page: number
-  size: number
-}
-
-export interface QueryListProps<R, F, P = F>
-  extends Pick<TableProps<R>, 'rowKey' | 'columns' | 'expandable'>,
-    Pick<FormProps, 'initialValues'> {
-  // @lukemorales/query-key-factory 的类型定义太模糊了，后续完善
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  query: any
+export interface QueryListProps<R extends object, F extends object, P extends object>
+  extends Pick<TableProps<R>, 'rowKey' | 'columns' | 'expandable'> {
   // 权限编码
   code?: string
+  isGlobal?: boolean
   filterRender?: RenderChildren<F> | JSX.Element
-  totalProp?: string
-  listProp?: string
   formLayout?: FormProps['layout']
   tableLayout?: TableProps<R>['tableLayout']
-  // 参考 @tanstack/react-query useQuery 的 enabled 配置
-  enabled?: (values: Merge<P, QueryListPaginationParams>) => boolean
-  paramsTransformer?: (values: F) => P
+  query: (params: PaginationParams<F> | P) => {
+    queryKey: QueryKey
+    queryFn: QueryFunction<any, any>
+  }
+  requestFormatter?: (values: PaginationParams<F>) => P
+  responseFormatter?: (response: any) => ListResponse<R>
 }
 
-const QueryList = <R extends object, F extends object, P extends object = F>(props: QueryListProps<R, F, P>) => {
+const QueryList = <R extends object, F extends object, P extends object>(props: QueryListProps<R, F, P>) => {
+  const [form] = Form.useForm<F>()
+  const { game } = useGames()
   const {
     code,
-    query,
-    initialValues,
+    isGlobal,
     rowKey,
     columns,
     filterRender,
-    totalProp,
-    listProp,
     formLayout,
     tableLayout,
     expandable,
-    enabled,
-    paramsTransformer,
+    query,
+    requestFormatter,
+    responseFormatter,
   } = props
-  const { token } = theme.useToken()
-  const [form] = Form.useForm<F>()
-  const { t } = useTranslation()
-  const { data: viewable, isLoading: isChecking } = usePermission(code)
-
-  const isRenderProps = typeof filterRender === 'function'
-
+  const { accessible, isChecking } = usePermission(code as string, isGlobal)
+  // TODO: save initialFilters
   const [filters, setFilters] = useState({
     page: 1,
     size: 10,
-  } as Merge<P, QueryListPaginationParams>)
+  } as PaginationParams<F>)
+  const [response, setResponse] = useState<ListResponse<R>>()
 
-  const formStyle = {
-    maxWidth: 'none',
-    background: token.colorFillAlter,
-    borderRadius: token.borderRadiusLG,
-    padding: 24,
-  }
+  const isRenderProps = typeof filterRender === 'function'
 
-  const { data, isLoading } = useQuery<any>({
-    ...query(filters),
-    enabled: viewable && (!enabled || enabled(filters)),
+  const { refetch, data, isLoading } = useQuery<ListResponse<R>>({
+    ...query(typeof requestFormatter === 'function' ? requestFormatter(filters) : filters),
+    enabled: accessible,
   })
 
-  if (isChecking) {
-    return (
-      <Spin
-        style={{
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          height: 200,
-        }}
-      />
-    )
+  const pagination = useMemo<PaginationProps>(() => {
+    return {
+      showSizeChanger: true,
+      showQuickJumper: true,
+      current: filters.page,
+      pageSize: filters.size,
+      total: response?.Total,
+      onChange(currentPage, currentSize) {
+        setFilters(prev => ({
+          ...prev,
+          page: currentPage,
+          size: currentSize,
+        }))
+      },
+    }
+  }, [filters, response])
+
+  const onSubmit = (values: F) => {
+    setFilters(prev => ({
+      ...prev,
+      ...values,
+    }))
   }
 
-  if (!viewable) {
+  useEffect(() => {
+    if (game) {
+      refetch().then()
+    }
+  }, [game, refetch])
+
+  useEffect(() => {
+    if (data) {
+      setResponse(typeof responseFormatter === 'function' ? responseFormatter(data) : data)
+    }
+  }, [data, responseFormatter])
+
+  if (isChecking) {
+    return <Spin className="flex justify-center items-center h-64" />
+  }
+
+  if (!accessible) {
     return <NoPermissionCover />
   }
 
-  return (
-    <div>
-      {filterRender && (
-        <div className={'mb-6'}>
+  const formRender = () => {
+    if (filterRender) {
+      return (
+        <div className="mb-6">
           <Form
-            style={formStyle}
+            className="max-w-0 p-6 rounded-md bg-gray-50"
             form={form}
             layout={formLayout}
             autoComplete="off"
-            initialValues={initialValues}
-            onFinish={values => {
-              const newValues = typeof paramsTransformer === 'function' ? paramsTransformer(values) : values
-              setFilters(prev => ({
-                ...prev,
-                ...newValues,
-              }))
-            }}
+            onFinish={onSubmit}
           >
             <Row gutter={18}>{isRenderProps ? filterRender(form) : filterRender}</Row>
-            <Row>
-              <Col span={24} style={{ textAlign: 'right' }}>
-                <Button type="primary" htmlType="submit" icon={<SearchOutlined />}>
-                  {t('search')}
-                </Button>
-                <Button className="ml-2" htmlType="reset">
-                  {t('reset')}
-                </Button>
+            <Row justify="end">
+              <Col>
+                <Space>
+                  <Button type="primary" htmlType="submit" icon={<SearchOutlined />}>
+                    查询
+                  </Button>
+                  <Button htmlType="reset">重置</Button>
+                </Space>
               </Col>
             </Row>
           </Form>
         </div>
-      )}
+      )
+    }
+
+    return null
+  }
+
+  return (
+    <>
+      {formRender()}
       <Table
         rowKey={rowKey}
         columns={columns}
         tableLayout={tableLayout}
-        dataSource={data?.[listProp || 'List']}
+        dataSource={response?.List}
         loading={isLoading}
         expandable={expandable}
-        pagination={{
-          showSizeChanger: true,
-          showQuickJumper: true,
-          current: filters.page,
-          pageSize: filters.size,
-          total: data?.[totalProp || 'Total'],
-          onChange(currentPage, currentSize) {
-            setFilters(prev => ({
-              ...prev,
-              page: currentPage,
-              size: currentSize,
-            }))
-          },
-        }}
+        pagination={pagination}
       />
-    </div>
+    </>
   )
-}
-
-QueryList.defaultProps = {
-  listProp: 'List',
-  totalProp: 'Total',
 }
 
 export default QueryList

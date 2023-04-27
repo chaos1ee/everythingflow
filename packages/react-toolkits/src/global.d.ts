@@ -1,5 +1,3 @@
-import type { Merge } from 'ts-essentials'
-
 export {}
 
 declare global {
@@ -16,15 +14,8 @@ declare global {
     Total?: number
   }
 
-  type PaginationParams = Merge<
-    { page: number },
-    | {
-        size: number
-        per?: never
-      }
-    | {
-        size?: never
-        per: number
-      }
-  >
+  interface PaginationParams<T> extends T {
+    page: number
+    size: number
+  }
 }

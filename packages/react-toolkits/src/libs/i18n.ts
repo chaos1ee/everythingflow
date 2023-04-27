@@ -5,9 +5,15 @@ import { initReactI18next } from 'react-i18next'
 import enUs from '../locales/en_US.yaml'
 import zhCn from '../locales/zh_CN.yaml'
 
+// TODO: support typescript https://react.i18next.com/latest/typescript
+
 const resources = {
-  en_US: enUs,
-  zh_CN: zhCn,
+  en_US: {
+    common: enUs,
+  },
+  zh_CN: {
+    common: zhCn,
+  },
 } as const
 
 await i18n

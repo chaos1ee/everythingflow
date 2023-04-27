@@ -1,0 +1,18 @@
+{
+  "extends": ["@everythingflow/react"],
+  "parser": "@typescript-eslint/parser",
+  "plugins": ["import"],
+  "settings": {
+    "import/resolver": {
+      "node": {
+        "extensions": [".js", ".jsx", ".ts", ".tsx"],
+        "moduleDirectory": ["node_modules"]
+      },
+      "typescript": {
+        "extensions": [".js", ".jsx", ".ts", ".tsx"],
+        "alwaysTryTypes": true,
+        "project": "./tsconfig.base.json"
+      }
+    }
+  }
+}
