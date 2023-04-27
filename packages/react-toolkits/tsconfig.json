@@ -1,26 +1,9 @@
 {
-  "ts-node": {
-    "types": ["node"],
-    "compilerOptions": {
-      "module": "commonjs"
-    }
-  },
+  "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "module": "ESNext",
-    "lib": ["DOM", "ESNext"],
-    "target": "ES2017",
-    "importHelpers": true,
-    "strict": true,
-    "noImplicitReturns": true,
-    "noFallthroughCasesInSwitch": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "moduleResolution": "node",
-    "jsx": "react-jsx",
-    "esModuleInterop": true,
-    "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true
+    "composite": true,
+    "outDir": "./dist",
+    "rootDir": "./src",
   },
-  "include": ["src", "webpack.config.ts"],
-  "exclude": ["node_modules", "dist", "**/*.spec.ts"]
+  "include": ["src"]
 }

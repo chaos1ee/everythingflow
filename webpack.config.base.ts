@@ -1,37 +1,40 @@
-import path from 'path'
-import type { Configuration } from 'mini-css-extract-plugin'
-import MiniCssExtractPlugin from 'mini-css-extract-plugin'
+import * as MiniCssExtractPlugin from 'mini-css-extract-plugin'
+import type { Configuration } from 'webpack'
 
-const config: Configuration = {
+export default {
   mode: 'production',
   target: 'web',
-  devtool: 'cheap-module-source-map',
-  entry: './src/index.ts',
+  devtool: 'source-map',
   output: {
     clean: true,
-    path: path.resolve(__dirname, './dist'),
-    filename: 'index.mjs',
+    asyncChunks: false,
     library: {
       type: 'module',
-      export: ['default', 'subModule'],
     },
-  },
-  externals: {
-    react: {
-      module: 'react',
-    },
-    antd: {
-      module: 'antd',
-    },
+    filename: 'index.js',
   },
   resolve: {
     extensions: ['.js', '.jsx', '.ts', '.tsx'],
+    fallback: {
+      stream: require.resolve('stream-browserify'),
+      url: require.resolve('url'),
+      util: require.resolve('util'),
+      zlib: require.resolve('browserify-zlib'),
+      https: require.resolve('https-browserify'),
+      http: require.resolve('stream-http'),
+      os: require.resolve('os-browserify/browser'),
+      path: require.resolve('path-browserify'),
+      assert: require.resolve('assert'),
+      buffer: require.resolve('buffer'),
+      tty: require.resolve('tty-browserify'),
+      fs: false,
+    },
   },
   module: {
     rules: [
       {
         test: /\.css$/i,
-        use: ['style-loader', 'css-loader', 'postcss-loader'],
+        use: [MiniCssExtractPlugin.loader, 'css-loader', 'postcss-loader'],
       },
       {
         test: /\.s[ac]ss$/i,
@@ -51,11 +54,6 @@ const config: Configuration = {
         ],
       },
       {
-        test: /\.tsx?$/,
-        loader: 'babel-loader',
-        exclude: /node_modules/,
-      },
-      {
         test: /\.(png|jpg|jpeg|svg|gif)$/i,
         type: 'asset/resource',
       },
@@ -72,10 +70,4 @@ const config: Configuration = {
   optimization: {
     minimize: false,
   },
-  experiments: {
-    outputModule: true,
-    topLevelAwait: true,
-  },
-}
-
-export default config
+} as Configuration
