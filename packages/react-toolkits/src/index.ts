@@ -1,6 +1,6 @@
 import './index.css'
 
 export * from './components'
-export * from './hooks'
+export { useToken } from './hooks'
 export * from './utils'
 export * from './constants'
