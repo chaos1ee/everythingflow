@@ -14,8 +14,5 @@ declare global {
     Total?: number
   }
 
-  interface PaginationParams<T> extends T {
-    page: number
-    size: number
-  }
+  type PaginationParams<T extends object = object> = T & { page: number; size: number }
 }

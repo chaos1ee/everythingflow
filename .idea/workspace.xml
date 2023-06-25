@@ -5,10 +5,87 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="45c1eb18-4611-4ade-868e-e852e3e75c59" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/apps/react-web-app/.eslintignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/apps/react-web-app/.eslintrc.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/apps/react-web-app/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/apps/react-web-app/README.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/apps/react-web-app/global.d.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/apps/react-web-app/next.config.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/apps/react-web-app/package.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/apps/react-web-app/postcss.config.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/apps/react-web-app/public/favicon.ico" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/apps/react-web-app/public/next.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/apps/react-web-app/public/vercel.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/apps/react-web-app/src/constants/index.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/apps/react-web-app/src/mocks/handlers.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/apps/react-web-app/src/mocks/setup.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/apps/react-web-app/src/pages/_app.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/apps/react-web-app/src/pages/_document.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/apps/react-web-app/src/pages/api/hello.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/apps/react-web-app/src/pages/index.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/apps/react-web-app/src/router/index.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/apps/react-web-app/src/styles.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/apps/react-web-app/src/utils/index.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/apps/react-web-app/tailwind.config.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/apps/react-web-app/tsconfig.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/react-toolkits/.eslintignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/react-toolkits/src/components/FormModal/index.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/react-toolkits/src/components/PermissionButton/index.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/react-toolkits/src/components/PermissionGuard/index.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/react-toolkits/src/components/QueryList/index.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/react-toolkits/src/httpClient.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/react-toolkits/src/modules/index.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/react-toolkits/src/modules/permission/components/PermissionList.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/react-toolkits/src/modules/permission/hooks/index.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/react-toolkits/src/modules/permission/index.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/react-toolkits/src/modules/permission/pages/RoleDetail.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/react-toolkits/src/modules/permission/pages/RoleList.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/react-toolkits/src/modules/permission/pages/UserList.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/react-toolkits/src/modules/permission/queries/index.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/react-toolkits/src/modules/permission/types/index.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/react-toolkits/src/modules/permissionV2/index.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/react-toolkits/src/modules/permissionV2/pages/RoleDetail.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/react-toolkits/src/modules/permissionV2/pages/RoleList.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/react-toolkits/src/modules/permissionV2/pages/UserList.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.npmrc" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/eslint-config-react/CHANGELOG.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/eslint-config-react/README.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/eslint-config-react/index.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/eslint-config-react/package.json" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/packages/react-toolkits/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/packages/react-toolkits/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/react-toolkits/src/hooks/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/react-toolkits/src/hooks/index.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/react-toolkits/src/components/FormModal/FormModal.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/packages/react-toolkits/src/components/FormModal/FormModal.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/react-toolkits/src/components/FormModal/hooks.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/packages/react-toolkits/src/components/FormModal/useModal/index.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/react-toolkits/src/components/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/react-toolkits/src/components/index.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/react-toolkits/src/features/permission/components/PermissionList.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/packages/react-toolkits/src/modules/permissionV2/components/PermissionList.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/react-toolkits/src/features/permission/hooks/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/react-toolkits/src/modules/permissionV2/hooks/index.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/react-toolkits/src/features/permission/index.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/react-toolkits/src/features/permission/queries/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/react-toolkits/src/modules/permissionV2/queries/index.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/react-toolkits/src/features/permission/types/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/react-toolkits/src/modules/permissionV2/types/index.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/react-toolkits/src/hooks/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/packages/react-toolkits/src/hooks/index.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/packages/react-toolkits/src/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/react-toolkits/src/index.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/react-toolkits/src/layouts/GameSelector.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/react-toolkits/src/layouts/Layout.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/packages/react-toolkits/src/components/Layout/index.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/react-toolkits/src/layouts/NavBar.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/packages/react-toolkits/src/components/NavBar/index.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/react-toolkits/src/layouts/UserBar.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/packages/react-toolkits/src/components/UserBar/index.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/react-toolkits/src/layouts/index.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/react-toolkits/src/libs/client.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/react-toolkits/src/pages/ConsoleGuard.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/react-toolkits/src/pages/Login.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/packages/react-toolkits/src/pages/Login.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/react-toolkits/src/pages/PermissionGuard.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/react-toolkits/src/pages/RequireGame.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/react-toolkits/src/pages/Root.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/packages/react-toolkits/src/pages/Root.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/react-toolkits/src/pages/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/react-toolkits/src/pages/index.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/react-toolkits/src/styles/index.css" beforeDir="false" afterPath="$PROJECT_DIR$/packages/react-toolkits/src/styles.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/react-toolkits/src/types/index.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/react-toolkits/src/utils/index.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/react-toolkits/tsconfig.json" beforeDir="false" afterPath="$PROJECT_DIR$/packages/react-toolkits/tsconfig.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/react-toolkits/tsup.config.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/react-toolkits/tsup.config.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/tsconfig/base.json" beforeDir="false" afterPath="$PROJECT_DIR$/packages/tsconfig/base.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/tsconfig/react-library.json" beforeDir="false" afterPath="$PROJECT_DIR$/packages/tsconfig/react.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pnpm-lock.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/pnpm-lock.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pnpm-workspace.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/pnpm-workspace.yaml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -29,6 +106,7 @@
   </component>
   <component name="PackageJsonUpdateNotifier">
     <dismissed value="$PROJECT_DIR$/package.json" />
+    <dismissed value="$PROJECT_DIR$/packages/react-toolkits/package.json" />
   </component>
   <component name="ProblemsViewState">
     <option name="selectedTabId" value="CurrentFile" />
@@ -41,17 +119,21 @@
     <option name="autoscrollFromSource" value="true" />
     <option name="autoscrollToSource" value="true" />
     <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showExcludedFiles" value="false" />
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">{
   &quot;keyToString&quot;: {
     &quot;ASKED_ADD_EXTERNAL_FILES&quot;: &quot;true&quot;,
     &quot;ASKED_SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
     &quot;code.cleanup.on.save&quot;: &quot;true&quot;,
     &quot;git-widget-placeholder&quot;: &quot;dev&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/Users/hao.li/Workspace/everythingflow/packages/react-toolkits/src/components&quot;,
+    &quot;javascript.nodejs.core.library.configured.version&quot;: &quot;16.20.0&quot;,
+    &quot;javascript.nodejs.core.library.typings.version&quot;: &quot;16.18.34&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/hao.li/Workspace/everythingflow/apps/react-web-app&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.standard&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
@@ -61,23 +143,25 @@
     &quot;nodejs_package_manager_path&quot;: &quot;pnpm&quot;,
     &quot;prettierjs.PrettierConfiguration.Package&quot;: &quot;/Users/hao.li/Workspace/everythingflow/node_modules/prettier&quot;,
     &quot;rearrange.code.on.save&quot;: &quot;true&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;advanced.settings&quot;,
-    &quot;ts.external.directory.path&quot;: &quot;/Users/hao.li/Workspace/everythingflow/node_modules/typescript/lib&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;settings.typescriptcompiler&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;/Users/hao.li/Workspace/everythingflow/packages/react-toolkits/node_modules/typescript/lib&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
 }</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/packages/react-toolkits/src/components" />
-      <recent name="$PROJECT_DIR$" />
-      <recent name="$PROJECT_DIR$/packages/react-toolkits/src" />
-      <recent name="$PROJECT_DIR$/packages/react-toolkits" />
-      <recent name="$PROJECT_DIR$/packages/react-toolkits/src/assets" />
+      <recent name="$PROJECT_DIR$/apps/react-web-app" />
+      <recent name="$PROJECT_DIR$/apps/react-web-app/src" />
+      <recent name="$PROJECT_DIR$/packages/react-toolkits/src/modules/permission" />
+      <recent name="$PROJECT_DIR$/packages/react-toolkits/src/modules/permission/pages" />
+      <recent name="$PROJECT_DIR$/packages/react-toolkits/src/modules" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/apps/react-web-app/src/pages" />
+      <recent name="$PROJECT_DIR$/apps/react-web-app/src" />
+      <recent name="$PROJECT_DIR$/apps/my-app" />
       <recent name="$PROJECT_DIR$/packages/react-toolkits/src" />
-      <recent name="$PROJECT_DIR$/packages/react-toolkits/src/layouts" />
-      <recent name="$PROJECT_DIR$/packages/react-toolkits/src/libs" />
+      <recent name="$PROJECT_DIR$/packages/react-toolkits/src/modules/permission" />
     </key>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
@@ -108,11 +192,38 @@
       <workItem from="1682503089942" duration="5811000" />
       <workItem from="1682508914411" duration="6565000" />
       <workItem from="1682568543568" duration="7259000" />
+      <workItem from="1683340906642" duration="47000" />
+      <workItem from="1683796385319" duration="1121000" />
+      <workItem from="1684117522886" duration="346000" />
+      <workItem from="1686278539627" duration="678000" />
+      <workItem from="1686279225954" duration="189000" />
+      <workItem from="1686280134236" duration="3119000" />
+      <workItem from="1686536696302" duration="4135000" />
+      <workItem from="1686541165442" duration="6583000" />
+      <workItem from="1686709239993" duration="14682000" />
+      <workItem from="1686885696725" duration="1652000" />
+      <workItem from="1687228721432" duration="3418000" />
+      <workItem from="1687232477326" duration="4523000" />
+      <workItem from="1687245045804" duration="650000" />
+      <workItem from="1687313765834" duration="20475000" />
+      <workItem from="1687658884641" duration="8000" />
+      <workItem from="1687659092239" duration="1000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
