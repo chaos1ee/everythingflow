@@ -1,11 +1,5 @@
 {
-  "extends": "../../tsconfig.base.json",
-  "compilerOptions": {
-    "composite": true,
-    "outDir": "./dist",
-    "rootDir": "./src",
-    "sourceMap": true,
-    "tsBuildInfoFile": "./dist/.tsbuildinfo"
-  },
-  "include": ["src"]
+  "extends": "tsconfig/react.json",
+  "include": ["."],
+  "exclude": ["dist", "node_modules"]
 }

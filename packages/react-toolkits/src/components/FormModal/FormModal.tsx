@@ -1,13 +1,12 @@
-/* eslint-disable react/jsx-indent */
 import type { FormInstance, FormProps, ModalProps } from 'antd'
 import { Button, Form, Modal } from 'antd'
-import type { ForwardedRef } from 'react'
-import React, { forwardRef, useEffect, useId, useImperativeHandle, useRef, useState } from 'react'
+import type { ForwardedRef, ReactElement } from 'react'
+import { forwardRef, useEffect, useId, useImperativeHandle, useRef, useState } from 'react'
 
 type RenderChildren<T> = (props: {
   form: FormInstance<T>
   open?: boolean
-  closeFn?: VoidFunction
+  closeFn?: () => void
 }) => JSX.Element | JSX.Element[]
 
 type ChildrenType<T> = RenderChildren<T> | JSX.Element | JSX.Element[]
@@ -23,11 +22,11 @@ export type RecursivePartial<T> = T extends object
   : any
 
 export interface FormModalProps<T>
-  extends Pick<ModalProps, 'width' | 'title' | 'open' | 'afterClose'>,
+  extends Pick<ModalProps, 'width' | 'title' | 'open' | 'afterClose' | 'bodyStyle'>,
     Pick<FormProps, 'labelCol' | 'layout' | 'colon'> {
   children?: ChildrenType<T>
   footer?: ModalProps['footer']
-  closeFn?: VoidFunction
+  closeFn?: () => void
   initialValues?: RecursivePartial<T>
   onConfirm?: (values: T) => void
 }
@@ -37,8 +36,20 @@ export interface FormModalRefType<T = object> {
 }
 
 const InternalFormModal = <T extends object>(props: FormModalProps<T>, ref: ForwardedRef<FormModalRefType<T>>) => {
-  const { width, children, title, open, footer, layout, labelCol, initialValues, closeFn, afterClose, onConfirm } =
-    props
+  const {
+    width,
+    children,
+    title,
+    open,
+    footer,
+    layout,
+    labelCol,
+    bodyStyle,
+    initialValues,
+    closeFn,
+    afterClose,
+    onConfirm,
+  } = props
   const id = useId()
   const [form] = Form.useForm<T>()
   const formRef = useRef<FormInstance<T>>(null)
@@ -47,7 +58,7 @@ const InternalFormModal = <T extends object>(props: FormModalProps<T>, ref: Forw
 
   useEffect(() => {
     if (initialValues && open) {
-      // Reset form values everytime opening the modal.
+      // Reset form values everytime opening this modal.
       form.setFieldsValue(initialValues)
     }
   }, [form, initialValues, open])
@@ -63,6 +74,7 @@ const InternalFormModal = <T extends object>(props: FormModalProps<T>, ref: Forw
   return (
     <Modal
       destroyOnClose
+      bodyStyle={bodyStyle}
       style={{ textAlign: 'start' }}
       width={width}
       open={open}
@@ -73,17 +85,17 @@ const InternalFormModal = <T extends object>(props: FormModalProps<T>, ref: Forw
         typeof footer === 'object'
           ? footer
           : [
-              <Button
+            <Button
                 key="cancel"
                 onClick={() => {
                   closeFn?.()
                 }}
-              >
-                取消
-              </Button>,
-              <Button form={id} key="submit" type="primary" htmlType="submit" loading={confirmLoading}>
-                确定
-              </Button>,
+            >
+              取消
+            </Button>,
+            <Button form={id} key="submit" type="primary" htmlType="submit" loading={confirmLoading}>
+              确定
+            </Button>,
             ]
       }
       afterClose={() => {
@@ -124,6 +136,6 @@ const InternalFormModal = <T extends object>(props: FormModalProps<T>, ref: Forw
 
 const FormModal = forwardRef(InternalFormModal) as <T extends object>(
   props: FormModalProps<T> & { ref?: ForwardedRef<FormModalRefType<T>> },
-) => React.ReactElement
+) => ReactElement
 
 export default FormModal

@@ -13,7 +13,7 @@
 
 ```shell
 pn build
-pn link --global --dir react-toolkits
+pn link --global --dir packages/react-toolkits
 
 # 在项目中引入对应的包
 pn link --global @everythingflow/react-toolkits
