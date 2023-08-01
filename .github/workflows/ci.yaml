@@ -1,4 +1,4 @@
-name: Publish to npm
+name: CI
 
 on:
   push:
@@ -54,8 +54,8 @@ jobs:
       - name: Create and publish versions
         uses: changesets/action@v1
         with:
-          version: pnpm ci:version
-          publish: pnpm ci:release
+          version: pnpm changeset version
+          publish: pnpm ci:publish
           commit: "ci: release packages"
           title: "ci: publish to npm"
         env:
