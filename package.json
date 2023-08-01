@@ -7,7 +7,6 @@
     "build": "turbo build",
     "clean": "turbo clean",
     "lint": "turbo lint",
-    "ci:publish": "pnpm publish -r",
     "preinstall": "npx only-allow pnpm",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "clear": "rimraf -g 'apps/*/node_modules' && rimraf -g 'packages/*/node_modules' && rimraf node_modules"
