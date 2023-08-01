@@ -14,11 +14,7 @@
     "noUnusedParameters": false,
     "preserveWatchOutput": true,
     "skipLibCheck": true,
-    "strict": true,
-    "baseUrl": "../..",
-    "paths": {
-      "@react-web-app/*": ["apps/react-web-app/src/*"]
-    }
+    "strict": true
   },
   "exclude": ["node_modules"]
 }

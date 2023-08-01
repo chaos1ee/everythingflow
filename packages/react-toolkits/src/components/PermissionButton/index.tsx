@@ -1,17 +1,16 @@
+import { usePermission } from '@/hooks'
 import type { ButtonProps } from 'antd'
 import { Button, Tooltip } from 'antd'
 import type { FC, PropsWithChildren } from 'react'
-import { usePermission } from '../../hooks'
 
-export interface TooltipButtonProps extends Omit<ButtonProps, 'disabled'> {
+export interface PermissionButtonProps extends Omit<ButtonProps, 'disabled'> {
   code: string
-  isGlobalNS?: boolean
   showLoading?: boolean
 }
 
-const PermissionButton: FC<PropsWithChildren<TooltipButtonProps>> = props => {
-  const { children, code, isGlobalNS, showLoading, ...restProps } = props
-  const { accessible, isValidating } = usePermission(code, isGlobalNS)
+const PermissionButton: FC<PropsWithChildren<PermissionButtonProps>> = props => {
+  const { children, code, showLoading, ...restProps } = props
+  const { accessible, isValidating } = usePermission(code)
 
   if (isValidating) {
     return (
