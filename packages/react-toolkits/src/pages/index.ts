@@ -1,5 +1,4 @@
 import Login from './Login'
-import NoMatch from './NoMatch'
-import Root from './Root'
+import permission from './permission'
 
-export { Login, NoMatch, Root }
+export { Login, permission }

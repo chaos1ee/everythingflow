@@ -11,12 +11,11 @@ export default defineConfig((options: Options) => ({
   minify: false,
   clean: true,
   shims: true,
-  external: ['@ant-design/icons', 'antd', 'react', 'react-dom', 'react-router-dom'],
+  external: ['react', 'react-dom'],
   loader: {
     '.jpg': 'base64',
     '.png': 'copy',
     '.webp': 'file',
-    '.svg': 'base64',
   },
   outExtension({ format }) {
     return {

@@ -1,9 +1,9 @@
 {
   "name": "everythingflow",
   "version": "0.0.0",
-  "description": "",
+  "private": true,
   "scripts": {
-    "dev": "turbo dev --filter=\"react-web-app\"",
+    "dev": "turbo dev --filter=\"react-web\" --no-daemon",
     "build": "turbo build",
     "clean": "turbo clean",
     "lint": "turbo lint",
@@ -13,20 +13,18 @@
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "clear": "rimraf -g 'apps/*/node_modules' && rimraf -g 'packages/*/node_modules' && rimraf node_modules"
   },
-  "keywords": [],
   "repository": "git@github.com:chaos1ee/everythingflow.git",
   "author": "chaos1ee <chaos.maybeeee@gmail.com>",
   "license": "MIT",
   "devDependencies": {
     "@changesets/changelog-github": "^0.4.8",
-    "@changesets/cli": "^2.26.1",
+    "@changesets/cli": "^2.26.2",
     "@everythingflow/prettier-config": "workspace:*",
-    "@types/node": "^18.14.0",
-    "eslint": "^8.38.0",
-    "prettier": "^2.8.7",
+    "@types/node": "^20.4.5",
+    "eslint": "^8.45.0",
+    "prettier": "^3.0.0",
     "rimraf": "^5.0.1",
-    "turbo": "^1.10.2"
+    "turbo": "^1.10.12"
   },
-  "prettier": "@everythingflow/prettier-config",
-  "packageManager": "pnpm@7.29.1"
+  "prettier": "@everythingflow/prettier-config"
 }
