@@ -1,6 +1,6 @@
 {
-  "name": "@everythingflow/eslint-config-mono",
-  "version": "0.0.1",
+  "name": "@flow97/eslint-config-mono",
+  "version": "0.0.0",
   "main": "index.js",
   "keywords": [],
   "license": "MIT",

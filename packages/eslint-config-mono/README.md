@@ -1,9 +1,9 @@
-# @everythingflow/eslint-config
+# @flow97/eslint-config-mono
 
 ## Install
 
 ```shell
-pnpm add eslint @everythingflow/eslint-config-react -D
+pnpm add eslint @flow97/eslint-config-mono -D
 ```
 
 ## Usage
@@ -12,6 +12,7 @@ pnpm add eslint @everythingflow/eslint-config-react -D
 
 ```javascript
 module.exports = {
-  extends: ['@everythingflow/react'],
+  root: true,
+  extends: [require.resolve('@flow97/eslint-config-mono/react')],
 }
 ```

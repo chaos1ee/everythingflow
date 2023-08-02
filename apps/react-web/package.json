@@ -28,7 +28,7 @@
     "@babel/preset-react": "^7.22.5",
     "@babel/preset-typescript": "^7.22.5",
     "@babel/runtime": "^7.22.6",
-    "@everythingflow/eslint-config-mono": "workspace:*",
+    "@flow97/eslint-config-mono": "workspace:*",
     "@ngneat/falso": "^7.0.1",
     "@types/node": "^20.4.5",
     "@types/react": "^18.2.16",
@@ -63,5 +63,5 @@
   "msw": {
     "workerDirectory": "public"
   },
-  "prettier": "@everythingflow/prettier-config"
+  "prettier": "@flow97/prettier-config"
 }
