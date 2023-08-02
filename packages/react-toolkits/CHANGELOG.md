@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.0.4
+
+### Patch Changes
+
+- a32af27: fix useFormModal hook can not set initialValues
+
 ## 0.0.3
 
 ### Patch Changes
