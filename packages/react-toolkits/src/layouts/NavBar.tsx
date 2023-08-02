@@ -1,7 +1,6 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+import { usePermissions } from '@/hooks'
 import { useMenuStore } from '@/stores'
-import Icon, * as Icons from '@ant-design/icons'
-import { Menu } from 'antd'
+import { Menu, Spin } from 'antd'
 import type {
   ItemType,
   MenuDividerType,
@@ -9,26 +8,24 @@ import type {
   MenuItemType,
   SubMenuType,
 } from 'antd/es/menu/hooks/useItems'
-import type { FC, ForwardRefExoticComponent, ReactNode } from 'react'
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import type { FC, ReactNode } from 'react'
+import { useCallback, useEffect, useMemo } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import type { Merge } from 'ts-essentials'
 
 // 扩展 antd Menu 的类型，使其支持一些我们想要的自定义字段。
 type MenuItemType2 = Merge<
-  Omit<MenuItemType, 'icon'>,
+  MenuItemType,
   {
     code /** 权限编号 **/?: string
     route /** 前端路由地址 **/?: string
-    icon?: string
   }
 >
 
 type SubMenuType2 = Merge<
-  Omit<SubMenuType, 'icon'>,
+  SubMenuType,
   {
     children?: ItemType2[]
-    icon?: string
   }
 >
 
@@ -48,12 +45,7 @@ const withLink = (label?: ReactNode, route?: string): ReactNode => {
   return label
 }
 
-/**
- * 转换导航配置，主要做了以下几件事情
- * 1. 用 Link 元素包装 route
- * 2. 收集 code，用于权限判断
- */
-function transformItems(items: ItemType2[]) {
+function transformItems(items: ItemType2[], permissions?: Record<string, boolean>) {
   const result: ItemType[] = []
 
   for (let i = 0; i < items.length; i++) {
@@ -62,35 +54,20 @@ function transformItems(items: ItemType2[]) {
     } else if ((items[i] as MenuDividerType).type === 'divider') {
       result[i] = { ...items[i] } as MenuDividerType
     } else {
-      // 引入 icon
-      const iconName = (items[i] as MenuItemType2 | SubMenuType2).icon
-
       if ((items[i] as SubMenuType2 | MenuItemGroupType2).children) {
         const { children, ...restProps } = items[i] as SubMenuType2 | MenuItemGroupType2
         result[i] = {
           ...restProps,
-          children: transformItems(children ?? []),
-          icon: iconName ? <Icon component={(Icons as any)[iconName] as ForwardRefExoticComponent<any>} /> : null,
+          children: transformItems(children ?? [], permissions),
         } as SubMenuType | MenuItemGroupType
       } else {
         const { route, label, code, ...restProps } = items[i] as MenuItemType2
-        // const isPass = code
-        //   ? await httpClient.post<PermissionCheckResult>('/usystem/user/check', { permissions: [code] }).then(res => {
-        //       if (res.has_all) {
-        //         return true
-        //       }
-        //
-        //       return res[code] ?? false
-        //     })
-        //   : true
-
-        const isPass = true
+        const isPass = !code || !permissions || permissions[code]
 
         result[i] = isPass
           ? ({
               ...restProps,
               label: withLink(label, route),
-              icon: iconName ? <Icon component={(Icons as any)[iconName] as ForwardRefExoticComponent<any>} /> : null,
             } as MenuItemType)
           : null
       }
@@ -129,11 +106,9 @@ const NavBar: FC<NavBarProps> = props => {
   const { items } = props
   const location = useLocation()
   const flattenItems = useMemo(() => flatItems(items ?? []), [items])
-  const [internalItems, setInternalItems] = useState<ItemType<MenuItemType>[]>([])
-
-  useEffect(() => {
-    setInternalItems(transformItems(items ?? []))
-  }, [items])
+  const codes = flattenItems.map(item => item.code).filter(Boolean) as string[]
+  const { data: permissions, isLoading } = usePermissions(codes)
+  const internalItems = useMemo(() => transformItems(items ?? [], permissions), [items, permissions])
 
   const openKeys = useMenuStore(state => state.openKeys)
   const selectedKeys = useMenuStore(state => state.selectedKeys)
@@ -160,6 +135,19 @@ const NavBar: FC<NavBarProps> = props => {
       setOpenKeys(keypath)
     }
   }, [flattenItems, location, setOpenKeys, setSelectedKeys])
+
+  if (isLoading) {
+    return (
+      <Spin
+        style={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          height: 'calc(100vh - 64px)',
+        }}
+      />
+    )
+  }
 
   return (
     <Menu

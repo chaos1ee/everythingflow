@@ -1,10 +1,11 @@
+import { ConsoleSqlOutlined, DatabaseOutlined, SafetyOutlined } from '@ant-design/icons'
 import type { ItemType2 } from 'react-toolkits'
 
 const navItems: ItemType2[] = [
   {
     key: 'instance',
     label: '实例管理',
-    icon: 'DatabaseOutlined',
+    icon: <DatabaseOutlined />,
     children: [
       {
         key: 'instance_tree',
@@ -16,7 +17,7 @@ const navItems: ItemType2[] = [
   {
     key: 'sql',
     label: 'SQL',
-    icon: 'ConsoleSqlOutlined',
+    icon: <ConsoleSqlOutlined />,
     children: [
       {
         key: 'query_online',
@@ -28,7 +29,7 @@ const navItems: ItemType2[] = [
   {
     key: 'permission',
     label: '权限管理',
-    icon: 'SafetyOutlined',
+    icon: <SafetyOutlined />,
     children: [
       {
         key: 'user_list',
