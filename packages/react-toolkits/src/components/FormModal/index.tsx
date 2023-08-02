@@ -1,7 +1,6 @@
-/* eslint-disable react/jsx-indent */
 import type { FormInstance, FormProps, ModalProps } from 'antd'
 import { Button, Form, Modal } from 'antd'
-import type { ForwardedRef } from 'react'
+import type { ForwardedRef, ReactElement } from 'react'
 import { forwardRef, useId, useImperativeHandle, useRef, useState } from 'react'
 
 type RenderChildren<T> = (props: {
@@ -20,7 +19,7 @@ export type RecursivePartial<T> = T extends object
         ? RecursivePartial<T[P]>
         : T[P]
     }
-  : any
+  : unknown
 
 export interface FormModalProps<T>
   extends Pick<ModalProps, 'width' | 'title' | 'open' | 'afterClose' | 'bodyStyle' | 'maskClosable'>,
@@ -29,7 +28,7 @@ export interface FormModalProps<T>
   footer?: ModalProps['footer']
   closeFn?: VoidFunction
   initialValues?: RecursivePartial<T>
-  onConfirm?: (values: T) => void
+  onConfirm?: (values: T) => Promise<void>
 }
 
 export interface FormModalRef<T = object> {
@@ -81,17 +80,17 @@ const InternalFormModal = <T extends object>(props: FormModalProps<T>, ref: Forw
         typeof footer === 'object'
           ? footer
           : [
-              <Button
+            <Button
                 key="cancel"
                 onClick={() => {
                   closeFn?.()
                 }}
-              >
-                取消
-              </Button>,
-              <Button form={id} key="submit" type="primary" htmlType="submit" loading={confirmLoading}>
-                确定
-              </Button>,
+            >
+              取消
+            </Button>,
+            <Button form={id} key="submit" type="primary" htmlType="submit" loading={confirmLoading}>
+              确定
+            </Button>,
             ]
       }
       afterClose={() => {
@@ -133,6 +132,6 @@ const InternalFormModal = <T extends object>(props: FormModalProps<T>, ref: Forw
 
 const FormModal = forwardRef(InternalFormModal) as <T extends object>(
   props: FormModalProps<T> & { ref?: ForwardedRef<FormModalRef<T>> },
-) => React.ReactElement
+) => ReactElement
 
 export default FormModal

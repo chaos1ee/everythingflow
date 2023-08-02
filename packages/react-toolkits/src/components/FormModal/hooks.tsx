@@ -5,10 +5,9 @@ import type { Merge } from 'ts-essentials'
 import { createPortal } from 'react-dom'
 
 export type UseFormModalProps<T> = Merge<
-  Omit<FormModalProps<T>, 'open' | 'onCancel' | 'closeFn' | 'children' | 'onConfirm'>,
+  Omit<FormModalProps<T>, 'open' | 'onCancel' | 'closeFn' | 'children'>,
   {
     content: FormModalProps<T>['children']
-    onConfirm?: (values: T) => void
   }
 >
 
@@ -34,7 +33,7 @@ export function useFormModal<T extends object>(props: UseFormModalProps<T>) {
 
   const Modal = useMemo(() => {
     return (
-      <FormModal {...restProps} open={open} closeFn={closeModal} title={title} onConfirm={onConfirm}>
+      <FormModal ref={formRef} {...restProps} open={open} closeFn={closeModal} title={title} onConfirm={onConfirm}>
         {content}
       </FormModal>
     )

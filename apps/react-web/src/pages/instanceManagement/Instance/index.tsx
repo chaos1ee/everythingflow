@@ -1,7 +1,7 @@
 import { PlusOutlined } from '@ant-design/icons'
 import { Button, Card, Form, Input, InputNumber, Select, Space, Tree, Typography } from 'antd'
 import type { DataNode } from 'antd/es/tree'
-import type { Key} from 'react';
+import type { Key } from 'react'
 import { useState } from 'react'
 import { useFetcher, useFormModal } from 'react-toolkits'
 
@@ -126,15 +126,15 @@ const Instance = () => {
       return node
     })
 
-  const onLoadData = ({ key, children }: { key: React.Key; children?: DataNode[] }) => {
+  const onLoadData = async ({ key, children }: { key: Key; children?: DataNode[] }) => {
     if (children) {
       return Promise.resolve()
     }
 
-    return fetcher<
+    const res = await fetcher<
       {
         title: string
-        key: React.Key
+        key: Key
       }[]
     >({
       method: 'GET',
@@ -142,9 +142,8 @@ const Instance = () => {
       params: {
         key,
       },
-    }).then(res => {
-      setTreeData(origin => updateTreeData(origin, key, res))
     })
+    setTreeData(origin => updateTreeData(origin, key, res))
   }
 
   return (
@@ -154,7 +153,11 @@ const Instance = () => {
         extra={
           <Button
             onClick={() => {
-              showCreatingGroupModal()
+              showCreatingGroupModal({
+                initialValues: {
+                  name: '分组 1',
+                },
+              })
             }}
           >
             添加分组
