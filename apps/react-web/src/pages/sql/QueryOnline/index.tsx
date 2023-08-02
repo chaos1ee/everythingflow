@@ -5,7 +5,7 @@ import type { DefaultOptionType } from 'antd/es/select'
 import type { ColumnsType } from 'antd/es/table'
 import { useState } from 'react'
 import type { QueryListKey } from 'react-toolkits'
-import { QueryList, useFetcher } from 'react-toolkits'
+import { QueryList } from 'react-toolkits'
 import type { QueryResponseListItem } from '~/features/sql'
 
 export const swrKey: QueryListKey = {
@@ -14,8 +14,6 @@ export const swrKey: QueryListKey = {
 }
 
 const QueryOnline = () => {
-  const fetcher = useFetcher()
-
   const [treeData, setTreeData] = useState<Omit<DefaultOptionType, 'label'>[]>([
     { id: 1, pId: 0, value: '1', title: 'Expand to load' },
     { id: 2, pId: 0, value: '2', title: 'Expand to load' },

@@ -36,6 +36,9 @@ export function usePermissions(codes: string[]) {
           {} as Record<string, boolean>,
         )
       }),
+    {
+      shouldRetryOnError: false,
+    },
   )
 
   return { data, isLoading }
