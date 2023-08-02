@@ -3,7 +3,7 @@
 ## Install
 
 ```shell
-yarn add @everythingflow/prettier-config -D
+yarn add @flow97/prettier-config -D
 ```
 
 ## Usage
@@ -12,6 +12,6 @@ yarn add @everythingflow/prettier-config -D
 
 ```javascript
 module.export = {
-    ...require('@everythingflow/prettier-config'),
+  ...require('@flow97/prettier-config'),
 }
 ```

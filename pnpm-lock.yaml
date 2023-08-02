@@ -14,7 +14,7 @@ importers:
       '@changesets/cli':
         specifier: ^2.26.2
         version: 2.26.2
-      '@everythingflow/prettier-config':
+      '@flow97/prettier-config':
         specifier: workspace:*
         version: link:packages/prettier-config
       '@types/node':
@@ -93,8 +93,8 @@ importers:
       '@babel/runtime':
         specifier: ^7.22.6
         version: 7.22.6
-      '@everythingflow/eslint-config-mono':
-        specifier: workspace:*
+      '@flow97/eslint-config-mono':
+        specifier: workspace:^
         version: link:../../packages/eslint-config-mono
       '@ngneat/falso':
         specifier: ^7.0.1
@@ -251,7 +251,7 @@ importers:
         specifier: ^4.3.9
         version: 4.3.9(react@18.2.0)
     devDependencies:
-      '@everythingflow/eslint-config-mono':
+      '@flow97/eslint-config-mono':
         specifier: workspace:^
         version: link:../eslint-config-mono
       '@types/lodash-es':
