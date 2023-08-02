@@ -1,6 +1,6 @@
 {
   "name": "react-toolkits",
-  "version": "0.0.1",
+  "version": "0.0.0",
   "sideEffects": [
     "**/*.css"
   ],
@@ -38,6 +38,7 @@
     "zustand": "^4.3.9"
   },
   "devDependencies": {
+    "@everythingflow/eslint-config-mono": "workspace:*",
     "@types/lodash-es": "^4.17.8",
     "@types/node": "^20.4.5",
     "@types/react": "^18.2.16",

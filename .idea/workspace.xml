@@ -5,12 +5,16 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="45c1eb18-4611-4ade-868e-e852e3e75c59" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.changeset/config.json" beforeDir="false" afterPath="$PROJECT_DIR$/.changeset/config.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/react-toolkits/.eslintignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/react-toolkits/.eslintrc.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.github/workflows/ci.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/.github/workflows/ci.yaml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.npmrc" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/packages/eslint-config-mono/CHANGELOG.md" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/packages/eslint-config-mono/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/packages/eslint-config-mono/package.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/packages/react-toolkits/CHANGELOG.md" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/packages/react-toolkits/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/packages/react-toolkits/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pnpm-lock.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/pnpm-lock.yaml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
