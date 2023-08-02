@@ -8,7 +8,7 @@ on:
 concurrency: ${{ github.workflow }}-${{ github.ref }}
 
 jobs:
-  publish:
+  Publish:
     timeout-minutes: 15
     runs-on: ubuntu-latest
 
@@ -54,7 +54,6 @@ jobs:
       - name: Create and publish versions
         uses: changesets/action@v1
         with:
-          version: pnpm changeset version
           commit: "ci: release packages"
           title: "ci: publish to npm"
           publish: pnpm changeset publish
