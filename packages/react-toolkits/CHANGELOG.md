@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.0.3
+
+### Patch Changes
+
+- 1d40a67: filter nav items by permission
+
 ## 0.0.2
 
 ### Patch Changes
