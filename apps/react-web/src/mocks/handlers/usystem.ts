@@ -4,7 +4,7 @@ import { RESTMethods } from 'msw'
 import { SECRET } from '~/constants'
 import { mock } from '~/utils'
 
-const { plainRequest, listRequest, randomArray } = mock
+const { plainRequest, listRequest, randomArray, delay } = mock
 
 const handlers = [
   plainRequest('/api/usystem/user/login', async () => {
@@ -23,6 +23,7 @@ const handlers = [
       has_all: true,
     },
     RESTMethods.POST,
+    delay(3000),
   ),
   plainRequest(
     '/api/usystem/role/all',

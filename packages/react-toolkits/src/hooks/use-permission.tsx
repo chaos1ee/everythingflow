@@ -5,21 +5,21 @@ export interface PermissionCheckResult {
   [k: string]: boolean
 }
 
-export function usePermissions(codes: Record<string, string>) {
+export function usePermissions(codes: string[]) {
   const fetcher = useFetcher()
 
   const { data, isLoading } = useSWRImmutable(
-    Object.keys(codes).length > 0
+    codes.length > 0
       ? {
           method: 'POST',
           url: '/api/usystem/user/check',
-          data: { permissions: Object.values(codes) },
+          data: { permissions: codes },
         }
       : null,
     config =>
       fetcher<PermissionCheckResult>(config).then(res => {
         if (res.has_all) {
-          return Object.keys(codes).reduce(
+          return codes.reduce(
             (acc, curr) => {
               acc[curr] = true
               return acc
@@ -28,9 +28,9 @@ export function usePermissions(codes: Record<string, string>) {
           )
         }
 
-        return Object.entries(codes).reduce(
+        return codes.reduce(
           (acc, curr) => {
-            acc[curr[0]] = (res as Record<string, boolean>)[curr[1] as string]
+            acc[curr] = (res as Record<string, boolean>)[curr]
             return acc
           },
           {} as Record<string, boolean>,
@@ -42,7 +42,7 @@ export function usePermissions(codes: Record<string, string>) {
 }
 
 export function usePermission(code?: string) {
-  const { data, isLoading } = usePermissions(code ? { [code]: code } : {})
+  const { data, isLoading } = usePermissions(code ? [code] : [])
 
   if (!code) {
     return {

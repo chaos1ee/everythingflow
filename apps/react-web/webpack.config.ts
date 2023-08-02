@@ -5,21 +5,12 @@ import webpack from 'webpack'
 
 const config = {
   mode: 'development',
+  watch: true,
   context: path.resolve(__dirname, './src'),
   entry: {
     app: './main.tsx',
     'mysql.worker': 'monaco-sql-languages/out/esm/mysql/mysql.worker.js',
     'sql.worker': 'monaco-sql-languages/out/esm/sql/sql.worker.js',
-  },
-  output: {
-    clean: true,
-    asyncChunks: true,
-    path: path.resolve(__dirname, './dist'),
-    filename: 'static/js/[name].[contenthash].js',
-    chunkFilename: 'static/js/[name].[contenthash].chunk.js',
-    assetModuleFilename: 'static/assets/[name].[hash][ext]',
-    // Webpack module federation 需要配置成 'auto' 不然会加载 chunk 失败
-    publicPath: 'auto',
   },
   resolve: {
     extensions: ['.js', '.jsx', '.ts', '.tsx'],
@@ -31,6 +22,7 @@ const config = {
     },
   },
   devServer: {
+    port: 3000,
     hot: true,
     historyApiFallback: {
       index: '/',
@@ -56,10 +48,6 @@ const config = {
         test: /\.(woff|woff2|eot|ttf|otf)$/i,
         type: 'asset/resource',
       },
-      {
-        test: /\.ya?ml$/,
-        use: 'yaml-loader',
-      },
     ],
   },
   plugins: [
@@ -68,7 +56,7 @@ const config = {
     }),
     new HtmlWebpackPlugin({
       template: path.resolve(__dirname, './public/index.html'),
-      title: process.env.SITE_TITLE,
+      title: 'React Web',
       // 防止刷新时出现 404 错误
       publicPath: '/',
       base: '/',
