@@ -1,12 +1,14 @@
 import useSWRImmutable from 'swr/immutable'
-import { useFetcher } from './use-fetcher'
+import { useNavigate } from 'react-router-dom'
+import { useHttpClient } from './use-http-client'
 
 export interface PermissionCheckResult {
   [k: string]: boolean
 }
 
 export function usePermissions(codes: string[]) {
-  const fetcher = useFetcher()
+  const httpClient = useHttpClient()
+  const navigate = useNavigate()
 
   const { data, isLoading } = useSWRImmutable(
     codes.length > 0
@@ -17,7 +19,7 @@ export function usePermissions(codes: string[]) {
         }
       : null,
     config =>
-      fetcher<PermissionCheckResult>(config).then(res => {
+      httpClient.request<PermissionCheckResult>(config).then(res => {
         if (res.has_all) {
           return codes.reduce(
             (acc, curr) => {
@@ -37,14 +39,18 @@ export function usePermissions(codes: string[]) {
         )
       }),
     {
+      suspense: true,
       shouldRetryOnError: false,
+      onError() {
+        navigate('/login')
+      },
     },
   )
 
   return { data, isLoading }
 }
 
-export function usePermission(code?: string) {
+export function usePermission(code: string) {
   const { data, isLoading } = usePermissions(code ? [code] : [])
 
   if (!code) {

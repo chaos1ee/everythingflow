@@ -1,4 +1,4 @@
-import { useFetcher, usePermission } from '@/hooks'
+import { useHttpClient, usePermission } from '@/hooks'
 import useSWR from 'swr'
 import useSWRMutation from 'swr/mutation'
 import type { PermissionEnumItem, RoleEnumItem } from '../types'
@@ -29,7 +29,7 @@ export function useRole(name: string) {
 }
 
 export function useCreateRole() {
-  const fetcher = useFetcher()
+  const httpClient = useHttpClient()
 
   return useSWRMutation(
     '/api/usystem/role/create',
@@ -40,12 +40,12 @@ export function useCreateRole() {
       }: {
         arg: { name: string; permissions: string[] }
       },
-    ) => fetcher({ method: 'POST', url, data: arg }),
+    ) => httpClient.post(url, arg),
   )
 }
 
 export function useUpdateRole() {
-  const fetcher = useFetcher()
+  const httpClient = useHttpClient()
 
   return useSWRMutation(
     '/api/usystem/role/update',
@@ -56,12 +56,12 @@ export function useUpdateRole() {
       }: {
         arg: { id: number; name: string; permissions: string[] }
       },
-    ) => fetcher({ method: 'POST', url, data: arg }),
+    ) => httpClient.post(url, arg),
   )
 }
 
 export function useRemoveRole() {
-  const fetcher = useFetcher()
+  const httpClient = useHttpClient()
 
   return useSWRMutation(
     '/api/usystem/role/delete',
@@ -72,12 +72,12 @@ export function useRemoveRole() {
       }: {
         arg: { id: number; name: string }
       },
-    ) => fetcher({ method: 'POST', url, data: arg }),
+    ) => httpClient.post(url, arg),
   )
 }
 
 export function useCreateUser() {
-  const fetcher = useFetcher()
+  const httpClient = useHttpClient()
 
   return useSWRMutation(
     '/api/usystem/user/create',
@@ -88,17 +88,12 @@ export function useCreateUser() {
       }: {
         arg: { name: string; roles: string[] }
       },
-    ) =>
-      fetcher({
-        method: 'POST',
-        url,
-        data: arg,
-      }),
+    ) => httpClient.post(url, arg),
   )
 }
 
 export function useUpdateUser() {
-  const fetcher = useFetcher()
+  const httpClient = useHttpClient()
 
   return useSWRMutation(
     '/api/usystem/user/update',
@@ -109,17 +104,12 @@ export function useUpdateUser() {
       }: {
         arg: { id: string; name: string; roles: string[] }
       },
-    ) =>
-      fetcher({
-        method: 'POST',
-        url,
-        data: arg,
-      }),
+    ) => httpClient.post(url, arg),
   )
 }
 
 export function useRemoveUser() {
-  const fetcher = useFetcher()
+  const httpClient = useHttpClient()
 
   return useSWRMutation(
     '/api/usystem/user/delete',
@@ -130,11 +120,6 @@ export function useRemoveUser() {
       }: {
         arg: { id: string; name: string }
       },
-    ) =>
-      fetcher({
-        method: 'POST',
-        url,
-        data: arg,
-      }),
+    ) => httpClient.post(url, arg),
   )
 }

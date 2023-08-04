@@ -1,19 +1,19 @@
 {
   "extends": "tsconfig/react-library.json",
-  "ts-node": {
-    "types": ["node"],
-    "compilerOptions": {
-      "module": "commonjs"
-    }
-  },
   "compilerOptions": {
     "target": "ESNext",
     "module": "ESNext",
     "baseUrl": ".",
     "paths": {
-      "~/*": ["./src/*"]
+      "~/*": [
+        "./src/*"
+      ]
     }
   },
-  "include": ["configs/**/*", "src/**/*", "webpack.config.ts"],
-  "exclude": ["**/*.spec.ts"]
+  "include": [
+    "src/**/*"
+  ],
+  "exclude": [
+    "**/*.spec.ts"
+  ]
 }

@@ -3,7 +3,7 @@ import { Button, Card, Form, Input, InputNumber, Select, Space, Tree, Typography
 import type { DataNode } from 'antd/es/tree'
 import type { Key } from 'react'
 import { useState } from 'react'
-import { useFetcher, useFormModal } from 'react-toolkits'
+import { useFormModal, useHttpClient } from 'react-toolkits'
 
 const { Text, Link } = Typography
 const { Option } = Select
@@ -61,7 +61,7 @@ const useCreatingInstanceModal = () => {
 }
 
 const Instance = () => {
-  const fetcher = useFetcher()
+  const httpClient = useHttpClient()
   const { showModal: showCreatingGroupModal, Modal: CreatingGroupModal } = useCreatingGroupModal()
   const { showModal: showCreatingInstanceModal, Modal: CreatingInstanceModal } = useCreatingInstanceModal()
   const [hoveredKey, setHoveredKey] = useState<Key | null>(null)
@@ -131,7 +131,7 @@ const Instance = () => {
       return Promise.resolve()
     }
 
-    const res = await fetcher<
+    const res = await httpClient.request<
       {
         title: string
         key: Key
