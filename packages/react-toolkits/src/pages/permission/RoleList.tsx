@@ -2,7 +2,7 @@ import { Highlight, PermissionButton, QueryList } from '@/components'
 import { useFormModal } from '@/components/FormModal/hooks'
 import type { Role, RoleListItem } from '@/features/permission'
 import { PermissionList, useCreateRole, useRemoveRole, useUpdateRole } from '@/features/permission'
-import { useFetcher, usePermission } from '@/hooks'
+import { useHttpClient, usePermission } from '@/hooks'
 import { useQueryTriggerStore } from '@/stores'
 import { UsergroupAddOutlined } from '@ant-design/icons'
 import type { TableColumnsType } from 'antd'
@@ -17,7 +17,7 @@ export const swrKey = {
 const RoleList = () => {
   const { accessible: viewable } = usePermission('200005')
   const { modal, message } = App.useApp()
-  const fetcher = useFetcher()
+  const httpClient = useHttpClient()
   const create = useCreateRole()
   const remove = useRemoveRole()
   const update = useUpdateRole()
@@ -129,9 +129,7 @@ const RoleList = () => {
                 size="small"
                 type="link"
                 onClick={async () => {
-                  const role = await fetcher<Role>({
-                    method: 'GET',
-                    url: '/api/usystem/role/info',
+                  const role = await httpClient.get<Role>('/api/usystem/role/info', {
                     params: { name: value.name },
                   })
                   showUpdateModal({
@@ -153,11 +151,13 @@ const RoleList = () => {
                 onClick={() => {
                   modal.confirm({
                     title: '删除角色',
-                    content: <Highlight texts={[value.name]}>
-                      确定要删除角色&nbsp;
-                      {value.name}
-&nbsp;吗？
-                    </Highlight>,
+                    content: (
+                      <Highlight texts={[value.name]}>
+                        确定要删除角色&nbsp;
+                        {value.name}
+                        &nbsp;吗？
+                      </Highlight>
+                    ),
                     async onOk() {
                       await remove.trigger(
                         {
@@ -182,7 +182,7 @@ const RoleList = () => {
         },
       },
     ],
-    [trigger, viewable, fetcher, modal, message, remove, showUpdateModal],
+    [trigger, viewable, httpClient, modal, message, remove, showUpdateModal],
   )
 
   return (

@@ -1,9 +1,8 @@
-import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin'
-import HtmlWebpackPlugin from 'html-webpack-plugin'
-import path from 'path'
-import webpack from 'webpack'
+const path = require('path')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
+const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin')
 
-const config = {
+module.exports = {
   mode: 'development',
   watch: true,
   context: path.resolve(__dirname, './src'),
@@ -26,6 +25,10 @@ const config = {
     historyApiFallback: {
       index: '/',
       disableDotRule: true,
+    },
+    client: {
+      overlay: false,
+      progress: true,
     },
   },
   module: {
@@ -50,9 +53,6 @@ const config = {
     ],
   },
   plugins: [
-    new webpack.DefinePlugin({
-      'process.env': JSON.stringify(process.env),
-    }),
     new HtmlWebpackPlugin({
       template: path.resolve(__dirname, './public/index.html'),
       title: 'React Web',
@@ -70,5 +70,3 @@ const config = {
     topLevelAwait: true,
   },
 }
-
-export default config

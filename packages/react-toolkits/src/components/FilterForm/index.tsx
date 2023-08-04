@@ -1,6 +1,7 @@
 import type { FormInstance, FormProps } from 'antd'
 import { Button, Col, Form, Row, Space, theme } from 'antd'
 import type { PropsWithChildren } from 'react'
+import * as React from 'react'
 
 export interface FilterFormProps<Values>
   extends Pick<

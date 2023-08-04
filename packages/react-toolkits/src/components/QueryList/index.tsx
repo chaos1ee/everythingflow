@@ -1,8 +1,8 @@
-import { useFetcher, usePermission } from '@/hooks'
+import { useHttpClient, usePermission } from '@/hooks'
 import { useQueryTriggerStore } from '@/stores'
 import type { ListResponse, PaginationParams } from '@/types'
 import type { FormInstance, FormProps } from 'antd'
-import { Form, Result, Spin, Table } from 'antd'
+import { Form, Result, Table } from 'antd'
 import type { TableProps } from 'antd/es/table'
 import type { AxiosRequestConfig } from 'axios'
 import type { ReactNode } from 'react'
@@ -27,7 +27,7 @@ export interface QueryListProps<Item, Values>
 
 const QueryList = <Item extends object, Values = NonNullable<unknown>>(props: QueryListProps<Item, Values>) => {
   const { code, confirmText, labelCol, swrKey, renderForm, transformArg, initialValues, ...tableProps } = props
-  const { accessible, isValidating } = usePermission(code)
+  const { accessible } = usePermission(code ?? '')
   const [form] = Form.useForm<Values>()
   const setTrigger = useQueryTriggerStore(state => state.setTrigger)
 
@@ -36,7 +36,7 @@ const QueryList = <Item extends object, Values = NonNullable<unknown>>(props: Qu
     perPage: 10,
   })
 
-  const fetcher = useFetcher()
+  const httpClient = useHttpClient()
 
   const { data, isMutating, trigger } = useSWRMutation(
     swrKey,
@@ -62,10 +62,10 @@ const QueryList = <Item extends object, Values = NonNullable<unknown>>(props: Qu
         ...newPaginationData,
       }
 
-      return fetcher<ListResponse<Item>>({
+      return httpClient.request<ListResponse<Item>>({
         ...key,
-        // TODO: 兼容 params 与 data
-        params: typeof transformArg === 'function' ? transformArg(fetcherArg) : fetcherArg,
+        [key.method === 'POST' ? 'data' : 'params']:
+          typeof transformArg === 'function' ? transformArg(fetcherArg) : fetcherArg,
       })
     },
   )
@@ -96,7 +96,7 @@ const QueryList = <Item extends object, Values = NonNullable<unknown>>(props: Qu
 
   useEffect(() => {
     setTrigger(swrKey, trigger)
-  }, [swrKey, setTrigger, trigger])
+  }, [swrKey, trigger, setTrigger])
 
   useEffect(() => {
     ;(async () => {
@@ -108,19 +108,6 @@ const QueryList = <Item extends object, Values = NonNullable<unknown>>(props: Qu
       }
     })()
   }, [form, trigger])
-
-  if (isValidating) {
-    return (
-      <Spin
-        style={{
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          height: 200,
-        }}
-      />
-    )
-  }
 
   if (!accessible) {
     return <Result status={403} subTitle="无权限，请联系管理员进行授权" />

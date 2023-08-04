@@ -2,16 +2,16 @@ import { Spin } from 'antd'
 import type { FC } from 'react'
 import { Suspense } from 'react'
 import { Outlet } from 'react-router-dom'
-import { useFetcher } from 'react-toolkits'
 import { SWRConfig } from 'swr'
+import { useHttpClient } from 'react-toolkits'
 
 const Root: FC = () => {
-  const fetcher = useFetcher()
+  const httpClient = useHttpClient()
 
   return (
     <SWRConfig
       value={{
-        fetcher,
+        fetcher: httpClient.request,
         shouldRetryOnError: false,
       }}
     >

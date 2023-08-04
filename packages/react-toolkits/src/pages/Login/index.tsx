@@ -7,6 +7,7 @@ import { useEffect, useState } from 'react'
 import { Navigate, useSearchParams } from 'react-router-dom'
 import useSWRImmutable from 'swr/immutable'
 import Default from './default'
+import { useHttpClient } from '@/hooks'
 
 const { Title } = Typography
 
@@ -16,6 +17,7 @@ const Login: FC<PropsWithChildren> = props => {
   const token = useTokenStore(state => state.token)
   const setToken = useTokenStore(state => state.setToken)
   const [showAlert, setShowAlert] = useState(false)
+  const httpClient = useHttpClient()
 
   const { isLoading } = useSWRImmutable<{ token: string }>(
     searchParams.has('ticket')
@@ -26,6 +28,7 @@ const Login: FC<PropsWithChildren> = props => {
           },
         }
       : null,
+    config => httpClient.request(config),
     {
       onSuccess: data => {
         setToken(data.token)

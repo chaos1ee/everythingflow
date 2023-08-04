@@ -1,6 +1,6 @@
-import { usePermissions } from '@/hooks'
-import { useMenuStore } from '@/stores'
-import { Menu, Spin } from 'antd'
+import {usePermissions} from '@/hooks'
+import {useMenuStore} from '@/stores'
+import {Menu} from 'antd'
 import type {
   ItemType,
   MenuDividerType,
@@ -8,10 +8,10 @@ import type {
   MenuItemType,
   SubMenuType,
 } from 'antd/es/menu/hooks/useItems'
-import type { FC, ReactNode } from 'react'
-import { useCallback, useEffect, useMemo } from 'react'
-import { Link, useLocation } from 'react-router-dom'
-import type { Merge } from 'ts-essentials'
+import type {FC, ReactNode} from 'react'
+import {useCallback, useEffect, useMemo} from 'react'
+import {Link, useLocation} from 'react-router-dom'
+import type {Merge} from 'ts-essentials'
 
 // 扩展 antd Menu 的类型，使其支持一些我们想要的自定义字段。
 type MenuItemType2 = Merge<
@@ -107,7 +107,7 @@ const NavBar: FC<NavBarProps> = props => {
   const location = useLocation()
   const flattenItems = useMemo(() => flatItems(items ?? []), [items])
   const codes = flattenItems.map(item => item.code).filter(Boolean) as string[]
-  const { data: permissions, isLoading } = usePermissions(codes)
+  const { data: permissions } = usePermissions(codes)
   const internalItems = useMemo(() => transformItems(items ?? [], permissions), [items, permissions])
 
   const openKeys = useMenuStore(state => state.openKeys)
@@ -135,19 +135,6 @@ const NavBar: FC<NavBarProps> = props => {
       setOpenKeys(keypath)
     }
   }, [flattenItems, location, setOpenKeys, setSelectedKeys])
-
-  if (isLoading) {
-    return (
-      <Spin
-        style={{
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          height: 'calc(100vh - 64px)',
-        }}
-      />
-    )
-  }
 
   return (
     <Menu
