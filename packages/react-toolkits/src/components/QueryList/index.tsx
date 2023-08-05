@@ -1,72 +1,79 @@
 import { useHttpClient, usePermission } from '@/hooks'
-import { useQueryTriggerStore } from '@/stores'
+import { useQueryListStore } from '@/stores'
 import type { ListResponse, PaginationParams } from '@/types'
 import type { FormInstance, FormProps } from 'antd'
 import { Form, Result, Table } from 'antd'
 import type { TableProps } from 'antd/es/table'
 import type { AxiosRequestConfig } from 'axios'
 import type { ReactNode } from 'react'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect } from 'react'
 import useSWRMutation from 'swr/mutation'
 import FilterForm from '../FilterForm'
 
 export type QueryListKey = Omit<AxiosRequestConfig, 'data' | 'params'>
 
-export interface QueryListProps<Item, Values>
+export interface QueryListProps<Item, Values, Response>
   extends Pick<TableProps<Item>, 'columns' | 'rowKey' | 'tableLayout' | 'expandable' | 'rowSelection' | 'bordered'>,
     Pick<FormProps<Values>, 'initialValues' | 'labelCol'> {
-  // 由于表单的值和分页数据是封装在组件内部的，不便于在组件外部构造 swr key，所以组件内部的 useSWRMutation hook 使用的 key 是排除了 arg 字段的。
-  // 因此 swr 的缓存并未发挥作用，同一个 key 的所有页面共享缓存。
+  // 由于表单的值和分页数据是封装在组件内部的，不便于在组件外部构造 swr key，
+  // 所以组件内部的 useSWRMutation hook 使用的 key 是不包含表单值和分页参数的。
+  // 因此 swr 并未按照分页缓存数据。
   swrKey: QueryListKey
   confirmText?: ReactNode
   code?: string
   renderForm?: (form: FormInstance<Values>) => ReactNode
   // 把表单的值和分页数据转换成请求参数
   transformArg?: (arg: Values & PaginationParams) => unknown
+  // 当请求的返回值不满足时进行转换
+  transformResponse?: (response: Response) => ListResponse<Item>
 }
 
-const QueryList = <Item extends object, Values = NonNullable<unknown>>(props: QueryListProps<Item, Values>) => {
-  const { code, confirmText, labelCol, swrKey, renderForm, transformArg, initialValues, ...tableProps } = props
+const QueryList = <Item extends object, Values = NonNullable<unknown>, Response = ListResponse<Item>>(
+  props: QueryListProps<Item, Values, Response>,
+) => {
+  const {
+    code,
+    confirmText,
+    labelCol,
+    swrKey,
+    initialValues,
+    renderForm,
+    transformArg,
+    transformResponse,
+    ...tableProps
+  } = props
   const { accessible } = usePermission(code ?? '')
   const [form] = Form.useForm<Values>()
-  const setTrigger = useQueryTriggerStore(state => state.setTrigger)
-
-  const [paginationData, setPaginationData] = useState<PaginationParams>({
-    page: 1,
-    perPage: 10,
-  })
+  const setRefresh = useQueryListStore(state => state.setRefresh)
+  const getPaginationData = useQueryListStore(state => state.getPaginationData)
+  const setPaginationData = useQueryListStore(state => state.setPaginationData)
+  const paginationData = getPaginationData(swrKey)
 
   const httpClient = useHttpClient()
 
   const { data, isMutating, trigger } = useSWRMutation(
     swrKey,
-    async (
-      key,
-      {
-        arg,
-      }: {
-        arg?: Partial<PaginationParams>
-      },
-    ) => {
+    async (key, { arg }: { arg?: Partial<PaginationParams> }) => {
       const newPaginationData = {
-        page: arg?.page ?? paginationData.page ?? 1,
-        perPage: arg?.perPage ?? paginationData.perPage ?? 10,
+        page: arg?.page ?? paginationData.page,
+        perPage: arg?.perPage ?? paginationData.perPage,
       }
 
-      setPaginationData(newPaginationData)
+      setPaginationData(swrKey, arg)
 
       const values = form.getFieldsValue()
 
-      const fetcherArg = {
+      const _arg = {
         ...values,
         ...newPaginationData,
       }
 
-      return httpClient.request<ListResponse<Item>>({
-        ...key,
-        [key.method === 'POST' ? 'data' : 'params']:
-          typeof transformArg === 'function' ? transformArg(fetcherArg) : fetcherArg,
-      })
+      return httpClient
+        .request<Response>({
+          ...key,
+          [key.method === 'POST' ? 'data' : 'params']: transformArg?.(_arg) ?? _arg,
+        })
+        .then(response => transformResponse?.(response) ?? (response as ListResponse<Item>))
     },
   )
 
@@ -95,8 +102,8 @@ const QueryList = <Item extends object, Values = NonNullable<unknown>>(props: Qu
   )
 
   useEffect(() => {
-    setTrigger(swrKey, trigger)
-  }, [swrKey, trigger, setTrigger])
+    setRefresh(swrKey, trigger)
+  }, [swrKey, trigger, setRefresh])
 
   useEffect(() => {
     ;(async () => {

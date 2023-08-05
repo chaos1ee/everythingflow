@@ -2,7 +2,7 @@ import { Highlight, PermissionButton, QueryList } from '@/components'
 import { useFormModal } from '@/components/FormModal/hooks'
 import type { UserListItem } from '@/features/permission'
 import { useAllRoles, useCreateUser, useRemoveUser, useUpdateUser } from '@/features/permission'
-import { useQueryTriggerStore } from '@/stores'
+import { useQueryListStore } from '@/stores'
 import { UserAddOutlined } from '@ant-design/icons'
 import type { TableColumnsType } from 'antd'
 import { App, Card, Col, Form, Input, Row, Select, Space, Tag } from 'antd'
@@ -20,7 +20,7 @@ function useCreatingUserModal() {
   const { message } = App.useApp()
   const create = useCreateUser()
   const { data: roles, isLoading } = useAllRoles()
-  const trigger = useQueryTriggerStore(state => state.trigger)
+  const refresh = useQueryListStore(state => state.refresh)
 
   return useFormModal<{ id: string; name: string; roles: string[] }>({
     title: '创建角色',
@@ -49,7 +49,7 @@ function useCreatingUserModal() {
       await create.trigger(values, {
         onSuccess() {
           message.success('用户创建成功')
-          trigger(swrKey)
+          refresh(swrKey, { page: 1 })
         },
       })
     },
@@ -60,7 +60,7 @@ function useUpdatingUserModal() {
   const { message } = App.useApp()
   const update = useUpdateUser()
   const { data: roles, isLoading } = useAllRoles()
-  const trigger = useQueryTriggerStore(state => state.trigger)
+  const refresh = useQueryListStore(state => state.refresh)
 
   return useFormModal<{ id: string; name: string; roles: string[] }>({
     title: '更新角色',
@@ -92,7 +92,7 @@ function useUpdatingUserModal() {
       await update.trigger(values, {
         onSuccess() {
           message.success('用户更新成功')
-          trigger(swrKey)
+          refresh(swrKey, { page: 1 })
         },
       })
     },
@@ -102,7 +102,7 @@ function useUpdatingUserModal() {
 const UserList: FC = () => {
   const { modal, message } = App.useApp()
   const remove = useRemoveUser()
-  const trigger = useQueryTriggerStore(state => state.trigger)
+  const refresh = useQueryListStore(state => state.refresh)
   const { showModal: showCreatingModal, Modal: CreatingModal } = useCreatingUserModal()
   const { showModal: showUpdatingModal, Modal: UpdatingModal } = useUpdatingUserModal()
 
@@ -176,11 +176,13 @@ const UserList: FC = () => {
               onClick={() => {
                 modal.confirm({
                   title: '删除用户',
-                  content: <Highlight texts={[value.name]}>
-                    确定要删除用户&nbsp;
-                    {value.name}
-&nbsp;吗？
-                  </Highlight>,
+                  content: (
+                    <Highlight texts={[value.name]}>
+                      确定要删除用户&nbsp;
+                      {value.name}
+                      &nbsp;吗？
+                    </Highlight>
+                  ),
                   async onOk() {
                     await remove.trigger(
                       {
@@ -190,7 +192,7 @@ const UserList: FC = () => {
                       {
                         async onSuccess() {
                           await message.success('用户删除成功')
-                          trigger(swrKey)
+                          refresh(swrKey, { page: 1 })
                         },
                       },
                     )
@@ -204,7 +206,7 @@ const UserList: FC = () => {
         ),
       },
     ]
-  }, [trigger, remove, message, modal, showUpdatingModal])
+  }, [refresh, remove, message, modal, showUpdatingModal])
 
   return (
     <>
