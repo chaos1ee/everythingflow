@@ -3,12 +3,13 @@ import { useFormModal } from '@/components/FormModal/hooks'
 import type { Role, RoleListItem } from '@/features/permission'
 import { PermissionList, useCreateRole, useRemoveRole, useUpdateRole } from '@/features/permission'
 import { useHttpClient, usePermission } from '@/hooks'
-import { useQueryTriggerStore } from '@/stores'
+import { useQueryListStore } from '@/stores'
 import { UsergroupAddOutlined } from '@ant-design/icons'
 import type { TableColumnsType } from 'antd'
 import { App, Card, Form, Input, Space } from 'antd'
 import { useMemo } from 'react'
 import { Link } from 'react-router-dom'
+import type { ListResponse } from '@/types'
 
 export const swrKey = {
   url: '/api/usystem/role/list',
@@ -21,7 +22,7 @@ const RoleList = () => {
   const create = useCreateRole()
   const remove = useRemoveRole()
   const update = useUpdateRole()
-  const trigger = useQueryTriggerStore(state => state.trigger)
+  const refresh = useQueryListStore(state => state.refresh)
 
   const { showModal: showCreateModal, Modal: CreateModal } = useFormModal<{
     name: string
@@ -49,7 +50,7 @@ const RoleList = () => {
         {
           async onSuccess() {
             await message.success('角色创建成功')
-            trigger(swrKey)
+            refresh(swrKey, { page: 1 })
           },
         },
       )
@@ -87,7 +88,7 @@ const RoleList = () => {
         {
           async onSuccess() {
             await message.success('角色更新成功')
-            trigger(swrKey)
+            refresh(swrKey, { page: 1 })
           },
         },
       )
@@ -167,7 +168,7 @@ const RoleList = () => {
                         {
                           async onSuccess() {
                             await message.success('角色删除成功')
-                            trigger(swrKey)
+                            refresh(swrKey, { page: 1 })
                           },
                         },
                       )
@@ -182,7 +183,7 @@ const RoleList = () => {
         },
       },
     ],
-    [trigger, viewable, httpClient, modal, message, remove, showUpdateModal],
+    [refresh, viewable, httpClient, modal, message, remove, showUpdateModal],
   )
 
   return (
@@ -202,18 +203,22 @@ const RoleList = () => {
           </PermissionButton>
         }
       >
-        <QueryList
+        <QueryList<RoleListItem, NonNullable<unknown>, ListResponse<RoleListItem>>
           rowKey="name"
           columns={columns}
           code="200001"
           swrKey={swrKey}
           transformArg={arg => {
-            const { page, perPage, ...restValues } = arg
+            const { page, perPage } = arg
             return {
-              ...restValues,
               page,
               size: perPage,
             }
+          }}
+          // NOTE: 后端接口返回的数据不满足时，转换一下
+          transformResponse={response => {
+            const { List, Total } = response
+            return { List, Total }
           }}
         />
       </Card>

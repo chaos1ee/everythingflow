@@ -1,6 +1,6 @@
 export interface ListResponse<T> {
   List: T[]
-  Page: number
+  Page?: number
   Total: number
 }
 
