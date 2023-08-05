@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "turbo dev --filter=\"react-web\" --no-daemon",
-    "build": "turbo build",
+    "build:test": "cross-env NODE_ENV=test turbo build",
+    "build:prod": "cross-env NODE_ENV=production turbo build",
     "clean": "turbo clean",
     "lint": "turbo lint",
     "preinstall": "npx only-allow pnpm",
@@ -19,6 +20,7 @@
     "@changesets/cli": "^2.26.2",
     "@flow97/prettier-config": "workspace:*",
     "@types/node": "^20.4.5",
+    "cross-env": "^7.0.3",
     "eslint": "^8.45.0",
     "prettier": "^3.0.0",
     "rimraf": "^5.0.1",

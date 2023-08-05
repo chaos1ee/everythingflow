@@ -225,21 +225,7 @@ const UserList: FC = () => {
           </PermissionButton>
         }
       >
-        <QueryList
-          code="100001"
-          swrKey={swrKey}
-          rowKey="id"
-          columns={columns}
-          transformArg={arg => {
-            const { page, perPage, ...restValues } = arg
-
-            return {
-              ...(restValues ?? {}),
-              page,
-              size: perPage,
-            }
-          }}
-        />
+        <QueryList code="100001" swrKey={swrKey} rowKey="id" columns={columns} />
       </Card>
       {CreatingModal}
       {UpdatingModal}

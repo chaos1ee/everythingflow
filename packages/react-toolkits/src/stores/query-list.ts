@@ -24,7 +24,7 @@ export const useQueryListStore = create<QueryListState>((set, get) => ({
     const pagination = get().data.get(key)?.pagination
     return {
       page: pagination?.page ?? 1,
-      perPage: pagination?.perPage ?? 10,
+      size: pagination?.size ?? 10,
     }
   },
   setPaginationData: (key: QueryListKey, pagination?: Partial<PaginationParams>) => {
@@ -33,7 +33,7 @@ export const useQueryListStore = create<QueryListState>((set, get) => ({
         ...get().data.get(key),
         pagination: {
           page: pagination?.page ?? get().getPaginationData(key).page,
-          perPage: pagination?.perPage ?? get().getPaginationData(key).perPage,
+          size: pagination?.size ?? get().getPaginationData(key).size,
         },
       }),
     })
@@ -44,7 +44,7 @@ export const useQueryListStore = create<QueryListState>((set, get) => ({
     if (refresh) {
       refresh({
         page: pagination?.page ?? get().getPaginationData(key).page,
-        perPage: pagination?.perPage ?? get().getPaginationData(key).perPage,
+        size: pagination?.size ?? get().getPaginationData(key).size,
       })
     }
   },

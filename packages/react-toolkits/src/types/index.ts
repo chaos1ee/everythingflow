@@ -6,5 +6,5 @@ export interface ListResponse<T> {
 
 export type PaginationParams = {
   page: number
-  perPage: number
+  size: number
 }
