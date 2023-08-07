@@ -1,5 +1,12 @@
 # react-toolkits
 
+## 0.0.7
+
+### Patch Changes
+
+- e23ffd1: rewrite perPage to size
+- c782902: upgrade prettier version
+
 ## 0.0.6
 
 ### Patch Changes
