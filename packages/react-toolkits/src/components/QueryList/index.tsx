@@ -56,7 +56,7 @@ const QueryList = <Item extends object, Values = NonNullable<unknown>, Response 
     async (key, { arg }: { arg?: Partial<PaginationParams> }) => {
       const newPaginationData = {
         page: arg?.page ?? paginationData.page,
-        perPage: arg?.perPage ?? paginationData.perPage,
+        size: arg?.size ?? paginationData.size,
       }
 
       setPaginationData(swrKey, arg)
@@ -95,7 +95,7 @@ const QueryList = <Item extends object, Values = NonNullable<unknown>, Response 
     async (currentPage: number, currentSize: number) => {
       await trigger({
         page: currentPage,
-        perPage: currentSize,
+        size: currentSize,
       })
     },
     [trigger],
@@ -140,7 +140,7 @@ const QueryList = <Item extends object, Values = NonNullable<unknown>, Response 
           showSizeChanger: true,
           showQuickJumper: true,
           current: paginationData.page,
-          pageSize: paginationData.perPage,
+          pageSize: paginationData.size,
           total: data?.Total,
           onChange: onPaginationChange,
         }}

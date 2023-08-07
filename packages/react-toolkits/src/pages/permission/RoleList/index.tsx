@@ -208,14 +208,7 @@ const RoleList = () => {
           columns={columns}
           code="200001"
           swrKey={swrKey}
-          transformArg={arg => {
-            const { page, perPage } = arg
-            return {
-              page,
-              size: perPage,
-            }
-          }}
-          // NOTE: 后端接口返回的数据不满足时，转换一下
+          // NOTE: 后端接口返回的数据不满足时转换一下
           transformResponse={response => {
             const { List, Total } = response
             return { List, Total }
