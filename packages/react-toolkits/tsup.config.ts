@@ -1,12 +1,13 @@
-import type { Options } from 'tsup'
 import { defineConfig } from 'tsup'
 import * as process from 'process'
 
-export default defineConfig((options: Options) => ({
+const isProduction = process.env.NODE_ENV === 'production'
+
+export default defineConfig({
   entry: ['src/index.ts'],
   format: ['esm'],
-  sourcemap: process.env.NODE_ENV !== 'production',
-  minify: process.env.NODE_ENV === 'production',
+  sourcemap: true,
+  minify: isProduction,
   treeshake: true,
   splitting: false,
   dts: true,
@@ -23,5 +24,4 @@ export default defineConfig((options: Options) => ({
       js: `.${format}.js`,
     }
   },
-  ...options,
-}))
+})
