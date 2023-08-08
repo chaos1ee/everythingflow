@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.0.8
+
+### Patch Changes
+
+- 955ef06: typo
+
 ## 0.0.7
 
 ### Patch Changes

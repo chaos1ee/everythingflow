@@ -1,5 +1,11 @@
 # @everythingflow/prettier-config
 
+## 0.0.3
+
+### Patch Changes
+
+- 955ef06: typo
+
 ## 0.0.2
 
 ### Patch Changes
