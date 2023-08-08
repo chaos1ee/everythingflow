@@ -23,7 +23,7 @@ function useCreatingUserModal() {
   const refresh = useQueryListStore(state => state.refresh)
 
   return useFormModal<{ id: string; name: string; roles: string[] }>({
-    title: '创建角色',
+    title: '创建用户',
     labelCol: { flex: '80px' },
     content: (
       <>
@@ -63,7 +63,7 @@ function useUpdatingUserModal() {
   const refresh = useQueryListStore(state => state.refresh)
 
   return useFormModal<{ id: string; name: string; roles: string[] }>({
-    title: '更新角色',
+    title: '更新用户',
     labelCol: { flex: '80px' },
     content: (
       <>

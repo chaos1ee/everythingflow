@@ -1,7 +1,7 @@
 import { SSO_URL } from '@/constants'
 import { useTokenStore } from '@/stores'
 import { AliyunOutlined } from '@ant-design/icons'
-import { Alert, Button, Card, Col, Divider, Row, Space, Spin, Typography } from 'antd'
+import { Alert, Button, Card, Col, Divider, Row, Space, Typography } from 'antd'
 import type { FC, PropsWithChildren } from 'react'
 import { useEffect, useState } from 'react'
 import { Navigate, useSearchParams } from 'react-router-dom'
@@ -19,7 +19,7 @@ const Login: FC<PropsWithChildren> = props => {
   const [showAlert, setShowAlert] = useState(false)
   const httpClient = useHttpClient()
 
-  const { isLoading } = useSWRImmutable<{ token: string }>(
+  useSWRImmutable<{ token: string }>(
     searchParams.has('ticket')
       ? {
           url: '/api/usystem/user/login',
@@ -30,6 +30,7 @@ const Login: FC<PropsWithChildren> = props => {
       : null,
     config => httpClient.request(config),
     {
+      suspense: true,
       onSuccess: data => {
         setToken(data.token)
       },
@@ -43,20 +44,6 @@ const Login: FC<PropsWithChildren> = props => {
       setSearchParams(searchParams)
     }
   }, [searchParams, setSearchParams])
-
-  if (isLoading) {
-    return (
-      <Spin
-        style={{
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          width: '100vw',
-          height: '100vh',
-        }}
-      />
-    )
-  }
 
   if (token) {
     return <Navigate replace to="/" />
