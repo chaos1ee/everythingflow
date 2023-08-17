@@ -3,6 +3,7 @@ import { useCallback, useMemo } from 'react'
 import { useTokenStore } from '@/stores'
 import useSWRImmutable from 'swr/immutable'
 import { useReactToolkitsContext } from '@/components'
+import { useSWRConfig } from 'swr'
 
 const { Text } = Typography
 
@@ -39,6 +40,7 @@ function useGames() {
 const GameSelect = () => {
   const { game, setGame, isGlobalNS, isPermissionV2 } = useReactToolkitsContext(state => state)
   const { games, isLoading } = useGames()
+  const { mutate } = useSWRConfig()
 
   const options = useMemo(
     () =>
@@ -50,12 +52,11 @@ const GameSelect = () => {
   )
 
   const onGameChange = useCallback(
-    (id: string) => {
+    async (id: string) => {
       const matchGame = (games ?? []).find(item => item.id === id) ?? null
       setGame(matchGame)
-      // queryClient.clear()
     },
-    [games, setGame],
+    [games, setGame, mutate],
   )
 
   if (!isPermissionV2 || isGlobalNS) {

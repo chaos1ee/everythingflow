@@ -7,7 +7,6 @@ import { RouterProvider } from 'react-router-dom'
 import 'react-toolkits/style.css'
 import router from '~/router'
 import '~/styles/index.css'
-import './libs/editor'
 import { ReactToolkitsProvider } from 'react-toolkits'
 import menuItems from '~/menu-items'
 

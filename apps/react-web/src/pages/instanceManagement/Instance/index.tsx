@@ -1,172 +1,186 @@
-import { PlusOutlined } from '@ant-design/icons'
-import { Button, Card, Form, Input, InputNumber, Select, Space, Tree, Typography } from 'antd'
+import { Card, Dropdown, Form, Input, InputNumber, Select, Space, Tree, Typography } from 'antd'
 import type { DataNode } from 'antd/es/tree'
-import type { Key } from 'react'
+import * as React from 'react'
 import { useState } from 'react'
-import { useFormModal, useHttpClient } from 'react-toolkits'
+import { useFormModal } from 'react-toolkits'
+import type { DatabaseType, InstanceTreeNode } from '~/features/instance'
+import { useAddDirectory, useAddInstance, useTreeNodes } from '~/features/instance'
+import { DatabaseOutlined, PlusOutlined } from '@ant-design/icons'
 
-const { Text, Link } = Typography
+const { Text } = Typography
 const { Option } = Select
+const { DirectoryTree } = Tree
 
-const useCreatingGroupModal = () => {
-  return useFormModal({
-    title: '添加分组',
+const useCreatingDirectoryModal = () => {
+  const add = useAddDirectory()
+
+  return useFormModal<{ name: string; parentId: string }>({
+    title: '添加目录',
     layout: 'vertical',
     content: (
       <>
-        <Form.Item label="分组名称" name="name" rules={[{ required: true }]}>
+        <Form.Item hidden name="parentId">
+          <Input />
+        </Form.Item>
+        <Form.Item label="目录名称" name="name" rules={[{ required: true }]}>
           <Input />
         </Form.Item>
       </>
     ),
-    async onConfirm() {
-      await new Promise(resolve => setTimeout(resolve, 1000))
+    async onConfirm({ name, parentId }) {
+      await add.trigger({ name, parent: parentId })
     },
   })
 }
 
 const useCreatingInstanceModal = () => {
-  return useFormModal({
+  const add = useAddInstance()
+  return useFormModal<{
+    parentId: string
+    type: DatabaseType
+    name: string
+    host: string
+    port: number
+    username: string
+    password: string
+    dsn?: string
+  }>({
     title: '添加实例',
     width: 600,
     content: (
       <>
+        <Form.Item hidden name="parentId">
+          <Input />
+        </Form.Item>
         <Form.Item label="实例名称" name="name" rules={[{ required: true }]}>
           <Input />
         </Form.Item>
-        <Form.Item label="实例类型" name="type" rules={[{ required: true }]}>
-          <Select>
-            <Option value={1}>主库</Option>
-            <Option value={2}>从库</Option>
-          </Select>
-        </Form.Item>
         <Form.Item label="数据库类型" name="dbType" rules={[{ required: true }]}>
           <Select>
-            <Option value={1}>MySQL</Option>
-            <Option value={2}>Redis</Option>
+            <Option value="mysql">MySQL</Option>
+            <Option value="redis">Redis</Option>
           </Select>
         </Form.Item>
-        <Form.Item label="实例连接" name="dbType" rules={[{ required: true }]}>
+        <Form.Item label="Host" name="host" rules={[{ required: true }]}>
           <Input />
         </Form.Item>
         <Form.Item label="端口" name="port" rules={[{ required: true }, { type: 'integer' }]}>
           <InputNumber min={0} />
         </Form.Item>
+        <Form.Item label="用户名" name="username1" rules={[{ required: true }]}>
+          <Input />
+        </Form.Item>
+        <Form.Item label="密码" name="password" rules={[{ required: true }]}>
+          <Input />
+        </Form.Item>
+        <Form.Item label="DSN" name="dsn">
+          <Input />
+        </Form.Item>
       </>
     ),
-    async onConfirm() {
-      await new Promise(resolve => setTimeout(resolve, 1000))
+    async onConfirm({ parentId, type, ...restValues }) {
+      await add.trigger({
+        ...restValues,
+        parent_path: parentId,
+        db_type: type,
+      })
     },
   })
 }
 
 const Instance = () => {
-  const httpClient = useHttpClient()
-  const { showModal: showCreatingGroupModal, Modal: CreatingGroupModal } = useCreatingGroupModal()
+  const { showModal: showCreatingDirectoryModal, Modal: CreatingDirectoryModal } = useCreatingDirectoryModal()
   const { showModal: showCreatingInstanceModal, Modal: CreatingInstanceModal } = useCreatingInstanceModal()
-  const [hoveredKey, setHoveredKey] = useState<Key | null>(null)
+  const [hoveredKey, setHoveredKey] = useState<React.Key>('')
+  const { data: treeNodes, isLoading } = useTreeNodes()
 
-  const initTreeData: DataNode[] = [
-    { title: '分组 1', key: '0' },
-    { title: '分组 2', key: '1' },
-    { title: '分组 3', key: '2', isLeaf: true },
-  ]
+  const getTreeData = (nodes: InstanceTreeNode[]): DataNode[] => {
+    return nodes.map(node => {
+      if (Array.isArray(node.children)) {
+        return {
+          title: node.name,
+          key: node.id,
+          isLeaf: false,
+          children: getTreeData(node.children),
+        }
+      }
 
-  const [treeData, setTreeData] = useState(initTreeData)
-
-  const nodeClickHandler = (data: DataNode) => {
-    showCreatingInstanceModal()
+      return {
+        title: node.name,
+        key: node.id,
+        isLeaf: true,
+        icon: <DatabaseOutlined />,
+      }
+    })
   }
+
+  const treeData = getTreeData(treeNodes?.children ?? [])
 
   const onMouseOver = (data: DataNode) => {
-    setHoveredKey(data.key)
-  }
-
-  const onMouseOut = () => {
-    setHoveredKey(null)
-  }
-
-  const onBlur = () => {
-    setHoveredKey(null)
+    if (hoveredKey !== data.key) {
+      setHoveredKey(data.key)
+    }
   }
 
   const renderTitle = (data: DataNode) => {
+    if (data.isLeaf) {
+      return (
+        // eslint-disable-next-line jsx-a11y/mouse-events-have-key-events
+        <span onMouseOverCapture={() => onMouseOver(data)}>
+          {typeof data.title === 'function' ? data.title(data) : data.title}
+        </span>
+      )
+    }
+
     return (
-      <Space onMouseOverCapture={() => onMouseOver(data)} onMouseOut={() => onMouseOut()} onBlur={() => onBlur()}>
+      <Space onMouseOver={() => onMouseOver(data)}>
         <Text ellipsis>{typeof data.title === 'function' ? data.title(data) : data.title}</Text>
-        {data.key === hoveredKey && (
-          <Button
-            title="添加实例"
-            size="small"
-            type="text"
-            icon={<PlusOutlined />}
-            onClick={() => nodeClickHandler(data)}
-          ></Button>
+        {hoveredKey === data.key && (
+          <Dropdown
+            trigger={['hover']}
+            menu={{
+              items: [
+                {
+                  label: '添加目录',
+                  key: '1',
+                  onClick() {
+                    showCreatingDirectoryModal({
+                      initialValues: {
+                        parentId: data.key + '',
+                      },
+                    })
+                  },
+                },
+                {
+                  label: '添加实例',
+                  key: '2',
+                  onClick() {
+                    showCreatingInstanceModal()
+                  },
+                },
+              ],
+            }}
+          >
+            <PlusOutlined onClick={e => e.preventDefault()} />
+          </Dropdown>
         )}
       </Space>
     )
   }
 
-  const updateTreeData = (list: DataNode[], key: React.Key, children: DataNode[]): DataNode[] =>
-    list.map(node => {
-      if (node.key === key) {
-        return {
-          ...node,
-          children,
-        }
-      }
-
-      if (node.children) {
-        return {
-          ...node,
-          children: updateTreeData(node.children, key, children),
-        }
-      }
-
-      return node
-    })
-
-  const onLoadData = async ({ key, children }: { key: Key; children?: DataNode[] }) => {
-    if (children) {
-      return Promise.resolve()
-    }
-
-    const res = await httpClient.request<
-      {
-        title: string
-        key: Key
-      }[]
-    >({
-      method: 'GET',
-      url: '/api/instance/list',
-      params: {
-        key,
-      },
-    })
-    setTreeData(origin => updateTreeData(origin, key, res))
-  }
-
   return (
     <>
-      <Card
-        title="实例"
-        extra={
-          <Button
-            onClick={() => {
-              showCreatingGroupModal({
-                initialValues: {
-                  name: '分组 1',
-                },
-              })
-            }}
-          >
-            添加分组
-          </Button>
-        }
-      >
-        <Tree showIcon selectable={false} loadData={onLoadData} treeData={treeData} titleRender={renderTitle} />
+      <Card title="实例" loading={isLoading}>
+        <DirectoryTree
+          blockNode
+          showIcon
+          titleRender={renderTitle}
+          selectable={false}
+          expandAction={false}
+          treeData={treeData}
+        />
       </Card>
-      {CreatingGroupModal}
+      {CreatingDirectoryModal}
       {CreatingInstanceModal}
     </>
   )

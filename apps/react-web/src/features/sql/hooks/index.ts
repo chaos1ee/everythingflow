@@ -1,11 +1,18 @@
 import useSWR from 'swr'
 
+export function useInstances() {
+  return useSWR<{ name: string; id: string }[]>({
+    method: 'GET',
+    url: '/api/instances',
+  })
+}
+
 export function useDatabases(instanceId: string) {
-  return useSWR(
+  return useSWR<{ name: string; id: string }[]>(
     instanceId
       ? {
           method: 'GET',
-          url: '/api/database/list',
+          url: '/api/databases',
           params: {
             instanceId,
           },
