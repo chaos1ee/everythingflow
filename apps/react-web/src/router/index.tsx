@@ -1,64 +1,42 @@
-import { createBrowserRouter, Navigate, Outlet, useNavigate, useRouteError } from 'react-router-dom'
-import { HttpClientError, Layout, Login, NoMatch, permission, useTokenStore } from 'react-toolkits'
+import { createBrowserRouter, Navigate, Outlet, useRouteError } from 'react-router-dom'
+import { baseRoutes, HttpClientError, Layout, permissionRoutes, useHttpClient, useTokenStore } from 'react-toolkits'
 import instanceManagementRoutes from '~/pages/instanceManagement'
 import sqlRoutes from '~/pages/sql'
-import navItems from '~/items'
-import jwtDecode from 'jwt-decode'
 import type { FC } from 'react'
-import { Alert, App, Dropdown, Space } from 'antd'
-import Link from 'antd/es/typography/Link'
-import { LogoutOutlined, UserOutlined } from '@ant-design/icons'
-import type { UserInfo } from '~/types'
-import Root from '~/pages/Root'
+import { Suspense } from 'react'
+import { Alert, App, Spin } from 'antd'
+import { SWRConfig } from 'swr'
 
 const { ErrorBoundary } = Alert
 
-const routes = [instanceManagementRoutes, sqlRoutes, permission]
+const routes = [instanceManagementRoutes, sqlRoutes]
 
-function decode(token: string) {
-  try {
-    return jwtDecode(token)
-  } catch (_) {
-    return null
-  }
-}
-
-const UserBar: FC = props => {
-  const navigate = useNavigate()
-  const token = useTokenStore(state => state.token)
-  const clearToken = useTokenStore(state => state.clearToken)
-  const user = (decode(token as string) as UserInfo)?.authorityId
+const Root: FC = () => {
+  const httpClient = useHttpClient()
 
   return (
-    <Dropdown
-      menu={{
-        selectable: true,
-        items: [
-          {
-            key: '1',
-            label: (
-              <Link
-                onClick={() => {
-                  clearToken()
-                  navigate('/login')
-                }}
-              >
-                登出
-              </Link>
-            ),
-            icon: <LogoutOutlined />,
-          },
-        ],
+    <SWRConfig
+      value={{
+        fetcher: httpClient.request,
+        shouldRetryOnError: false,
       }}
-      placement="bottomRight"
     >
-      <Link>
-        <Space align="center">
-          <span>{user}</span>
-          <UserOutlined style={{ fontSize: '16px' }} />
-        </Space>
-      </Link>
-    </Dropdown>
+      <Suspense
+        fallback={
+          <Spin
+            style={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              width: '100vw',
+              height: '100vh',
+            }}
+          />
+        }
+      >
+        <Outlet />
+      </Suspense>
+    </SWRConfig>
   )
 }
 
@@ -97,34 +75,21 @@ const router: any = createBrowserRouter([
     errorElement: <ErrorElement />,
     children: [
       {
-        path: 'login',
-        element: <Login />,
+        index: true,
+        element: <Navigate to="/instance" />,
       },
       {
         element: (
-          <Layout
-            title="React Web"
-            header={
-              <div className="h-full flex justify-end items-center">
-                <UserBar />
-              </div>
-            }
-            items={navItems}
-          >
+          <Layout>
             <Outlet />
           </Layout>
         ),
         children: routes,
       },
-      {
-        index: true,
-        element: <Navigate to="/instance" />,
-      },
+      permissionRoutes,
+      // 放在最后，否则会覆盖其他的路由
+      baseRoutes,
     ],
-  },
-  {
-    path: '*',
-    element: <NoMatch />,
   },
 ])
 

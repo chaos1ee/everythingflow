@@ -1,13 +1,13 @@
-import { Highlight, PermissionButton, QueryList } from '@/components'
+import { Highlight, PermissionButton, QueryList, useReactToolkitsContext } from '@/components'
 import { useFormModal } from '@/components/FormModal/hooks'
-import type { Role, RoleListItem } from '@/features/permission'
+import type { RoleListItem, RoleV1, RoleV2 } from '@/features/permission'
 import { PermissionList, useCreateRole, useRemoveRole, useUpdateRole } from '@/features/permission'
 import { useHttpClient, usePermission } from '@/hooks'
 import { useQueryListStore } from '@/stores'
 import { UsergroupAddOutlined } from '@ant-design/icons'
 import type { TableColumnsType } from 'antd'
 import { App, Card, Form, Input, Space } from 'antd'
-import { useMemo } from 'react'
+import { useCallback, useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import type { ListResponse } from '@/types'
 
@@ -15,18 +15,32 @@ export const swrKey = {
   url: '/api/usystem/role/list',
 }
 
-const RoleList = () => {
-  const { accessible: viewable } = usePermission('200005')
-  const { modal, message } = App.useApp()
-  const httpClient = useHttpClient()
-  const create = useCreateRole()
-  const remove = useRemoveRole()
-  const update = useUpdateRole()
+const useCreateModal = () => {
+  const { message } = App.useApp()
   const refresh = useQueryListStore(state => state.refresh)
+  const create = useCreateRole()
 
-  const { showModal: showCreateModal, Modal: CreateModal } = useFormModal<{
+  const onConfirm = useCallback(
+    async (values: { name: string; permissions: RoleV1['permissions'] | RoleV2['permissions'] }) => {
+      await create.trigger(
+        {
+          name: `role_${values.name}`,
+          permissions: values.permissions,
+        },
+        {
+          async onSuccess() {
+            await message.success('角色创建成功')
+            refresh(swrKey, { page: 1 })
+          },
+        },
+      )
+    },
+    [create, refresh, message],
+  )
+
+  return useFormModal<{
     name: string
-    permissions: string[]
+    permissions: RoleV1['permissions'] | RoleV2['permissions']
   }>({
     title: '创建角色',
     width: '50vw',
@@ -41,26 +55,38 @@ const RoleList = () => {
         </Form.Item>
       </>
     ),
-    async onConfirm(values) {
-      await create.trigger(
+    onConfirm,
+  })
+}
+
+const useUpdateModal = () => {
+  const { message } = App.useApp()
+  const refresh = useQueryListStore(state => state.refresh)
+  const update = useUpdateRole()
+
+  const onConfirm = useCallback(
+    async (values: { id: number; name: string; permissions: RoleV1['permissions'] | RoleV2['permissions'] }) => {
+      await update.trigger(
         {
+          id: values.id,
           name: `role_${values.name}`,
           permissions: values.permissions,
         },
         {
           async onSuccess() {
-            await message.success('角色创建成功')
+            await message.success('角色更新成功')
             refresh(swrKey, { page: 1 })
           },
         },
       )
     },
-  })
+    [update, refresh, message],
+  )
 
-  const { showModal: showUpdateModal, Modal: UpdateModal } = useFormModal<{
+  return useFormModal<{
     id: number
     name: string
-    permissions: string[]
+    permissions: RoleV1['permissions'] | RoleV2['permissions']
   }>({
     title: '更新角色',
     width: '50vw',
@@ -78,22 +104,19 @@ const RoleList = () => {
         </Form.Item>
       </>
     ),
-    async onConfirm(values) {
-      await update.trigger(
-        {
-          id: values.id,
-          name: `role_${values.name}`,
-          permissions: values.permissions,
-        },
-        {
-          async onSuccess() {
-            await message.success('角色更新成功')
-            refresh(swrKey, { page: 1 })
-          },
-        },
-      )
-    },
+    onConfirm,
   })
+}
+
+const RoleList = () => {
+  const { accessible: viewable } = usePermission('200005')
+  const { modal, message } = App.useApp()
+  const httpClient = useHttpClient()
+  const isPermissionV2 = useReactToolkitsContext(state => state.isPermissionV2)
+  const remove = useRemoveRole()
+  const refresh = useQueryListStore(state => state.refresh)
+  const { showModal: showCreateModal, Modal: CreateModal } = useCreateModal()
+  const { showModal: showUpdateModal, Modal: UpdateModal } = useUpdateModal()
 
   const columns = useMemo<TableColumnsType<RoleListItem>>(
     () => [
@@ -130,9 +153,13 @@ const RoleList = () => {
                 size="small"
                 type="link"
                 onClick={async () => {
-                  const role = await httpClient.get<Role>('/api/usystem/role/info', {
-                    params: { name: value.name },
-                  })
+                  const role = await httpClient.get<RoleV1 | RoleV2>(
+                    isPermissionV2 ? '/api/usystem/role/infoV2' : '/api/usystem/role/info',
+                    {
+                      params: { name: value.name },
+                    },
+                  )
+
                   showUpdateModal({
                     initialValues: {
                       id: role?.id,

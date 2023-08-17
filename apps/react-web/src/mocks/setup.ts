@@ -15,10 +15,10 @@ function glob<T>(r: __WebpackModuleApi.RequireContext): T[] {
 
 const handlers = glob<RestHandler>(require.context('./handlers', false, /\.ts$/))
 
-async function tokenResolver(req: RestRequest, res: ResponseComposition, ctx: RestContext) {
-  const ignoredPaths = ['/usystem/user/login', '/server/game/develop/token', '/server/game/develop/signup']
+const ignoredPaths = ['/api/usystem/user/login', '/api/server/game/develop/token', '/api/server/game/develop/signup']
 
-  if (ignoredPaths.includes(req.url.pathname.replace('/api', ''))) {
+async function tokenResolver(req: RestRequest, res: ResponseComposition, ctx: RestContext) {
+  if (ignoredPaths.includes(req.url.pathname)) {
     req.passthrough()
   } else {
     try {
@@ -31,9 +31,8 @@ async function tokenResolver(req: RestRequest, res: ResponseComposition, ctx: Re
 }
 
 handlers.unshift(rest.all('/api/*', tokenResolver))
-handlers.unshift(rest.all('/proxy/*', tokenResolver))
 
-// Mock all requests to /api/* with 200 OK
+// 所有发送到 /api/* 且未被匹配的请求返回 200 OK
 handlers.push(
   ...['/api/*'].map(path =>
     rest.all(path, (_, res, ctx) =>

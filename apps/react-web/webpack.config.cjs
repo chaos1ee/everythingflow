@@ -4,7 +4,6 @@ const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin')
 
 module.exports = {
   mode: 'development',
-  watch: true,
   context: path.resolve(__dirname, './src'),
   entry: {
     app: './main.tsx',

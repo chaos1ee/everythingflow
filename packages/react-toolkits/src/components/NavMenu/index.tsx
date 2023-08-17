@@ -1,5 +1,4 @@
 import {usePermissions} from '@/hooks'
-import {useMenuStore} from '@/stores'
 import {Menu} from 'antd'
 import type {
   ItemType,
@@ -8,10 +7,11 @@ import type {
   MenuItemType,
   SubMenuType,
 } from 'antd/es/menu/hooks/useItems'
-import type {FC, ReactNode} from 'react'
+import type {ReactNode} from 'react'
 import {useCallback, useEffect, useMemo} from 'react'
 import {Link, useLocation} from 'react-router-dom'
 import type {Merge} from 'ts-essentials'
+import {useReactToolkitsContext} from '@/components'
 
 // 扩展 antd Menu 的类型，使其支持一些我们想要的自定义字段。
 type MenuItemType2 = Merge<
@@ -98,29 +98,20 @@ function flatItems(
   return result
 }
 
-export interface NavBarProps {
-  items: ItemType2[]
-}
-
-const NavBar: FC<NavBarProps> = props => {
-  const { items } = props
+const NavMenu = () => {
   const location = useLocation()
+  const items = useReactToolkitsContext(state => state.menuItems)
   const flattenItems = useMemo(() => flatItems(items ?? []), [items])
   const codes = flattenItems.map(item => item.code).filter(Boolean) as string[]
-  const { data: permissions } = usePermissions(codes)
+  const { data: permissions } = usePermissions(codes, true)
   const internalItems = useMemo(() => transformItems(items ?? [], permissions), [items, permissions])
-
-  const openKeys = useMenuStore(state => state.openKeys)
-  const selectedKeys = useMenuStore(state => state.selectedKeys)
-  const setOpenKeys = useMenuStore(state => state.setOpenKeys)
-  const setSelectedKeys = useMenuStore(state => state.setSelectedKeys)
+  const { openKeys, selectedKeys, setOpenKeys, setSelectedKeys } = useReactToolkitsContext(state => state)
 
   const onOpenChange = useCallback(
     (keys: string[]) => {
       const latestOpenKey = keys?.find(key => openKeys?.indexOf(key) === -1)
       const match = flattenItems.find(item => latestOpenKey === item.key)
-      const _openKeys = (match?.keypath ?? [latestOpenKey]) as string[]
-      setOpenKeys(_openKeys)
+      setOpenKeys((match?.keypath ?? [latestOpenKey]) as string[])
     },
     [flattenItems, openKeys, setOpenKeys],
   )
@@ -148,4 +139,4 @@ const NavBar: FC<NavBarProps> = props => {
   )
 }
 
-export default NavBar
+export default NavMenu
