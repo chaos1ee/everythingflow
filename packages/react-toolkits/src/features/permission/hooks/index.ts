@@ -1,11 +1,22 @@
 import { useHttpClient, usePermission } from '@/hooks'
 import useSWR from 'swr'
 import useSWRMutation from 'swr/mutation'
-import type { PermissionEnumItem, RoleEnumItem } from '../types'
+import type { PermissionEnumItem, RoleEnumItem, RoleV1, RoleV2 } from '../types'
+import type { GameType } from '@/components/GameSelect'
+import { useReactToolkitsContext } from '@/components'
 
 export function useAllPermissions() {
   return useSWR<PermissionEnumItem[]>({
     url: '/api/usystem/user/allPermssions',
+  })
+}
+
+export function useAllPermissionsV2() {
+  return useSWR<{
+    game: GameType[]
+    permission: PermissionEnumItem[]
+  }>({
+    url: '/api/usystem/user/allPermissionsV2',
   })
 }
 
@@ -22,23 +33,26 @@ export function useAllRoles() {
 }
 
 export function useRole(name: string) {
-  return useSWR({
-    url: '/api/usystem/role/info',
+  const isPermissionV2 = useReactToolkitsContext(state => state.isPermissionV2)
+
+  return useSWR<RoleV1 | RoleV2>({
+    url: isPermissionV2 ? '/api/usystem/role/infoV2' : '/api/usystem/role/info',
     params: { name },
   })
 }
 
 export function useCreateRole() {
   const httpClient = useHttpClient()
+  const isPermissionV2 = useReactToolkitsContext(state => state.isPermissionV2)
 
   return useSWRMutation(
-    '/api/usystem/role/create',
+    isPermissionV2 ? '/api/usystem/role/createV2' : '/api/usystem/role/create',
     (
-      url,
+      url: string,
       {
         arg,
       }: {
-        arg: { name: string; permissions: string[] }
+        arg: { name: string; permissions: RoleV1['permissions'] | RoleV2['permissions'] }
       },
     ) => httpClient.post(url, arg),
   )
@@ -46,15 +60,16 @@ export function useCreateRole() {
 
 export function useUpdateRole() {
   const httpClient = useHttpClient()
+  const isPermissionV2 = useReactToolkitsContext(state => state.isPermissionV2)
 
   return useSWRMutation(
-    '/api/usystem/role/update',
+    isPermissionV2 ? '/api/usystem/role/updateV2' : '/api/usystem/role/update',
     (
-      url,
+      url: string,
       {
         arg,
       }: {
-        arg: { id: number; name: string; permissions: string[] }
+        arg: { id: number; name: string; permissions: RoleV1['permissions'] | RoleV2['permissions'] }
       },
     ) => httpClient.post(url, arg),
   )

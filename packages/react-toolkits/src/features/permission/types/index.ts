@@ -18,11 +18,18 @@ export interface RoleListItem {
   ctime: string
 }
 
-export interface Role {
+export interface RoleV1 {
   id: number
   name: string
   ctime: string
   permissions: string[]
+}
+
+export interface RoleV2 {
+  id: number
+  name: string
+  ctime: string
+  permissions: Record<string, string[]>
 }
 
 export interface UserListItem {

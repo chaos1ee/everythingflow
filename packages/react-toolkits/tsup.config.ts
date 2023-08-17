@@ -7,7 +7,7 @@ export default defineConfig({
   entry: ['src/index.ts'],
   format: ['esm'],
   sourcemap: true,
-  minify: isProduction,
+  minify: false,
   treeshake: true,
   splitting: false,
   dts: true,

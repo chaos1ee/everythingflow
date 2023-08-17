@@ -8,6 +8,8 @@ import 'react-toolkits/style.css'
 import router from '~/router'
 import '~/styles/index.css'
 import './libs/editor'
+import { ReactToolkitsProvider } from 'react-toolkits'
+import menuItems from '~/menu-items'
 
 dayjs.locale('zh-cn')
 
@@ -21,33 +23,35 @@ const container = document.getElementById('root') as HTMLElement
 const root = createRoot(container)
 
 root.render(
-  <ConfigProvider
-    locale={zhCN}
-    theme={{
-      token: {
-        colorPrimary: '#ff5a00',
-        colorLink: '#ff5a00',
-        colorLinkHover: '#ff927b',
-        colorLinkActive: '#ff927b',
-        colorBorder: 'rgba(5, 5, 5, 0.06)',
-      },
-    }}
-  >
-    <App>
-      <RouterProvider
-        router={router}
-        fallbackElement={
-          <Spin
-            style={{
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-              width: '100vw',
-              height: '100vh',
-            }}
-          />
-        }
-      />
-    </App>
-  </ConfigProvider>,
+  <ReactToolkitsProvider isPermissionV2 title="React Web" menuItems={menuItems}>
+    <ConfigProvider
+      locale={zhCN}
+      theme={{
+        token: {
+          colorPrimary: '#ff5a00',
+          colorLink: '#ff5a00',
+          colorLinkHover: '#ff927b',
+          colorLinkActive: '#ff927b',
+          colorBorder: 'rgba(5, 5, 5, 0.06)',
+        },
+      }}
+    >
+      <App>
+        <RouterProvider
+          router={router}
+          fallbackElement={
+            <Spin
+              style={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                width: '100vw',
+                height: '100vh',
+              }}
+            />
+          }
+        />
+      </App>
+    </ConfigProvider>
+  </ReactToolkitsProvider>,
 )

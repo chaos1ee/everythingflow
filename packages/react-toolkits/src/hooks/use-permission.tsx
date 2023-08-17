@@ -1,21 +1,29 @@
 import useSWRImmutable from 'swr/immutable'
 import { useNavigate } from 'react-router-dom'
 import { useHttpClient } from './use-http-client'
+import { useReactToolkitsContext } from '@/components'
 
 export interface PermissionCheckResult {
   [k: string]: boolean
 }
 
-export function usePermissions(codes: string[]) {
+export function usePermissions(codes: string[], isGlobalNS = false) {
   const httpClient = useHttpClient()
   const navigate = useNavigate()
+  const isPermissionV2 = useReactToolkitsContext(state => state.isPermissionV2)
+  const url = isPermissionV2 ? '/api/usystem/user/checkV2' : '/api/usystem/user/check'
 
   const { data, isLoading } = useSWRImmutable(
     codes.length > 0
       ? {
           method: 'POST',
-          url: '/api/usystem/user/check',
+          url,
           data: { permissions: codes },
+          headers: isGlobalNS
+            ? {
+                'App-ID': 'global',
+              }
+            : {},
         }
       : null,
     config =>

@@ -2,6 +2,7 @@ import {useTokenStore} from '@/stores'
 import type {AxiosInstance, AxiosRequestConfig} from 'axios'
 import axios from 'axios'
 import type {Merge} from 'ts-essentials'
+import {useReactToolkitsContext} from '@/components'
 
 // 覆盖 AxiosInstance 各种请求方法的返回值，为了方便我们在 interceptors.response 里把 AxiosResponse 直接打平成后端返回的数据，去掉了 axios 的封装。
 type ShimmedAxiosInstance = Merge<
@@ -31,6 +32,7 @@ export class HttpClientError extends Error {
 
 export function useHttpClient() {
   const token = useTokenStore(state => state.token)
+  const { game, isGlobalNS, isPermissionV2 } = useReactToolkitsContext(state => state)
 
   const defaultOptions: AxiosRequestConfig = {
     withCredentials: true,
@@ -41,6 +43,13 @@ export function useHttpClient() {
   instance.interceptors.request.use(config => {
     const headers = config.headers
     headers.set('Authorization', `Bearer ${token}`)
+
+    if (isPermissionV2) {
+      if (!headers.has('App-ID')) {
+        headers.set('App-ID', isGlobalNS ? 'global' : game?.id)
+      }
+    }
+
     return config
   })
 

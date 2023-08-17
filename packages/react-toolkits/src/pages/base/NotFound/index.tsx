@@ -1,14 +1,14 @@
 import { Button, Result } from 'antd'
 import { useNavigate } from 'react-router-dom'
 
-const NoMatch = () => {
+const NotFound = () => {
   const navigate = useNavigate()
   return (
     <div className="h-screen flex justify-center items-center">
       <Result
         status="404"
         title="404"
-        subTitle="Sorry, the page you visited does not exist."
+        subTitle="访问的页面不存在"
         extra={
           <Button
             type="primary"
@@ -16,7 +16,7 @@ const NoMatch = () => {
               navigate('/')
             }}
           >
-            Back Home
+            返回页面
           </Button>
         }
       />
@@ -24,4 +24,4 @@ const NoMatch = () => {
   )
 }
 
-export default NoMatch
+export default NotFound

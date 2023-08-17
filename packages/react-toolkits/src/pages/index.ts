@@ -1,5 +1,4 @@
-import Login from './Login'
-import NoMatch from './NoMatch'
-import permission from './permission'
+import baseRoutes from './base'
+import permissionRoutes from './permission'
 
-export { Login, NoMatch, permission }
+export { baseRoutes, permissionRoutes }
