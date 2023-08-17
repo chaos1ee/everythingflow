@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.1.0
+
+### Minor Changes
+
+- 6ea70f7: permission module support api v2
+
 ## 0.0.8
 
 ### Patch Changes
