@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.1.1
+
+### Patch Changes
+
+- 164900b: redraw Layout children when game change
+
 ## 0.1.0
 
 ### Minor Changes
