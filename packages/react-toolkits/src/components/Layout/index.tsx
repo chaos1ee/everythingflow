@@ -6,12 +6,13 @@ import * as React from 'react'
 import { Suspense } from 'react'
 import { Link } from 'react-router-dom'
 import { GameSelect, NavMenu, useReactToolkitsContext, UserWidget } from '@/components'
+import { SWRConfig } from 'swr'
 
 const { Spin, theme } = Antd
 const { Header, Sider, Content } = Antd.Layout
 
 export interface LayoutProps extends PropsWithChildren {
-  extra?: React.ReactNode
+  extra?: React.ReactNode[]
 }
 
 const Layout: FC<LayoutProps> = props => {
@@ -19,7 +20,7 @@ const Layout: FC<LayoutProps> = props => {
   const {
     token: { colorBgContainer, colorBorder },
   } = theme.useToken()
-  const title = useReactToolkitsContext(state => state.title)
+  const { title, game } = useReactToolkitsContext(state => state)
 
   return (
     <Antd.Layout hasSider className="h-screen">
@@ -79,7 +80,15 @@ const Layout: FC<LayoutProps> = props => {
               />
             }
           >
-            {children}
+            <SWRConfig
+              value={{
+                // GameSelect 组件内的 game 变化时，会触发 children 的重新渲染
+                // 为了避免 SWR 使用缓存导致数据不更新，需要设置 revalidateOnMount 为 true
+                revalidateOnMount: true,
+              }}
+            >
+              {React.createElement('div', { key: game?.id }, children)}
+            </SWRConfig>
           </Suspense>
         </Content>
       </Antd.Layout>

@@ -7,16 +7,11 @@ module.exports = {
   context: path.resolve(__dirname, './src'),
   entry: {
     app: './main.tsx',
-    'mysql.worker': 'monaco-sql-languages/out/esm/mysql/mysql.worker.js',
-    'sql.worker': 'monaco-sql-languages/out/esm/sql/sql.worker.js',
   },
   resolve: {
     extensions: ['.js', '.jsx', '.ts', '.tsx'],
     alias: {
       '~': path.resolve(__dirname, './src'),
-    },
-    fallback: {
-      assert: require.resolve('assert/'),
     },
   },
   devServer: {

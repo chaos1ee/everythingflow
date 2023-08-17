@@ -1,27 +1,75 @@
-import { randUuid } from '@ngneat/falso'
 import { RESTMethods } from 'msw'
 import { mock } from '~/utils'
+import type { InstanceTreeNode } from '~/features/instance'
+import { rand, randDirectoryPath, randUuid, randWord } from '@ngneat/falso'
 
 const { plainRequest, delay } = mock
 
 const handlers = [
-  plainRequest(
-    '/api/instance/list',
-    req => {
-      const key = req.url.searchParams.get('key')
-
-      console.log(key)
-
-      return [
-        {
-          title: 'Child Node',
-          key: randUuid(),
-        },
-        {
-          title: 'Child Node',
-          key: randUuid(),
-        },
-      ]
+  plainRequest<InstanceTreeNode>(
+    '/api/instance/tree',
+    () => {
+      return {
+        id: randUuid(),
+        name: randWord(),
+        path: '/',
+        children: [
+          {
+            id: randUuid(),
+            name: randWord(),
+            path: randDirectoryPath(),
+            db_type: rand(['mysql', 'redis']),
+            children: [
+              {
+                id: randUuid(),
+                name: randWord(),
+                path: randDirectoryPath(),
+                db_type: rand(['mysql', 'redis']),
+                children: [
+                  {
+                    id: randUuid(),
+                    name: randWord(),
+                    path: randDirectoryPath(),
+                    db_type: rand(['mysql', 'redis']),
+                  },
+                ],
+              },
+              {
+                id: randUuid(),
+                name: randWord(),
+                path: randDirectoryPath(),
+                db_type: rand(['mysql', 'redis']),
+              },
+            ],
+          },
+          {
+            id: randUuid(),
+            name: randWord(),
+            path: randDirectoryPath(),
+            db_type: rand(['mysql', 'redis']),
+            children: [
+              {
+                id: randUuid(),
+                name: randWord(),
+                path: randDirectoryPath(),
+                db_type: rand(['mysql', 'redis']),
+              },
+              {
+                id: randUuid(),
+                name: randWord(),
+                path: randDirectoryPath(),
+                db_type: rand(['mysql', 'redis']),
+              },
+            ],
+          },
+          {
+            id: randUuid(),
+            name: randWord(),
+            path: randDirectoryPath(),
+            db_type: rand(['mysql', 'redis']),
+          },
+        ],
+      }
     },
     RESTMethods.GET,
     delay(1000),
