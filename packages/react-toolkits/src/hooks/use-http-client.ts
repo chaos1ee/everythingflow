@@ -72,8 +72,10 @@ export function useHttpClient() {
           throw new HttpClientError('Not Found or Method not Allowed', error.response.status, true)
         } else if (error.response.status === 412) {
           throw new HttpClientError('未注册用户', error.response.status)
+        } else if (error.response.status === 504) {
+          throw new HttpClientError('请求超时', error.response.status)
         } else {
-          throw new HttpClientError(error.response.data?.msg, error.response.status)
+          throw new HttpClientError(error.response.message, error.response.status)
         }
       }
 
