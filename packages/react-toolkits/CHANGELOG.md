@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.1.2
+
+### Patch Changes
+
+- 771e848: set Layout content overflow to 'overlay'
+
 ## 0.1.1
 
 ### Patch Changes
