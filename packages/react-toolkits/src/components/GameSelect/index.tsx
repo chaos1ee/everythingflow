@@ -56,7 +56,7 @@ const GameSelect = () => {
       const matchGame = (games ?? []).find(item => item.id === id) ?? null
       setGame(matchGame)
     },
-    [games, setGame, mutate],
+    [games, setGame],
   )
 
   if (!isPermissionV2 || isGlobalNS) {

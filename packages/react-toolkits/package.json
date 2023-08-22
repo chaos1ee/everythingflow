@@ -6,6 +6,11 @@
   ],
   "module": "./dist/index.esm.js",
   "typings": "./dist/index.d.mts",
+  "files": [
+    "README.md",
+    "CHANGELOG.md",
+    "dist/"
+  ],
   "exports": {
     ".": "./dist/index.esm.js",
     "./style.css": "./dist/index.css"

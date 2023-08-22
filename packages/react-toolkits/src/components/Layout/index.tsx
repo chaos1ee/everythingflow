@@ -67,7 +67,7 @@ const Layout: FC<LayoutProps> = props => {
             </Space>
           </div>
         </Header>
-        <Content className="p-6 overflow-auto bg-gray-50">
+        <Content className="p-6 bg-gray-50" style={{ overflow: 'overlay' }}>
           <Suspense
             fallback={
               <Spin
