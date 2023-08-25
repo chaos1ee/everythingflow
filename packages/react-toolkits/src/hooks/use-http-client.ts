@@ -55,11 +55,15 @@ export function useHttpClient() {
 
   instance.interceptors.response.use(
     response => {
-      if (response.data.code === 0 || response.data.status === 0) {
-        return response.data.data
+      if (response.headers['content-type'] === 'application/json') {
+        if (response.data.code === 0 || response.data.status === 0) {
+          return response.data.data
+        }
+
+        throw new HttpClientError(response.data.msg, 0)
       }
 
-      throw new HttpClientError(response.data.msg, 0)
+      return response
     },
     error => {
       if (error.response) {

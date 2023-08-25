@@ -8,17 +8,39 @@ import { Alert, App, Spin } from 'antd'
 import { SWRConfig } from 'swr'
 
 const { ErrorBoundary } = Alert
-
 const routes = [instanceManagementRoutes, sqlRoutes]
+
+/**
+ * SWRConfig 的 onError 会捕获所有的请求错误，但是无法捕获 React 组件的错误（比如开启了 suspense 的 SWR 请求），所以需要使用 ErrorElement 来捕获。
+ */
 
 const Root: FC = () => {
   const httpClient = useHttpClient()
+  const { notification } = App.useApp()
+  const clearToken = useTokenStore(state => state.clearToken)
 
   return (
     <SWRConfig
       value={{
         fetcher: httpClient.request,
         shouldRetryOnError: false,
+        onError(error) {
+          if (error instanceof HttpClientError) {
+            switch (error.code) {
+              case 401:
+              case 412:
+                clearToken()
+                return <Navigate to={error.code === 401 ? '/login' : '/login?not_registered=1'} />
+              default:
+                if (!error.skip) {
+                  notification.error({
+                    message: '请求出错',
+                    description: error.message,
+                  })
+                }
+            }
+          }
+        },
       }}
     >
       <Suspense
