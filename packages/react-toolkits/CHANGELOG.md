@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.1.4
+
+### Patch Changes
+
+- 0c9c659: return not json response
+
 ## 0.1.3
 
 ### Patch Changes
