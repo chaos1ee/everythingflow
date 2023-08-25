@@ -1,5 +1,4 @@
 import useSWRImmutable from 'swr/immutable'
-import { useNavigate } from 'react-router-dom'
 import { useHttpClient } from './use-http-client'
 import { useReactToolkitsContext } from '@/components'
 
@@ -9,7 +8,6 @@ export interface PermissionCheckResult {
 
 export function usePermissions(codes: string[], isGlobalNS = false) {
   const httpClient = useHttpClient()
-  const navigate = useNavigate()
   const isPermissionV2 = useReactToolkitsContext(state => state.isPermissionV2)
   const url = isPermissionV2 ? '/api/usystem/user/checkV2' : '/api/usystem/user/check'
 
@@ -49,9 +47,6 @@ export function usePermissions(codes: string[], isGlobalNS = false) {
     {
       suspense: true,
       shouldRetryOnError: false,
-      onError() {
-        navigate('/login')
-      },
     },
   )
 
