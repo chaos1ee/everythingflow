@@ -9,6 +9,7 @@ import type { ReactNode } from 'react'
 import { useCallback, useEffect } from 'react'
 import useSWRMutation from 'swr/mutation'
 import FilterForm from '../FilterForm'
+import type { Merge } from 'ts-essentials'
 
 export type QueryListKey = Omit<AxiosRequestConfig, 'data' | 'params'>
 
@@ -23,7 +24,7 @@ export interface QueryListProps<Item, Values, Response>
   code?: string
   renderForm?: (form: FormInstance<Values>) => ReactNode
   // 把表单的值和分页数据转换成请求参数
-  transformArg?: (arg: Values & PaginationParams) => unknown
+  transformArg?: (arg: Merge<Values, PaginationParams>) => unknown
   // 当请求的返回值不满足时进行转换
   transformResponse?: (response: Response) => ListResponse<Item>
 }
