@@ -13,7 +13,7 @@ import type { Merge } from 'ts-essentials'
 
 export type QueryListKey = Omit<AxiosRequestConfig, 'data' | 'params'>
 
-export enum QueryListActionType {
+export enum QueryListAction {
   Submit = 'submit',
   Reset = 'reset',
 }
@@ -32,7 +32,7 @@ export interface QueryListProps<Item, Values, Response>
   transformArg?: (arg: Merge<Values, PaginationParams>) => unknown
   // 当请求的返回值不满足时进行转换
   transformResponse?: (response: Response) => ListResponse<Item>
-  afterQuerySuccess?: (response: ListResponse<Item>, action?: QueryListActionType) => void
+  afterQuerySuccess?: (response: ListResponse<Item>, action?: QueryListAction) => void
 }
 
 const QueryList = <Item extends object, Values = NonNullable<unknown>, Response = ListResponse<Item>>(
@@ -56,7 +56,7 @@ const QueryList = <Item extends object, Values = NonNullable<unknown>, Response 
   const getPaginationData = useQueryListStore(state => state.getPaginationData)
   const setPaginationData = useQueryListStore(state => state.setPaginationData)
   const paginationData = getPaginationData(swrKey)
-  const actionRef = useRef<QueryListActionType>()
+  const actionRef = useRef<QueryListAction>()
 
   const httpClient = useHttpClient()
 
@@ -94,12 +94,12 @@ const QueryList = <Item extends object, Values = NonNullable<unknown>, Response 
   )
 
   const onFinish = async () => {
-    actionRef.current = QueryListActionType.Submit
+    actionRef.current = QueryListAction.Submit
     await trigger({ page: 1 })
   }
 
   const onReset = useCallback(async () => {
-    actionRef.current = QueryListActionType.Reset
+    actionRef.current = QueryListAction.Reset
     try {
       form.resetFields()
       await form.validateFields()
