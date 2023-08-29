@@ -22,7 +22,7 @@ const container = document.getElementById('root') as HTMLElement
 const root = createRoot(container)
 
 root.render(
-  <ReactToolkitsProvider isPermissionV2 title="React Web" menuItems={menuItems}>
+  <ReactToolkitsProvider isPermissionV2 onlyDomesticGames title="React Web" menuItems={menuItems}>
     <ConfigProvider
       locale={zhCN}
       theme={{
