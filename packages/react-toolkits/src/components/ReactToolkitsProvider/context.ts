@@ -31,6 +31,7 @@ export interface ReactToolkitsState {
   setOpenKeys: (keys: string[]) => void
   setSelectedKeys: (keys: string[]) => void
   menuItems: ItemType2[]
+  onlyDomesticGames: boolean
 }
 
 export type ReactToolkitsStore = ReturnType<typeof createReactToolkitsStore>
@@ -49,6 +50,7 @@ export const createReactToolkitsStore = () => {
         selectedKeys: [],
         setSelectedKeys: keys => set({ selectedKeys: keys }),
         menuItems: [],
+        onlyDomesticGames: false,
       }),
       {
         name: 'ReactToolkits',

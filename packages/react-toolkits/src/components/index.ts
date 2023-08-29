@@ -20,6 +20,8 @@ import type { ItemType2 } from './NavMenu'
 import NavMenu from './NavMenu'
 import type { LayoutProps } from './Layout'
 import Layout from './Layout'
+import type { PermissionGuardProps } from './PermissionGuard'
+import PermissionGuard from './PermissionGuard'
 
 export {
   FormModal,
@@ -35,6 +37,7 @@ export {
   UserWidget,
   NavMenu,
   Layout,
+  PermissionGuard,
 }
 export type {
   DynamicTagsProps,
@@ -48,4 +51,5 @@ export type {
   PermissionButtonProps,
   ItemType2,
   LayoutProps,
+  PermissionGuardProps,
 }

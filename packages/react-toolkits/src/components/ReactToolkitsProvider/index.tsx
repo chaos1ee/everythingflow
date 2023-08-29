@@ -4,7 +4,9 @@ import type { ReactToolkitsState, ReactToolkitsStore } from './context'
 import { createReactToolkitsStore, ReactToolkitsContext } from './context'
 
 const ReactToolkitsProvider: FC<
-  PropsWithChildren<Partial<Pick<ReactToolkitsState, 'isPermissionV2' | 'isGlobalNS' | 'menuItems' | 'title'>>>
+  PropsWithChildren<
+    Partial<Pick<ReactToolkitsState, 'isPermissionV2' | 'isGlobalNS' | 'menuItems' | 'title' | 'onlyDomesticGames'>>
+  >
 > = props => {
   const { children, ...restProps } = props
   const storeRef = useRef<ReactToolkitsStore>()

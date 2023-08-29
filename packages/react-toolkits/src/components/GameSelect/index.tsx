@@ -36,16 +36,18 @@ function useGames() {
 }
 
 const GameSelect = () => {
-  const { game, setGame, isGlobalNS, isPermissionV2 } = useReactToolkitsContext(state => state)
+  const { game, setGame, isGlobalNS, isPermissionV2, onlyDomesticGames } = useReactToolkitsContext(state => state)
   const { games, isLoading } = useGames()
 
   const options = useMemo(
     () =>
-      games?.map(item => ({
-        label: item.name,
-        value: item.id,
-      })),
-    [games],
+      (games ?? [])
+        .filter(item => !onlyDomesticGames || item.area === 'cn')
+        ?.map(item => ({
+          label: item.name,
+          value: item.id,
+        })),
+    [games, onlyDomesticGames],
   )
 
   const onGameChange = useCallback(
