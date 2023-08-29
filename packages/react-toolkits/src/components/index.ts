@@ -10,7 +10,7 @@ import type { HighlightTextsProps } from './Highlight'
 import Highlight from './Highlight'
 import type { PermissionButtonProps } from './PermissionButton'
 import PermissionButton from './PermissionButton'
-import type { QueryListKey, QueryListProps } from './QueryList'
+import type { QueryListKey, QueryListProps, QueryListAction } from './QueryList'
 import QueryList from './QueryList'
 import { useReactToolkitsContext } from './ReactToolkitsProvider/context'
 import ReactToolkitsProvider from './ReactToolkitsProvider'
@@ -52,4 +52,5 @@ export type {
   ItemType2,
   LayoutProps,
   PermissionGuardProps,
+  QueryListAction,
 }
