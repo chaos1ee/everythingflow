@@ -10,8 +10,8 @@ import type { HighlightTextsProps } from './Highlight'
 import Highlight from './Highlight'
 import type { PermissionButtonProps } from './PermissionButton'
 import PermissionButton from './PermissionButton'
-import type { QueryListKey, QueryListProps, QueryListAction } from './QueryList'
-import QueryList from './QueryList'
+import type { QueryListKey, QueryListProps } from './QueryList'
+import QueryList, { QueryListAction } from './QueryList'
 import { useReactToolkitsContext } from './ReactToolkitsProvider/context'
 import ReactToolkitsProvider from './ReactToolkitsProvider'
 import GameSelect from './GameSelect'
@@ -38,6 +38,7 @@ export {
   NavMenu,
   Layout,
   PermissionGuard,
+  QueryListAction,
 }
 export type {
   DynamicTagsProps,
@@ -52,5 +53,4 @@ export type {
   ItemType2,
   LayoutProps,
   PermissionGuardProps,
-  QueryListAction,
 }
