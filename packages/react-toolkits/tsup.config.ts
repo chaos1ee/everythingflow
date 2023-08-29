@@ -1,12 +1,12 @@
+import type { Options } from 'tsup'
 import { defineConfig } from 'tsup'
 import * as process from 'process'
 import packageJson from './package.json'
 
 const isProduction = process.env.NODE_ENV === 'production'
 
-export default defineConfig({
-  entry: ['src/index.ts'],
-  format: ['esm'],
+const baseOptions: Options = {
+  external: Object.keys(packageJson.peerDependencies),
   sourcemap: true,
   minify: isProduction,
   treeshake: true,
@@ -14,7 +14,7 @@ export default defineConfig({
   dts: true,
   clean: true,
   shims: true,
-  external: Object.keys(packageJson.peerDependencies),
+  publicDir: 'public',
   loader: {
     '.jpg': 'base64',
     '.png': 'copy',
@@ -25,4 +25,27 @@ export default defineConfig({
       js: `.${format}.js`,
     }
   },
-})
+}
+
+const options: Options[] = [
+  {
+    ...baseOptions,
+    entry: ['src/index.ts'],
+    format: ['esm'],
+    outDir: 'dist',
+  },
+  {
+    ...baseOptions,
+    entry: ['src/components/index.ts'],
+    format: ['esm'],
+    outDir: 'dist/components',
+  },
+  {
+    ...baseOptions,
+    entry: ['src/hooks/index.ts'],
+    format: ['esm'],
+    outDir: 'dist/hooks',
+  },
+]
+
+export default defineConfig(options)

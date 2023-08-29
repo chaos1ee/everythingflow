@@ -3,7 +3,7 @@ import { useCallback, useMemo } from 'react'
 import { useTokenStore } from '@/stores'
 import useSWRImmutable from 'swr/immutable'
 import { useReactToolkitsContext } from '@/components'
-import { useSWRConfig } from 'swr'
+import { useHttpClient } from '@/hooks'
 
 const { Text } = Typography
 
@@ -17,18 +17,16 @@ export interface GameType {
 function useGames() {
   const { isPermissionV2, isGlobalNS } = useReactToolkitsContext(state => state)
   const user = useTokenStore(state => state.getUser())
+  const httpClient = useHttpClient()
 
   const { data, isLoading } = useSWRImmutable<GameType[]>(
-    isPermissionV2 && !isGlobalNS && user
-      ? {
-          method: 'GET',
-          url: '/api/usystem/game/all',
-          params: { user: user.authorityId },
-          headers: {
-            'App-ID': 'global',
-          },
-        }
-      : null,
+    isPermissionV2 && !isGlobalNS && user ? `/api/usystem/game/all?user=${user.authorityId}` : null,
+    url =>
+      httpClient.get(url, {
+        headers: {
+          'App-ID': 'global',
+        },
+      }),
   )
 
   return {
@@ -40,7 +38,6 @@ function useGames() {
 const GameSelect = () => {
   const { game, setGame, isGlobalNS, isPermissionV2 } = useReactToolkitsContext(state => state)
   const { games, isLoading } = useGames()
-  const { mutate } = useSWRConfig()
 
   const options = useMemo(
     () =>

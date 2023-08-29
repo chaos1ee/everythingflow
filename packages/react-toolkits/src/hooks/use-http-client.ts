@@ -1,8 +1,8 @@
-import {useTokenStore} from '@/stores'
-import type {AxiosInstance, AxiosRequestConfig} from 'axios'
+import { useTokenStore } from '@/stores'
+import type { AxiosInstance, AxiosRequestConfig } from 'axios'
 import axios from 'axios'
-import type {Merge} from 'ts-essentials'
-import {useReactToolkitsContext} from '@/components' // 覆盖 AxiosInstance 各种请求方法的返回值，为了方便我们在 interceptors.response 里把 AxiosResponse 直接打平成后端返回的数据，去掉了 axios 的封装。
+import type { Merge } from 'ts-essentials'
+import { useReactToolkitsContext } from '@/components' // 覆盖 AxiosInstance 各种请求方法的返回值，为了方便我们在 interceptors.response 里把 AxiosResponse 直接打平成后端返回的数据，去掉了 axios 的封装。
 
 // 覆盖 AxiosInstance 各种请求方法的返回值，为了方便我们在 interceptors.response 里把 AxiosResponse 直接打平成后端返回的数据，去掉了 axios 的封装。
 type ShimmedAxiosInstance = Merge<
@@ -56,15 +56,15 @@ export function useHttpClient() {
   instance.interceptors.response.use(
     response => {
       const contentType = response.headers['content-type']
-      if (contentType.includes('application/json')) {
+      if (contentType.includes('application/octet-stream')) {
+        return response
+      } else {
         if (response.data.code === 0 || response.data.status === 0) {
           return response.data.data
         }
 
         throw new HttpClientError(response.data.msg, 0)
       }
-
-      return response
     },
     error => {
       if (error.response) {

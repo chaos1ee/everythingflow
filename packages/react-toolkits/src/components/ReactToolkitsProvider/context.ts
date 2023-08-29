@@ -1,9 +1,9 @@
-import {create, useStore} from 'zustand'
-import {createContext, useContext} from 'react'
-import type {StateStorage} from 'zustand/middleware'
-import {createJSONStorage, persist} from 'zustand/middleware'
-import type {GameType} from '../GameSelect'
-import type {ItemType2} from '../NavMenu'
+import { create, useStore } from 'zustand'
+import { createContext, useContext } from 'react'
+import type { StateStorage } from 'zustand/middleware'
+import { createJSONStorage, persist } from 'zustand/middleware'
+import type { GameType } from '../GameSelect'
+import type { ItemType2 } from '../NavMenu'
 
 // SessionStorage 在同一域下的不同页面间是隔离的，用于防止多开页面时的数据冲突
 const mixedStorage: StateStorage = {
