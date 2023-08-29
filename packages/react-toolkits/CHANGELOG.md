@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.2.2
+
+### Patch Changes
+
+- 850d6ae: release react-toolkits
+
 ## 0.2.1
 
 ### Patch Changes
