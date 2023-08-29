@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.2.4
+
+### Patch Changes
+
+- 82dc6ab: feat: export QueryListAction type
+
 ## 0.2.3
 
 ### Patch Changes
