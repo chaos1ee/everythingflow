@@ -5,15 +5,36 @@
     "**/*.css"
   ],
   "module": "./dist/index.esm.js",
-  "typings": "./dist/index.d.mts",
+  "types": "./dist/index.d.mts",
   "files": [
     "README.md",
     "CHANGELOG.md",
     "dist/"
   ],
   "exports": {
-    ".": "./dist/index.esm.js",
-    "./style.css": "./dist/index.css"
+    "./package.json": "./package.json",
+    "./dist/index.css": "./dist/index.css",
+    ".": {
+      "import": {
+        "types": "./dist/index.d.mts",
+        "module": "./dist/index.esm.js",
+        "default": "./dist/index.esm.js"
+      }
+    },
+    "./components": {
+      "import": {
+        "types": "./dist/components/index.d.mts",
+        "module": "./dist/components/index.esm.js",
+        "default": "./dist/components/index.esm.js"
+      }
+    },
+    "./hooks": {
+      "import": {
+        "types": "./dist/hooks/index.d.mts",
+        "module": "./dist/hooks/index.esm.js",
+        "default": "./dist/hooks/index.esm.js"
+      }
+    }
   },
   "typesVersions": {},
   "license": "MIT",

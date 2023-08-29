@@ -1,5 +1,5 @@
 import { createBrowserRouter, Navigate, Outlet, useRouteError } from 'react-router-dom'
-import { baseRoutes, HttpClientError, Layout, permissionRoutes, useHttpClient, useTokenStore } from 'react-toolkits'
+import { baseRoutes, HttpClientError, Layout, permissionRoutes, useTokenStore } from 'react-toolkits'
 import instanceManagementRoutes from '~/pages/instanceManagement'
 import sqlRoutes from '~/pages/sql'
 import type { FC } from 'react'
@@ -15,14 +15,12 @@ const routes = [instanceManagementRoutes, sqlRoutes]
  */
 
 const Root: FC = () => {
-  const httpClient = useHttpClient()
   const { notification } = App.useApp()
   const clearToken = useTokenStore(state => state.clearToken)
 
   return (
     <SWRConfig
       value={{
-        fetcher: httpClient.request,
         shouldRetryOnError: false,
         onError(error) {
           if (error instanceof HttpClientError) {

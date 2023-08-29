@@ -1,4 +1,3 @@
-import logo from '@/assets/512_orange_nobackground.png'
 import * as Antd from 'antd'
 import { Divider, Space } from 'antd'
 import type { FC, PropsWithChildren } from 'react'
@@ -7,6 +6,7 @@ import { Suspense } from 'react'
 import { Link } from 'react-router-dom'
 import { GameSelect, NavMenu, useReactToolkitsContext, UserWidget } from '@/components'
 import { SWRConfig } from 'swr'
+import logo from './logo.png'
 
 const { Spin, theme } = Antd
 const { Header, Sider, Content } = Antd.Layout

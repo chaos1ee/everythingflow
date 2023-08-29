@@ -9,7 +9,7 @@ module.exports = {
     app: './main.tsx',
   },
   resolve: {
-    extensions: ['.js', '.jsx', '.ts', '.tsx'],
+    extensions: ['.js', '.jsx', '.ts', '.tsx', '.d.ts'],
     alias: {
       '~': path.resolve(__dirname, './src'),
     },
