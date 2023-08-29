@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.2.5
+
+### Patch Changes
+
+- a434999: fix: export QueryListAction wrong
+
 ## 0.2.4
 
 ### Patch Changes
