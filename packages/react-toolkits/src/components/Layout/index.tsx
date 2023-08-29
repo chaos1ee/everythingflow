@@ -7,6 +7,7 @@ import { Link } from 'react-router-dom'
 import { GameSelect, NavMenu, useReactToolkitsContext, UserWidget } from '@/components'
 import { SWRConfig } from 'swr'
 import logo from './logo.png'
+import RequireGame from '@/components/RequireGame'
 
 const { Spin, theme } = Antd
 const { Header, Sider, Content } = Antd.Layout
@@ -87,7 +88,7 @@ const Layout: FC<LayoutProps> = props => {
                 revalidateOnMount: true,
               }}
             >
-              {React.createElement('div', { key: game?.id }, children)}
+              <RequireGame>{React.createElement('div', { key: game?.id }, children)}</RequireGame>
             </SWRConfig>
           </Suspense>
         </Content>
