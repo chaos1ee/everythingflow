@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.2.3
+
+### Patch Changes
+
+- ac6526f: feat: add afterQuerySuccess hook
+
 ## 0.2.2
 
 ### Patch Changes
