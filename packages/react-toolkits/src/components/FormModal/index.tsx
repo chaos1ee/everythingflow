@@ -1,15 +1,8 @@
+/* eslint-disable react/jsx-indent */
 import type { FormInstance, FormProps, ModalProps } from 'antd'
 import { Button, Form, Modal } from 'antd'
 import type { ForwardedRef, ReactElement } from 'react'
 import { forwardRef, useId, useImperativeHandle, useRef, useState } from 'react'
-
-type RenderChildren<T> = (props: {
-  form: FormInstance<T>
-  open?: boolean
-  closeFn?: VoidFunction
-}) => JSX.Element | JSX.Element[]
-
-type ChildrenType<T> = RenderChildren<T> | JSX.Element | JSX.Element[]
 
 export type RecursivePartial<T> = T extends object
   ? {
@@ -24,7 +17,8 @@ export type RecursivePartial<T> = T extends object
 export interface FormModalProps<T>
   extends Pick<ModalProps, 'width' | 'title' | 'open' | 'afterClose' | 'bodyStyle' | 'maskClosable'>,
     Pick<FormProps, 'labelCol' | 'layout' | 'colon'> {
-  children?: ChildrenType<T>
+  form?: FormInstance<T>
+  children?: ReactElement | ReactElement[]
   footer?: ModalProps['footer']
   closeFn?: VoidFunction
   initialValues?: RecursivePartial<T>
@@ -37,6 +31,7 @@ export interface FormModalRef<T = object> {
 
 const InternalFormModal = <T extends object>(props: FormModalProps<T>, ref: ForwardedRef<FormModalRef<T>>) => {
   const {
+    form,
     width,
     children,
     title,
@@ -48,14 +43,44 @@ const InternalFormModal = <T extends object>(props: FormModalProps<T>, ref: Forw
     initialValues,
     maskClosable,
     closeFn,
-    afterClose,
     onConfirm,
   } = props
+  const [_form] = Form.useForm<T>()
+  const internalForm = form ?? _form
   const id = useId()
-  const [form] = Form.useForm<T>()
   const formRef = useRef<FormInstance<T>>(null)
-  const isRenderProps = typeof children === 'function'
   const [confirmLoading, setConfirmLoading] = useState(false)
+  const footerProp =
+    typeof footer === 'object'
+      ? footer
+      : [
+          <Button
+            key="cancel"
+            onClick={() => {
+              closeFn?.()
+            }}
+          >
+            取消
+          </Button>,
+          <Button key="submit" form={id} type="primary" htmlType="submit" loading={confirmLoading}>
+            确定
+          </Button>,
+        ]
+
+  const labelColProp = labelCol || {
+    flex: !layout || layout === 'horizontal' ? '120px' : '0',
+  }
+
+  const onFinish = async (values: T) => {
+    try {
+      setConfirmLoading(true)
+      await onConfirm?.(values)
+      closeFn?.()
+      internalForm.resetFields()
+    } finally {
+      setConfirmLoading(false)
+    }
+  }
 
   useImperativeHandle(ref, () => {
     return {
@@ -76,31 +101,11 @@ const InternalFormModal = <T extends object>(props: FormModalProps<T>, ref: Forw
       forceRender={true}
       getContainer={false}
       maskClosable={maskClosable}
-      footer={
-        typeof footer === 'object'
-          ? footer
-          : [
-            <Button
-                key="cancel"
-                onClick={() => {
-                  closeFn?.()
-                }}
-            >
-              取消
-            </Button>,
-            <Button form={id} key="submit" type="primary" htmlType="submit" loading={confirmLoading}>
-              确定
-            </Button>,
-            ]
-      }
-      afterClose={() => {
-        afterClose?.()
-        form.resetFields()
-      }}
+      footer={footerProp}
       onCancel={closeFn}
     >
       <Form
-        form={form}
+        form={internalForm}
         ref={formRef}
         id={id}
         autoComplete="off"
@@ -108,23 +113,10 @@ const InternalFormModal = <T extends object>(props: FormModalProps<T>, ref: Forw
         labelWrap={true}
         layout={layout}
         initialValues={initialValues}
-        labelCol={
-          labelCol || {
-            flex: !layout || layout === 'horizontal' ? '120px' : '0',
-          }
-        }
-        onFinish={async values => {
-          try {
-            setConfirmLoading(true)
-            await onConfirm?.(values)
-            closeFn?.()
-            form.resetFields()
-          } finally {
-            setConfirmLoading(false)
-          }
-        }}
+        labelCol={labelColProp}
+        onFinish={onFinish}
       >
-        {isRenderProps ? children({ form, open, closeFn }) : children}
+        {children}
       </Form>
     </Modal>
   )
