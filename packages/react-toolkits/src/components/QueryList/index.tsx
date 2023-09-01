@@ -63,6 +63,7 @@ const QueryList = <Item extends object, Values = NonNullable<unknown>, Response 
 
   const httpClient = useHttpClient()
 
+  // TODO: 使用 useSWR 重构
   const { data, isMutating, trigger } = useSWRMutation(
     swrKey,
     async (key, { arg }: { arg?: Partial<PaginationParams> }) => {
