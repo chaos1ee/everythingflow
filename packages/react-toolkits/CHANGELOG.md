@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.2.6
+
+### Patch Changes
+
+- a1daf00: feat: pass formInstance from outside
+
 ## 0.2.5
 
 ### Patch Changes
