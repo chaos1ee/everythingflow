@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.2.7
+
+### Patch Changes
+
+- 49cf639: feat: export form from useFormModal hook
+
 ## 0.2.6
 
 ### Patch Changes
