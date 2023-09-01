@@ -24,6 +24,7 @@ export interface QueryListProps<Item, Values, Response>
   // 由于表单的值和分页数据是封装在组件内部的，不便于在组件外部构造 swr key，
   // 所以组件内部的 useSWRMutation hook 使用的 key 是不包含表单值和分页参数的。
   // 因此 swr 并未按照分页缓存数据。
+  form?: FormInstance<Values>
   swrKey: QueryListKey
   confirmText?: ReactNode
   code?: string
@@ -39,6 +40,7 @@ const QueryList = <Item extends object, Values = NonNullable<unknown>, Response 
   props: QueryListProps<Item, Values, Response>,
 ) => {
   const {
+    form,
     code,
     confirmText,
     labelCol,
@@ -51,7 +53,8 @@ const QueryList = <Item extends object, Values = NonNullable<unknown>, Response 
     ...tableProps
   } = props
   const { accessible } = usePermission(code ?? '')
-  const [form] = Form.useForm<Values>()
+  const [_form] = Form.useForm<Values>()
+  const internalForm = form ?? _form
   const setRefresh = useQueryListStore(state => state.setRefresh)
   const getPaginationData = useQueryListStore(state => state.getPaginationData)
   const setPaginationData = useQueryListStore(state => state.setPaginationData)
@@ -70,7 +73,7 @@ const QueryList = <Item extends object, Values = NonNullable<unknown>, Response 
 
       setPaginationData(swrKey, arg)
 
-      const values = form.getFieldsValue()
+      const values = internalForm.getFieldsValue()
 
       const _arg = {
         ...values,
@@ -101,13 +104,13 @@ const QueryList = <Item extends object, Values = NonNullable<unknown>, Response 
   const onReset = useCallback(async () => {
     actionRef.current = QueryListAction.Reset
     try {
-      form.resetFields()
-      await form.validateFields()
+      internalForm.resetFields()
+      await internalForm.validateFields()
       await trigger({ page: 1 })
     } catch (_) {
       console.log('表单校验失败')
     }
-  }, [form, trigger])
+  }, [internalForm, trigger])
 
   const onPaginationChange = useCallback(
     async (currentPage: number, currentSize: number) => {
@@ -126,13 +129,13 @@ const QueryList = <Item extends object, Values = NonNullable<unknown>, Response 
   useEffect(() => {
     ;(async () => {
       try {
-        await form.validateFields()
+        await internalForm.validateFields()
         await trigger()
       } catch (_) {
-        form.resetFields()
+        internalForm.resetFields()
       }
     })()
-  }, [form, trigger])
+  }, [internalForm, trigger])
 
   if (!accessible) {
     return <Result status={403} subTitle="无权限，请联系管理员进行授权" />
@@ -142,13 +145,13 @@ const QueryList = <Item extends object, Values = NonNullable<unknown>, Response 
     <>
       <FilterForm<Values>
         initialValues={initialValues}
-        form={form}
+        form={internalForm}
         labelCol={labelCol}
         confirmText={confirmText}
         onFinish={onFinish}
         onReset={onReset}
       >
-        {renderForm?.(form)}
+        {renderForm?.(internalForm)}
       </FilterForm>
       <Table
         {...tableProps}
