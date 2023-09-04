@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.2.8
+
+### Patch Changes
+
+- 3aa9d03: refactor: change permision type
+
 ## 0.2.7
 
 ### Patch Changes
