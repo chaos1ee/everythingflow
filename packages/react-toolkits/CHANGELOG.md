@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.2.10
+
+### Patch Changes
+
+- c449bda: refactor: new form instance
+
 ## 0.2.9
 
 ### Patch Changes
