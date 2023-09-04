@@ -45,8 +45,7 @@ const InternalFormModal = <T extends object>(props: FormModalProps<T>, ref: Forw
     closeFn,
     onConfirm,
   } = props
-  const [_form] = Form.useForm<T>()
-  const internalForm = useMemo(() => form ?? _form, [_form, form])
+  const [internalForm] = Form.useForm(form)
   const id = useId()
   const formRef = useRef<FormInstance<T>>(null)
   const [confirmLoading, setConfirmLoading] = useState(false)
