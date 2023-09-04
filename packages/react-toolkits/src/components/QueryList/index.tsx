@@ -53,8 +53,7 @@ const QueryList = <Item extends object, Values = NonNullable<unknown>, Response 
     ...tableProps
   } = props
   const { accessible } = usePermission(code ?? '')
-  const [_form] = Form.useForm<Values>()
-  const internalForm = useMemo(() => form ?? _form, [_form, form])
+  const [internalForm] = Form.useForm(form)
   const { setRefresh, getPaginationData, setPaginationData } = useQueryListStore(state => state)
   const paginationData = getPaginationData(swrKey)
   const actionRef = useRef<QueryListAction>()
@@ -102,6 +101,7 @@ const QueryList = <Item extends object, Values = NonNullable<unknown>, Response 
 
   const onReset = useCallback(async () => {
     try {
+      actionRef.current = QueryListAction.Reset
       internalForm.resetFields()
       await internalForm.validateFields()
       await trigger({ page: 1 })
