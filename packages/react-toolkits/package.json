@@ -1,6 +1,6 @@
 {
   "name": "react-toolkits",
-  "version": "0.2.10",
+  "version": "0.2.11",
   "sideEffects": [
     "**/*.css"
   ],

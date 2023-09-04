@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.2.11
+
+### Patch Changes
+
+- 450de65: fix: perform request while form is invalid
+
 ## 0.2.10
 
 ### Patch Changes
