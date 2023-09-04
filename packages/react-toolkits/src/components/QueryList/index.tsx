@@ -103,7 +103,6 @@ const QueryList = <Item extends object, Values = NonNullable<unknown>, Response 
   }
 
   const onReset = useCallback(async () => {
-    actionRef.current = QueryListAction.Reset
     try {
       internalForm.resetFields()
       await internalForm.validateFields()

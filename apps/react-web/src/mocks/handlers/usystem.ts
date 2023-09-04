@@ -199,6 +199,7 @@ const handlers = [
     permission: [
       {
         category: '用户管理',
+        is_common: true,
         permissions: [
           {
             label: '用户列表',
@@ -228,6 +229,7 @@ const handlers = [
       },
       {
         category: '角色管理',
+        is_common: true,
         permissions: [
           {
             label: '角色列表',
@@ -269,6 +271,7 @@ const handlers = [
       },
       {
         category: 'Push管理平台',
+        is_common: false,
         permissions: [
           {
             label: '获取配置',
@@ -421,7 +424,7 @@ const handlers = [
     name: 'role_李浩的测试角色',
     ctime: '2023-05-16 03:24:12',
     permissions: {
-      'foo.cn.prod': [
+      'dino.global.prod': [
         '300001',
         '300002',
         '300003',

@@ -27,10 +27,8 @@ const RoleDetail = () => {
             <Descriptions.Item label="名称">{data?.name}</Descriptions.Item>
             <Descriptions.Item label="ID">{data?.id}</Descriptions.Item>
             <Descriptions.Item label="创建时间">{data?.ctime}</Descriptions.Item>
-            <Descriptions.Item label="权限" span={3}>
-              <PermissionList readonly value={data?.permissions} />
-            </Descriptions.Item>
           </Descriptions>
+          <PermissionList readonly value={data?.permissions} />
         </Skeleton>
       </Card>
     </>
