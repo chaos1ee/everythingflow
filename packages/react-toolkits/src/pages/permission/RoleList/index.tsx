@@ -230,7 +230,7 @@ const RoleList = () => {
           </PermissionButton>
         }
       >
-        <QueryList<RoleListItem, NonNullable<unknown>, ListResponse<RoleListItem>>
+        <QueryList<RoleListItem, undefined, ListResponse<RoleListItem>>
           rowKey="name"
           columns={columns}
           code="200001"
