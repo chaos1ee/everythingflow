@@ -2,7 +2,7 @@
 import type { FormInstance, FormProps, ModalProps } from 'antd'
 import { Button, Form, Modal } from 'antd'
 import type { ForwardedRef, ReactElement } from 'react'
-import { forwardRef, useId, useImperativeHandle, useRef, useState } from 'react'
+import { forwardRef, useId, useImperativeHandle, useMemo, useRef, useState } from 'react'
 
 export type RecursivePartial<T> = T extends object
   ? {
@@ -46,7 +46,7 @@ const InternalFormModal = <T extends object>(props: FormModalProps<T>, ref: Forw
     onConfirm,
   } = props
   const [_form] = Form.useForm<T>()
-  const internalForm = form ?? _form
+  const internalForm = useMemo(() => form ?? _form, [_form, form])
   const id = useId()
   const formRef = useRef<FormInstance<T>>(null)
   const [confirmLoading, setConfirmLoading] = useState(false)

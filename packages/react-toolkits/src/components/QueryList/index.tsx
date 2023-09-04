@@ -6,7 +6,7 @@ import { Form, Result, Table } from 'antd'
 import type { TableProps } from 'antd/es/table'
 import type { AxiosRequestConfig } from 'axios'
 import type { ReactNode } from 'react'
-import { useCallback, useEffect, useRef } from 'react'
+import { useCallback, useEffect, useMemo, useRef } from 'react'
 import useSWRMutation from 'swr/mutation'
 import FilterForm from '../FilterForm'
 import type { Merge } from 'ts-essentials'
@@ -54,10 +54,8 @@ const QueryList = <Item extends object, Values = NonNullable<unknown>, Response 
   } = props
   const { accessible } = usePermission(code ?? '')
   const [_form] = Form.useForm<Values>()
-  const internalForm = form ?? _form
-  const setRefresh = useQueryListStore(state => state.setRefresh)
-  const getPaginationData = useQueryListStore(state => state.getPaginationData)
-  const setPaginationData = useQueryListStore(state => state.setPaginationData)
+  const internalForm = useMemo(() => form ?? _form, [_form, form])
+  const { setRefresh, getPaginationData, setPaginationData } = useQueryListStore(state => state)
   const paginationData = getPaginationData(swrKey)
   const actionRef = useRef<QueryListAction>()
 
