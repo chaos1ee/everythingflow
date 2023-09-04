@@ -64,6 +64,8 @@ const QueryList = <Item extends object, Values = NonNullable<unknown>, Response 
   const { data, isMutating, trigger } = useSWRMutation(
     swrKey,
     async (key, { arg }: { arg?: Partial<PaginationParams> }) => {
+      await internalForm.validateFields()
+
       const newPaginationData = {
         page: arg?.page ?? paginationData.page,
         size: arg?.size ?? paginationData.size,
