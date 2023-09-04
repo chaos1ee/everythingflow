@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.2.9
+
+### Patch Changes
+
+- 99c0392: feat: cache form instance
+
 ## 0.2.8
 
 ### Patch Changes
