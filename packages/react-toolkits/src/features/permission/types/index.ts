@@ -1,5 +1,6 @@
 export interface PermissionEnumItem {
   category: string
+  is_common?: boolean
   permissions: {
     label: string
     value: string

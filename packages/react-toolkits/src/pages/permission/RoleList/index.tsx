@@ -97,7 +97,7 @@ const useUpdateModal = () => {
           <Input />
         </Form.Item>
         <Form.Item label="名称" name="name" rules={[{ required: true }]}>
-          <Input disabled addonBefore="role_" />
+          <Input readOnly addonBefore="role_" />
         </Form.Item>
         <Form.Item label="权限" name="permissions">
           <PermissionList />
@@ -210,7 +210,7 @@ const RoleList = () => {
         },
       },
     ],
-    [refresh, viewable, httpClient, modal, message, remove, showUpdateModal],
+    [viewable, httpClient, isPermissionV2, showUpdateModal, modal, remove, message, refresh],
   )
 
   return (

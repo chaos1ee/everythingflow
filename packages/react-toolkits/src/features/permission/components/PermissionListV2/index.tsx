@@ -19,6 +19,9 @@ const PermissionListV2: FC<PermissionListV2Props> = props => {
   const { data: permissions, isLoading, error } = useAllPermissionsV2()
   const [gameList, setGameList] = useState<{ gameId: string; permissions: string[] }[]>([])
 
+  const globalPermissions = permissions?.permission?.filter(item => item.is_common)
+  const gamePermissions = permissions?.permission?.filter(item => !item.is_common)
+
   useEffect(() => {
     const list: { gameId: string; permissions: string[] }[] = []
 
@@ -56,7 +59,7 @@ const PermissionListV2: FC<PermissionListV2Props> = props => {
         <PermissionCollapse
           value={value?.global}
           readonly={readonly}
-          permissions={permissions?.permission?.slice(0, 2)}
+          permissions={globalPermissions}
           expand={expand}
           onChange={newValue => {
             onChange?.({
@@ -120,7 +123,7 @@ const PermissionListV2: FC<PermissionListV2Props> = props => {
                 value={value?.[gameList[index].gameId]}
                 readonly={readonly}
                 expand={expand}
-                permissions={permissions?.permission?.slice(2)}
+                permissions={gamePermissions}
                 onChange={newValue => {
                   onChange?.({
                     ...value,
