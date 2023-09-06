@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.2.12
+
+### Patch Changes
+
+- e7ef5ff: refactor: replace useSWRMutation with useSWR in QueryList component
+
 ## 0.2.11
 
 ### Patch Changes
