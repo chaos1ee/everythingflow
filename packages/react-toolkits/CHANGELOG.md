@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.2.14
+
+### Patch Changes
+
+- 5addd49: feat: delay QueryList init function call
+
 ## 0.2.13
 
 ### Patch Changes
