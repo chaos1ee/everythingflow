@@ -1,8 +1,8 @@
 import type { DynamicTagsProps } from './DynamicTags'
 import DynamicTags from './DynamicTags'
-import type { FilterFormProps } from './FilterForm'
-import FilterForm from './FilterForm'
-import type { FormModalProps, FormModalRef } from './FormModal'
+import type { FilterFormWrapperProps } from './FilterFormWrapper'
+import FilterFormWrapper from './FilterFormWrapper'
+import type { FormModalProps } from './FormModal'
 import FormModal from './FormModal'
 import type { UseFormModalProps } from './FormModal/hooks'
 import { useFormModal } from './FormModal/hooks'
@@ -10,7 +10,7 @@ import type { HighlightTextsProps } from './Highlight'
 import Highlight from './Highlight'
 import type { PermissionButtonProps } from './PermissionButton'
 import PermissionButton from './PermissionButton'
-import type { QueryListKey, QueryListProps } from './QueryList'
+import type { QueryListProps } from './QueryList'
 import QueryList, { QueryListAction } from './QueryList'
 import { useReactToolkitsContext } from './ReactToolkitsProvider/context'
 import ReactToolkitsProvider from './ReactToolkitsProvider'
@@ -28,7 +28,7 @@ export {
   PermissionButton,
   DynamicTags,
   QueryList,
-  FilterForm,
+  FilterFormWrapper,
   Highlight,
   useFormModal,
   useReactToolkitsContext,
@@ -42,12 +42,10 @@ export {
 }
 export type {
   DynamicTagsProps,
-  FilterFormProps,
+  FilterFormWrapperProps,
   UseFormModalProps,
   FormModalProps,
-  FormModalRef,
   QueryListProps,
-  QueryListKey,
   HighlightTextsProps,
   PermissionButtonProps,
   ItemType2,

@@ -1,14 +1,14 @@
 import { lazy } from 'react'
 import type { RouteObject } from 'react-router-dom'
 
-const QueryOnline = lazy(() => import('./QueryOnline'))
+const TableList = lazy(() => import('./TableList'))
 
 const routes: RouteObject = {
-  path: 'sql',
+  path: 'table',
   children: [
     {
-      path: 'query_online',
-      element: <QueryOnline />,
+      index: true,
+      element: <TableList />,
     },
   ],
 }

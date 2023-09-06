@@ -20,27 +20,13 @@
         "module": "./dist/index.esm.js",
         "default": "./dist/index.esm.js"
       }
-    },
-    "./components": {
-      "import": {
-        "types": "./dist/components/index.d.mts",
-        "module": "./dist/components/index.esm.js",
-        "default": "./dist/components/index.esm.js"
-      }
-    },
-    "./hooks": {
-      "import": {
-        "types": "./dist/hooks/index.d.mts",
-        "module": "./dist/hooks/index.esm.js",
-        "default": "./dist/hooks/index.esm.js"
-      }
     }
   },
   "typesVersions": {},
   "license": "MIT",
   "scripts": {
     "build": "tsup",
-    "check-types": "tsc --noEmit"
+    "lint": "eslint --fix --ext .ts,.tsx,.js,.jsx ."
   },
   "author": "chaos1ee <chaos.maybeeee@gmail.com>",
   "homepage": "https://github.com/chaos1ee/everythingflow/tree/main/packages/react-toolkits#readme",
@@ -58,6 +44,7 @@
     "antd": "^5.7.3",
     "axios": "^1.4.0",
     "dayjs": "^1.11.9",
+    "events": "^3.3.0",
     "jwt-decode": "^3.1.2",
     "lodash-es": "^4.17.21",
     "swr": "^2.2.0",

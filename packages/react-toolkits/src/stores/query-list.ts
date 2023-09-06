@@ -1,61 +1,60 @@
-import type { QueryListKey } from '@/components/QueryList'
-import type { PaginationParams } from '@/types'
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { create } from 'zustand'
+import type { MutatorOptions } from 'swr'
+import { useSWRConfig } from 'swr'
+import type { ListResponse } from '@/types'
 
-type RefreshFunction = (arg?: Partial<PaginationParams>) => void
+export interface QueryListStoreValue {
+  page: number
+  size: number
+  formValues?: any
+}
 
 export interface QueryListState {
-  data: Map<
-    QueryListKey,
-    {
-      pagination?: PaginationParams
-      refresh?: RefreshFunction
-    }
-  >
-  getPaginationData: (key: QueryListKey) => PaginationParams
-  setPaginationData: (key: QueryListKey, pagination?: Partial<PaginationParams>) => void
-  refresh: (key: QueryListKey, arg?: Partial<PaginationParams>) => void
-  setRefresh: (key: QueryListKey, trigger: RefreshFunction) => void
+  data: Map<string, QueryListStoreValue>
+  getData: (key: string) => QueryListStoreValue
+  setData: (key: string, value?: Partial<QueryListStoreValue>) => void
 }
 
 export const useQueryListStore = create<QueryListState>((set, get) => ({
   data: new Map(),
-  getPaginationData: (key: QueryListKey) => {
-    const pagination = get().data.get(key)?.pagination
+  getData(key) {
+    const value = get().data.get(key)
     return {
-      page: pagination?.page ?? 1,
-      size: pagination?.size ?? 10,
+      page: value?.page ?? 1,
+      size: value?.size ?? 10,
+      formValues: value?.formValues,
     }
   },
-  setPaginationData: (key: QueryListKey, pagination?: Partial<PaginationParams>) => {
+  setData(key, value) {
     set({
       data: new Map(get().data).set(key, {
-        ...get().data.get(key),
-        pagination: {
-          page: pagination?.page ?? get().getPaginationData(key).page,
-          size: pagination?.size ?? get().getPaginationData(key).size,
-        },
-      }),
-    })
-  },
-  refresh: (key: QueryListKey, pagination?: Partial<PaginationParams>) => {
-    const refresh = get().data.get(key)?.refresh
-
-    if (refresh) {
-      refresh({
-        page: pagination?.page ?? get().getPaginationData(key).page,
-        size: pagination?.size ?? get().getPaginationData(key).size,
-      })
-    }
-  },
-  setRefresh: (key: QueryListKey, refresh: RefreshFunction) => {
-    const data = get().data
-
-    set({
-      data: new Map(data).set(key, {
-        ...data.get(key),
-        refresh,
+        ...get().getData(key),
+        ...value,
       }),
     })
   },
 }))
+
+export function useQueryListMutate() {
+  const { getData } = useQueryListStore(state => state)
+  const { mutate } = useSWRConfig()
+
+  return <T>(key: string, data?: ListResponse<T>, opts?: boolean | MutatorOptions<ListResponse<T>>) => {
+    return mutate([key, getData(key)], data, opts)
+  }
+}
+
+export function useQueryListJump() {
+  const { getData, setData } = useQueryListStore(state => state)
+  const mutate = useQueryListMutate()
+
+  // 跳转到对应页，不传 page 参数时刷新当前页面
+  return (key: string, page?: number) => {
+    if (!page || page === getData(key).page) {
+      mutate(key, undefined, { revalidate: true })
+    } else {
+      setData(key, { page: page ?? getData(key).page })
+    }
+  }
+}

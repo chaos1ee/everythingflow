@@ -1,31 +1,35 @@
-import type { FormModalProps, FormModalRef, RecursivePartial } from './index'
+import type { FormModalProps } from './index'
 import FormModal from './index'
-import { useCallback, useMemo, useRef, useState } from 'react'
-import type { Merge } from 'ts-essentials'
+import type { ReactNode } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import { createPortal } from 'react-dom'
+import { merge } from 'lodash-es'
+import type { FormProps } from 'antd'
 import { Form } from 'antd'
 
-export type UseFormModalProps<T> = Merge<
-  Omit<FormModalProps<T>, 'open' | 'onCancel' | 'closeFn' | 'children' | 'form'>,
-  {
-    content: FormModalProps<T>['children']
-  }
+type FormModalFormProps<Values> = Pick<
+  FormProps<Values>,
+  'labelAlign' | 'labelWrap' | 'labelCol' | 'wrapperCol' | 'layout'
 >
 
-export function useFormModal<T extends object>(props: UseFormModalProps<T>) {
-  const { content, onConfirm, ...restProps } = props
+export type UseFormModalProps<Values> = Omit<FormModalProps<Values>, 'open' | 'onCancel'> &
+  FormModalFormProps<Values> & {
+    content?: ReactNode
+  }
+
+export function useFormModal<Values extends object>(props: UseFormModalProps<Values>) {
+  const { content, labelAlign, labelWrap, labelCol, wrapperCol, layout, ...restProps } = props
+  const [form] = Form.useForm<Values>()
   const [open, setOpen] = useState(false)
-  const [title, setTitle] = useState<FormModalProps<T>['title']>()
-  const formRef = useRef<FormModalRef>(null)
-  const [form] = Form.useForm<T>()
+  const [modalProps, setModalProps] = useState<Omit<UseFormModalProps<Values>, 'content'>>(restProps)
 
-  const showModal = (options?: { initialValues?: RecursivePartial<T>; title?: FormModalProps<T>['title'] }) => {
-    setTitle(options?.title ?? restProps.title)
-
-    if (options?.initialValues) {
-      formRef.current?.setFieldsValue(options?.initialValues)
-    }
-
+  const showModal = (
+    opts?: Omit<
+      UseFormModalProps<Values>,
+      'footerRender' | 'onConfirm' | 'onCancel' | 'content' | keyof FormModalFormProps<Values>
+    >,
+  ) => {
+    setModalProps(opts ? merge(restProps, opts) : restProps)
     setOpen(true)
   }
 
@@ -33,23 +37,29 @@ export function useFormModal<T extends object>(props: UseFormModalProps<T>) {
     setOpen(false)
   }, [])
 
+  const formProps = useMemo(
+    () => ({
+      form,
+      labelAlign,
+      labelWrap,
+      labelCol,
+      wrapperCol,
+      layout,
+    }),
+    [form, labelAlign, labelCol, labelWrap, layout, wrapperCol],
+  )
+
   const Modal = useMemo(
     () =>
       createPortal(
-        <FormModal
-          {...restProps}
-          ref={formRef}
-          form={form}
-          open={open}
-          closeFn={closeModal}
-          title={title}
-          onConfirm={onConfirm}
-        >
-          {content}
-        </FormModal>,
+        <Form {...formProps}>
+          <FormModal {...modalProps} open={open} onCancel={closeModal}>
+            {content}
+          </FormModal>
+        </Form>,
         document.body,
       ),
-    [title, content, restProps, form, open, closeModal, onConfirm],
+    [closeModal, content, formProps, modalProps, open],
   )
 
   return {

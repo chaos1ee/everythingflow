@@ -42,7 +42,7 @@ const handlers = [
       Ctime: datetime(),
     })),
     RESTMethods.GET,
-    delay(3000),
+    delay(1000),
   ),
   plainRequest(
     '/api/usystem/role/all',
@@ -54,7 +54,7 @@ const handlers = [
   listRequest('/api/usystem/user/list', () => ({
     id: randNumber(),
     name: randFullName(),
-    ctime: mock.datetime(),
+    Ctime: mock.datetime(),
     roles: mock.randomArray({ min: 0, max: 4 }).map(() => randText()),
   })),
   listRequest('/api/usystem/role/list', () => ({
