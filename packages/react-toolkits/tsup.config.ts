@@ -34,18 +34,6 @@ const options: Options[] = [
     format: ['esm'],
     outDir: 'dist',
   },
-  {
-    ...baseOptions,
-    entry: ['src/components/index.ts'],
-    format: ['esm'],
-    outDir: 'dist/components',
-  },
-  {
-    ...baseOptions,
-    entry: ['src/hooks/index.ts'],
-    format: ['esm'],
-    outDir: 'dist/hooks',
-  },
 ]
 
 export default defineConfig(options)

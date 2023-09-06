@@ -1,128 +1,68 @@
-/* eslint-disable react/jsx-indent */
-import type { FormInstance, FormProps, ModalProps } from 'antd'
+import type { FormInstance, ModalProps } from 'antd'
 import { Button, Form, Modal } from 'antd'
-import type { ForwardedRef, ReactElement } from 'react'
-import { forwardRef, useId, useImperativeHandle, useMemo, useRef, useState } from 'react'
+import type { PropsWithChildren, ReactNode } from 'react'
+import { useEffect, useState } from 'react'
+import type { DeepPartial } from 'ts-essentials'
 
-export type RecursivePartial<T> = T extends object
-  ? {
-      [P in keyof T]?: T[P] extends (infer U)[]
-        ? RecursivePartial<U>[]
-        : T[P] extends object
-        ? RecursivePartial<T[P]>
-        : T[P]
-    }
-  : unknown
-
-export interface FormModalProps<T>
-  extends Pick<ModalProps, 'width' | 'title' | 'open' | 'afterClose' | 'bodyStyle' | 'maskClosable'>,
-    Pick<FormProps, 'labelCol' | 'layout' | 'colon'> {
-  form?: FormInstance<T>
-  children?: ReactElement | ReactElement[]
-  footer?: ModalProps['footer']
-  closeFn?: VoidFunction
-  initialValues?: RecursivePartial<T>
-  onConfirm?: (values: T) => Promise<void>
+export interface FormModalProps<Values>
+  extends Omit<
+    ModalProps,
+    'onCancel' | 'children' | 'destroyOnClose' | 'forceRender' | 'getContainer' | 'footer' | 'confirmLoading'
+  > {
+  footerRender?: (form: FormInstance<Values>) => ReactNode
+  onCancel?: VoidFunction
+  onConfirm?: (values: Values) => Promise<void>
+  initialValues?: DeepPartial<Values>
 }
 
-export interface FormModalRef<T = object> {
-  setFieldsValue: (values: RecursivePartial<T>) => void
-}
+const FormModal = <Values extends object>(props: PropsWithChildren<FormModalProps<Values>>) => {
+  const { initialValues, footerRender, className, children, onCancel, onConfirm, ...restProps } = props
+  const form = Form.useFormInstance<Values>()
+  const [confirming, setConfirming] = useState(false)
 
-const InternalFormModal = <T extends object>(props: FormModalProps<T>, ref: ForwardedRef<FormModalRef<T>>) => {
-  const {
-    form,
-    width,
-    children,
-    title,
-    open,
-    footer,
-    layout,
-    labelCol,
-    bodyStyle,
-    initialValues,
-    maskClosable,
-    closeFn,
-    onConfirm,
-  } = props
-  const [internalForm] = Form.useForm(form)
-  const id = useId()
-  const formRef = useRef<FormInstance<T>>(null)
-  const [confirmLoading, setConfirmLoading] = useState(false)
-  const footerProp =
-    typeof footer === 'object'
-      ? footer
-      : [
-          <Button
-            key="cancel"
-            onClick={() => {
-              closeFn?.()
-            }}
-          >
-            取消
-          </Button>,
-          <Button key="submit" form={id} type="primary" htmlType="submit" loading={confirmLoading}>
-            确定
-          </Button>,
-        ]
-
-  const labelColProp = labelCol || {
-    flex: !layout || layout === 'horizontal' ? '120px' : '0',
+  const handleCancel = () => {
+    onCancel?.()
   }
 
-  const onFinish = async (values: T) => {
+  const handleSubmit = async () => {
     try {
-      setConfirmLoading(true)
+      setConfirming(true)
+      const values = await form.validateFields()
       await onConfirm?.(values)
-      closeFn?.()
-      internalForm.resetFields()
+      onCancel?.()
+      form.resetFields()
     } finally {
-      setConfirmLoading(false)
+      setConfirming(false)
     }
   }
 
-  useImperativeHandle(ref, () => {
-    return {
-      setFieldsValue(values) {
-        formRef.current?.setFieldsValue(values)
-      },
-    }
-  })
+  const footer = footerRender?.(form) ?? [
+    <Button key="cancel" onClick={handleCancel}>
+      取消
+    </Button>,
+    <Button key="submit" type="primary" loading={confirming} onClick={handleSubmit}>
+      确定
+    </Button>,
+  ]
+
+  useEffect(() => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    form.setFieldsValue(initialValues as any)
+  }, [initialValues, form])
 
   return (
     <Modal
+      {...restProps}
       destroyOnClose
-      bodyStyle={bodyStyle}
-      style={{ textAlign: 'start' }}
-      width={width}
-      open={open}
-      title={title}
-      forceRender={true}
+      forceRender
+      className={className + ' text-start'}
       getContainer={false}
-      maskClosable={maskClosable}
-      footer={footerProp}
-      onCancel={closeFn}
+      footer={footer}
+      onCancel={onCancel}
     >
-      <Form
-        form={internalForm}
-        ref={formRef}
-        id={id}
-        autoComplete="off"
-        labelAlign="right"
-        labelWrap={true}
-        layout={layout}
-        initialValues={initialValues}
-        labelCol={labelColProp}
-        onFinish={onFinish}
-      >
-        {children}
-      </Form>
+      {children}
     </Modal>
   )
 }
-
-const FormModal = forwardRef(InternalFormModal) as <T extends object>(
-  props: FormModalProps<T> & { ref?: ForwardedRef<FormModalRef<T>> },
-) => ReactElement
 
 export default FormModal

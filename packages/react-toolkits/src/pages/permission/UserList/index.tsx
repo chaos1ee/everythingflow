@@ -2,25 +2,23 @@ import { Highlight, PermissionButton, QueryList } from '@/components'
 import { useFormModal } from '@/components/FormModal/hooks'
 import type { UserListItem } from '@/features/permission'
 import { useAllRoles, useCreateUser, useRemoveUser, useUpdateUser } from '@/features/permission'
-import { useQueryListStore } from '@/stores'
 import { UserAddOutlined } from '@ant-design/icons'
 import type { TableColumnsType } from 'antd'
 import { App, Card, Col, Form, Input, Row, Select, Space, Tag } from 'antd'
 import type { FC } from 'react'
 import { useMemo } from 'react'
 import { Link } from 'react-router-dom'
+import { useQueryListJump, useQueryListMutate } from '@/stores'
 
 const { Option } = Select
 
-export const swrKey = {
-  url: '/api/usystem/user/list',
-}
+export const url = '/api/usystem/user/list'
 
 function useCreatingUserModal() {
   const { message } = App.useApp()
   const create = useCreateUser()
   const { data: roles, isLoading } = useAllRoles()
-  const refresh = useQueryListStore(state => state.refresh)
+  const mutate = useQueryListMutate()
 
   return useFormModal<{ id: string; name: string; roles: string[] }>({
     title: '创建用户',
@@ -46,12 +44,9 @@ function useCreatingUserModal() {
       </>
     ),
     async onConfirm(values) {
-      await create.trigger(values, {
-        onSuccess() {
-          message.success('用户创建成功')
-          refresh(swrKey, { page: 1 })
-        },
-      })
+      await create.trigger(values)
+      mutate(url)
+      message.success('用户创建成功')
     },
   })
 }
@@ -60,7 +55,7 @@ function useUpdatingUserModal() {
   const { message } = App.useApp()
   const update = useUpdateUser()
   const { data: roles, isLoading } = useAllRoles()
-  const refresh = useQueryListStore(state => state.refresh)
+  const mutate = useQueryListMutate()
 
   return useFormModal<{ id: string; name: string; roles: string[] }>({
     title: '更新用户',
@@ -89,12 +84,9 @@ function useUpdatingUserModal() {
       </>
     ),
     async onConfirm(values) {
-      await update.trigger(values, {
-        onSuccess() {
-          message.success('用户更新成功')
-          refresh(swrKey, { page: 1 })
-        },
-      })
+      await update.trigger(values)
+      mutate(url)
+      message.success('用户更新成功')
     },
   })
 }
@@ -102,7 +94,7 @@ function useUpdatingUserModal() {
 const UserList: FC = () => {
   const { modal, message } = App.useApp()
   const remove = useRemoveUser()
-  const refresh = useQueryListStore(state => state.refresh)
+  const jump = useQueryListJump()
   const { showModal: showCreatingModal, Modal: CreatingModal } = useCreatingUserModal()
   const { showModal: showUpdatingModal, Modal: UpdatingModal } = useUpdatingUserModal()
 
@@ -184,18 +176,12 @@ const UserList: FC = () => {
                     </Highlight>
                   ),
                   async onOk() {
-                    await remove.trigger(
-                      {
-                        id: value.id,
-                        name: value.name,
-                      },
-                      {
-                        async onSuccess() {
-                          await message.success('用户删除成功')
-                          refresh(swrKey, { page: 1 })
-                        },
-                      },
-                    )
+                    await remove.trigger({
+                      id: value.id,
+                      name: value.name,
+                    })
+                    jump(url, 1)
+                    message.success('用户删除成功')
                   },
                 })
               }}
@@ -206,7 +192,7 @@ const UserList: FC = () => {
         ),
       },
     ]
-  }, [refresh, remove, message, modal, showUpdatingModal])
+  }, [jump, remove, message, modal, showUpdatingModal])
 
   return (
     <>
@@ -225,7 +211,18 @@ const UserList: FC = () => {
           </PermissionButton>
         }
       >
-        <QueryList code="100001" swrKey={swrKey} rowKey="id" columns={columns} />
+        <Form>
+          <QueryList<UserListItem, undefined, { List: UserListItem[]; Total: number }>
+            code="100001"
+            url={url}
+            rowKey="id"
+            columns={columns}
+            transformResponse={response => {
+              const { List, Total } = response
+              return { list: List, total: Total }
+            }}
+          />
+        </Form>
       </Card>
       {CreatingModal}
       {UpdatingModal}

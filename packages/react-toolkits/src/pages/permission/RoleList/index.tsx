@@ -3,39 +3,30 @@ import { useFormModal } from '@/components/FormModal/hooks'
 import type { RoleListItem, RoleV1, RoleV2 } from '@/features/permission'
 import { PermissionList, useCreateRole, useRemoveRole, useUpdateRole } from '@/features/permission'
 import { useHttpClient, usePermission } from '@/hooks'
-import { useQueryListStore } from '@/stores'
+import { useQueryListJump, useQueryListMutate } from '@/stores'
 import { UsergroupAddOutlined } from '@ant-design/icons'
 import type { TableColumnsType } from 'antd'
 import { App, Card, Form, Input, Space } from 'antd'
 import { useCallback, useMemo } from 'react'
 import { Link } from 'react-router-dom'
-import type { ListResponse } from '@/types'
 
-export const swrKey = {
-  url: '/api/usystem/role/list',
-}
+const url = '/api/usystem/role/list'
 
 const useCreateModal = () => {
   const { message } = App.useApp()
-  const refresh = useQueryListStore(state => state.refresh)
+  const mutate = useQueryListMutate()
   const create = useCreateRole()
 
   const onConfirm = useCallback(
     async (values: { name: string; permissions: RoleV1['permissions'] | RoleV2['permissions'] }) => {
-      await create.trigger(
-        {
-          name: `role_${values.name}`,
-          permissions: values.permissions,
-        },
-        {
-          async onSuccess() {
-            await message.success('角色创建成功')
-            refresh(swrKey, { page: 1 })
-          },
-        },
-      )
+      await create.trigger({
+        name: `role_${values.name}`,
+        permissions: values.permissions,
+      })
+      mutate(url)
+      message.success('角色创建成功')
     },
-    [create, refresh, message],
+    [create, mutate, message],
   )
 
   return useFormModal<{
@@ -61,26 +52,20 @@ const useCreateModal = () => {
 
 const useUpdateModal = () => {
   const { message } = App.useApp()
-  const refresh = useQueryListStore(state => state.refresh)
+  const mutate = useQueryListMutate()
   const update = useUpdateRole()
 
   const onConfirm = useCallback(
     async (values: { id: number; name: string; permissions: RoleV1['permissions'] | RoleV2['permissions'] }) => {
-      await update.trigger(
-        {
-          id: values.id,
-          name: `role_${values.name}`,
-          permissions: values.permissions,
-        },
-        {
-          async onSuccess() {
-            await message.success('角色更新成功')
-            refresh(swrKey, { page: 1 })
-          },
-        },
-      )
+      await update.trigger({
+        id: values.id,
+        name: `role_${values.name}`,
+        permissions: values.permissions,
+      })
+      mutate(url)
+      message.success('角色更新成功')
     },
-    [update, refresh, message],
+    [update, mutate, message],
   )
 
   return useFormModal<{
@@ -114,7 +99,7 @@ const RoleList = () => {
   const httpClient = useHttpClient()
   const isPermissionV2 = useReactToolkitsContext(state => state.isPermissionV2)
   const remove = useRemoveRole()
-  const refresh = useQueryListStore(state => state.refresh)
+  const jump = useQueryListJump()
   const { showModal: showCreateModal, Modal: CreateModal } = useCreateModal()
   const { showModal: showUpdateModal, Modal: UpdateModal } = useUpdateModal()
 
@@ -187,18 +172,12 @@ const RoleList = () => {
                       </Highlight>
                     ),
                     async onOk() {
-                      await remove.trigger(
-                        {
-                          id: value.id,
-                          name: value.name,
-                        },
-                        {
-                          async onSuccess() {
-                            await message.success('角色删除成功')
-                            refresh(swrKey, { page: 1 })
-                          },
-                        },
-                      )
+                      await remove.trigger({
+                        id: value.id,
+                        name: value.name,
+                      })
+                      jump(url, 1)
+                      message.success('角色删除成功')
                     },
                   })
                 }}
@@ -210,7 +189,7 @@ const RoleList = () => {
         },
       },
     ],
-    [viewable, httpClient, isPermissionV2, showUpdateModal, modal, remove, message, refresh],
+    [viewable, httpClient, isPermissionV2, showUpdateModal, modal, remove, message, jump],
   )
 
   return (
@@ -230,17 +209,19 @@ const RoleList = () => {
           </PermissionButton>
         }
       >
-        <QueryList<RoleListItem, undefined, ListResponse<RoleListItem>>
-          rowKey="name"
-          columns={columns}
-          code="200001"
-          swrKey={swrKey}
-          // NOTE: 后端接口返回的数据不满足时转换一下
-          transformResponse={response => {
-            const { List, Total } = response
-            return { List, Total }
-          }}
-        />
+        <Form>
+          <QueryList<RoleListItem, undefined, { List: RoleListItem[]; Total: number }>
+            rowKey="name"
+            columns={columns}
+            code="200001"
+            url={url}
+            // 后端接口返回的数据不满足时转换一下
+            transformResponse={response => {
+              const { List, Total } = response
+              return { list: List, total: Total }
+            }}
+          />
+        </Form>
       </Card>
       {CreateModal}
       {UpdateModal}
