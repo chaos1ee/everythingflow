@@ -4,8 +4,8 @@ import type { ColumnsType } from 'antd/es/table'
 import type { TableListItem } from '~/features/table'
 
 interface FormValues {
-  instanceId: string
-  database: string
+  param: number
+  type: 1 | 2
 }
 
 const url = '/api/tables'
@@ -45,7 +45,7 @@ const TableList = () => {
 
   return (
     <Card title="表">
-      <Form form={form}>
+      <Form form={form} initialValues={{ type: 1 }}>
         <QueryList<TableListItem, FormValues, { List: TableListItem[]; Total: number }>
           rowKey="id"
           columns={columns}
@@ -57,21 +57,19 @@ const TableList = () => {
         >
           <Row gutter={20}>
             <Col>
-              <Form.Item label="实例 ID" name="instanceId" rules={[{ required: true }]}>
-                <Input />
-              </Form.Item>
-            </Col>
-            <Col span={4}>
               <Form.Item
-                label="数据库"
-                name="database"
-                dependencies={['instanceId']}
+                name="param"
+                dependencies={['type']}
                 rules={[
                   ({ getFieldValue }) => ({
                     validator(_, value) {
                       return new Promise((resolve, reject) => {
-                        if (getFieldValue('instanceId') && !value) {
-                          reject(new Error('请选择数据库'))
+                        if (!value) {
+                          if (getFieldValue('type') === 1) {
+                            reject(new Error('请输入渠道 UID'))
+                          } else {
+                            reject(new Error('请输入身份证号'))
+                          }
                         }
                         resolve(1)
                       })
@@ -79,13 +77,15 @@ const TableList = () => {
                   }),
                 ]}
               >
-                <Select
-                  showSearch
-                  optionFilterProp="label"
-                  options={[
-                    { label: 'db1', value: 1 },
-                    { label: 'db2', value: 2 },
-                  ]}
+                <Input
+                  addonBefore={
+                    <Form.Item noStyle name="type">
+                      <Select>
+                        <Select.Option value={1}>实例</Select.Option>
+                        <Select.Option value={2}>数据库</Select.Option>
+                      </Select>
+                    </Form.Item>
+                  }
                 />
               </Form.Item>
             </Col>
