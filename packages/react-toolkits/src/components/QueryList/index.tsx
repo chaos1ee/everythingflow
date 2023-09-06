@@ -144,7 +144,8 @@ const QueryList = <Item extends object, Values extends object | undefined, Respo
       }
     }
 
-    init()
+    // 增加延时，防止回调在表单实例化前触发
+    setTimeout(() => init)
   }, [form, set])
 
   if (!accessible) {

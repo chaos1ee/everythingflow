@@ -62,7 +62,23 @@ const TableList = () => {
               </Form.Item>
             </Col>
             <Col span={4}>
-              <Form.Item label="数据库" name="database" rules={[{ required: true }]}>
+              <Form.Item
+                label="数据库"
+                name="database"
+                dependencies={['instanceId']}
+                rules={[
+                  ({ getFieldValue }) => ({
+                    validator(_, value) {
+                      return new Promise((resolve, reject) => {
+                        if (getFieldValue('instanceId') && !value) {
+                          reject(new Error('请选择数据库'))
+                        }
+                        resolve(1)
+                      })
+                    },
+                  }),
+                ]}
+              >
                 <Select
                   showSearch
                   optionFilterProp="label"

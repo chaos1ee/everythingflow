@@ -35,7 +35,8 @@ export function useFormModal<Values extends object>(props: UseFormModalProps<Val
 
   const closeModal = useCallback(() => {
     setOpen(false)
-  }, [])
+    form.resetFields()
+  }, [form])
 
   const formProps = useMemo(
     () => ({
