@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.2.13
+
+### Patch Changes
+
+- d7349bc: fix type issues
+
 ## 0.2.12
 
 ### Patch Changes
