@@ -23,7 +23,7 @@ export interface QueryListProps<Item, Values, Response>
   code?: string
   headers?: Record<string, string>
   // 把表单的值和分页数据转换成请求参数
-  transformArg?: (page: number, size: number, values: Values | undefined) => unknown
+  transformArg?: (page: number, size: number, values: Values) => unknown
   // 当请求的返回值不满足时进行转换
   transformResponse?: (response: Response) => ListResponse<Item>
   afterSuccess?: (response: ListResponse<Item>, action?: QueryListAction) => void
@@ -51,7 +51,7 @@ const QueryList = <Item extends object, Values extends object | undefined, Respo
   )
 
   const swrKey: null | [string, QueryListStoreValue] = skipFetch.current ? null : [url, listData]
-  
+
   const { data, isLoading, mutate } = useSWR(
     swrKey,
     async arg => {
