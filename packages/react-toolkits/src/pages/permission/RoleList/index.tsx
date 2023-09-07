@@ -23,7 +23,7 @@ const useCreateModal = () => {
         name: `role_${values.name}`,
         permissions: values.permissions,
       })
-      mutate(url)
+      await mutate(url)
       message.success('角色创建成功')
     },
     [create, mutate, message],
@@ -62,7 +62,7 @@ const useUpdateModal = () => {
         name: `role_${values.name}`,
         permissions: values.permissions,
       })
-      mutate(url)
+      await mutate(url)
       message.success('角色更新成功')
     },
     [update, mutate, message],
