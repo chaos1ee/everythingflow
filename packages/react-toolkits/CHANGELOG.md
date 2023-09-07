@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.2.16
+
+### Patch Changes
+
+- 6d43fa6: feat: change parameters type of useQueryListMutate
+
 ## 0.2.15
 
 ### Patch Changes
