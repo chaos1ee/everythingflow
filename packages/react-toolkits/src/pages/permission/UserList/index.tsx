@@ -45,7 +45,7 @@ function useCreatingUserModal() {
     ),
     async onConfirm(values) {
       await create.trigger(values)
-      mutate(url)
+      await mutate(url)
       message.success('用户创建成功')
     },
   })
@@ -85,7 +85,7 @@ function useUpdatingUserModal() {
     ),
     async onConfirm(values) {
       await update.trigger(values)
-      mutate(url)
+      await mutate(url)
       message.success('用户更新成功')
     },
   })

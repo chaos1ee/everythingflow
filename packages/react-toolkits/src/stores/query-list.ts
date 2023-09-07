@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { create } from 'zustand'
-import type { MutatorOptions } from 'swr'
 import { useSWRConfig } from 'swr'
 import type { ListResponse } from '@/types'
+import type { MutatorCallback, MutatorOptions } from 'swr/_internal'
 
 export interface QueryListStoreValue {
   page: number
@@ -40,7 +40,11 @@ export function useQueryListMutate() {
   const { getData } = useQueryListStore(state => state)
   const { mutate } = useSWRConfig()
 
-  return <T>(key: string, data?: ListResponse<T>, opts?: boolean | MutatorOptions<ListResponse<T>>) => {
+  return <T>(
+    key: string,
+    data?: ListResponse<T> | Promise<ListResponse<T>> | MutatorCallback<ListResponse<T>>,
+    opts?: boolean | MutatorOptions<ListResponse<T>>,
+  ) => {
     return mutate([key, getData(key)], data, opts)
   }
 }
