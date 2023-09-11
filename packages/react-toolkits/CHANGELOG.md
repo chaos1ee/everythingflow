@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.2.18
+
+### Patch Changes
+
+- cd0dea1: fix: missing form prop
+
 ## 0.2.17
 
 ### Patch Changes
