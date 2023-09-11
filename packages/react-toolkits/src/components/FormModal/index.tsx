@@ -9,14 +9,14 @@ export interface FormModalProps<Values>
     ModalProps,
     'onCancel' | 'children' | 'destroyOnClose' | 'forceRender' | 'getContainer' | 'footer' | 'confirmLoading'
   > {
-  footerRender?: (form: FormInstance<Values>) => ReactNode
+  renderFooter?: (form: FormInstance<Values>) => ReactNode
   onCancel?: VoidFunction
   onConfirm?: (values: Values) => Promise<void>
   initialValues?: DeepPartial<Values>
 }
 
 const FormModal = <Values extends object>(props: PropsWithChildren<FormModalProps<Values>>) => {
-  const { initialValues, footerRender, className, children, onCancel, onConfirm, ...restProps } = props
+  const { initialValues, renderFooter, className, children, onCancel, onConfirm, ...restProps } = props
   const form = Form.useFormInstance<Values>()
   const [confirming, setConfirming] = useState(false)
 
@@ -36,14 +36,16 @@ const FormModal = <Values extends object>(props: PropsWithChildren<FormModalProp
     }
   }
 
-  const footer = footerRender?.(form) ?? [
-    <Button key="cancel" onClick={handleCancel}>
-      取消
-    </Button>,
-    <Button key="submit" type="primary" loading={confirming} onClick={handleSubmit}>
-      确定
-    </Button>,
-  ]
+  const footer = renderFooter
+    ? renderFooter(form)
+    : [
+      <Button key="cancel" onClick={handleCancel}>
+        取消
+      </Button>,
+      <Button key="submit" type="primary" loading={confirming} onClick={handleSubmit}>
+        确定
+      </Button>,
+      ]
 
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any

@@ -1,5 +1,12 @@
 import { createBrowserRouter, Navigate, Outlet, useRouteError } from 'react-router-dom'
-import { baseRoutes, HttpClientError, Layout, permissionRoutes, useTokenStore } from 'react-toolkits'
+import {
+  baseRoutes,
+  FetcherError,
+  Layout,
+  permissionRoutes,
+  ToolkitsContextProvider,
+  useTokenStore,
+} from 'react-toolkits'
 import tableRoutes from '~/pages/table'
 import type { FC } from 'react'
 import { Suspense } from 'react'
@@ -22,7 +29,7 @@ const Root: FC = () => {
       value={{
         shouldRetryOnError: false,
         onError(error) {
-          if (error instanceof HttpClientError) {
+          if (error instanceof FetcherError) {
             switch (error.code) {
               case 401:
               case 412:
@@ -64,7 +71,7 @@ const ErrorElement: FC = () => {
   const { notification } = App.useApp()
   const clearToken = useTokenStore(state => state.clearToken)
 
-  if (error instanceof HttpClientError) {
+  if (error instanceof FetcherError) {
     switch (error.code) {
       case 401:
       case 412:
@@ -99,9 +106,11 @@ const router: any = createBrowserRouter([
       },
       {
         element: (
-          <Layout>
-            <Outlet />
-          </Layout>
+          <ToolkitsContextProvider>
+            <Layout>
+              <Outlet />
+            </Layout>
+          </ToolkitsContextProvider>
         ),
         children: routes,
       },

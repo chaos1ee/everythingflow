@@ -1,5 +1,5 @@
-import {usePermissions} from '@/hooks'
-import {Menu} from 'antd'
+import { usePermissions } from '@/hooks'
+import { Menu } from 'antd'
 import type {
   ItemType,
   MenuDividerType,
@@ -7,11 +7,12 @@ import type {
   MenuItemType,
   SubMenuType,
 } from 'antd/es/menu/hooks/useItems'
-import type {ReactNode} from 'react'
-import {useCallback, useEffect, useMemo} from 'react'
-import {Link, useLocation} from 'react-router-dom'
-import type {Merge} from 'ts-essentials'
-import {useReactToolkitsContext} from '@/components'
+import type { ReactNode } from 'react'
+import { useCallback, useEffect, useMemo } from 'react'
+import { Link, useLocation } from 'react-router-dom'
+import type { Merge } from 'ts-essentials'
+import { useToolkitContextStore } from '@/components'
+import { useNavStore } from '@/components/NavMenu/store'
 
 // 扩展 antd Menu 的类型，使其支持一些我们想要的自定义字段。
 type MenuItemType2 = Merge<
@@ -100,12 +101,12 @@ function flatItems(
 
 const NavMenu = () => {
   const location = useLocation()
-  const items = useReactToolkitsContext(state => state.menuItems)
-  const flattenItems = useMemo(() => flatItems(items ?? []), [items])
+  const { menuItems } = useToolkitContextStore(state => state)
+  const flattenItems = useMemo(() => flatItems(menuItems ?? []), [menuItems])
   const codes = flattenItems.map(item => item.code).filter(Boolean) as string[]
   const { data: permissions } = usePermissions(codes, true)
-  const internalItems = useMemo(() => transformItems(items ?? [], permissions), [items, permissions])
-  const { openKeys, selectedKeys, setOpenKeys, setSelectedKeys } = useReactToolkitsContext(state => state)
+  const internalItems = useMemo(() => transformItems(menuItems ?? [], permissions), [menuItems, permissions])
+  const { openKeys, selectedKeys, setOpenKeys, setSelectedKeys } = useNavStore()
 
   const onOpenChange = useCallback(
     (keys: string[]) => {

@@ -4,8 +4,6 @@ import { useCallback, useEffect, useState } from 'react'
 import type { CheckboxChangeEvent } from 'antd/es/checkbox'
 import { Checkbox, Col, Collapse, Row } from 'antd'
 
-const { Panel } = Collapse
-
 interface PermissionCollapseProps {
   expand?: boolean
   permissions?: PermissionEnumItem[]

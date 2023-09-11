@@ -2,31 +2,19 @@ import { Select, Space, Typography } from 'antd'
 import { useCallback, useMemo } from 'react'
 import { useTokenStore } from '@/stores'
 import useSWRImmutable from 'swr/immutable'
-import { useReactToolkitsContext } from '@/components'
-import { useHttpClient } from '@/hooks'
+import { useGameStore, useToolkitContextStore } from '@/components'
+import type { Game } from './types'
+import { request } from '@/utils'
 
 const { Text } = Typography
 
-export interface GameType {
-  id: string
-  name: string
-  area: 'cn' | 'global'
-  Ctime: string
-}
-
 function useGames() {
-  const { isPermissionV2, isGlobalNS } = useReactToolkitsContext(state => state)
+  const { usePermissionV2 } = useToolkitContextStore(state => state)
   const user = useTokenStore(state => state.getUser())
-  const httpClient = useHttpClient()
 
-  const { data, isLoading } = useSWRImmutable<GameType[]>(
-    isPermissionV2 && !isGlobalNS && user ? `/api/usystem/game/all?user=${user.authorityId}` : null,
-    url =>
-      httpClient.get(url, {
-        headers: {
-          'App-ID': 'global',
-        },
-      }),
+  const { data, isLoading } = useSWRImmutable<Game[]>(
+    usePermissionV2 && user ? `/api/usystem/game/all?user=${user.authorityId}` : null,
+    url => request(url, undefined, true),
   )
 
   return {
@@ -36,7 +24,8 @@ function useGames() {
 }
 
 const GameSelect = () => {
-  const { game, setGame, isGlobalNS, isPermissionV2, onlyDomesticGames } = useReactToolkitsContext(state => state)
+  const { usePermissionV2, onlyDomesticGames } = useToolkitContextStore(state => state)
+  const { game, setGame } = useGameStore()
   const { games, isLoading } = useGames()
 
   const options = useMemo(
@@ -52,15 +41,13 @@ const GameSelect = () => {
 
   const onGameChange = useCallback(
     async (id: string) => {
-      const matchGame = (games ?? []).find(item => item.id === id) ?? null
-      setGame(matchGame)
+      const matchGame = (games ?? []).find(item => item.id === id)
+      if (matchGame) {
+        setGame(matchGame)
+      }
     },
     [games, setGame],
   )
-
-  if (!isPermissionV2 || isGlobalNS) {
-    return null
-  }
 
   return (
     <Space>

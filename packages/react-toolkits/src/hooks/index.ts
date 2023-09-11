@@ -1,2 +1,1 @@
-export * from './use-http-client'
-export * from './use-permission'
+export * from './permission'

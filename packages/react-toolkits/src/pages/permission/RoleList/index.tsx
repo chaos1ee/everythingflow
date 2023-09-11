@@ -1,14 +1,15 @@
-import { Highlight, PermissionButton, QueryList, useReactToolkitsContext } from '@/components'
+import { Highlight, PermissionButton, QueryList, useToolkitContextStore } from '@/components'
 import { useFormModal } from '@/components/FormModal/hooks'
 import type { RoleListItem, RoleV1, RoleV2 } from '@/features/permission'
 import { PermissionList, useCreateRole, useRemoveRole, useUpdateRole } from '@/features/permission'
-import { useHttpClient, usePermission } from '@/hooks'
+import { usePermission } from '@/hooks'
 import { useQueryListJump, useQueryListMutate } from '@/stores'
 import { UsergroupAddOutlined } from '@ant-design/icons'
 import type { TableColumnsType } from 'antd'
 import { App, Card, Form, Input, Space } from 'antd'
 import { useCallback, useMemo } from 'react'
 import { Link } from 'react-router-dom'
+import { request } from '@/utils'
 
 const url = '/api/usystem/role/list'
 
@@ -96,8 +97,7 @@ const useUpdateModal = () => {
 const RoleList = () => {
   const { accessible: viewable } = usePermission('200005')
   const { modal, message } = App.useApp()
-  const httpClient = useHttpClient()
-  const isPermissionV2 = useReactToolkitsContext(state => state.isPermissionV2)
+  const { usePermissionV2 } = useToolkitContextStore(state => state)
   const remove = useRemoveRole()
   const jump = useQueryListJump()
   const { showModal: showCreateModal, Modal: CreateModal } = useCreateModal()
@@ -138,11 +138,10 @@ const RoleList = () => {
                 size="small"
                 type="link"
                 onClick={async () => {
-                  const role = await httpClient.get<RoleV1 | RoleV2>(
-                    isPermissionV2 ? '/api/usystem/role/infoV2' : '/api/usystem/role/info',
-                    {
-                      params: { name: value.name },
-                    },
+                  const role = await request<RoleV1 | RoleV2>(
+                    `/api/usystem/role/info${usePermissionV2 ? 'V2' : ''}?name=${value.name}`,
+                    {},
+                    true,
                   )
 
                   showUpdateModal({
@@ -189,7 +188,7 @@ const RoleList = () => {
         },
       },
     ],
-    [viewable, httpClient, isPermissionV2, showUpdateModal, modal, remove, message, jump],
+    [viewable, usePermissionV2, showUpdateModal, modal, remove, message, jump],
   )
 
   return (

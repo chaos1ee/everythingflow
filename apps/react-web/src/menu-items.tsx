@@ -6,7 +6,18 @@ const navItems: ItemType2[] = [
     key: 'table',
     label: '表',
     icon: <ConsoleSqlOutlined />,
-    route: '/table',
+    children: [
+      {
+        key: 'table_list',
+        label: '查询表',
+        route: '/table',
+      },
+      {
+        key: 'version_list',
+        label: '版本',
+        route: '/table/version',
+      },
+    ],
   },
   {
     key: 'permission',
