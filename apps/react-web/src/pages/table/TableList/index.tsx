@@ -11,7 +11,6 @@ interface FormValues {
 const url = '/api/tables'
 
 const TableList = () => {
-  const [form] = Form.useForm<FormValues>()
   const jump = useQueryListJump()
 
   const columns: ColumnsType<TableListItem> = [
@@ -45,56 +44,54 @@ const TableList = () => {
 
   return (
     <Card title="表">
-      <Form form={form} initialValues={{ type: 1 }}>
-        <QueryList<TableListItem, FormValues, { List: TableListItem[]; Total: number }>
-          rowKey="id"
-          columns={columns}
-          url={url}
-          transformResponse={response => {
-            const { List, Total } = response
-            return { list: List, total: Total }
-          }}
-          renderForm={() => (
-            <Form>
-              <Row gutter={20}>
-                <Col>
-                  <Form.Item
-                    name="param"
-                    dependencies={['type']}
-                    rules={[
-                      ({ getFieldValue }) => ({
-                        validator(_, value) {
-                          return new Promise((resolve, reject) => {
-                            if (!value) {
-                              if (getFieldValue('type') === 1) {
-                                reject(new Error('请输入渠道 UID'))
-                              } else {
-                                reject(new Error('请输入身份证号'))
-                              }
+      <QueryList<TableListItem, FormValues, { List: TableListItem[]; Total: number }>
+        rowKey="id"
+        columns={columns}
+        url={url}
+        transformResponse={response => {
+          const { List, Total } = response
+          return { list: List, total: Total }
+        }}
+        renderForm={form => (
+          <Form form={form} initialValues={{ type: 1 }}>
+            <Row gutter={20}>
+              <Col>
+                <Form.Item
+                  name="param"
+                  dependencies={['type']}
+                  rules={[
+                    ({ getFieldValue }) => ({
+                      validator(_, value) {
+                        return new Promise((resolve, reject) => {
+                          if (!value) {
+                            if (getFieldValue('type') === 1) {
+                              reject(new Error('请输入渠道 UID'))
+                            } else {
+                              reject(new Error('请输入身份证号'))
                             }
-                            resolve(1)
-                          })
-                        },
-                      }),
-                    ]}
-                  >
-                    <Input
-                      addonBefore={
-                        <Form.Item noStyle name="type">
-                          <Select>
-                            <Select.Option value={1}>实例</Select.Option>
-                            <Select.Option value={2}>数据库</Select.Option>
-                          </Select>
-                        </Form.Item>
-                      }
-                    />
-                  </Form.Item>
-                </Col>
-              </Row>
-            </Form>
-          )}
-        />
-      </Form>
+                          }
+                          resolve(1)
+                        })
+                      },
+                    }),
+                  ]}
+                >
+                  <Input
+                    addonBefore={
+                      <Form.Item noStyle name="type">
+                        <Select>
+                          <Select.Option value={1}>实例</Select.Option>
+                          <Select.Option value={2}>数据库</Select.Option>
+                        </Select>
+                      </Form.Item>
+                    }
+                  />
+                </Form.Item>
+              </Col>
+            </Row>
+          </Form>
+        )}
+      />
     </Card>
   )
 }
