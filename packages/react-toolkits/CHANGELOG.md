@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.2.20
+
+### Patch Changes
+
+- fceb92e: fix: missing isGlobalNS prop in ToolkitsContextProvider
+
 ## 0.2.19
 
 ### Patch Changes
