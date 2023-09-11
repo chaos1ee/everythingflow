@@ -1,5 +1,12 @@
 # react-toolkits
 
+## 0.2.23
+
+### Patch Changes
+
+- c6825d1: fix: ToolkitsContextProvider title value issue
+- 99bd364: feat: cache ToolkitsContext config
+
 ## 0.2.22
 
 ### Patch Changes
