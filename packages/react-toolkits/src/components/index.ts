@@ -13,7 +13,12 @@ import PermissionButton from './PermissionButton'
 import type { QueryListProps } from './QueryList'
 import QueryList, { QueryListAction } from './QueryList'
 import type { ToolkitsContextState } from './ToolkitsContext'
-import { toolkitContextStore, ToolkitsContextProvider, useToolkitContextStore } from './ToolkitsContext'
+import {
+  toolkitContextStore,
+  ToolkitsContextProvider,
+  useToolkitContext,
+  useToolkitContextStore,
+} from './ToolkitsContext'
 import type { Game, GameState } from './GameSelect/types'
 import GameSelect from './GameSelect'
 import { useGameStore } from './GameSelect/store'
@@ -43,6 +48,7 @@ export {
   PermissionGuard,
   QueryListAction,
   useGameStore,
+  useToolkitContext,
 }
 export type {
   DynamicTagsProps,

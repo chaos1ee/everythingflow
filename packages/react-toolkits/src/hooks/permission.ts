@@ -40,7 +40,6 @@ export function usePermissions(codes: string[], isGlobalNS = false) {
       }),
     {
       suspense: true,
-      refreshInterval: 5000,
       revalidateOnFocus: true,
       shouldRetryOnError: false,
     },
