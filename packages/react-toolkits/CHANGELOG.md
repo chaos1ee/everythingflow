@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.2.22
+
+### Patch Changes
+
+- a9d0a28: feat: set default values for ToolkitsContextProvider
+
 ## 0.2.21
 
 ### Patch Changes
