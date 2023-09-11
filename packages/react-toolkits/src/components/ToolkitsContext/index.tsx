@@ -35,7 +35,7 @@ export const ToolkitsContextProvider: FC<PropsWithChildren<Partial<ToolkitsConte
   const { title = '', menuItems = [], isGlobalNS = false, usePermissionV2 = false, onlyDomesticGames = false } = props
   const config = useMemo(
     () => ({
-      title: title ?? toolkitContextStore.getState().title,
+      title: title || toolkitContextStore.getState().title,
       menuItems: menuItems.length === 0 ? toolkitContextStore.getState().menuItems : menuItems,
       isGlobalNS,
       usePermissionV2,
