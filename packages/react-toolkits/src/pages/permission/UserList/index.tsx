@@ -211,18 +211,16 @@ const UserList: FC = () => {
           </PermissionButton>
         }
       >
-        <Form>
-          <QueryList<UserListItem, undefined, { List: UserListItem[]; Total: number }>
-            code="100001"
-            url={url}
-            rowKey="id"
-            columns={columns}
-            transformResponse={response => {
-              const { List, Total } = response
-              return { list: List, total: Total }
-            }}
-          />
-        </Form>
+        <QueryList<UserListItem, undefined, { List: UserListItem[]; Total: number }>
+          code="100001"
+          url={url}
+          rowKey="id"
+          columns={columns}
+          transformResponse={response => {
+            const { List, Total } = response
+            return { list: List, total: Total }
+          }}
+        />
       </Card>
       {CreatingModal}
       {UpdatingModal}

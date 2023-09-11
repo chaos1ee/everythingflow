@@ -48,7 +48,7 @@ const QueryList = <Item extends object, Values extends object | undefined, Respo
     ...tableProps
   } = props
   const { accessible } = usePermission(code)
-  const [formInstance] = Form.useForm<Values>(form)
+  const [internalForm] = Form.useForm<Values>(form)
   const { getParams, setParams } = useQueryListStore()
   const actionRef = useRef<QueryListAction>()
   const listParams = getParams(url)
@@ -128,21 +128,21 @@ const QueryList = <Item extends object, Values extends object | undefined, Respo
     actionRef.current = QueryListAction.Submit
     set({
       page: 1,
-      formValues: formInstance.getFieldsValue(),
+      formValues: internalForm.getFieldsValue(),
     })
   }
 
   const afterReset = async () => {
     try {
       actionRef.current = QueryListAction.Reset
-      formInstance.resetFields()
-      const values = await formInstance.validateFields()
+      internalForm.resetFields()
+      const values = await internalForm.validateFields()
       set({
         page: 1,
         formValues: values,
       })
     } catch (_) {
-      const values = formInstance.getFieldsValue()
+      const values = internalForm.getFieldsValue()
       set(
         {
           page: 1,
@@ -165,18 +165,18 @@ const QueryList = <Item extends object, Values extends object | undefined, Respo
   useEffect(() => {
     const init = async () => {
       try {
-        const values = await formInstance.validateFields()
+        const values = await internalForm.validateFields()
         set({
           formValues: values,
         })
       } catch (_) {
-        formInstance.resetFields()
+        internalForm.resetFields()
       }
     }
 
     // 增加延时，防止回调在表单实例化前触发
     setTimeout(init)
-  }, [formInstance, set])
+  }, [internalForm, set])
 
   if (!accessible) {
     return <Result status={403} subTitle="无权限，请联系管理员进行授权" />
@@ -185,11 +185,13 @@ const QueryList = <Item extends object, Values extends object | undefined, Respo
   return (
     <>
       <FilterFormWrapper
+        form={internalForm}
         confirmText={confirmText}
         afterReset={afterReset}
         afterConfirm={afterConfirm}
-        renderForm={renderForm}
-      />
+      >
+        {formInstance => renderForm?.(formInstance)}
+      </FilterFormWrapper>
       <Table {...tableProps} dataSource={data?.list} loading={isLoading} pagination={pagination} />
     </>
   )
