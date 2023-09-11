@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.2.21
+
+### Patch Changes
+
+- c6c3627: feat: add 'params' property for request function
+
 ## 0.2.20
 
 ### Patch Changes
