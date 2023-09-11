@@ -190,7 +190,7 @@ const QueryList = <Item extends object, Values extends object | undefined, Respo
         afterReset={afterReset}
         afterConfirm={afterConfirm}
       >
-        {formInstance => renderForm?.(formInstance)}
+        {renderForm}
       </FilterFormWrapper>
       <Table {...tableProps} dataSource={data?.list} loading={isLoading} pagination={pagination} />
     </>
