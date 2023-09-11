@@ -3,7 +3,6 @@ import { createContext, useEffect, useMemo } from 'react'
 import { createStore } from 'zustand/vanilla'
 import type { ItemType2 } from '../NavMenu'
 import { useStore } from 'zustand'
-import { merge } from 'lodash-es'
 
 export interface ToolkitsContextState {
   title: string
@@ -33,7 +32,17 @@ export const ToolkitsContextProvider: FC<PropsWithChildren<Partial<ToolkitsConte
   children,
   ...props
 }) => {
-  const config = useMemo(() => merge(toolkitContextStore.getState(), props), [props])
+  const { title = '', menuItems = [], isGlobalNS = false, usePermissionV2 = false, onlyDomesticGames = false } = props
+  const config = useMemo(
+    () => ({
+      title: title ?? toolkitContextStore.getState().title,
+      menuItems: menuItems.length === 0 ? toolkitContextStore.getState().menuItems : menuItems,
+      isGlobalNS,
+      usePermissionV2,
+      onlyDomesticGames,
+    }),
+    [isGlobalNS, menuItems, onlyDomesticGames, title, usePermissionV2],
+  )
 
   useEffect(() => {
     toolkitContextStore.setState(config)
