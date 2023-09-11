@@ -1,52 +1,37 @@
-import { useHttpClient, usePermission } from '@/hooks'
+import { usePermission } from '@/hooks'
 import useSWR from 'swr'
 import useSWRMutation from 'swr/mutation'
 import type { PermissionEnumItem, RoleEnumItem, RoleV1, RoleV2 } from '../types'
-import type { GameType } from '@/components/GameSelect'
-import { useReactToolkitsContext } from '@/components'
+import type { Game } from '@/components'
+import { useToolkitContextStore } from '@/components'
+import { request } from '@/utils'
 
 export function useAllPermissions() {
-  return useSWR<PermissionEnumItem[]>({
-    url: '/api/usystem/user/allPermssions',
-  })
+  return useSWR<PermissionEnumItem[]>(['/api/usystem/user/allPermssions', {}, true])
 }
 
 export function useAllPermissionsV2() {
   return useSWR<{
-    game: GameType[]
+    game: Game[]
     permission: PermissionEnumItem[]
-  }>({
-    url: '/api/usystem/user/allPermissionsV2',
-  })
+  }>(['/api/usystem/user/allPermissionsV2', {}, true])
 }
 
 export function useAllRoles() {
   const { accessible } = usePermission('200005')
-
-  return useSWR<RoleEnumItem[]>(
-    accessible
-      ? {
-          url: '/api/usystem/role/all',
-        }
-      : null,
-  )
+  return useSWR<RoleEnumItem[]>(accessible ? ['/api/usystem/role/all', {}, true] : null)
 }
 
 export function useRole(name: string) {
-  const isPermissionV2 = useReactToolkitsContext(state => state.isPermissionV2)
-
-  return useSWR<RoleV1 | RoleV2>({
-    url: isPermissionV2 ? '/api/usystem/role/infoV2' : '/api/usystem/role/info',
-    params: { name },
-  })
+  const { usePermissionV2 } = useToolkitContextStore(state => state)
+  return useSWR<RoleV1 | RoleV2>([`/api/usystem/role/${usePermissionV2 ? 'infoV2' : 'info'}?name=${name}`, {}, true])
 }
 
 export function useCreateRole() {
-  const httpClient = useHttpClient()
-  const isPermissionV2 = useReactToolkitsContext(state => state.isPermissionV2)
+  const { usePermissionV2 } = useToolkitContextStore(state => state)
 
   return useSWRMutation(
-    isPermissionV2 ? '/api/usystem/role/createV2' : '/api/usystem/role/create',
+    usePermissionV2 ? '/api/usystem/role/createV2' : '/api/usystem/role/create',
     (
       url: string,
       {
@@ -54,16 +39,23 @@ export function useCreateRole() {
       }: {
         arg: { name: string; permissions: RoleV1['permissions'] | RoleV2['permissions'] }
       },
-    ) => httpClient.post(url, arg),
+    ) =>
+      request(
+        url,
+        {
+          method: 'post',
+          body: arg,
+        },
+        true,
+      ),
   )
 }
 
 export function useUpdateRole() {
-  const httpClient = useHttpClient()
-  const isPermissionV2 = useReactToolkitsContext(state => state.isPermissionV2)
+  const { usePermissionV2 } = useToolkitContextStore(state => state)
 
   return useSWRMutation(
-    isPermissionV2 ? '/api/usystem/role/updateV2' : '/api/usystem/role/update',
+    usePermissionV2 ? '/api/usystem/role/updateV2' : '/api/usystem/role/update',
     (
       url: string,
       {
@@ -71,13 +63,19 @@ export function useUpdateRole() {
       }: {
         arg: { id: number; name: string; permissions: RoleV1['permissions'] | RoleV2['permissions'] }
       },
-    ) => httpClient.post(url, arg),
+    ) =>
+      request(
+        url,
+        {
+          method: 'post',
+          body: arg,
+        },
+        true,
+      ),
   )
 }
 
 export function useRemoveRole() {
-  const httpClient = useHttpClient()
-
   return useSWRMutation(
     '/api/usystem/role/delete',
     (
@@ -87,13 +85,19 @@ export function useRemoveRole() {
       }: {
         arg: { id: number; name: string }
       },
-    ) => httpClient.post(url, arg),
+    ) =>
+      request(
+        url,
+        {
+          method: 'post',
+          body: arg,
+        },
+        true,
+      ),
   )
 }
 
 export function useCreateUser() {
-  const httpClient = useHttpClient()
-
   return useSWRMutation(
     '/api/usystem/user/create',
     (
@@ -103,13 +107,19 @@ export function useCreateUser() {
       }: {
         arg: { name: string; roles: string[] }
       },
-    ) => httpClient.post(url, arg),
+    ) =>
+      request(
+        url,
+        {
+          method: 'post',
+          body: arg,
+        },
+        true,
+      ),
   )
 }
 
 export function useUpdateUser() {
-  const httpClient = useHttpClient()
-
   return useSWRMutation(
     '/api/usystem/user/update',
     (
@@ -119,13 +129,15 @@ export function useUpdateUser() {
       }: {
         arg: { id: string; name: string; roles: string[] }
       },
-    ) => httpClient.post(url, arg),
+    ) =>
+      request(url, {
+        method: 'post',
+        body: arg,
+      }),
   )
 }
 
 export function useRemoveUser() {
-  const httpClient = useHttpClient()
-
   return useSWRMutation(
     '/api/usystem/user/delete',
     (
@@ -135,6 +147,14 @@ export function useRemoveUser() {
       }: {
         arg: { id: string; name: string }
       },
-    ) => httpClient.post(url, arg),
+    ) =>
+      request(
+        url,
+        {
+          method: 'post',
+          body: arg,
+        },
+        true,
+      ),
   )
 }

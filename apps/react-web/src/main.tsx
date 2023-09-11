@@ -7,7 +7,7 @@ import { RouterProvider } from 'react-router-dom'
 import 'react-toolkits/dist/index.css'
 import router from '~/router'
 import '~/styles/index.css'
-import { ReactToolkitsProvider } from 'react-toolkits'
+import { ToolkitsContextProvider } from 'react-toolkits'
 import menuItems from '~/menu-items'
 
 dayjs.locale('zh-cn')
@@ -22,7 +22,7 @@ const container = document.getElementById('root') as HTMLElement
 const root = createRoot(container)
 
 root.render(
-  <ReactToolkitsProvider isPermissionV2 onlyDomesticGames title="React Web" menuItems={menuItems}>
+  <ToolkitsContextProvider usePermissionV2 title="React Web" menuItems={menuItems}>
     <ConfigProvider
       locale={zhCN}
       theme={{
@@ -52,5 +52,5 @@ root.render(
         />
       </App>
     </ConfigProvider>
-  </ReactToolkitsProvider>,
+  </ToolkitsContextProvider>,
 )

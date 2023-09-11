@@ -42,7 +42,6 @@
   "dependencies": {
     "@ant-design/icons": "^5.1.4",
     "antd": "^5.7.3",
-    "axios": "^1.4.0",
     "dayjs": "^1.11.9",
     "events": "^3.3.0",
     "jwt-decode": "^3.1.2",

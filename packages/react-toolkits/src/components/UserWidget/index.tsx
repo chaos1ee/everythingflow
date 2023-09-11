@@ -7,8 +7,8 @@ import { useTokenStore } from '@/stores'
 
 const UserWidget: FC = props => {
   const navigate = useNavigate()
-  const clearToken = useTokenStore(state => state.clearToken)
-  const user = useTokenStore(state => state.getUser())
+  const { clearToken, getUser } = useTokenStore()
+  const user = getUser()
 
   return (
     <Dropdown

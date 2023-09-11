@@ -1,12 +1,13 @@
 import { Card, Empty } from 'antd'
 import type { FC, PropsWithChildren } from 'react'
-import { useReactToolkitsContext } from '@/components'
+import { useGameStore, useToolkitContextStore } from '@/components'
 
 const RequireGame: FC<PropsWithChildren> = props => {
   const { children } = props
-  const { game, isPermissionV2, isGlobalNS } = useReactToolkitsContext(state => state)
+  const { usePermissionV2, isGlobalNS } = useToolkitContextStore(state => state)
+  const { game } = useGameStore()
 
-  if (isPermissionV2 && !isGlobalNS && !game) {
+  if (usePermissionV2 && !isGlobalNS && !game) {
     return (
       <Card>
         <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="请选择游戏" />

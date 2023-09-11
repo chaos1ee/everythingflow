@@ -4,7 +4,7 @@ import type { FC, PropsWithChildren } from 'react'
 import * as React from 'react'
 import { Suspense } from 'react'
 import { Link } from 'react-router-dom'
-import { GameSelect, NavMenu, useReactToolkitsContext, UserWidget } from '@/components'
+import { GameSelect, NavMenu, useGameStore, UserWidget, useToolkitContextStore } from '@/components'
 import { SWRConfig } from 'swr'
 import logo from './logo.png'
 import RequireGame from '@/components/RequireGame'
@@ -14,14 +14,16 @@ const { Header, Sider, Content } = Antd.Layout
 
 export interface LayoutProps extends PropsWithChildren {
   extra?: React.ReactNode[]
+  isGlobalNS?: boolean
 }
 
 const Layout: FC<LayoutProps> = props => {
-  const { children, extra } = props
+  const { children, extra, isGlobalNS } = props
   const {
     token: { colorBgContainer, colorBorder },
   } = theme.useToken()
-  const { title, game } = useReactToolkitsContext(state => state)
+  const { title, usePermissionV2 } = useToolkitContextStore(state => state)
+  const { game } = useGameStore()
 
   return (
     <Antd.Layout hasSider className="h-screen">
@@ -59,9 +61,7 @@ const Layout: FC<LayoutProps> = props => {
           }}
         >
           <div className="flex justify-between items-center h-full">
-            <div>
-              <GameSelect />
-            </div>
+            <div>{usePermissionV2 && !isGlobalNS && <GameSelect />}</div>
             <Space size="small" split={<Divider type="vertical" />}>
               {extra}
               <UserWidget />
