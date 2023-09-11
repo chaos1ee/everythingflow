@@ -23,34 +23,36 @@ const root = createRoot(container)
 
 root.render(
   <ToolkitsContextProvider usePermissionV2 title="React Web" menuItems={menuItems}>
-    <ConfigProvider
-      locale={zhCN}
-      theme={{
-        token: {
-          colorPrimary: '#ff5a00',
-          colorLink: '#ff5a00',
-          colorLinkHover: '#ff927b',
-          colorLinkActive: '#ff927b',
-          colorBorder: 'rgba(5, 5, 5, 0.06)',
-        },
-      }}
-    >
-      <App>
-        <RouterProvider
-          router={router}
-          fallbackElement={
-            <Spin
-              style={{
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                width: '100vw',
-                height: '100vh',
-              }}
-            />
-          }
-        />
-      </App>
-    </ConfigProvider>
+    <ToolkitsContextProvider onlyDomesticGames>
+      <ConfigProvider
+        locale={zhCN}
+        theme={{
+          token: {
+            colorPrimary: '#ff5a00',
+            colorLink: '#ff5a00',
+            colorLinkHover: '#ff927b',
+            colorLinkActive: '#ff927b',
+            colorBorder: 'rgba(5, 5, 5, 0.06)',
+          },
+        }}
+      >
+        <App>
+          <RouterProvider
+            router={router}
+            fallbackElement={
+              <Spin
+                style={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  width: '100vw',
+                  height: '100vh',
+                }}
+              />
+            }
+          />
+        </App>
+      </ConfigProvider>
+    </ToolkitsContextProvider>
   </ToolkitsContextProvider>,
 )
