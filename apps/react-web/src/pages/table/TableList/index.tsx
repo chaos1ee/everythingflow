@@ -54,43 +54,46 @@ const TableList = () => {
             const { List, Total } = response
             return { list: List, total: Total }
           }}
-        >
-          <Row gutter={20}>
-            <Col>
-              <Form.Item
-                name="param"
-                dependencies={['type']}
-                rules={[
-                  ({ getFieldValue }) => ({
-                    validator(_, value) {
-                      return new Promise((resolve, reject) => {
-                        if (!value) {
-                          if (getFieldValue('type') === 1) {
-                            reject(new Error('请输入渠道 UID'))
-                          } else {
-                            reject(new Error('请输入身份证号'))
-                          }
-                        }
-                        resolve(1)
-                      })
-                    },
-                  }),
-                ]}
-              >
-                <Input
-                  addonBefore={
-                    <Form.Item noStyle name="type">
-                      <Select>
-                        <Select.Option value={1}>实例</Select.Option>
-                        <Select.Option value={2}>数据库</Select.Option>
-                      </Select>
-                    </Form.Item>
-                  }
-                />
-              </Form.Item>
-            </Col>
-          </Row>
-        </QueryList>
+          renderForm={() => (
+            <Form>
+              <Row gutter={20}>
+                <Col>
+                  <Form.Item
+                    name="param"
+                    dependencies={['type']}
+                    rules={[
+                      ({ getFieldValue }) => ({
+                        validator(_, value) {
+                          return new Promise((resolve, reject) => {
+                            if (!value) {
+                              if (getFieldValue('type') === 1) {
+                                reject(new Error('请输入渠道 UID'))
+                              } else {
+                                reject(new Error('请输入身份证号'))
+                              }
+                            }
+                            resolve(1)
+                          })
+                        },
+                      }),
+                    ]}
+                  >
+                    <Input
+                      addonBefore={
+                        <Form.Item noStyle name="type">
+                          <Select>
+                            <Select.Option value={1}>实例</Select.Option>
+                            <Select.Option value={2}>数据库</Select.Option>
+                          </Select>
+                        </Form.Item>
+                      }
+                    />
+                  </Form.Item>
+                </Col>
+              </Row>
+            </Form>
+          )}
+        />
       </Form>
     </Card>
   )

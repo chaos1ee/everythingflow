@@ -283,9 +283,7 @@ const VersionList = () => {
           </Space>
         }
       >
-        <Form>
-          <QueryList rowKey="id" columns={columns} url={url} />
-        </Form>
+        <QueryList rowKey="id" columns={columns} url={url} />
       </Card>
       {CreateModal}
       {UploadModal}

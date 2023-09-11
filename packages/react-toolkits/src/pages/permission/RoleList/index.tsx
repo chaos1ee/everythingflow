@@ -208,19 +208,17 @@ const RoleList = () => {
           </PermissionButton>
         }
       >
-        <Form>
-          <QueryList<RoleListItem, undefined, { List: RoleListItem[]; Total: number }>
-            rowKey="name"
-            columns={columns}
-            code="200001"
-            url={url}
-            // 后端接口返回的数据不满足时转换一下
-            transformResponse={response => {
-              const { List, Total } = response
-              return { list: List, total: Total }
-            }}
-          />
-        </Form>
+        <QueryList<RoleListItem, undefined, { List: RoleListItem[]; Total: number }>
+          rowKey="name"
+          columns={columns}
+          code="200001"
+          url={url}
+          // 后端接口返回的数据不满足时转换一下
+          transformResponse={response => {
+            const { List, Total } = response
+            return { list: List, total: Total }
+          }}
+        />
       </Card>
       {CreateModal}
       {UpdateModal}
