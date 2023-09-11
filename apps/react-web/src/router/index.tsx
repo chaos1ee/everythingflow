@@ -106,7 +106,7 @@ const router: any = createBrowserRouter([
       },
       {
         element: (
-          <ToolkitsContextProvider>
+          <ToolkitsContextProvider usePermissionV2 isGlobalNS={false}>
             <Layout>
               <Outlet />
             </Layout>

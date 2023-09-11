@@ -14,15 +14,14 @@ const { Header, Sider, Content } = Antd.Layout
 
 export interface LayoutProps extends PropsWithChildren {
   extra?: React.ReactNode[]
-  isGlobalNS?: boolean
 }
 
 const Layout: FC<LayoutProps> = props => {
-  const { children, extra, isGlobalNS } = props
+  const { children, extra } = props
   const {
     token: { colorBgContainer, colorBorder },
   } = theme.useToken()
-  const { title, usePermissionV2 } = useToolkitContextStore(state => state)
+  const { title, usePermissionV2, isGlobalNS } = useToolkitContextStore(state => state)
   const { game } = useGameStore()
 
   return (

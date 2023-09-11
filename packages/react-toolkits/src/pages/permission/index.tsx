@@ -1,7 +1,7 @@
 import { lazy } from 'react'
 import type { RouteObject } from 'react-router-dom'
 import { Navigate, Outlet } from 'react-router-dom'
-import { Layout } from '@/components'
+import { Layout, ToolkitsContextProvider } from '@/components'
 import { SWRConfig } from 'swr'
 import { request } from '@/utils'
 
@@ -11,16 +11,18 @@ const RoleDetail = lazy(() => import('./RoleDetail'))
 
 const PermissionRoot = () => {
   return (
-    <SWRConfig
-      value={{
-        fetcher: (args: Parameters<typeof request>) => request(...args),
-        shouldRetryOnError: false,
-      }}
-    >
-      <Layout isGlobalNS>
-        <Outlet />
-      </Layout>
-    </SWRConfig>
+    <ToolkitsContextProvider isGlobalNS>
+      <SWRConfig
+        value={{
+          fetcher: (args: Parameters<typeof request>) => request(...args),
+          shouldRetryOnError: false,
+        }}
+      >
+        <Layout>
+          <Outlet />
+        </Layout>
+      </SWRConfig>
+    </ToolkitsContextProvider>
   )
 }
 
