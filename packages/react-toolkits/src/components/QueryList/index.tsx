@@ -77,23 +77,7 @@ const QueryList = <Item extends object, Values extends object | undefined, Respo
           size,
         }
 
-        const urlPattern = new RegExp(
-          '^(https?:\\/\\/)?' + // protocol
-            '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // domain name and extension
-            '((\\d{1,3}\\.){3}\\d{1,3}))' + // OR ip (v4) address
-            '(\\:\\d+)?' + // port
-            '(\\/[-a-z\\d%_.~+]*)*' + // path
-            '(\\?[;&a-z\\d%_.~+=-]*)?' + // query string
-            '(\\#[-a-z\\d_]*)?$',
-          'i',
-        )
-
-        const _url = new URL(arg[0], urlPattern.test(arg[0]) ? undefined : window.location.origin)
-        const searchParams = new URLSearchParams(params)
-
-        _url.search = searchParams.toString()
-
-        const response = await request<Response>(_url, { headers }, isGlobalNS)
+        const response = await request<Response>(arg[0], { headers, params }, isGlobalNS)
         const list = transformResponse?.(response) ?? (response as ListResponse<Item>)
         afterSuccess?.(list, actionRef.current)
         return list
