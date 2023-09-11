@@ -8,7 +8,7 @@ import type { TableProps } from 'antd/es/table'
 import type { ReactNode } from 'react'
 import { useCallback, useEffect, useRef } from 'react'
 import type { FilterFormWrapperProps } from '@/components'
-import { FilterFormWrapper } from '@/components'
+import { FilterFormWrapper, useToolkitContextStore } from '@/components'
 import useSWR from 'swr'
 import { request } from '@/utils'
 
@@ -53,6 +53,7 @@ const QueryList = <Item extends object, Values extends object | undefined, Respo
   const actionRef = useRef<QueryListAction>()
   const listParams = getParams(url)
   const skipFetch = useRef(true)
+  const { isGlobalNS } = useToolkitContextStore(state => state)
 
   const set = useCallback(
     (value: Partial<QueryListStoreValue>, opts?: { skipFetch: boolean }) => {
@@ -92,7 +93,7 @@ const QueryList = <Item extends object, Values extends object | undefined, Respo
 
         _url.search = searchParams.toString()
 
-        const response = await request<Response>(_url, { headers })
+        const response = await request<Response>(_url, { headers }, isGlobalNS)
         const list = transformResponse?.(response) ?? (response as ListResponse<Item>)
         afterSuccess?.(list, actionRef.current)
         return list
