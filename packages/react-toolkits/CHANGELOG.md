@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.2.25
+
+### Patch Changes
+
+- 3f68ddd: feat: check if token is valid
+
 ## 0.2.24
 
 ### Patch Changes
