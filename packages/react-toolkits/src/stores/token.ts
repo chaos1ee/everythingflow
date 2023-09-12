@@ -36,11 +36,13 @@ export const useTokenStore = create<TokenState>()(
       name: 'token',
       partialize: state => ({ token: state.token }),
       onRehydrateStorage() {
-        return () => {
-          // 检查 token 是否合法。token 不合法时，使用 request 的错误处理逻辑。
-          setTimeout(() => {
-            request('/api/usystem/user/check', { method: 'post', body: { permissions: ['100001'] } })
-          }, 0)
+        return (_, error) => {
+          if (!error) {
+            setTimeout(() => {
+              // 检查 token 是否合法。token 不合法时，使用 request 的错误处理逻辑。
+              request('/api/usystem/user/check', { method: 'post', body: { permissions: ['100001'] } })
+            }, 400)
+          }
         }
       },
     },
