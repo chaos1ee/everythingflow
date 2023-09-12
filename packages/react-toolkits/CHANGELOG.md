@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.2.24
+
+### Patch Changes
+
+- 32cbf9d: fix: toolkitContextStore is not synchronized
+
 ## 0.2.23
 
 ### Patch Changes
