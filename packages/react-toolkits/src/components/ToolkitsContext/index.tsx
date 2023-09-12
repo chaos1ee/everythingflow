@@ -1,8 +1,7 @@
 import type { FC, PropsWithChildren } from 'react'
-import { createContext, useContext, useEffect, useMemo } from 'react'
-import { createStore } from 'zustand/vanilla'
+import { createContext, useContext, useMemo } from 'react'
 import type { ItemType2 } from '../NavMenu'
-import { useStore } from 'zustand'
+import { create, useStore } from 'zustand'
 
 export interface ToolkitsContextState {
   title: string
@@ -12,7 +11,7 @@ export interface ToolkitsContextState {
   onlyDomesticGames: boolean // 仅显示国内游戏
 }
 
-const defaultState = {
+const defaultState: ToolkitsContextState = {
   title: '',
   menuItems: [],
   isGlobalNS: false,
@@ -20,18 +19,18 @@ const defaultState = {
   onlyDomesticGames: false,
 }
 
-export const toolkitContextStore = createStore<ToolkitsContextState>(() => defaultState)
+// 全局的上下文。因为 ToolkitsContextProvider 支持嵌套，所以 toolkitContextStore 的值等同于最内层的 ToolkitsContextProvider 包含的上下文。
+export const toolkitContextStore = create<ToolkitsContextState>(() => defaultState)
 
-type ToolkitsContextStore = typeof toolkitContextStore
-
-const ToolkitsContext = createContext<{ store: ToolkitsContextStore; _cache: ToolkitsContextState } | null>(null)
+const ToolkitsContext = createContext<ToolkitsContextState>(defaultState)
 
 export function useToolkitContextStore<T>(selector: (state: ToolkitsContextState) => T): T {
   return useStore(toolkitContextStore, selector)
 }
 
+// 最接近的祖先 ToolkitsContextProvider 内包含的上下文。
 export function useToolkitContext() {
-  return useContext(ToolkitsContext)?._cache ?? defaultState
+  return useContext(ToolkitsContext)
 }
 
 export const ToolkitsContextProvider: FC<PropsWithChildren<Partial<ToolkitsContextState>>> = ({
@@ -39,24 +38,22 @@ export const ToolkitsContextProvider: FC<PropsWithChildren<Partial<ToolkitsConte
   ...props
 }) => {
   const { title, menuItems, isGlobalNS, usePermissionV2, onlyDomesticGames } = props
-  const parentCache = useToolkitContext()
+  const parentConfig = useToolkitContext()
 
-  const cache = useMemo(
+  const config = useMemo(
     () => ({
-      title: title ?? parentCache.title,
-      menuItems: menuItems ?? parentCache.menuItems,
-      isGlobalNS: isGlobalNS ?? parentCache.isGlobalNS,
-      usePermissionV2: usePermissionV2 ?? parentCache.usePermissionV2,
-      onlyDomesticGames: onlyDomesticGames ?? parentCache.onlyDomesticGames,
+      title: title ?? parentConfig.title,
+      menuItems: menuItems ?? parentConfig.menuItems,
+      isGlobalNS: isGlobalNS ?? parentConfig.isGlobalNS,
+      usePermissionV2: usePermissionV2 ?? parentConfig.usePermissionV2,
+      onlyDomesticGames: onlyDomesticGames ?? parentConfig.onlyDomesticGames,
     }),
-    [isGlobalNS, menuItems, onlyDomesticGames, title, usePermissionV2, parentCache],
+    [isGlobalNS, menuItems, onlyDomesticGames, title, usePermissionV2, parentConfig],
   )
 
-  const value = useMemo(() => ({ store: toolkitContextStore, _cache: cache }), [cache])
+  toolkitContextStore.setState(config)
 
-  useEffect(() => {
-    toolkitContextStore.setState(cache)
-  }, [cache])
-
-  return <ToolkitsContext.Provider value={value}>{children}</ToolkitsContext.Provider>
+  return <ToolkitsContext.Provider value={config}>{children}</ToolkitsContext.Provider>
 }
+
+ToolkitsContextProvider.displayName = 'ToolkitsContextProvider'

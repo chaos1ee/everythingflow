@@ -1,13 +1,13 @@
 import useSWRImmutable from 'swr/immutable'
 import { request } from '@/utils'
-import { useToolkitContextStore } from '@/components'
+import { useToolkitContext } from '@/components'
 
 export interface PermissionCheckResult {
   [k: string]: boolean
 }
 
-export function usePermissions(codes: string[], isGlobalNS = false) {
-  const { usePermissionV2 } = useToolkitContextStore(state => state)
+export function usePermissions(codes: string[], isGlobalNS?: boolean) {
+  const { usePermissionV2 } = useToolkitContext()
 
   const { data, isLoading } = useSWRImmutable(
     codes.length > 0 ? [usePermissionV2 ? '/api/usystem/user/checkV2' : '/api/usystem/user/check', codes] : null,
@@ -48,7 +48,7 @@ export function usePermissions(codes: string[], isGlobalNS = false) {
   return { data, isLoading }
 }
 
-export function usePermission(code: string | undefined, isGlobalNS = false) {
+export function usePermission(code: string | undefined, isGlobalNS?: boolean) {
   const { data, isLoading } = usePermissions(code ? [code] : [], isGlobalNS)
 
   if (code === undefined) {

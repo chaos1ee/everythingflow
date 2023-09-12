@@ -3,7 +3,7 @@ import useSWR from 'swr'
 import useSWRMutation from 'swr/mutation'
 import type { PermissionEnumItem, RoleEnumItem, RoleV1, RoleV2 } from '../types'
 import type { Game } from '@/components'
-import { useToolkitContextStore } from '@/components'
+import { useToolkitContext } from '@/components'
 import { request } from '@/utils'
 
 export function useAllPermissions() {
@@ -23,12 +23,12 @@ export function useAllRoles() {
 }
 
 export function useRole(name: string) {
-  const { usePermissionV2 } = useToolkitContextStore(state => state)
+  const { usePermissionV2 } = useToolkitContext()
   return useSWR<RoleV1 | RoleV2>([`/api/usystem/role/${usePermissionV2 ? 'infoV2' : 'info'}?name=${name}`, {}, true])
 }
 
 export function useCreateRole() {
-  const { usePermissionV2 } = useToolkitContextStore(state => state)
+  const { usePermissionV2 } = useToolkitContext()
 
   return useSWRMutation(
     usePermissionV2 ? '/api/usystem/role/createV2' : '/api/usystem/role/create',
@@ -52,7 +52,7 @@ export function useCreateRole() {
 }
 
 export function useUpdateRole() {
-  const { usePermissionV2 } = useToolkitContextStore(state => state)
+  const { usePermissionV2 } = useToolkitContext()
 
   return useSWRMutation(
     usePermissionV2 ? '/api/usystem/role/updateV2' : '/api/usystem/role/update',
