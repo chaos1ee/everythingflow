@@ -1,4 +1,4 @@
-import { Highlight, PermissionButton, QueryList, useToolkitContextStore } from '@/components'
+import { Highlight, PermissionButton, QueryList, useToolkitContext } from '@/components'
 import { useFormModal } from '@/components/FormModal/hooks'
 import type { RoleListItem, RoleV1, RoleV2 } from '@/features/permission'
 import { PermissionList, useCreateRole, useRemoveRole, useUpdateRole } from '@/features/permission'
@@ -97,7 +97,7 @@ const useUpdateModal = () => {
 const RoleList = () => {
   const { accessible: viewable } = usePermission('200005')
   const { modal, message } = App.useApp()
-  const { usePermissionV2 } = useToolkitContextStore(state => state)
+  const { usePermissionV2 } = useToolkitContext()
   const remove = useRemoveRole()
   const jump = useQueryListJump()
   const { showModal: showCreateModal, Modal: CreateModal } = useCreateModal()

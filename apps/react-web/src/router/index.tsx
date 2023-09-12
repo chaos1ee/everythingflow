@@ -1,12 +1,5 @@
 import { createBrowserRouter, Navigate, Outlet, useRouteError } from 'react-router-dom'
-import {
-  baseRoutes,
-  FetcherError,
-  Layout,
-  permissionRoutes,
-  ToolkitsContextProvider,
-  useTokenStore,
-} from 'react-toolkits'
+import { baseRoutes, FetcherError, Layout, permissionRoutes, useTokenStore } from 'react-toolkits'
 import tableRoutes from '~/pages/table'
 import type { FC } from 'react'
 import { Suspense } from 'react'
@@ -14,7 +7,7 @@ import { Alert, App, Spin } from 'antd'
 import { SWRConfig } from 'swr'
 
 const { ErrorBoundary } = Alert
-const routes = [tableRoutes]
+const routes = [tableRoutes, permissionRoutes]
 
 /**
  * SWRConfig 的 onError 会捕获所有的请求错误，但是无法捕获 React 组件的错误（比如开启了 suspense 的 SWR 请求），所以需要使用 ErrorElement 来捕获。
@@ -106,15 +99,12 @@ const router: any = createBrowserRouter([
       },
       {
         element: (
-          <ToolkitsContextProvider usePermissionV2 isGlobalNS={false}>
-            <Layout>
-              <Outlet />
-            </Layout>
-          </ToolkitsContextProvider>
+          <Layout>
+            <Outlet />
+          </Layout>
         ),
         children: routes,
       },
-      permissionRoutes,
       // 放在最后，否则会覆盖其他的路由
       baseRoutes,
     ],

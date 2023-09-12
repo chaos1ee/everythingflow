@@ -84,7 +84,7 @@ function getBody(data?: RequestBody) {
   }
 }
 
-function getHeaders(data?: HeadersInit, isGlobalNS = false) {
+function getHeaders(data?: HeadersInit, isGlobalNS?: boolean) {
   const headers = new Headers(data)
 
   if (headers.get('Accept') !== 'application/json') {
@@ -97,11 +97,16 @@ function getHeaders(data?: HeadersInit, isGlobalNS = false) {
     headers.set('Authorization', `Bearer ${token}`)
   }
 
-  const { usePermissionV2 } = toolkitContextStore.getState()
+  const toolkitsContext = toolkitContextStore.getState()
 
-  if (usePermissionV2) {
+  if (toolkitsContext.usePermissionV2) {
     const game = useGameStore.getState().game
-    headers.set('App-ID', isGlobalNS ? 'global' : game?.id ?? '')
+
+    if (isGlobalNS || (isGlobalNS === undefined && toolkitsContext.isGlobalNS)) {
+      headers.set('App-ID', 'global')
+    } else if (game) {
+      headers.set('App-ID', game.id)
+    }
   }
 
   return headers
@@ -135,7 +140,7 @@ function throwError(response: Response) {
   }
 }
 
-export async function request<T = any>(input: RequestInfo | URL, init: InitConfig = {}, isGlobalNS = false) {
+export async function request<T = any>(input: RequestInfo | URL, init: InitConfig = {}, isGlobalNS?: boolean) {
   input = getInput(input, init.params)
   delete init.params
 
@@ -152,7 +157,7 @@ export async function request<T = any>(input: RequestInfo | URL, init: InitConfi
     throwError(response)
   }
 
-  // 若希望返回二进制流，需要在请求头内设置头部 "Accept“: ”application/octet-stream"。
+  // 若希望返回二进制流，需要在请求头内设置头部 "Accept": "application/octet-stream"。
   if (headers.get('Accept') === 'application/octet-stream') {
     return (await response.blob()) as T
   }

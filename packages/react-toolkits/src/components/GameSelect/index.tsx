@@ -2,14 +2,14 @@ import { Select, Space, Typography } from 'antd'
 import { useCallback, useMemo } from 'react'
 import { useTokenStore } from '@/stores'
 import useSWRImmutable from 'swr/immutable'
-import { useGameStore, useToolkitContextStore } from '@/components'
+import { useGameStore, useToolkitContext } from '@/components'
 import type { Game } from './types'
 import { request } from '@/utils'
 
 const { Text } = Typography
 
 function useGames() {
-  const { usePermissionV2 } = useToolkitContextStore(state => state)
+  const { usePermissionV2 } = useToolkitContext()
   const user = useTokenStore(state => state.getUser())
 
   const { data, isLoading } = useSWRImmutable<Game[]>(
@@ -24,7 +24,7 @@ function useGames() {
 }
 
 const GameSelect = () => {
-  const { usePermissionV2, onlyDomesticGames } = useToolkitContextStore(state => state)
+  const { onlyDomesticGames } = useToolkitContext()
   const { game, setGame } = useGameStore()
   const { games, isLoading } = useGames()
 

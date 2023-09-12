@@ -4,7 +4,7 @@ import type { FC, PropsWithChildren } from 'react'
 import * as React from 'react'
 import { Suspense } from 'react'
 import { Link } from 'react-router-dom'
-import { GameSelect, NavMenu, useGameStore, UserWidget, useToolkitContextStore } from '@/components'
+import { GameSelect, NavMenu, useGameStore, UserWidget, useToolkitContext } from '@/components'
 import { SWRConfig } from 'swr'
 import logo from './logo.png'
 import RequireGame from '@/components/RequireGame'
@@ -21,7 +21,7 @@ const Layout: FC<LayoutProps> = props => {
   const {
     token: { colorBgContainer, colorBorder },
   } = theme.useToken()
-  const { title, usePermissionV2, isGlobalNS } = useToolkitContextStore(state => state)
+  const { title, usePermissionV2, isGlobalNS } = useToolkitContext()
   const { game } = useGameStore()
 
   return (

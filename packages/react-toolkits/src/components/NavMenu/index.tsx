@@ -11,7 +11,7 @@ import type { ReactNode } from 'react'
 import { useCallback, useEffect, useMemo } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import type { Merge } from 'ts-essentials'
-import { useToolkitContextStore } from '@/components'
+import { useToolkitContext } from '@/components'
 import { useNavStore } from '@/components/NavMenu/store'
 
 // 扩展 antd Menu 的类型，使其支持一些我们想要的自定义字段。
@@ -101,7 +101,7 @@ function flatItems(
 
 const NavMenu = () => {
   const location = useLocation()
-  const { menuItems } = useToolkitContextStore(state => state)
+  const { menuItems } = useToolkitContext()
   const flattenItems = useMemo(() => flatItems(menuItems ?? []), [menuItems])
   const codes = flattenItems.map(item => item.code).filter(Boolean) as string[]
   const { data: permissions } = usePermissions(codes, true)

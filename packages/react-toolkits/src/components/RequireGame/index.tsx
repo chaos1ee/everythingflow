@@ -1,10 +1,10 @@
 import { Card, Empty } from 'antd'
 import type { FC, PropsWithChildren } from 'react'
-import { useGameStore, useToolkitContextStore } from '@/components'
+import { useGameStore, useToolkitContext } from '@/components'
 
 const RequireGame: FC<PropsWithChildren> = props => {
   const { children } = props
-  const { usePermissionV2, isGlobalNS } = useToolkitContextStore(state => state)
+  const { usePermissionV2, isGlobalNS } = useToolkitContext()
   const { game } = useGameStore()
 
   if (usePermissionV2 && !isGlobalNS && !game) {

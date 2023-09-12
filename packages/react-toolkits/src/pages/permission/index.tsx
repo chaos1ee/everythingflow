@@ -1,9 +1,9 @@
 import { lazy } from 'react'
 import type { RouteObject } from 'react-router-dom'
 import { Navigate, Outlet } from 'react-router-dom'
-import { Layout, ToolkitsContextProvider } from '@/components'
 import { SWRConfig } from 'swr'
 import { request } from '@/utils'
+import { ToolkitsContextProvider } from '@/components'
 
 const UserList = lazy(() => import('./UserList'))
 const RoleList = lazy(() => import('./RoleList'))
@@ -18,9 +18,7 @@ const PermissionRoot = () => {
           shouldRetryOnError: false,
         }}
       >
-        <Layout>
-          <Outlet />
-        </Layout>
+        <Outlet />
       </SWRConfig>
     </ToolkitsContextProvider>
   )
