@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.2.26
+
+### Patch Changes
+
+- 38077e9: feat: delay token validation request
+
 ## 0.2.25
 
 ### Patch Changes
