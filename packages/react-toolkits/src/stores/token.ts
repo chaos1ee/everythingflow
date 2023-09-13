@@ -35,7 +35,7 @@ export const useTokenStore = create<TokenState>()(
       partialize: state => ({ token: state.token }),
       onRehydrateStorage() {
         return (state, error) => {
-          if (error) {
+          if (error || !state?.token) {
             toLoginPage()
           } else {
             const url = new URL('/api/usystem/user/check', window.location.href)

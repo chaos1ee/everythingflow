@@ -82,11 +82,15 @@ const Layout: FC<LayoutProps> = props => {
           >
             <SWRConfig
               value={{
-                // GameSelect 组件内的 game 变化时，会触发 children 的重新渲染，为了避免 SWR 使用缓存导致数据不更新，需要设置 revalidateOnMount 为 true
+                // GameSelect 组件内的 game 变化时，会触发 children 的重新渲染，为了避免 SWR 使用缓存导致数据不更新，需要设置 revalidateOnMount 为 true。
                 revalidateOnMount: true,
               }}
             >
-              <RequireGame>{React.createElement('div', { key: game?.id }, children)}</RequireGame>
+              <RequireGame>
+                {usePermissionV2 && !isGlobalNS
+                  ? React.createElement('div', game ? { key: game.id } : undefined, children)
+                  : children}
+              </RequireGame>
             </SWRConfig>
           </Suspense>
         </Content>

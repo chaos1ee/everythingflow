@@ -28,13 +28,11 @@ const navItems: ItemType2[] = [
         key: 'user_list',
         label: '用户',
         route: '/permission/user',
-        code: '200001',
       },
       {
         key: 'role_list',
         label: '角色',
         route: '/permission/role',
-        code: '100001',
       },
     ],
   },

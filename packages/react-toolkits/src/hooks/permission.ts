@@ -39,17 +39,16 @@ export function usePermissions(codes: string[], isGlobalNS?: boolean) {
         )
       }),
     {
-      suspense: true,
       revalidateOnFocus: true,
       shouldRetryOnError: false,
     },
   )
 
-  return { data, isLoading }
+  return { data, isValidating: isLoading }
 }
 
 export function usePermission(code: string | undefined, isGlobalNS?: boolean) {
-  const { data, isLoading } = usePermissions(code ? [code] : [], isGlobalNS)
+  const { data, isValidating } = usePermissions(code ? [code] : [], isGlobalNS)
 
   if (code === undefined) {
     return {
@@ -60,6 +59,6 @@ export function usePermission(code: string | undefined, isGlobalNS?: boolean) {
 
   return {
     accessible: data?.[code] ?? false,
-    isValidating: isLoading,
+    isValidating,
   }
 }

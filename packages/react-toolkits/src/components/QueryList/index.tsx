@@ -3,7 +3,7 @@ import type { QueryListStoreValue } from '@/stores'
 import { useQueryListStore } from '@/stores'
 import type { ListResponse } from '@/types'
 import type { FormInstance, TablePaginationConfig } from 'antd'
-import { Form, Result, Table } from 'antd'
+import { Form, Result, Spin, Table } from 'antd'
 import type { TableProps } from 'antd/es/table'
 import type { ReactNode } from 'react'
 import { useCallback, useEffect, useRef } from 'react'
@@ -47,7 +47,7 @@ const QueryList = <Item extends object, Values extends object | undefined, Respo
     afterSuccess,
     ...tableProps
   } = props
-  const { accessible } = usePermission(code)
+  const { accessible, isValidating } = usePermission(code)
   const [internalForm] = Form.useForm<Values>(form)
   const { getParams, setParams } = useQueryListStore()
   const actionRef = useRef<QueryListAction>()
@@ -162,6 +162,19 @@ const QueryList = <Item extends object, Values extends object | undefined, Respo
     // 增加延时，防止回调在表单实例化前触发
     setTimeout(init)
   }, [internalForm, set])
+
+  if (isValidating) {
+    return (
+      <Spin
+        style={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          height: 200,
+        }}
+      />
+    )
+  }
 
   if (!accessible) {
     return <Result status={403} subTitle="无权限，请联系管理员进行授权" />
