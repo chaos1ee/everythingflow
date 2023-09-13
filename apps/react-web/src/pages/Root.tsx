@@ -1,13 +1,16 @@
-import type { FC} from 'react';
+import type { FC } from 'react'
 import { Suspense } from 'react'
-import { App, Spin } from 'antd'
-import { FetcherError, useTokenStore } from 'react-toolkits'
+import { App, ConfigProvider, Spin } from 'antd'
+import { FetcherError, ToolkitsContextProvider, useTokenStore, useValidateToken } from 'react-toolkits'
 import { Navigate, Outlet } from 'react-router-dom'
 import { SWRConfig } from 'swr'
+import menuItems from '~/menu-items'
+import zhCN from 'antd/locale/zh_CN'
 
 const Root: FC = () => {
+  useValidateToken()
   const { notification } = App.useApp()
-  const clearToken = useTokenStore(state => state.clearToken)
+  const { clearToken } = useTokenStore()
 
   const handleError = (error: any) => {
     if (error instanceof FetcherError) {
@@ -28,28 +31,45 @@ const Root: FC = () => {
   }
 
   return (
-    <SWRConfig
-      value={{
-        shouldRetryOnError: false,
-        onError: handleError,
+    <ConfigProvider
+      locale={zhCN}
+      theme={{
+        token: {
+          colorPrimary: '#ff5a00',
+          colorLink: '#ff5a00',
+          colorLinkHover: '#ff927b',
+          colorLinkActive: '#ff927b',
+          colorBorder: 'rgba(5, 5, 5, 0.06)',
+        },
       }}
     >
-      <Suspense
-        fallback={
-          <Spin
-            style={{
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-              width: '100vw',
-              height: '100vh',
-            }}
-          />
-        }
-      >
-        <Outlet />
-      </Suspense>
-    </SWRConfig>
+      <App>
+        <Suspense
+          fallback={
+            <Spin
+              style={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                width: '100vw',
+                height: '100vh',
+              }}
+            />
+          }
+        >
+          <ToolkitsContextProvider usePermissionV2 title="React Web" menuItems={menuItems}>
+            <SWRConfig
+              value={{
+                shouldRetryOnError: false,
+                onError: handleError,
+              }}
+            >
+              <Outlet />
+            </SWRConfig>
+          </ToolkitsContextProvider>
+        </Suspense>
+      </App>
+    </ConfigProvider>
   )
 }
 

@@ -1,6 +1,11 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import jwtDecode from 'jwt-decode'
+import type { FetcherError } from '@/utils'
+import { request } from '@/utils'
+import { useLocation, useNavigate } from 'react-router-dom'
+import { useEffect, useState } from 'react'
+import useSWRImmutable from 'swr/immutable'
 
 interface UserInfo {
   authorityId: string
@@ -16,7 +21,7 @@ export interface TokenState {
 
 export const useTokenStore = create<TokenState>()(
   persist(
-    (set, get) => ({
+    (set, get, store) => ({
       token: '',
       getUser: () => {
         try {
@@ -27,43 +32,46 @@ export const useTokenStore = create<TokenState>()(
       },
       setToken: token => set({ token }),
       clearToken: () => {
-        useTokenStore.persist.clearStorage()
+        get().setToken('')
+        store.persist.clearStorage()
       },
     }),
     {
       name: 'token',
       partialize: state => ({ token: state.token }),
-      onRehydrateStorage() {
-        return (state, error) => {
-          if (error || !state?.token) {
-            toLoginPage()
-          } else {
-            const url = new URL('/api/usystem/user/check', window.location.href)
-
-            fetch(url, {
-              method: 'post',
-              body: JSON.stringify({ permissions: ['100001'] }),
-              headers: { Authorization: `Bearer ${state?.token}` },
-            })
-              .then(response => {
-                if (!response.ok) {
-                  if (response.status === 401) {
-                    toLoginPage()
-                  } else if (response.status === 412) {
-                    toLoginPage(true)
-                  }
-                }
-              })
-              .catch(() => {
-                toLoginPage()
-              })
-          }
-        }
-      },
     },
   ),
 )
 
-function toLoginPage(notUser?: boolean) {
-  window.location.replace(`${window.location.origin}/login${notUser ? '?not_user=1' : ''}`)
+export function useValidateToken() {
+  const navigate = useNavigate()
+  const location = useLocation()
+  const { clearToken } = useTokenStore()
+  const [validated, setValidated] = useState(false)
+
+  useSWRImmutable(
+    !validated && location.pathname !== '/login' ? '/token/validate' : null,
+    () =>
+      request('/api/usystem/user/check', {
+        method: 'post',
+        body: { permissions: ['100001'] },
+      }),
+    {
+      suspense: true,
+      shouldRetryOnError: false,
+      onError(err: FetcherError) {
+        if (err.code === 401) {
+          clearToken()
+          navigate('/login')
+        } else if (err.code === 412) {
+          clearToken()
+          navigate('/login', { state: { notUser: true } })
+        }
+      },
+    },
+  )
+
+  useEffect(() => {
+    setValidated(true)
+  }, [])
 }
