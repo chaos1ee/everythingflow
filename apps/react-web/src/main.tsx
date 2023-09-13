@@ -1,4 +1,4 @@
-import { App, ConfigProvider, Spin } from 'antd'
+import { App, ConfigProvider } from 'antd'
 import zhCN from 'antd/locale/zh_CN'
 import dayjs from 'dayjs'
 import 'dayjs/locale/zh-cn'
@@ -36,20 +36,7 @@ root.render(
       }}
     >
       <App>
-        <RouterProvider
-          router={router}
-          fallbackElement={
-            <Spin
-              style={{
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                width: '100vw',
-                height: '100vh',
-              }}
-            />
-          }
-        />
+        <RouterProvider router={router} />
       </App>
     </ConfigProvider>
   </ToolkitsContextProvider>,

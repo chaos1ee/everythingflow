@@ -1,5 +1,5 @@
 import { usePermissions } from '@/hooks'
-import { Menu } from 'antd'
+import { Menu, Spin } from 'antd'
 import type {
   ItemType,
   MenuDividerType,
@@ -7,7 +7,7 @@ import type {
   MenuItemType,
   SubMenuType,
 } from 'antd/es/menu/hooks/useItems'
-import type { ReactNode } from 'react'
+import type { FC, ReactNode } from 'react'
 import { useCallback, useEffect, useMemo } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import type { Merge } from 'ts-essentials'
@@ -99,12 +99,12 @@ function flatItems(
   return result
 }
 
-const NavMenu = () => {
+const NavMenu: FC = () => {
   const location = useLocation()
   const { menuItems } = useToolkitContext()
   const flattenItems = useMemo(() => flatItems(menuItems ?? []), [menuItems])
   const codes = flattenItems.map(item => item.code).filter(Boolean) as string[]
-  const { data: permissions } = usePermissions(codes, true)
+  const { data: permissions, isValidating } = usePermissions(codes, true)
   const internalItems = useMemo(() => transformItems(menuItems ?? [], permissions), [menuItems, permissions])
   const { openKeys, selectedKeys, setOpenKeys, setSelectedKeys } = useNavStore()
 
@@ -128,6 +128,19 @@ const NavMenu = () => {
     }
   }, [flattenItems, location, setOpenKeys, setSelectedKeys])
 
+  if (isValidating) {
+    return (
+      <Spin
+        style={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          height: 'calc(100vh - 255px)',
+        }}
+      />
+    )
+  }
+
   return (
     <Menu
       style={{ borderRight: 'none' }}
@@ -139,5 +152,7 @@ const NavMenu = () => {
     />
   )
 }
+
+NavMenu.displayName = 'NavMenu'
 
 export default NavMenu

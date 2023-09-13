@@ -29,9 +29,9 @@ const Login: FC<PropsWithChildren> = props => {
   )
 
   useEffect(() => {
-    if (searchParams.has('not_registered')) {
+    if (searchParams.has('not_user')) {
       setShowAlert(true)
-      searchParams.delete('not_registered')
+      searchParams.delete('not_user')
       setSearchParams(searchParams)
     }
   }, [searchParams, setSearchParams])
