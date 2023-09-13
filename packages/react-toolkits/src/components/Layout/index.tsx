@@ -75,15 +75,14 @@ const Layout: FC<LayoutProps> = props => {
                   display: 'flex',
                   justifyContent: 'center',
                   alignItems: 'center',
-                  height: '50vh',
+                  height: '200px',
                 }}
               />
             }
           >
             <SWRConfig
               value={{
-                // GameSelect 组件内的 game 变化时，会触发 children 的重新渲染
-                // 为了避免 SWR 使用缓存导致数据不更新，需要设置 revalidateOnMount 为 true
+                // GameSelect 组件内的 game 变化时，会触发 children 的重新渲染，为了避免 SWR 使用缓存导致数据不更新，需要设置 revalidateOnMount 为 true
                 revalidateOnMount: true,
               }}
             >

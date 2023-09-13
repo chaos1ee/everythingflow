@@ -1,7 +1,6 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import jwtDecode from 'jwt-decode'
-import { request } from '@/utils'
 
 interface UserInfo {
   authorityId: string
@@ -28,7 +27,6 @@ export const useTokenStore = create<TokenState>()(
       },
       setToken: token => set({ token }),
       clearToken: () => {
-        set({ token: '' })
         useTokenStore.persist.clearStorage()
       },
     }),
@@ -36,15 +34,36 @@ export const useTokenStore = create<TokenState>()(
       name: 'token',
       partialize: state => ({ token: state.token }),
       onRehydrateStorage() {
-        return (_, error) => {
-          if (!error) {
-            setTimeout(() => {
-              // 检查 token 是否合法。token 不合法时，使用 request 的错误处理逻辑。
-              request('/api/usystem/user/check', { method: 'post', body: { permissions: ['100001'] } })
-            }, 400)
+        return (state, error) => {
+          if (error) {
+            toLoginPage()
+          } else {
+            const url = new URL('/api/usystem/user/check', window.location.href)
+
+            fetch(url, {
+              method: 'post',
+              body: JSON.stringify({ permissions: ['100001'] }),
+              headers: { Authorization: `Bearer ${state?.token}` },
+            })
+              .then(response => {
+                if (!response.ok) {
+                  if (response.status === 401) {
+                    toLoginPage()
+                  } else if (response.status === 412) {
+                    toLoginPage(true)
+                  }
+                }
+              })
+              .catch(() => {
+                toLoginPage()
+              })
           }
         }
       },
     },
   ),
 )
+
+function toLoginPage(notUser?: boolean) {
+  window.location.replace(`${window.location.origin}/login${notUser ? '?not_user=1' : ''}`)
+}
