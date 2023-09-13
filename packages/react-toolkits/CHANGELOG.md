@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.2.28
+
+### Patch Changes
+
+- 2e04198: fix: dead loop for token validation
+
 ## 0.2.27
 
 ### Patch Changes
