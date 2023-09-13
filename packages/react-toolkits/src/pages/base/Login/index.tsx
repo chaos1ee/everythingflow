@@ -3,8 +3,7 @@ import { useTokenStore } from '@/stores'
 import { AliyunOutlined } from '@ant-design/icons'
 import { Alert, Button, Card, Col, Divider, Row, Space, Typography } from 'antd'
 import type { FC, PropsWithChildren } from 'react'
-import { useEffect, useState } from 'react'
-import { Navigate, useSearchParams } from 'react-router-dom'
+import { Navigate, useLocation, useSearchParams } from 'react-router-dom'
 import useSWRImmutable from 'swr/immutable'
 import Default from './default'
 import { request } from '@/utils'
@@ -14,8 +13,8 @@ const { Title } = Typography
 const Login: FC<PropsWithChildren> = props => {
   const { children } = props
   const [searchParams, setSearchParams] = useSearchParams()
+  const location = useLocation()
   const { token, setToken } = useTokenStore()
-  const [showAlert, setShowAlert] = useState(false)
 
   useSWRImmutable<{ token: string }>(
     searchParams.has('ticket') ? `/api/usystem/user/login?ticket=${searchParams.get('ticket')}` : null,
@@ -27,14 +26,6 @@ const Login: FC<PropsWithChildren> = props => {
       },
     },
   )
-
-  useEffect(() => {
-    if (searchParams.has('not_user')) {
-      setShowAlert(true)
-      searchParams.delete('not_user')
-      setSearchParams(searchParams)
-    }
-  }, [searchParams, setSearchParams])
 
   if (token) {
     return <Navigate replace to="/" />
@@ -50,17 +41,9 @@ const Login: FC<PropsWithChildren> = props => {
       <Col span={5} offset={3}>
         <div className="h-screen relative">
           <Card hoverable className="absolute left-0 right-0 top-1/2 -translate-y-1/2">
-            {showAlert && (
+            {location.state?.notUser && (
               <div className="absolute -top-12 left-0 right-0">
-                <Alert
-                  banner
-                  closable
-                  message="您还未在平台注册，请联系管理员"
-                  type="error"
-                  onClose={() => {
-                    setShowAlert(false)
-                  }}
-                />
+                <Alert banner closable message="您还未在平台注册，请联系管理员" type="error" />
               </div>
             )}
             <div className="text-center mb-6">

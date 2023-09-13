@@ -10,12 +10,12 @@ const navItems: ItemType2[] = [
       {
         key: 'table_list',
         label: '查询表',
-        route: '/table',
+        route: '/console/table',
       },
       {
         key: 'version_list',
         label: '版本',
-        route: '/table/version',
+        route: '/console/table/version',
       },
     ],
   },
