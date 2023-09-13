@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.2.27
+
+### Patch Changes
+
+- 9df4527: feat: remove suspense in usePermissions hook
+
 ## 0.2.26
 
 ### Patch Changes
