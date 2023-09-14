@@ -32,15 +32,18 @@ const urlPattern = new RegExp(
 )
 
 type RequestBody = Record<string | number, any> | FormData | null
-type RequestParams = Record<string | number, string> | URLSearchParams | null
+type RequestParams = Record<string | number, string | undefined | null> | URLSearchParams | null
+type RequestResponseType = 'json' | 'blob'
 
 interface InitConfig extends Omit<RequestInit, 'body'> {
   body?: RequestBody
   params?: RequestParams
+  responseType?: RequestResponseType
 }
 
-function getInput(input: RequestInfo | URL, params?: RequestParams) {
+function getInput(input: RequestInfo | URL, init?: InitConfig) {
   let url
+  const params = init?.params
 
   if (input instanceof URL) {
     url = input
@@ -60,7 +63,7 @@ function getInput(input: RequestInfo | URL, params?: RequestParams) {
     } else {
       for (const key in params) {
         if (!isNil(params[key])) {
-          url.searchParams.append(key, params[key])
+          url.searchParams.append(key, params[key] as string)
         }
       }
     }
@@ -74,18 +77,19 @@ function getInput(input: RequestInfo | URL, params?: RequestParams) {
     : url
 }
 
-function getBody(data?: RequestBody) {
-  if (data instanceof FormData) {
-    return data
-  } else if (data !== null && typeof data === 'object') {
-    return JSON.stringify(data)
+function getBody(init?: InitConfig) {
+  const body = init?.body
+  if (body instanceof FormData) {
+    return body
+  } else if (body !== null && typeof body === 'object') {
+    return JSON.stringify(body)
   } else {
     return null
   }
 }
 
-function getHeaders(data?: HeadersInit, isGlobalNS?: boolean) {
-  const headers = new Headers(data)
+function getHeaders(init?: InitConfig, isGlobalNS?: boolean) {
+  const headers = new Headers(init?.headers)
 
   if (headers.get('Accept') !== 'application/json') {
     headers.set('Accept', 'application/json')
@@ -107,6 +111,14 @@ function getHeaders(data?: HeadersInit, isGlobalNS?: boolean) {
     } else if (game) {
       headers.set('App-ID', game.id)
     }
+  }
+
+  const responseType = init?.responseType ?? 'json'
+
+  if (responseType === 'blob') {
+    headers.append('Accept', 'application/octet-stream')
+  } else {
+    headers.append('Accept', 'application/json')
   }
 
   return headers
@@ -140,12 +152,16 @@ function throwError(response: Response) {
   }
 }
 
-export async function request<T = any>(input: RequestInfo | URL, init: InitConfig = {}, isGlobalNS?: boolean) {
-  input = getInput(input, init.params)
-  delete init.params
+export async function request<T = any>(input: RequestInfo | URL, init?: InitConfig, isGlobalNS?: boolean) {
+  input = getInput(input, init)
+  delete init?.params
 
-  const body = getBody(init.body)
-  const headers = getHeaders(init.headers, isGlobalNS)
+  const body = getBody(init)
+
+  const responseType = init?.responseType ?? 'json'
+  delete init?.responseType
+
+  const headers = getHeaders(init, isGlobalNS)
 
   const response = await fetch(input, {
     ...init,
@@ -157,8 +173,7 @@ export async function request<T = any>(input: RequestInfo | URL, init: InitConfi
     throwError(response)
   }
 
-  // 若希望返回二进制流，需要在请求头内设置头部 "Accept": "application/octet-stream"。
-  if (headers.get('Accept') === 'application/octet-stream') {
+  if (responseType === 'blob') {
     return (await response.blob()) as T
   }
 

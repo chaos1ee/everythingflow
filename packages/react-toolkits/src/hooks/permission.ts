@@ -6,7 +6,13 @@ export interface PermissionCheckResult {
   [k: string]: boolean
 }
 
-export function usePermissions(codes: string[], isGlobalNS?: boolean) {
+export function usePermissions(
+  codes: string[],
+  opts?: {
+    isGlobalNS?: boolean
+    suspense?: boolean
+  },
+) {
   const { usePermissionV2 } = useToolkitContext()
 
   const { data, isLoading } = useSWRImmutable(
@@ -18,7 +24,7 @@ export function usePermissions(codes: string[], isGlobalNS?: boolean) {
           method: 'post',
           body: { permissions },
         },
-        isGlobalNS,
+        opts?.isGlobalNS,
       ).then(res => {
         if (res.has_all) {
           return codes.reduce(
@@ -39,6 +45,7 @@ export function usePermissions(codes: string[], isGlobalNS?: boolean) {
         )
       }),
     {
+      suspense: opts?.suspense,
       revalidateOnFocus: true,
       shouldRetryOnError: false,
     },
@@ -48,7 +55,7 @@ export function usePermissions(codes: string[], isGlobalNS?: boolean) {
 }
 
 export function usePermission(code: string | undefined, isGlobalNS?: boolean) {
-  const { data, isValidating } = usePermissions(code ? [code] : [], isGlobalNS)
+  const { data, isValidating } = usePermissions(code ? [code] : [], { isGlobalNS })
 
   if (code === undefined) {
     return {
