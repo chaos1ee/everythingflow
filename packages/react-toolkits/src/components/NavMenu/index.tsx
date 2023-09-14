@@ -1,5 +1,5 @@
 import { usePermissions } from '@/hooks'
-import { Menu, Spin } from 'antd'
+import { Menu } from 'antd'
 import type {
   ItemType,
   MenuDividerType,
@@ -104,7 +104,7 @@ const NavMenu: FC = () => {
   const { menuItems } = useToolkitContext()
   const flattenItems = useMemo(() => flatItems(menuItems ?? []), [menuItems])
   const codes = flattenItems.map(item => item.code).filter(Boolean) as string[]
-  const { data: permissions, isValidating } = usePermissions(codes, true)
+  const { data: permissions } = usePermissions(codes, { isGlobalNS: true, suspense: true })
   const internalItems = useMemo(() => transformItems(menuItems ?? [], permissions), [menuItems, permissions])
   const { openKeys, selectedKeys, setOpenKeys, setSelectedKeys } = useNavStore()
 
@@ -127,19 +127,6 @@ const NavMenu: FC = () => {
       setOpenKeys(keypath)
     }
   }, [flattenItems, location, setOpenKeys, setSelectedKeys])
-
-  if (isValidating) {
-    return (
-      <Spin
-        style={{
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          height: 'calc(100vh - 255px)',
-        }}
-      />
-    )
-  }
 
   return (
     <Menu
