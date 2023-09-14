@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.2.29
+
+### Patch Changes
+
+- 4040d6a: feat: add 'responseType' in request function
+
 ## 0.2.28
 
 ### Patch Changes
