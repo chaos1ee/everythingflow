@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.3.0
+
+### Minor Changes
+
+- fbd5680: feat: return some original data in reponse of request function
+
 ## 0.2.29
 
 ### Patch Changes
