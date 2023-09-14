@@ -12,9 +12,9 @@ function useGames() {
   const { usePermissionV2 } = useToolkitContext()
   const user = useTokenStore(state => state.getUser())
 
-  const { data, isLoading } = useSWRImmutable<Game[]>(
+  const { data, isLoading } = useSWRImmutable(
     usePermissionV2 && user ? `/api/usystem/game/all?user=${user.authorityId}` : null,
-    url => request(url, undefined, true),
+    url => request<Game[]>(url, undefined, true).then(response => response.data),
   )
 
   return {

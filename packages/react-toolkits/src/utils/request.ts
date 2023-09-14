@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useTokenStore } from '@/stores'
 import { toolkitContextStore, useGameStore } from '@/components'
-import { isNil } from 'lodash-es'
+import { isNil, pick } from 'lodash-es'
 
-export class FetcherError extends Error {
+export class RequestError extends Error {
   code?: number
   // 跳过错误提示
   skip: boolean
@@ -13,6 +13,10 @@ export class FetcherError extends Error {
     this.code = code
     this.skip = skip
   }
+}
+
+export interface RequestResponse<T = any> extends Pick<Response, 'headers' | 'ok' | 'status' | 'statusText' | 'url'> {
+  data: T
 }
 
 type JsonResponse<T> = ({ code: number; status?: never } | { code?: never; status: number }) & {
@@ -124,35 +128,44 @@ function getHeaders(init?: InitConfig, isGlobalNS?: boolean) {
   return headers
 }
 
-async function responseJson<T>(response: Response) {
+async function responseBlob(response: Response): Promise<RequestResponse<Blob>> {
+  const data = await response.blob()
+  return Object.assign(pick(response, ['headers', 'ok', 'status', 'statusText', 'url']), { data })
+}
+
+async function responseJson<T>(response: Response): Promise<RequestResponse<T>> {
   const json = (await response.json()) as JsonResponse<T>
 
   if (json.code === 0 || json.status === 0) {
-    return json.data
+    return Object.assign(pick(response, ['headers', 'ok', 'status', 'statusText', 'url']), { data: json.data })
   }
 
-  throw new FetcherError(json.msg, response.status)
+  throw new RequestError(json.msg, response.status)
 }
 
 function throwError(response: Response) {
   switch (response.status) {
     case 401:
-      throw new FetcherError('未登录或登录已过期', response.status)
+      throw new RequestError('未登录或登录已过期', response.status)
     case 403:
-      throw new FetcherError('无权限，请联系管理员进行授权', response.status)
+      throw new RequestError('无权限，请联系管理员进行授权', response.status)
     case 404:
     case 405:
-      throw new FetcherError('Not Found or Method not Allowed', response.status, true)
+      throw new RequestError('Not Found or Method not Allowed', response.status, true)
     case 412:
-      throw new FetcherError('未注册用户', response.status)
+      throw new RequestError('未注册用户', response.status)
     case 504:
-      throw new FetcherError('请求超时', response.status)
+      throw new RequestError('请求超时', response.status)
     default:
-      throw new FetcherError('出现错误', response.status)
+      throw new RequestError('出现错误', response.status)
   }
 }
 
-export async function request<T = any>(input: RequestInfo | URL, init?: InitConfig, isGlobalNS?: boolean) {
+export async function request<T = any>(
+  input: RequestInfo | URL,
+  init?: InitConfig,
+  isGlobalNS?: boolean,
+): Promise<RequestResponse<T>> {
   input = getInput(input, init)
   delete init?.params
 
@@ -174,7 +187,7 @@ export async function request<T = any>(input: RequestInfo | URL, init?: InitConf
   }
 
   if (responseType === 'blob') {
-    return (await response.blob()) as T
+    return (await responseBlob(response)) as RequestResponse<T>
   }
 
   return await responseJson<T>(response)

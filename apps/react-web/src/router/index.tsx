@@ -1,7 +1,8 @@
 import { createBrowserRouter, Navigate, Outlet } from 'react-router-dom'
 import { baseRoutes, Layout, permissionRoutes, ToolkitsContextProvider } from 'react-toolkits'
 import tableRoutes from '~/pages/table'
-import Root from '~/pages/Root'
+import Root from '~/Root'
+import ErrorElement from '~/ErrorElement'
 
 const routes = [tableRoutes]
 
@@ -13,6 +14,7 @@ const router: any = createBrowserRouter([
   {
     path: '/',
     element: <Root />,
+    errorElement: <ErrorElement />,
     children: [
       {
         index: true,

@@ -78,7 +78,7 @@ const QueryList = <Item extends object, Values extends object | undefined, Respo
         }
 
         const response = await request<Response>(arg[0], { headers, params }, isGlobalNS)
-        const list = transformResponse?.(response) ?? (response as ListResponse<Item>)
+        const list = transformResponse?.(response.data) ?? (response.data as ListResponse<Item>)
         afterSuccess?.(list, actionRef.current)
         return list
       } catch (err) {
