@@ -16,13 +16,13 @@ const Login: FC<PropsWithChildren> = props => {
   const location = useLocation()
   const { token, setToken } = useTokenStore()
 
-  useSWRImmutable<{ token: string }>(
+  useSWRImmutable(
     searchParams.has('ticket') ? `/api/usystem/user/login?ticket=${searchParams.get('ticket')}` : null,
-    url => request(url),
+    url => request<{ token: string }>(url),
     {
       suspense: true,
       onSuccess: data => {
-        setToken(data.token)
+        setToken(data.data.token)
       },
     },
   )

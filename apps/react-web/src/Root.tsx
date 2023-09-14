@@ -1,7 +1,7 @@
 import type { FC } from 'react'
 import { Suspense } from 'react'
 import { App, ConfigProvider, Spin } from 'antd'
-import { FetcherError, ToolkitsContextProvider, useTokenStore, useValidateToken } from 'react-toolkits'
+import { RequestError, ToolkitsContextProvider, useTokenStore, useValidateToken } from 'react-toolkits'
 import { Navigate, Outlet } from 'react-router-dom'
 import { SWRConfig } from 'swr'
 import menuItems from '~/menu-items'
@@ -13,7 +13,7 @@ const Root: FC = () => {
   const { clearToken } = useTokenStore()
 
   const handleError = (error: any) => {
-    if (error instanceof FetcherError) {
+    if (error instanceof RequestError) {
       switch (error.code) {
         case 401:
         case 412:

@@ -138,7 +138,7 @@ const RoleList = () => {
                 size="small"
                 type="link"
                 onClick={async () => {
-                  const role = await request<RoleV1 | RoleV2>(
+                  const { data: role } = await request<RoleV1 | RoleV2>(
                     `/api/usystem/role/info${usePermissionV2 ? 'V2' : ''}?name=${value.name}`,
                     {},
                     true,

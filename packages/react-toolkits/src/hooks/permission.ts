@@ -26,7 +26,7 @@ export function usePermissions(
         },
         opts?.isGlobalNS,
       ).then(res => {
-        if (res.has_all) {
+        if (res.data.has_all) {
           return codes.reduce(
             (acc, curr) => {
               acc[curr] = true
@@ -38,7 +38,7 @@ export function usePermissions(
 
         return codes.reduce(
           (acc, curr) => {
-            acc[curr] = (res as Record<string, boolean>)[curr]
+            acc[curr] = (res.data as Record<string, boolean>)[curr]
             return acc
           },
           {} as Record<string, boolean>,

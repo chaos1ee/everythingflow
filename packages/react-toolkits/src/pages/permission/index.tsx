@@ -12,7 +12,7 @@ const PermissionRoot = () => {
   return (
     <SWRConfig
       value={{
-        fetcher: (args: Parameters<typeof request>) => request(...args),
+        fetcher: (args: Parameters<typeof request>) => request(...args).then(res => res.data),
         shouldRetryOnError: false,
       }}
     >

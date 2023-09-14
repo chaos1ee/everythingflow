@@ -1,7 +1,7 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import jwtDecode from 'jwt-decode'
-import type { FetcherError } from '@/utils'
+import type { RequestError } from '@/utils'
 import { request } from '@/utils'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { useEffect, useState } from 'react'
@@ -59,7 +59,7 @@ export function useValidateToken() {
     {
       suspense: true,
       shouldRetryOnError: false,
-      onError(err: FetcherError) {
+      onError(err: RequestError) {
         if (err.code === 401) {
           clearToken()
           navigate('/login')
