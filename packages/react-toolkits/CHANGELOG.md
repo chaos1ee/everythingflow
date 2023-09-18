@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.3.1
+
+### Patch Changes
+
+- 6ff6463: feat: add extras for FilterFormWrapper
+
 ## 0.3.0
 
 ### Minor Changes
