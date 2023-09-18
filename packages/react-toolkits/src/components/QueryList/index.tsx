@@ -65,6 +65,7 @@ const QueryList = <Item extends object, Values extends object | undefined, Respo
 
   const swrKey: null | [string, QueryListStoreValue] = skipFetch.current ? null : [url, listParams]
 
+  // TODO: 使用 useSWRInfinite 重构
   const { data, isLoading, mutate } = useSWR(
     swrKey,
     async arg => {
