@@ -36,7 +36,7 @@ const urlPattern = new RegExp(
 )
 
 type RequestBody = Record<string | number, any> | FormData | null
-type RequestParams = Record<string | number, string | undefined | null> | URLSearchParams | null
+type RequestParams = Record<string | number, string | number | undefined | null> | URLSearchParams | null
 type RequestResponseType = 'json' | 'blob'
 
 interface InitConfig extends Omit<RequestInit, 'body'> {

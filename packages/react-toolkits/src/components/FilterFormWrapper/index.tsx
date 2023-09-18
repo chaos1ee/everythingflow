@@ -1,19 +1,20 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type { FormInstance } from 'antd'
 import { Button, Form, Space, theme } from 'antd'
-import type { ReactNode } from 'react'
+import type { Key, ReactNode } from 'react'
 import * as React from 'react'
 
 export interface FilterFormWrapperProps<Values> {
   form?: FormInstance<Values>
   confirmText?: ReactNode
-  afterConfirm?: () => void | Promise<void>
+  afterConfirm?: (values: Values) => void | Promise<void>
   afterReset?: () => void | Promise<void>
   children?: (form: FormInstance<Values>) => ReactNode
+  extras?: { key: Key; render: ((form: FormInstance<Values>) => ReactNode) | ReactNode }[]
 }
 
 const FilterFormWrapper = <Values = any,>(props: FilterFormWrapperProps<Values>) => {
-  const { confirmText, form, afterConfirm, afterReset, children } = props
+  const { confirmText, form, extras, afterConfirm, afterReset, children } = props
   const { token } = theme.useToken()
   const [internalForm] = Form.useForm(form)
 
@@ -29,8 +30,8 @@ const FilterFormWrapper = <Values = any,>(props: FilterFormWrapperProps<Values>)
   }
 
   const handleSubmit = async () => {
-    await internalForm.validateFields()
-    afterConfirm?.()
+    const values = await internalForm.validateFields()
+    afterConfirm?.(values)
   }
 
   const handleReset = async () => {
@@ -44,7 +45,7 @@ const FilterFormWrapper = <Values = any,>(props: FilterFormWrapperProps<Values>)
 
   return (
     <div style={formStyle}>
-      <div className="flex ">
+      <div className="flex">
         <div className="flex-1">{children(internalForm)}</div>
         <div className="ml-8">
           <Space>
@@ -54,6 +55,9 @@ const FilterFormWrapper = <Values = any,>(props: FilterFormWrapperProps<Values>)
             <Button htmlType="reset" onClick={handleReset}>
               重置
             </Button>
+            {extras?.map(({ key, render }) => (
+              <span key={key}>{typeof render === 'function' ? render(internalForm) : render}</span>
+            ))}
           </Space>
         </div>
       </div>
