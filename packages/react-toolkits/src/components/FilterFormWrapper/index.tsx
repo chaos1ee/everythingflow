@@ -1,22 +1,20 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type { FormInstance } from 'antd'
-import { Button, Form, Space, theme } from 'antd'
-import type { Key, ReactNode } from 'react'
+import { Button, Space, theme } from 'antd'
+import type { Key, PropsWithChildren, ReactNode } from 'react'
 import * as React from 'react'
 
-export interface FilterFormWrapperProps<Values> {
-  form?: FormInstance<Values>
+export interface FilterFormWrapperProps<Values> extends PropsWithChildren {
+  form: FormInstance<Values>
   confirmText?: ReactNode
   afterConfirm?: (values: Values) => void | Promise<void>
-  afterReset?: () => void | Promise<void>
-  children?: (form: FormInstance<Values>) => ReactNode
+  afterReset?: (values: Values) => void
   extras?: { key: Key; render: ((form: FormInstance<Values>) => ReactNode) | ReactNode }[]
 }
 
 const FilterFormWrapper = <Values = any,>(props: FilterFormWrapperProps<Values>) => {
   const { confirmText, form, extras, afterConfirm, afterReset, children } = props
   const { token } = theme.useToken()
-  const [internalForm] = Form.useForm(form)
 
   const formStyle = {
     maxWidth: 'none',
@@ -30,23 +28,20 @@ const FilterFormWrapper = <Values = any,>(props: FilterFormWrapperProps<Values>)
   }
 
   const handleSubmit = async () => {
-    const values = await internalForm.validateFields()
+    const values = await form.validateFields()
     afterConfirm?.(values)
   }
 
-  const handleReset = async () => {
-    internalForm.resetFields()
-    await afterReset?.()
-  }
-
-  if (!children) {
-    return null
+  const handleReset = () => {
+    form.resetFields()
+    const values = form.getFieldsValue()
+    afterReset?.(values)
   }
 
   return (
     <div style={formStyle}>
       <div className="flex">
-        <div className="flex-1">{children(internalForm)}</div>
+        <div className="flex-1">{children}</div>
         <div className="ml-8">
           <Space>
             <Button type="primary" onClick={handleSubmit}>
@@ -56,7 +51,7 @@ const FilterFormWrapper = <Values = any,>(props: FilterFormWrapperProps<Values>)
               重置
             </Button>
             {extras?.map(({ key, render }) => (
-              <span key={key}>{typeof render === 'function' ? render(internalForm) : render}</span>
+              <span key={key}>{typeof render === 'function' ? render(form) : render}</span>
             ))}
           </Space>
         </div>

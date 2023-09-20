@@ -8,7 +8,7 @@ import { App, Card, Col, Form, Input, Row, Select, Space, Tag } from 'antd'
 import type { FC } from 'react'
 import { useMemo } from 'react'
 import { Link } from 'react-router-dom'
-import { useQueryListJump, useQueryListMutate } from '@/stores'
+import { useQueryListTrigger } from '@/stores'
 
 const { Option } = Select
 
@@ -18,7 +18,7 @@ function useCreatingUserModal() {
   const { message } = App.useApp()
   const create = useCreateUser()
   const { data: roles, isLoading } = useAllRoles()
-  const mutate = useQueryListMutate()
+  const trigger = useQueryListTrigger()
 
   return useFormModal<{ id: string; name: string; roles: string[] }>({
     title: '创建用户',
@@ -45,7 +45,7 @@ function useCreatingUserModal() {
     ),
     async onConfirm(values) {
       await create.trigger(values)
-      await mutate(url)
+      trigger(url, { page: 1 })
       message.success('用户创建成功')
     },
   })
@@ -55,7 +55,7 @@ function useUpdatingUserModal() {
   const { message } = App.useApp()
   const update = useUpdateUser()
   const { data: roles, isLoading } = useAllRoles()
-  const mutate = useQueryListMutate()
+  const trigger = useQueryListTrigger()
 
   return useFormModal<{ id: string; name: string; roles: string[] }>({
     title: '更新用户',
@@ -85,7 +85,7 @@ function useUpdatingUserModal() {
     ),
     async onConfirm(values) {
       await update.trigger(values)
-      await mutate(url)
+      trigger(url)
       message.success('用户更新成功')
     },
   })
@@ -94,7 +94,7 @@ function useUpdatingUserModal() {
 const UserList: FC = () => {
   const { modal, message } = App.useApp()
   const remove = useRemoveUser()
-  const jump = useQueryListJump()
+  const trigger = useQueryListTrigger()
   const { showModal: showCreatingModal, Modal: CreatingModal } = useCreatingUserModal()
   const { showModal: showUpdatingModal, Modal: UpdatingModal } = useUpdatingUserModal()
 
@@ -180,7 +180,7 @@ const UserList: FC = () => {
                       id: value.id,
                       name: value.name,
                     })
-                    jump(url, 1)
+                    trigger(url, { page: 1 })
                     message.success('用户删除成功')
                   },
                 })
@@ -192,7 +192,7 @@ const UserList: FC = () => {
         ),
       },
     ]
-  }, [jump, remove, message, modal, showUpdatingModal])
+  }, [trigger, remove, message, modal, showUpdatingModal])
 
   return (
     <>
