@@ -3,27 +3,29 @@ import type { RouteObject } from 'react-router-dom'
 import { Navigate, Outlet } from 'react-router-dom'
 import { SWRConfig } from 'swr'
 import { request } from '@/utils'
+import { ToolkitsContextProvider } from '@/components'
+import { Layout } from 'antd'
 
 const UserList = lazy(() => import('./UserList'))
 const RoleList = lazy(() => import('./RoleList'))
 const RoleDetail = lazy(() => import('./RoleDetail'))
 
-const PermissionRoot = () => {
-  return (
+const routes: RouteObject = {
+  path: 'permission',
+  element: (
     <SWRConfig
       value={{
         fetcher: (args: Parameters<typeof request>) => request(...args).then(res => res.data),
         shouldRetryOnError: false,
       }}
     >
-      <Outlet />
+      <ToolkitsContextProvider isGlobalNS>
+        <Layout>
+          <Outlet />
+        </Layout>
+      </ToolkitsContextProvider>
     </SWRConfig>
-  )
-}
-
-const routes: RouteObject = {
-  path: 'permission',
-  element: <PermissionRoot />,
+  ),
   children: [
     {
       index: true,

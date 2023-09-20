@@ -3,19 +3,19 @@ import { useFormModal } from '@/components/FormModal/hooks'
 import type { RoleListItem, RoleV1, RoleV2 } from '@/features/permission'
 import { PermissionList, useCreateRole, useRemoveRole, useUpdateRole } from '@/features/permission'
 import { usePermission } from '@/hooks'
-import { useQueryListJump, useQueryListMutate } from '@/stores'
 import { UsergroupAddOutlined } from '@ant-design/icons'
 import type { TableColumnsType } from 'antd'
 import { App, Card, Form, Input, Space } from 'antd'
 import { useCallback, useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import { request } from '@/utils'
+import { useQueryListTrigger } from '@/stores'
 
 const url = '/api/usystem/role/list'
 
 const useCreateModal = () => {
   const { message } = App.useApp()
-  const mutate = useQueryListMutate()
+  const trigger = useQueryListTrigger()
   const create = useCreateRole()
 
   const onConfirm = useCallback(
@@ -24,10 +24,10 @@ const useCreateModal = () => {
         name: `role_${values.name}`,
         permissions: values.permissions,
       })
-      await mutate(url)
+      trigger(url, { page: 1 })
       message.success('角色创建成功')
     },
-    [create, mutate, message],
+    [create, trigger, message],
   )
 
   return useFormModal<{
@@ -53,7 +53,7 @@ const useCreateModal = () => {
 
 const useUpdateModal = () => {
   const { message } = App.useApp()
-  const mutate = useQueryListMutate()
+  const trigger = useQueryListTrigger()
   const update = useUpdateRole()
 
   const onConfirm = useCallback(
@@ -63,10 +63,10 @@ const useUpdateModal = () => {
         name: `role_${values.name}`,
         permissions: values.permissions,
       })
-      await mutate(url)
+      trigger(url)
       message.success('角色更新成功')
     },
-    [update, mutate, message],
+    [update, trigger, message],
   )
 
   return useFormModal<{
@@ -99,7 +99,7 @@ const RoleList = () => {
   const { modal, message } = App.useApp()
   const { usePermissionV2 } = useToolkitContext()
   const remove = useRemoveRole()
-  const jump = useQueryListJump()
+  const trigger = useQueryListTrigger()
   const { showModal: showCreateModal, Modal: CreateModal } = useCreateModal()
   const { showModal: showUpdateModal, Modal: UpdateModal } = useUpdateModal()
 
@@ -175,7 +175,7 @@ const RoleList = () => {
                         id: value.id,
                         name: value.name,
                       })
-                      jump(url, 1)
+                      trigger(url, { page: 1 })
                       message.success('角色删除成功')
                     },
                   })
@@ -188,7 +188,7 @@ const RoleList = () => {
         },
       },
     ],
-    [viewable, usePermissionV2, showUpdateModal, modal, remove, message, jump],
+    [viewable, usePermissionV2, showUpdateModal, modal, remove, message, trigger],
   )
 
   return (

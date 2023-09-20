@@ -11,20 +11,25 @@ const ErrorElement: FC = () => {
   const clearToken = useTokenStore(state => state.clearToken)
 
   if (error instanceof RequestError) {
-    switch (error.code) {
+    switch (error.status) {
+      case 200:
+        notification.error({
+          message: '请求出错',
+          description: error.message,
+        })
+        break
       case 401:
         clearToken()
         return <Navigate to="/login" />
       case 412:
         clearToken()
         return <Navigate to="/login" state={{ notUser: true }} />
-      default:
-        if (!error.skip) {
-          notification.error({
-            message: '请求出错',
-            description: error.message,
-          })
-        }
+      case 403:
+        notification.error({
+          message: '未授权',
+          description: '无权限，请联系管理员进行授权',
+        })
+        return
     }
   }
 

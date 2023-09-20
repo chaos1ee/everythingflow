@@ -2,7 +2,7 @@ import type { FC } from 'react'
 import { Suspense } from 'react'
 import { App, ConfigProvider, Spin } from 'antd'
 import { RequestError, ToolkitsContextProvider, useTokenStore, useValidateToken } from 'react-toolkits'
-import { Navigate, Outlet } from 'react-router-dom'
+import { Outlet, useNavigate } from 'react-router-dom'
 import { SWRConfig } from 'swr'
 import menuItems from '~/menu-items'
 import zhCN from 'antd/locale/zh_CN'
@@ -11,24 +11,7 @@ const Root: FC = () => {
   useValidateToken()
   const { notification } = App.useApp()
   const { clearToken } = useTokenStore()
-
-  const handleError = (error: any) => {
-    if (error instanceof RequestError) {
-      switch (error.code) {
-        case 401:
-        case 412:
-          clearToken()
-          return <Navigate to={error.code === 401 ? '/login' : '/login?not_registered=1'} />
-        default:
-          if (!error.skip) {
-            notification.error({
-              message: '请求出错',
-              description: error.message,
-            })
-          }
-      }
-    }
-  }
+  const navigate = useNavigate()
 
   return (
     <ConfigProvider
@@ -61,7 +44,32 @@ const Root: FC = () => {
             <SWRConfig
               value={{
                 shouldRetryOnError: false,
-                onError: handleError,
+                revalidateOnFocus: false,
+                onError: error => {
+                  if (error instanceof RequestError) {
+                    switch (error.status) {
+                      case 200:
+                        notification.error({
+                          message: '请求出错',
+                          description: error.message,
+                        })
+                        return
+                      case 401:
+                        clearToken()
+                        navigate('/login')
+                        return
+                      case 412:
+                        clearToken()
+                        navigate('/login', { state: { notUser: true } })
+                        return
+                      case 403:
+                        notification.error({
+                          message: '未授权',
+                          description: '无权限，请联系管理员进行授权',
+                        })
+                    }
+                  }
+                },
               }}
             >
               <Outlet />

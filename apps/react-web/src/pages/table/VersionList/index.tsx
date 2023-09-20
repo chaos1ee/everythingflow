@@ -1,13 +1,6 @@
 import type { MenuProps } from 'antd'
 import { App, Button, Card, Col, Divider, Dropdown, Form, Input, Row, Space } from 'antd'
-import {
-  Highlight,
-  PermissionButton,
-  QueryList,
-  useFormModal,
-  useQueryListJump,
-  useQueryListMutate,
-} from 'react-toolkits'
+import { Highlight, PermissionButton, QueryList, useFormModal, useQueryListTrigger } from 'react-toolkits'
 import type { ColumnsType } from 'antd/es/table'
 import type { VersionListItem } from '~/features/table'
 import {
@@ -27,7 +20,7 @@ const url = '/api/version/list'
 
 const useCreateModal = () => {
   const create = useCreateVersion()
-  const jump = useQueryListJump()
+  const trigger = useQueryListTrigger()
 
   return useFormModal<{ name: string; comment?: string; parent_version?: string }>({
     title: '创建版本',
@@ -47,14 +40,14 @@ const useCreateModal = () => {
     ),
     async onConfirm(values) {
       await create.trigger(values)
-      jump(url, 1)
+      trigger(url, { page: 1 })
     },
   })
 }
 
 const useUpdateModal = () => {
   const update = useUpdateVersion()
-  const mutate = useQueryListMutate()
+  const trigger = useQueryListTrigger()
 
   return useFormModal<{ id: string; name: string; comment?: string }>({
     title: '更新版本信息',
@@ -73,8 +66,9 @@ const useUpdateModal = () => {
     ),
     async onConfirm(values) {
       await update.trigger(values)
-      await mutate<VersionListItem>(
+      trigger<VersionListItem>(
         url,
+        undefined,
         prev => {
           return produce(prev, draft => {
             if (!draft?.list) return
@@ -130,7 +124,7 @@ const useMergeModal = () => {
 const VersionList = () => {
   const { modal } = App.useApp()
   const remove = useRemoveVersion()
-  const mutate = useQueryListMutate()
+  const trigger = useQueryListTrigger()
 
   const { showModal: showCreateModal, Modal: CreateModal } = useCreateModal()
   const { showModal: showUploadModal, Modal: UploadModal } = useUploadTableModal()
@@ -150,8 +144,9 @@ const VersionList = () => {
         ),
         onOk: async () => {
           await remove.trigger(record.id)
-          await mutate<VersionListItem>(
+          trigger<VersionListItem>(
             url,
+            undefined,
             prev =>
               produce(prev, draft => {
                 if (!draft?.list) return
@@ -163,7 +158,7 @@ const VersionList = () => {
         },
       })
     },
-    [modal, mutate, remove],
+    [modal, trigger, remove],
   )
 
   const columns: ColumnsType<VersionListItem> = [
