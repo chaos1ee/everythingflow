@@ -3,14 +3,12 @@ import { useNavigate } from 'react-router-dom'
 import { Dropdown, Space } from 'antd'
 import Link from 'antd/es/typography/Link'
 import { LogoutOutlined, UserOutlined } from '@ant-design/icons'
-import { useTranslation } from '@/locales'
-import { useTokenStore } from '@/stores/token'
+import { useTokenStore } from '@/stores'
 
-const UserWidget: FC = () => {
+const UserWidget: FC = props => {
   const navigate = useNavigate()
   const { clearToken, getUser } = useTokenStore()
   const user = getUser()
-  const t = useTranslation()
 
   return (
     <Dropdown
@@ -26,7 +24,7 @@ const UserWidget: FC = () => {
                   navigate('/login')
                 }}
               >
-                {t('UserWidget.logoutText')}
+                登出
               </Link>
             ),
             icon: <LogoutOutlined />,

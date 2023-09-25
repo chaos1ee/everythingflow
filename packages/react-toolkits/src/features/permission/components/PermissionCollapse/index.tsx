@@ -3,7 +3,6 @@ import type { FC } from 'react'
 import { useCallback, useEffect, useState } from 'react'
 import type { CheckboxChangeEvent } from 'antd/es/checkbox'
 import { Checkbox, Col, Collapse, Row } from 'antd'
-import { useTranslation } from '@/locales'
 
 interface PermissionCollapseProps {
   expand?: boolean
@@ -18,7 +17,6 @@ const PermissionCollapse: FC<PermissionCollapseProps> = props => {
   const [activeKey, setActiveKey] = useState<string[]>([])
   const [checkedMap, setCheckedMap] = useState<Record<string, boolean>>({})
   const [internalValue, setInternalValue] = useState<string[]>(value ?? [])
-  const t = useTranslation()
 
   const onCollapseChange = useCallback((key: string | string[]) => {
     setActiveKey(key as string[])
@@ -43,7 +41,7 @@ const PermissionCollapse: FC<PermissionCollapseProps> = props => {
     return tempValue
   }
 
-  const onCheckChange = (e: CheckboxChangeEvent, codes: string[]) => {
+  const onCheckChange = (e: CheckboxChangeEvent, category: string, codes: string[]) => {
     const checkedValue = getCheckedValue(e.target.checked, codes)
     setInternalValue(checkedValue)
     onChange?.(checkedValue)
@@ -85,11 +83,12 @@ const PermissionCollapse: FC<PermissionCollapseProps> = props => {
             onChange={e => {
               onCheckChange(
                 e,
+                item.category,
                 item.permissions.map(permission => permission.value),
               )
             }}
           >
-            {t('selectAll')}
+            全选
           </Checkbox>
         ),
         children: (
@@ -101,7 +100,7 @@ const PermissionCollapse: FC<PermissionCollapseProps> = props => {
                     disabled={readonly}
                     value={permission.value}
                     onChange={e => {
-                      onCheckChange(e, [permission.value])
+                      onCheckChange(e, item.category, [permission.value])
                     }}
                   >
                     {permission.label}

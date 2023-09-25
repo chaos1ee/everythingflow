@@ -4,7 +4,6 @@ import PermissionCollapse from '../PermissionCollapse'
 import type { RoleV1 } from '../../types'
 import type { PermissionListPropsBase } from '../PermissionList'
 import type { FC } from 'react'
-import { useTranslation } from '@/locales'
 
 const { Text } = Typography
 
@@ -16,12 +15,11 @@ interface PermissionListV1Props extends PermissionListPropsBase {
 const PermissionListV1: FC<PermissionListV1Props> = props => {
   const { expand = true, value, readonly, onChange } = props
   const { data: permissions, isLoading, error } = useAllPermissions()
-  const t = useTranslation()
 
   if (error) {
     return (
       <div className="flex justify-center">
-        <Text type="danger">{t('PermissionList.failedDescription')}</Text>
+        <Text type="danger">权限获取失败</Text>
       </div>
     )
   }

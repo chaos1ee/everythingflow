@@ -1,21 +1,22 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type { FormInstance } from 'antd'
-import { Button, Space, theme } from 'antd'
-import type { Key, PropsWithChildren, ReactNode } from 'react'
-import { useTranslation } from '@/locales'
+import { Button, Form, Space, theme } from 'antd'
+import type { Key, ReactNode } from 'react'
+import * as React from 'react'
 
-export interface FilterFormWrapperProps<Values> extends PropsWithChildren {
-  form: FormInstance<Values>
+export interface FilterFormWrapperProps<Values> {
+  form?: FormInstance<Values>
   confirmText?: ReactNode
   afterConfirm?: (values: Values) => void | Promise<void>
-  afterReset?: (values: Values) => void
+  afterReset?: () => void | Promise<void>
+  children?: (form: FormInstance<Values>) => ReactNode
   extras?: { key: Key; render: ((form: FormInstance<Values>) => ReactNode) | ReactNode }[]
 }
 
 const FilterFormWrapper = <Values = any,>(props: FilterFormWrapperProps<Values>) => {
   const { confirmText, form, extras, afterConfirm, afterReset, children } = props
   const { token } = theme.useToken()
-  const t = useTranslation()
+  const [internalForm] = Form.useForm(form)
 
   const formStyle = {
     maxWidth: 'none',
@@ -29,30 +30,33 @@ const FilterFormWrapper = <Values = any,>(props: FilterFormWrapperProps<Values>)
   }
 
   const handleSubmit = async () => {
-    const values = await form.validateFields()
+    const values = await internalForm.validateFields()
     afterConfirm?.(values)
   }
 
-  const handleReset = () => {
-    form.resetFields()
-    const values = form.getFieldsValue()
-    afterReset?.(values)
+  const handleReset = async () => {
+    internalForm.resetFields()
+    await afterReset?.()
+  }
+
+  if (!children) {
+    return null
   }
 
   return (
     <div style={formStyle}>
       <div className="flex">
-        <div className="flex-1">{children}</div>
+        <div className="flex-1">{children(internalForm)}</div>
         <div className="ml-8">
           <Space>
             <Button type="primary" onClick={handleSubmit}>
-              {confirmText || t('FilterFormWrapper.confirmText')}
+              {confirmText || '查询'}
             </Button>
             <Button htmlType="reset" onClick={handleReset}>
-              {t('FilterFormWrapper.resetText')}
+              重置
             </Button>
             {extras?.map(({ key, render }) => (
-              <span key={key}>{typeof render === 'function' ? render(form) : render}</span>
+              <span key={key}>{typeof render === 'function' ? render(internalForm) : render}</span>
             ))}
           </Space>
         </div>

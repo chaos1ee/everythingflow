@@ -1,8 +1,8 @@
 import { rand, randFullName, randNumber, randText, randWord } from '@ngneat/falso'
 import * as jose from 'jose'
 import { RESTMethods } from 'msw'
-import { SECRET } from '@/constants'
-import { mock } from '@/utils'
+import { SECRET } from '~/constants'
+import { mock } from '~/utils'
 
 const { plainRequest, listRequest, randomArray, delay, datetime } = mock
 

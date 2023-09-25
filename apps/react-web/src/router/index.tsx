@@ -1,9 +1,8 @@
 import { createBrowserRouter, Navigate, Outlet } from 'react-router-dom'
-import { baseRoutes, ContextProvider, Layout, permissionRoutes } from 'react-toolkits'
-import tableRoutes from '@/pages/table'
-import Root from '@/Root'
-import ErrorElement from '@/ErrorElement'
-import { LangSelector } from '@/components'
+import { baseRoutes, Layout, permissionRoutes, ToolkitsContextProvider } from 'react-toolkits'
+import tableRoutes from '~/pages/table'
+import Root from '~/Root'
+import ErrorElement from '~/ErrorElement'
 
 const routes = [tableRoutes]
 
@@ -24,14 +23,7 @@ const router: any = createBrowserRouter([
       {
         path: 'console',
         element: (
-          <Layout
-            extras={[
-              {
-                key: '1',
-                children: <LangSelector />,
-              },
-            ]}
-          >
+          <Layout>
             <Outlet />
           </Layout>
         ),
@@ -39,18 +31,11 @@ const router: any = createBrowserRouter([
       },
       {
         element: (
-          <ContextProvider isGlobalNS>
-            <Layout
-              extras={[
-                {
-                  key: '1',
-                  children: <LangSelector />,
-                },
-              ]}
-            >
+          <ToolkitsContextProvider isGlobalNS>
+            <Layout>
               <Outlet />
             </Layout>
-          </ContextProvider>
+          </ToolkitsContextProvider>
         ),
         children: [permissionRoutes],
       },

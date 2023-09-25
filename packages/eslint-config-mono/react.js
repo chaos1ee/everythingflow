@@ -21,16 +21,14 @@ module.exports = {
   plugins: ['@typescript-eslint'],
   root: true,
   settings: {
-    'import/extensions': ['.js', '.jsx', '.ts', '.tsx', '.mts', '.mjs'],
+    'import/extensions': ['.js', '.jsx', '.ts', '.tsx'],
     'import/parsers': {
-      '@typescript-eslint/parser': ['.ts', '.tsx', '.mts', '.mjs'],
+      '@typescript-eslint/parser': ['.ts', '.tsx'],
     },
     'import/resolver': {
-      typescript: {
-        alwaysTryTypes: true,
-      },
+      typescript: {},
       node: {
-        extensions: ['.js', '.jsx', '.ts', '.tsx', '.mts', '.mjs'],
+        extensions: ['.js', '.jsx'],
       },
     },
     'import/order': [

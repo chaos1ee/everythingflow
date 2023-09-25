@@ -1,28 +1,20 @@
+import { usePermission } from '@/hooks'
+import type { QueryListStoreValue } from '@/stores'
+import { useQueryListStore } from '@/stores'
 import type { ListResponse } from '@/types'
 import type { FormInstance, TablePaginationConfig } from 'antd'
 import { Form, Result, Spin, Table } from 'antd'
 import type { TableProps } from 'antd/es/table'
 import type { ReactNode } from 'react'
 import { useCallback, useEffect, useRef } from 'react'
+import type { FilterFormWrapperProps } from '@/components'
+import { FilterFormWrapper, useToolkitContext } from '@/components'
 import useSWR from 'swr'
-import { useTranslation } from '@/locales'
-import type { FilterFormWrapperProps } from '@/components/FilterFormWrapper'
-import FilterFormWrapper from '@/components/FilterFormWrapper'
-import { usePermission } from '@/hooks/permission'
-import { useQueryListStore, useQueryListTrigger } from '@/stores/queryList'
-import { useToolkitsContext } from '@/components/ContextProvider'
-import { request } from '@/utils/request'
+import { request } from '@/utils'
 
 export enum QueryListAction {
-  Confirm = 'confirm',
+  Submit = 'submit',
   Reset = 'reset',
-  Jump = 'jump',
-  Init = 'init',
-}
-
-const fallbackData = {
-  list: [],
-  total: 0,
 }
 
 export interface QueryListProps<Item, Values, Response>
@@ -57,49 +49,53 @@ const QueryList = <Item extends object, Values extends object | undefined, Respo
   } = props
   const { accessible, isValidating } = usePermission(code)
   const [internalForm] = Form.useForm<Values>(form)
-  const { payloadMap } = useQueryListStore()
-  const { isGlobalNS } = useToolkitsContext()
-  const action = useRef<QueryListAction>()
-  const trigger = useQueryListTrigger()
-  const t = useTranslation()
+  const { getParams, setParams } = useQueryListStore()
+  const actionRef = useRef<QueryListAction>()
+  const listParams = getParams(url)
+  const skipFetch = useRef(true)
+  const { isGlobalNS } = useToolkitContext()
 
-  const internalTrigger = useCallback(
-    (...params: Parameters<typeof trigger> extends [infer _, ...infer Rest] ? Rest : never) => {
-      trigger(url, ...params)
+  const set = useCallback(
+    (value: Partial<QueryListStoreValue>, opts?: { skipFetch: boolean }) => {
+      skipFetch.current = !!opts?.skipFetch
+      setParams(url, value)
     },
-    [trigger, url],
+    [url, setParams],
   )
 
-  const payload = payloadMap.get(url)
+  const swrKey: null | [string, QueryListStoreValue] = skipFetch.current ? null : [url, listParams]
 
-  const { data, isLoading } = useSWR(
-    { url, payload },
+  // TODO: 使用 useSWRInfinite 重构
+  const { data, isLoading, mutate } = useSWR(
+    swrKey,
     async arg => {
-      const { page = 1, size = 10, values } = arg.payload ?? {}
+      try {
+        const { page, size, formValues } = arg[1]
 
-      const params = transformArg?.(page, size, values) ?? {
-        ...values,
-        page,
-        size,
+        const params = transformArg?.(page, size, formValues) ?? {
+          ...formValues,
+          page,
+          size,
+        }
+
+        const response = await request<Response>(arg[0], { headers, params }, isGlobalNS)
+        const list = transformResponse?.(response.data) ?? (response.data as ListResponse<Item>)
+        afterSuccess?.(list, actionRef.current)
+        return list
+      } catch (err) {
+        console.error(err)
+      } finally {
+        actionRef.current = undefined
       }
-
-      const response = await request<Response>(arg.url, { headers, params }, isGlobalNS)
-      const list = transformResponse?.(response.data) ?? (response.data as ListResponse<Item>)
-      afterSuccess?.(list, action.current)
-      action.current = undefined
-      return list
     },
     {
       shouldRetryOnError: false,
-      keepPreviousData: true,
-      fallbackData,
-      revalidateOnMount: false,
+      revalidateOnFocus: false,
     },
   )
 
   const onPaginationChange = async (currentPage: number, currentSize: number) => {
-    action.current = QueryListAction.Jump
-    internalTrigger({
+    set({
       page: currentPage,
       size: currentSize,
     })
@@ -108,46 +104,65 @@ const QueryList = <Item extends object, Values extends object | undefined, Respo
   const pagination: TablePaginationConfig = {
     showSizeChanger: true,
     showQuickJumper: true,
-    current: payload?.page,
-    pageSize: payload?.size,
+    current: listParams.page,
+    pageSize: listParams.size,
     total: data?.total,
     onChange: onPaginationChange,
   }
 
-  const afterConfirm = async (values: Values) => {
-    action.current = QueryListAction.Confirm
-    internalTrigger({
+  const afterConfirm = async () => {
+    actionRef.current = QueryListAction.Submit
+    set({
       page: 1,
-      values,
+      formValues: internalForm.getFieldsValue(),
     })
   }
 
-  const afterReset = async (values: Values) => {
-    action.current = QueryListAction.Reset
+  const afterReset = async () => {
     try {
-      await internalForm.validateFields()
-      internalTrigger({ page: 1, values })
+      actionRef.current = QueryListAction.Reset
+      internalForm.resetFields()
+      const values = await internalForm.validateFields()
+      set({
+        page: 1,
+        formValues: values,
+      })
     } catch (_) {
-      internalTrigger({ page: 1, values }, fallbackData, { revalidate: false })
+      const values = internalForm.getFieldsValue()
+      set(
+        {
+          page: 1,
+          formValues: values,
+        },
+        { skipFetch: true },
+      )
+      await mutate(
+        {
+          list: [],
+          total: 0,
+        },
+        {
+          revalidate: false,
+        },
+      )
     }
   }
 
   useEffect(() => {
     const init = async () => {
-      action.current = QueryListAction.Init
-
       try {
         const values = await internalForm.validateFields()
-        internalTrigger({ values })
+        set({
+          formValues: values,
+        })
       } catch (_) {
         internalForm.resetFields()
       }
     }
 
-    // 在不使用定时器时 Form.Item 的自定义校验有时不会被触发
-    setTimeout(init, 0)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+    // 增加延时，防止回调在表单实例化前触发
+    setTimeout(init)
+  }, [internalForm, set])
 
   if (isValidating) {
     return (
@@ -163,21 +178,19 @@ const QueryList = <Item extends object, Values extends object | undefined, Respo
   }
 
   if (!accessible) {
-    return <Result status={403} subTitle={t('noEntitlement')} />
+    return <Result status={403} subTitle="无权限，请联系管理员进行授权" />
   }
 
   return (
     <>
-      {renderForm && (
-        <FilterFormWrapper
-          form={internalForm}
-          confirmText={confirmText}
-          afterReset={afterReset}
-          afterConfirm={afterConfirm}
-        >
-          {renderForm(internalForm)}
-        </FilterFormWrapper>
-      )}
+      <FilterFormWrapper
+        form={internalForm}
+        confirmText={confirmText}
+        afterReset={afterReset}
+        afterConfirm={afterConfirm}
+      >
+        {renderForm}
+      </FilterFormWrapper>
       <Table {...tableProps} dataSource={data?.list} loading={isLoading} pagination={pagination} />
     </>
   )
