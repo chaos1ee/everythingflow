@@ -9,12 +9,13 @@ module.exports = {
     app: './main.tsx',
   },
   resolve: {
-    extensions: ['.js', '.jsx', '.ts', '.tsx', '.d.ts'],
+    extensions: ['.js', '.mjs', '.jsx', '.ts', '.tsx', '.d.ts'],
     alias: {
-      '~': path.resolve(__dirname, './src'),
+      '@': path.resolve(__dirname, './src'),
     },
   },
   devServer: {
+    open: true,
     hot: true,
     historyApiFallback: {
       index: '/',

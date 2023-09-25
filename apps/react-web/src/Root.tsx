@@ -1,21 +1,23 @@
+/* eslint-disable camelcase */
 import type { FC } from 'react'
 import { Suspense } from 'react'
 import { App, ConfigProvider, Spin } from 'antd'
-import { RequestError, ToolkitsContextProvider, useTokenStore, useValidateToken } from 'react-toolkits'
+import { ContextProvider, RequestError, useTokenStore, useValidateToken } from 'react-toolkits'
 import { Outlet, useNavigate } from 'react-router-dom'
 import { SWRConfig } from 'swr'
-import menuItems from '~/menu-items'
-import zhCN from 'antd/locale/zh_CN'
+import menuItems from '@/menu-items'
+import { useLocaleStore } from '@/stores'
 
 const Root: FC = () => {
   useValidateToken()
   const { notification } = App.useApp()
   const { clearToken } = useTokenStore()
   const navigate = useNavigate()
+  const locale = useLocaleStore(state => state.locale)
 
   return (
     <ConfigProvider
-      locale={zhCN}
+      locale={locale.antd}
       theme={{
         token: {
           colorPrimary: '#ff5a00',
@@ -40,7 +42,7 @@ const Root: FC = () => {
             />
           }
         >
-          <ToolkitsContextProvider usePermissionV2 title="React Web" menuItems={menuItems}>
+          <ContextProvider usePermissionV2 title="React Web" menuItems={menuItems} locale={locale.toolkits}>
             <SWRConfig
               value={{
                 shouldRetryOnError: false,
@@ -74,7 +76,7 @@ const Root: FC = () => {
             >
               <Outlet />
             </SWRConfig>
-          </ToolkitsContextProvider>
+          </ContextProvider>
         </Suspense>
       </App>
     </ConfigProvider>

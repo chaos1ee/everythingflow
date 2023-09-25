@@ -1,7 +1,7 @@
 import type { FC } from 'react'
 import { Navigate, useRouteError } from 'react-router-dom'
 import { Alert, App } from 'antd'
-import { RequestError, useTokenStore } from 'react-toolkits'
+import { RequestError , useTokenStore } from 'react-toolkits'
 
 const { ErrorBoundary } = Alert
 

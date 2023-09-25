@@ -1,8 +1,8 @@
 import useSWRImmutable from 'swr/immutable'
-import { request } from '@/utils'
-import { useToolkitContext } from '@/components'
+import { useToolkitsContext } from '@/components/ContextProvider'
+import { request } from '@/utils/request'
 
-export type PermissionCheckResult =
+type PermissionCheckResult =
   | { has_all: true }
   | {
       [k: string]: boolean
@@ -15,7 +15,7 @@ export function usePermissions(
     suspense?: boolean
   },
 ) {
-  const { usePermissionV2 } = useToolkitContext()
+  const { usePermissionV2 } = useToolkitsContext()
 
   const { data, isLoading } = useSWRImmutable(
     codes.length > 0 ? { url: usePermissionV2 ? '/api/usystem/user/checkV2' : '/api/usystem/user/check', codes } : null,
