@@ -2,9 +2,7 @@ import { lazy } from 'react'
 import type { RouteObject } from 'react-router-dom'
 import { Navigate, Outlet } from 'react-router-dom'
 import { SWRConfig } from 'swr'
-import { request } from '@/utils'
-import { ToolkitsContextProvider } from '@/components'
-import { Layout } from 'antd'
+import { request } from '@/utils/request'
 
 const UserList = lazy(() => import('./UserList'))
 const RoleList = lazy(() => import('./RoleList'))
@@ -19,11 +17,7 @@ const routes: RouteObject = {
         shouldRetryOnError: false,
       }}
     >
-      <ToolkitsContextProvider isGlobalNS>
-        <Layout>
-          <Outlet />
-        </Layout>
-      </ToolkitsContextProvider>
+      <Outlet />
     </SWRConfig>
   ),
   children: [

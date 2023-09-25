@@ -1,7 +1,7 @@
 import { Card, Col, Form, Input, Row, Select } from 'antd'
 import { QueryList, useQueryListTrigger } from 'react-toolkits'
 import type { ColumnsType } from 'antd/es/table'
-import type { TableListItem } from '~/features/table'
+import type { TableListItem } from '@/features/table'
 
 interface FormValues {
   param: number

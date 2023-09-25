@@ -1,4 +1,3 @@
-import { usePermissions } from '@/hooks'
 import { Menu } from 'antd'
 import type {
   ItemType,
@@ -10,9 +9,10 @@ import type {
 import type { FC, ReactNode } from 'react'
 import { useCallback, useEffect, useMemo } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import type { Merge } from 'ts-essentials'
-import { useToolkitContext } from '@/components'
 import { useNavStore } from '@/components/NavMenu/store'
+import { useToolkitsContext } from '@/components/ContextProvider'
+import { usePermissions } from '@/hooks/permission'
+import type { Merge } from 'ts-toolbelt/out/Object/Merge'
 
 // 扩展 antd Menu 的类型，使其支持一些我们想要的自定义字段。
 type MenuItemType2 = Merge<
@@ -26,13 +26,13 @@ type MenuItemType2 = Merge<
 type SubMenuType2 = Merge<
   SubMenuType,
   {
-    children?: ItemType2[]
+    children?: NavMenuItem[]
   }
 >
 
-type MenuItemGroupType2 = Merge<MenuItemGroupType, { children?: ItemType2[] }>
+type MenuItemGroupType2 = Merge<MenuItemGroupType, { children?: NavMenuItem[] }>
 
-export type ItemType2 = MenuItemType2 | SubMenuType2 | MenuItemGroupType2 | MenuDividerType | null
+export type NavMenuItem = MenuItemType2 | SubMenuType2 | MenuItemGroupType2 | MenuDividerType | null
 
 const withLink = (label?: ReactNode, route?: string): ReactNode => {
   if (!label) {
@@ -46,7 +46,7 @@ const withLink = (label?: ReactNode, route?: string): ReactNode => {
   return label
 }
 
-function transformItems(items: ItemType2[], permissions?: Record<string, boolean>) {
+function transformItems(items: NavMenuItem[], permissions?: Record<string, boolean>) {
   const result: ItemType[] = []
 
   for (let i = 0; i < items.length; i++) {
@@ -80,12 +80,12 @@ function transformItems(items: ItemType2[], permissions?: Record<string, boolean
 
 // 拍平导航配置，并且注入 keypath 字段
 function flatItems(
-  items: ItemType2[],
+  items: NavMenuItem[],
   result: Merge<MenuItemType2, { keypath?: string[] }>[] = [],
   keypath: string[] = [],
 ) {
   for (const item of items) {
-    const children = (item as SubMenuType2 | MenuItemGroupType2)!.children as ItemType2[]
+    const children = (item as SubMenuType2 | MenuItemGroupType2)!.children as NavMenuItem[]
 
     if (Array.isArray(children)) {
       const _keys =
@@ -101,7 +101,7 @@ function flatItems(
 
 const NavMenu: FC = () => {
   const location = useLocation()
-  const { menuItems } = useToolkitContext()
+  const { menuItems } = useToolkitsContext()
   const flattenItems = useMemo(() => flatItems(menuItems ?? []), [menuItems])
   const codes = flattenItems.map(item => item.code).filter(Boolean) as string[]
   const { data: permissions } = usePermissions(codes, { isGlobalNS: true, suspense: true })

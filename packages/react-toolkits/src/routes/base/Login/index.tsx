@@ -1,18 +1,18 @@
 import { SSO_URL } from '@/constants'
-import { useTokenStore } from '@/stores'
 import { AliyunOutlined } from '@ant-design/icons'
 import { Alert, Button, Card, Col, Divider, Row, Space, Typography } from 'antd'
 import type { FC, PropsWithChildren } from 'react'
 import { Navigate, useLocation, useSearchParams } from 'react-router-dom'
 import useSWRImmutable from 'swr/immutable'
 import Default from './default'
-import { request } from '@/utils'
+import { useTokenStore } from '@/stores/token'
+import { request } from '@/utils/request'
 
 const { Title } = Typography
 
 const Login: FC<PropsWithChildren> = props => {
   const { children } = props
-  const [searchParams, setSearchParams] = useSearchParams()
+  const [searchParams] = useSearchParams()
   const location = useLocation()
   const { token, setToken } = useTokenStore()
 

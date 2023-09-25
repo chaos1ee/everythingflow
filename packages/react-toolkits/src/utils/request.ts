@@ -1,7 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useTokenStore } from '@/stores'
-import { toolkitContextStore, useGameStore } from '@/components'
 import { isNil, pick } from 'lodash-es'
+import { contextStore } from '@/components/ContextProvider'
+import { useGameStore } from '@/components/GameSelect'
+import { useTokenStore } from '@/stores/token'
 
 export class RequestError extends Error {
   status?: number
@@ -66,12 +67,12 @@ export async function request<T = any>(input: string | URL, init?: InitConfig, i
     headers.set('Authorization', `Bearer ${token}`)
   }
 
-  const toolkitsContext = toolkitContextStore.getState()
+  const context = contextStore.getState()
 
-  if (toolkitsContext.usePermissionV2) {
+  if (context.usePermissionV2) {
     const game = useGameStore.getState().game
 
-    if (isGlobalNS || (isGlobalNS === undefined && toolkitsContext.isGlobalNS)) {
+    if (isGlobalNS || (isGlobalNS === undefined && context.isGlobalNS)) {
       headers.set('App-ID', 'global')
     } else if (game) {
       headers.set('App-ID', game.id)

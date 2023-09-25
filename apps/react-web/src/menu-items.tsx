@@ -1,7 +1,7 @@
 import { ConsoleSqlOutlined, SafetyOutlined } from '@ant-design/icons'
-import type { ItemType2 } from 'react-toolkits'
+import type { NavMenuItem } from 'react-toolkits'
 
-const navItems: ItemType2[] = [
+const navItems: NavMenuItem[] = [
   {
     key: 'table',
     label: '表',

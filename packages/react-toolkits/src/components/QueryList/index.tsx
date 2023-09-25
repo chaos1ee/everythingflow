@@ -1,15 +1,17 @@
-import { usePermission } from '@/hooks'
-import { useQueryListStore, useQueryListTrigger } from '@/stores'
 import type { ListResponse } from '@/types'
 import type { FormInstance, TablePaginationConfig } from 'antd'
 import { Form, Result, Spin, Table } from 'antd'
 import type { TableProps } from 'antd/es/table'
 import type { ReactNode } from 'react'
 import { useCallback, useEffect, useRef } from 'react'
-import type { FilterFormWrapperProps } from '@/components'
-import { FilterFormWrapper, useToolkitContext } from '@/components'
 import useSWR from 'swr'
-import { request } from '@/utils'
+import { useTranslation } from '@/locales'
+import type { FilterFormWrapperProps } from '@/components/FilterFormWrapper'
+import FilterFormWrapper from '@/components/FilterFormWrapper'
+import { usePermission } from '@/hooks/permission'
+import { useQueryListStore, useQueryListTrigger } from '@/stores/queryList'
+import { useToolkitsContext } from '@/components/ContextProvider'
+import { request } from '@/utils/request'
 
 export enum QueryListAction {
   Confirm = 'confirm',
@@ -56,9 +58,10 @@ const QueryList = <Item extends object, Values extends object | undefined, Respo
   const { accessible, isValidating } = usePermission(code)
   const [internalForm] = Form.useForm<Values>(form)
   const { payloadMap } = useQueryListStore()
-  const { isGlobalNS } = useToolkitContext()
+  const { isGlobalNS } = useToolkitsContext()
   const action = useRef<QueryListAction>()
   const trigger = useQueryListTrigger()
+  const t = useTranslation()
 
   const internalTrigger = useCallback(
     (...params: Parameters<typeof trigger> extends [infer _, ...infer Rest] ? Rest : never) => {
@@ -160,7 +163,7 @@ const QueryList = <Item extends object, Values extends object | undefined, Respo
   }
 
   if (!accessible) {
-    return <Result status={403} subTitle="无权限，请联系管理员进行授权" />
+    return <Result status={403} subTitle={t('noEntitlement')} />
   }
 
   return (

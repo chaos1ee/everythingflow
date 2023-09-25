@@ -2,7 +2,7 @@
 import type { FormInstance } from 'antd'
 import { Button, Space, theme } from 'antd'
 import type { Key, PropsWithChildren, ReactNode } from 'react'
-import * as React from 'react'
+import { useTranslation } from '@/locales'
 
 export interface FilterFormWrapperProps<Values> extends PropsWithChildren {
   form: FormInstance<Values>
@@ -15,6 +15,7 @@ export interface FilterFormWrapperProps<Values> extends PropsWithChildren {
 const FilterFormWrapper = <Values = any,>(props: FilterFormWrapperProps<Values>) => {
   const { confirmText, form, extras, afterConfirm, afterReset, children } = props
   const { token } = theme.useToken()
+  const t = useTranslation()
 
   const formStyle = {
     maxWidth: 'none',
@@ -45,10 +46,10 @@ const FilterFormWrapper = <Values = any,>(props: FilterFormWrapperProps<Values>)
         <div className="ml-8">
           <Space>
             <Button type="primary" onClick={handleSubmit}>
-              {confirmText || '查询'}
+              {confirmText || t('FilterFormWrapper.confirmText')}
             </Button>
             <Button htmlType="reset" onClick={handleReset}>
-              重置
+              {t('FilterFormWrapper.resetText')}
             </Button>
             {extras?.map(({ key, render }) => (
               <span key={key}>{typeof render === 'function' ? render(form) : render}</span>

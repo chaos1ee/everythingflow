@@ -2,7 +2,7 @@ import type { MenuProps } from 'antd'
 import { App, Button, Card, Col, Divider, Dropdown, Form, Input, Row, Space } from 'antd'
 import { Highlight, PermissionButton, QueryList, useFormModal, useQueryListTrigger } from 'react-toolkits'
 import type { ColumnsType } from 'antd/es/table'
-import type { VersionListItem } from '~/features/table'
+import type { VersionListItem } from '@/features/table'
 import {
   useCreateVersion,
   useMergeVersion,
@@ -10,7 +10,7 @@ import {
   useUpdateVersion,
   useUploadTableModal,
   VersionSelect,
-} from '~/features/table'
+} from '@/features/table'
 import { useCallback } from 'react'
 import { DownOutlined } from '@ant-design/icons'
 import { Link } from 'react-router-dom'
