@@ -1,44 +1,15 @@
 import { Select, Space, Typography } from 'antd'
 import { useCallback, useMemo } from 'react'
+import { useTokenStore } from '@/stores'
 import useSWRImmutable from 'swr/immutable'
-import { create } from 'zustand'
-import { createJSONStorage, persist } from 'zustand/middleware'
-import { mixedStorage } from '@/utils/storage'
-import { useTranslation } from '@/locales'
-import { useToolkitsContext } from '@/components/ContextProvider'
-import { useTokenStore } from '@/stores/token'
-import { request } from '@/utils/request'
+import { useGameStore, useToolkitContext } from '@/components'
+import type { Game } from './types'
+import { request } from '@/utils'
 
 const { Text } = Typography
 
-export interface Game {
-  id: string
-  name: string
-  area: 'cn' | 'global'
-  Ctime: string
-}
-
-export interface GameState {
-  game: Game | null
-  setGame: (game: Game) => void
-}
-
-export const useGameStore = create<GameState>()(
-  persist(
-    set => ({
-      game: null,
-      setGame: game => set({ game }),
-    }),
-    {
-      name: 'game',
-      storage: createJSONStorage(() => mixedStorage),
-      partialize: state => ({ game: state.game }),
-    },
-  ),
-)
-
 function useGames() {
-  const { usePermissionV2 } = useToolkitsContext()
+  const { usePermissionV2 } = useToolkitContext()
   const user = useTokenStore(state => state.getUser())
 
   const { data, isLoading } = useSWRImmutable(
@@ -53,10 +24,9 @@ function useGames() {
 }
 
 const GameSelect = () => {
-  const { onlyDomesticGames } = useToolkitsContext()
+  const { onlyDomesticGames } = useToolkitContext()
   const { game, setGame } = useGameStore()
   const { games, isLoading } = useGames()
-  const t = useTranslation()
 
   const options = useMemo(
     () =>
@@ -81,12 +51,12 @@ const GameSelect = () => {
 
   return (
     <Space>
-      <Text>{t('GameSelect.label')}</Text>
+      <Text>当前游戏</Text>
       <Select
         showSearch
         optionFilterProp="label"
         value={game?.id}
-        placeholder={t('GameSelect.placeholder')}
+        placeholder="请选择游戏"
         loading={isLoading}
         style={{ width: '200px' }}
         options={options}

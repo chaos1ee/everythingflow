@@ -1,3 +1,2 @@
-lib/
-locales/
-public/
+dist
+public

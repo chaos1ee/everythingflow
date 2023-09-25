@@ -5,18 +5,16 @@
     "tsup.config.ts"
   ],
   "exclude": [
-    "locale",
-    "lib"
+    "dist",
+    "node_modules"
   ],
   "compilerOptions": {
+    "resolveJsonModule": true,
     "baseUrl": ".",
     "paths": {
       "@/*": [
         "./src/*"
       ]
-    },
-    "declaration": false,
-    "declarationMap": true,
-    "resolveJsonModule": true
+    }
   }
 }

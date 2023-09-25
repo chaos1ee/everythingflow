@@ -1,29 +1,28 @@
 {
   "name": "react-toolkits",
   "version": "0.3.1",
-  "packageManager": "^pnpm@8.7.5",
   "sideEffects": [
     "**/*.css"
   ],
-  "module": "./lib/index.mjs",
-  "types": "./lib/index.d.mts",
-  "exports": {
-    "./style.css": "./lib/index.css",
-    ".": {
-      "import": "./lib/index.js",
-      "types": "./lib/index.d.mts"
-    },
-    "./locales/*": {
-      "import": "./locales/*.js",
-      "types": "./locales/*.d.mts"
-    }
-  },
+  "module": "./dist/index.esm.js",
+  "types": "./dist/index.d.mts",
   "files": [
     "README.md",
     "CHANGELOG.md",
-    "lib/",
-    "locales/"
+    "dist/"
   ],
+  "exports": {
+    "./package.json": "./package.json",
+    "./dist/index.css": "./dist/index.css",
+    ".": {
+      "import": {
+        "types": "./dist/index.d.mts",
+        "module": "./dist/index.esm.js",
+        "default": "./dist/index.esm.js"
+      }
+    }
+  },
+  "typesVersions": {},
   "license": "MIT",
   "scripts": {
     "build": "tsup",
@@ -65,9 +64,8 @@
     "tailwind-config": "workspace:*",
     "tailwindcss": "^3.3.3",
     "ts-essentials": "^9.3.2",
-    "ts-toolbelt": "^9.6.0",
     "tsconfig": "workspace:*",
-    "tsup": "^7.2.0",
+    "tsup": "^7.1.0",
     "typescript": "^5.1.6"
   },
   "peerDependencies": {

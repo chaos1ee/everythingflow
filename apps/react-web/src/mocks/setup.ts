@@ -1,7 +1,7 @@
 import * as jose from 'jose'
 import type { ResponseComposition, RestContext, RestHandler, RestRequest } from 'msw'
 import { rest, setupWorker } from 'msw'
-import { SECRET } from '@/constants'
+import { SECRET } from '~/constants'
 
 function glob<T>(r: __WebpackModuleApi.RequireContext): T[] {
   const ret: T[] = []

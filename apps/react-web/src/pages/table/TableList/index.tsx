@@ -1,7 +1,7 @@
 import { Card, Col, Form, Input, Row, Select } from 'antd'
-import { QueryList, useQueryListTrigger } from 'react-toolkits'
+import { QueryList, useQueryListJump } from 'react-toolkits'
 import type { ColumnsType } from 'antd/es/table'
-import type { TableListItem } from '@/features/table'
+import type { TableListItem } from '~/features/table'
 
 interface FormValues {
   param: number
@@ -11,7 +11,7 @@ interface FormValues {
 const url = '/api/tables'
 
 const TableList = () => {
-  const trigger = useQueryListTrigger()
+  const jump = useQueryListJump()
 
   const columns: ColumnsType<TableListItem> = [
     {
@@ -32,7 +32,7 @@ const TableList = () => {
           // eslint-disable-next-line
           <a
             onClick={async () => {
-              trigger(url, { page: 1 }, undefined, { revalidate: true })
+              jump(url, 1)
             }}
           >
             删除

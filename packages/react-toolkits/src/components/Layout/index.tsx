@@ -1,30 +1,27 @@
 import * as Antd from 'antd'
 import { Divider, Space } from 'antd'
-import type { FC, Key, PropsWithChildren, ReactNode } from 'react'
+import type { FC, PropsWithChildren } from 'react'
 import * as React from 'react'
 import { Suspense } from 'react'
 import { Link } from 'react-router-dom'
+import { GameSelect, NavMenu, useGameStore, UserWidget, useToolkitContext } from '@/components'
 import { SWRConfig } from 'swr'
 import logo from './logo.png'
 import RequireGame from '@/components/RequireGame'
-import { useToolkitsContext } from '@/components/ContextProvider'
-import GameSelect, { useGameStore } from '@/components/GameSelect'
-import NavMenu from '@/components/NavMenu'
-import UserWidget from '@/components/UserWidget'
 
 const { Spin, theme } = Antd
 const { Header, Sider, Content } = Antd.Layout
 
 export interface LayoutProps extends PropsWithChildren {
-  extras?: { key: Key; children: ReactNode }[]
+  extra?: React.ReactNode[]
 }
 
 const Layout: FC<LayoutProps> = props => {
-  const { children, extras } = props
+  const { children, extra } = props
   const {
     token: { colorBgContainer, colorBorder },
   } = theme.useToken()
-  const { title, usePermissionV2, isGlobalNS } = useToolkitsContext()
+  const { title, usePermissionV2, isGlobalNS } = useToolkitContext()
   const { game } = useGameStore()
 
   return (
@@ -65,7 +62,7 @@ const Layout: FC<LayoutProps> = props => {
           <div className="flex justify-between items-center h-full">
             <div>{usePermissionV2 && !isGlobalNS && <GameSelect />}</div>
             <Space size="small" split={<Divider type="vertical" />}>
-              {extras?.map(extra => <span key={extra.key}>{extra.children}</span>)}
+              {extra}
               <UserWidget />
             </Space>
           </div>

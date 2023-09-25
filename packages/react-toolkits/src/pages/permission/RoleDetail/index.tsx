@@ -1,12 +1,10 @@
 import { PermissionList, useRole } from '@/features/permission'
 import { Breadcrumb, Card, Descriptions, Skeleton } from 'antd'
 import { Link, useParams } from 'react-router-dom'
-import { useTranslation } from '@/locales'
 
 const RoleDetail = () => {
   const params = useParams()
   const { data, isLoading } = useRole(params.name as string)
-  const t = useTranslation()
 
   return (
     <>
@@ -15,7 +13,7 @@ const RoleDetail = () => {
         items={[
           {
             key: '1',
-            title: <Link to="/permission/role">{t('role')}</Link>,
+            title: <Link to="/permission/role">角色</Link>,
           },
           {
             key: '2',
@@ -23,12 +21,12 @@ const RoleDetail = () => {
           },
         ]}
       />
-      <Card title={t('RoleDetail.title')}>
+      <Card title="权限详情">
         <Skeleton loading={isLoading}>
           <Descriptions column={3} layout="vertical">
-            <Descriptions.Item label={t('name')}>{data?.name}</Descriptions.Item>
+            <Descriptions.Item label="名称">{data?.name}</Descriptions.Item>
             <Descriptions.Item label="ID">{data?.id}</Descriptions.Item>
-            <Descriptions.Item label={t('creationTime')}>{data?.ctime}</Descriptions.Item>
+            <Descriptions.Item label="创建时间">{data?.ctime}</Descriptions.Item>
           </Descriptions>
           <PermissionList readonly value={data?.permissions} />
         </Skeleton>

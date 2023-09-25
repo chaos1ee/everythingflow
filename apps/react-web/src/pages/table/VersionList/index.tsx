@@ -1,8 +1,15 @@
 import type { MenuProps } from 'antd'
 import { App, Button, Card, Col, Divider, Dropdown, Form, Input, Row, Space } from 'antd'
-import { Highlight, PermissionButton, QueryList, useFormModal, useQueryListTrigger } from 'react-toolkits'
+import {
+  Highlight,
+  PermissionButton,
+  QueryList,
+  useFormModal,
+  useQueryListJump,
+  useQueryListMutate,
+} from 'react-toolkits'
 import type { ColumnsType } from 'antd/es/table'
-import type { VersionListItem } from '@/features/table'
+import type { VersionListItem } from '~/features/table'
 import {
   useCreateVersion,
   useMergeVersion,
@@ -10,7 +17,7 @@ import {
   useUpdateVersion,
   useUploadTableModal,
   VersionSelect,
-} from '@/features/table'
+} from '~/features/table'
 import { useCallback } from 'react'
 import { DownOutlined } from '@ant-design/icons'
 import { Link } from 'react-router-dom'
@@ -20,7 +27,7 @@ const url = '/api/version/list'
 
 const useCreateModal = () => {
   const create = useCreateVersion()
-  const trigger = useQueryListTrigger()
+  const jump = useQueryListJump()
 
   return useFormModal<{ name: string; comment?: string; parent_version?: string }>({
     title: '创建版本',
@@ -40,14 +47,14 @@ const useCreateModal = () => {
     ),
     async onConfirm(values) {
       await create.trigger(values)
-      trigger(url, { page: 1 })
+      jump(url, 1)
     },
   })
 }
 
 const useUpdateModal = () => {
   const update = useUpdateVersion()
-  const trigger = useQueryListTrigger()
+  const mutate = useQueryListMutate()
 
   return useFormModal<{ id: string; name: string; comment?: string }>({
     title: '更新版本信息',
@@ -66,9 +73,8 @@ const useUpdateModal = () => {
     ),
     async onConfirm(values) {
       await update.trigger(values)
-      trigger<VersionListItem>(
+      await mutate<VersionListItem>(
         url,
-        undefined,
         prev => {
           return produce(prev, draft => {
             if (!draft?.list) return
@@ -124,7 +130,7 @@ const useMergeModal = () => {
 const VersionList = () => {
   const { modal } = App.useApp()
   const remove = useRemoveVersion()
-  const trigger = useQueryListTrigger()
+  const mutate = useQueryListMutate()
 
   const { showModal: showCreateModal, Modal: CreateModal } = useCreateModal()
   const { showModal: showUploadModal, Modal: UploadModal } = useUploadTableModal()
@@ -144,9 +150,8 @@ const VersionList = () => {
         ),
         onOk: async () => {
           await remove.trigger(record.id)
-          trigger<VersionListItem>(
+          await mutate<VersionListItem>(
             url,
-            undefined,
             prev =>
               produce(prev, draft => {
                 if (!draft?.list) return
@@ -158,7 +163,7 @@ const VersionList = () => {
         },
       })
     },
-    [modal, trigger, remove],
+    [modal, mutate, remove],
   )
 
   const columns: ColumnsType<VersionListItem> = [

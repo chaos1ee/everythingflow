@@ -52,14 +52,14 @@
 
 ### Patch Changes
 
-- c6825d1: fix: ContextProvider title value issue
+- c6825d1: fix: ToolkitsContextProvider title value issue
 - 99bd364: feat: cache ToolkitsContext config
 
 ## 0.2.22
 
 ### Patch Changes
 
-- a9d0a28: feat: set default values for ContextProvider
+- a9d0a28: feat: set default values for ToolkitsContextProvider
 
 ## 0.2.21
 
@@ -71,7 +71,7 @@
 
 ### Patch Changes
 
-- fceb92e: fix: missing isGlobalNS prop in ContextProvider
+- fceb92e: fix: missing isGlobalNS prop in ToolkitsContextProvider
 
 ## 0.2.19
 

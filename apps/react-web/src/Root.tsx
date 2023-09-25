@@ -1,23 +1,38 @@
-/* eslint-disable camelcase */
 import type { FC } from 'react'
 import { Suspense } from 'react'
 import { App, ConfigProvider, Spin } from 'antd'
-import { ContextProvider, RequestError, useTokenStore, useValidateToken } from 'react-toolkits'
-import { Outlet, useNavigate } from 'react-router-dom'
+import { RequestError, ToolkitsContextProvider, useTokenStore, useValidateToken } from 'react-toolkits'
+import { Navigate, Outlet } from 'react-router-dom'
 import { SWRConfig } from 'swr'
-import menuItems from '@/menu-items'
-import { useLocaleStore } from '@/stores'
+import menuItems from '~/menu-items'
+import zhCN from 'antd/locale/zh_CN'
 
 const Root: FC = () => {
   useValidateToken()
   const { notification } = App.useApp()
   const { clearToken } = useTokenStore()
-  const navigate = useNavigate()
-  const locale = useLocaleStore(state => state.locale)
+
+  const handleError = (error: any) => {
+    if (error instanceof RequestError) {
+      switch (error.code) {
+        case 401:
+        case 412:
+          clearToken()
+          return <Navigate to={error.code === 401 ? '/login' : '/login?not_registered=1'} />
+        default:
+          if (!error.skip) {
+            notification.error({
+              message: '请求出错',
+              description: error.message,
+            })
+          }
+      }
+    }
+  }
 
   return (
     <ConfigProvider
-      locale={locale.antd}
+      locale={zhCN}
       theme={{
         token: {
           colorPrimary: '#ff5a00',
@@ -42,41 +57,16 @@ const Root: FC = () => {
             />
           }
         >
-          <ContextProvider usePermissionV2 title="React Web" menuItems={menuItems} locale={locale.toolkits}>
+          <ToolkitsContextProvider usePermissionV2 title="React Web" menuItems={menuItems}>
             <SWRConfig
               value={{
                 shouldRetryOnError: false,
-                revalidateOnFocus: false,
-                onError: error => {
-                  if (error instanceof RequestError) {
-                    switch (error.status) {
-                      case 200:
-                        notification.error({
-                          message: '请求出错',
-                          description: error.message,
-                        })
-                        return
-                      case 401:
-                        clearToken()
-                        navigate('/login')
-                        return
-                      case 412:
-                        clearToken()
-                        navigate('/login', { state: { notUser: true } })
-                        return
-                      case 403:
-                        notification.error({
-                          message: '未授权',
-                          description: '无权限，请联系管理员进行授权',
-                        })
-                    }
-                  }
-                },
+                onError: handleError,
               }}
             >
               <Outlet />
             </SWRConfig>
-          </ContextProvider>
+          </ToolkitsContextProvider>
         </Suspense>
       </App>
     </ConfigProvider>

@@ -9,16 +9,12 @@
     "@ant-design/icons": "^5.1.4",
     "antd": "^5.7.3",
     "dayjs": "^1.11.9",
-    "i18next": "^23.5.1",
-    "i18next-browser-languagedetector": "^7.1.0",
     "immer": "^10.0.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-i18next": "^13.2.2",
     "react-router-dom": "^6.14.2",
     "react-toolkits": "workspace:*",
-    "swr": "^2.2.0",
-    "zustand": "^4.3.9"
+    "swr": "^2.2.0"
   },
   "devDependencies": {
     "@babel/core": "^7.22.9",

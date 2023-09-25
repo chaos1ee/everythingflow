@@ -2,10 +2,9 @@ import dayjs from 'dayjs'
 import 'dayjs/locale/zh-cn'
 import { createRoot } from 'react-dom/client'
 import { RouterProvider } from 'react-router-dom'
-import 'react-toolkits/style.css'
-import router from '@/router'
-import '@/styles/index.css'
-import '@/libs/i18n.ts'
+import 'react-toolkits/dist/index.css'
+import router from '~/router'
+import '~/styles/index.css'
 
 dayjs.locale('zh-cn')
 
