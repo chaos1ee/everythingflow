@@ -1,6 +1,7 @@
 import { Result, Spin } from 'antd'
 import type { FC, PropsWithChildren } from 'react'
-import { usePermission } from '@/hooks'
+import { useTranslation } from '@/locales'
+import { usePermission } from '@/hooks/permission'
 
 export interface PermissionGuardProps {
   code: string
@@ -9,6 +10,7 @@ export interface PermissionGuardProps {
 const PermissionGuard: FC<PropsWithChildren<PermissionGuardProps>> = props => {
   const { code, children } = props
   const { accessible, isValidating } = usePermission(code)
+  const t = useTranslation()
 
   if (isValidating) {
     return (
@@ -24,7 +26,7 @@ const PermissionGuard: FC<PropsWithChildren<PermissionGuardProps>> = props => {
   }
 
   if (!accessible) {
-    return <Result status="403" subTitle="无权限，请联系管理员进行授权" />
+    return <Result status="403" subTitle={t('noEntitlement')} />
   }
 
   return <>{children}</>

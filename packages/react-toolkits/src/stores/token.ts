@@ -1,11 +1,11 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import jwtDecode from 'jwt-decode'
-import type { RequestError } from '@/utils'
-import { request } from '@/utils'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import useSWRImmutable from 'swr/immutable'
+import type { RequestError } from '@/utils/request';
+import { request } from '@/utils/request'
 
 interface UserInfo {
   authorityId: string
@@ -45,7 +45,6 @@ export const useTokenStore = create<TokenState>()(
 
 export function useValidateToken() {
   const navigate = useNavigate()
-  const location = useLocation()
   const { clearToken } = useTokenStore()
   const [validated, setValidated] = useState(false)
 
@@ -60,10 +59,10 @@ export function useValidateToken() {
       suspense: true,
       shouldRetryOnError: false,
       onError(err: RequestError) {
-        if (err.code === 401) {
+        if (err.status === 401) {
           clearToken()
           navigate('/login')
-        } else if (err.code === 412) {
+        } else if (err.status === 412) {
           clearToken()
           navigate('/login', { state: { notUser: true } })
         }

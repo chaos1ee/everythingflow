@@ -2,14 +2,15 @@ import { lazy } from 'react'
 import type { RouteObject } from 'react-router-dom'
 import { Navigate, Outlet } from 'react-router-dom'
 import { SWRConfig } from 'swr'
-import { request } from '@/utils'
+import { request } from '@/utils/request'
 
 const UserList = lazy(() => import('./UserList'))
 const RoleList = lazy(() => import('./RoleList'))
 const RoleDetail = lazy(() => import('./RoleDetail'))
 
-const PermissionRoot = () => {
-  return (
+const routes: RouteObject = {
+  path: 'permission',
+  element: (
     <SWRConfig
       value={{
         fetcher: (args: Parameters<typeof request>) => request(...args).then(res => res.data),
@@ -18,12 +19,7 @@ const PermissionRoot = () => {
     >
       <Outlet />
     </SWRConfig>
-  )
-}
-
-const routes: RouteObject = {
-  path: 'permission',
-  element: <PermissionRoot />,
+  ),
   children: [
     {
       index: true,
