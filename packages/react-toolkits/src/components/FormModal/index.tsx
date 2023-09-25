@@ -1,10 +1,77 @@
-import type { FormInstance, ModalProps } from 'antd'
+import type { FormInstance, FormProps, ModalProps } from 'antd'
 import { Button, Form, Modal } from 'antd'
 import type { PropsWithChildren, ReactNode } from 'react'
-import { useEffect, useState } from 'react'
-import type { DeepPartial } from 'ts-essentials'
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import { createPortal } from 'react-dom'
+import { merge } from 'lodash-es'
+import { useTranslation } from '@/locales'
+import type { Object } from 'ts-toolbelt'
 
-export interface FormModalProps<Values>
+type FormModalFormProps<Values> = Pick<
+  FormProps<Values>,
+  'labelAlign' | 'labelWrap' | 'labelCol' | 'wrapperCol' | 'layout'
+>
+
+export type UseFormModalProps<Values extends object> = Omit<FormModalProps<Values>, 'open' | 'onCancel'> &
+  FormModalFormProps<Values> & {
+    content?: ReactNode
+  }
+
+export function useFormModal<Values extends object>(props: UseFormModalProps<Values>) {
+  const { content, labelAlign, labelWrap, labelCol, wrapperCol, layout, ...restProps } = props
+  const [form] = Form.useForm<Values>()
+  const [open, setOpen] = useState(false)
+  const [modalProps, setModalProps] = useState<Omit<UseFormModalProps<Values>, 'content'>>(restProps)
+
+  const showModal = (
+    opts?: Omit<
+      UseFormModalProps<Values>,
+      'footerRender' | 'onConfirm' | 'onCancel' | 'content' | keyof FormModalFormProps<Values>
+    >,
+  ) => {
+    setModalProps(opts ? merge(restProps, opts) : restProps)
+    setOpen(true)
+  }
+
+  const closeModal = useCallback(() => {
+    setOpen(false)
+    form.resetFields()
+  }, [form])
+
+  const formProps = useMemo(
+    () => ({
+      form,
+      labelAlign,
+      labelWrap,
+      labelCol,
+      wrapperCol,
+      layout,
+    }),
+    [form, labelAlign, labelCol, labelWrap, layout, wrapperCol],
+  )
+
+  const InternalModal = useMemo(
+    () =>
+      createPortal(
+        <Form {...formProps}>
+          <FormModal {...modalProps} open={open} onCancel={closeModal}>
+            {content}
+          </FormModal>
+        </Form>,
+        document.body,
+      ),
+    [closeModal, content, formProps, modalProps, open],
+  )
+
+  return {
+    Modal: InternalModal,
+    showModal,
+    closeModal,
+    form,
+  }
+}
+
+export interface FormModalProps<Values extends object>
   extends Omit<
     ModalProps,
     'onCancel' | 'children' | 'destroyOnClose' | 'forceRender' | 'getContainer' | 'footer' | 'confirmLoading'
@@ -12,13 +79,14 @@ export interface FormModalProps<Values>
   renderFooter?: (form: FormInstance<Values>) => ReactNode
   onCancel?: VoidFunction
   onConfirm?: (values: Values) => Promise<void>
-  initialValues?: DeepPartial<Values>
+  initialValues?: Object.Partial<Values, 'deep'>
 }
 
 const FormModal = <Values extends object>(props: PropsWithChildren<FormModalProps<Values>>) => {
   const { initialValues, renderFooter, className, children, onCancel, onConfirm, ...restProps } = props
   const form = Form.useFormInstance<Values>()
   const [confirming, setConfirming] = useState(false)
+  const t = useTranslation()
 
   const handleCancel = () => {
     onCancel?.()
@@ -40,10 +108,10 @@ const FormModal = <Values extends object>(props: PropsWithChildren<FormModalProp
     ? renderFooter(form)
     : [
       <Button key="cancel" onClick={handleCancel}>
-        取消
+        {t('FormModal.cancelText')}
       </Button>,
       <Button key="submit" type="primary" loading={confirming} onClick={handleSubmit}>
-        确定
+        {t('FormModal.confirmText')}
       </Button>,
       ]
 

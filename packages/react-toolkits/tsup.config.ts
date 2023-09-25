@@ -5,34 +5,40 @@ import packageJson from './package.json'
 
 const isProduction = process.env.NODE_ENV === 'production'
 
-const baseOptions: Options = {
-  external: Object.keys(packageJson.peerDependencies),
+const commonOpts: Options = {
+  format: ['esm'],
   sourcemap: true,
   minify: isProduction,
   treeshake: true,
   splitting: false,
-  dts: true,
   clean: true,
   shims: true,
-  publicDir: 'public',
-  loader: {
-    '.jpg': 'base64',
-    '.png': 'copy',
-    '.webp': 'file',
-  },
-  outExtension({ format }) {
+  dts: true,
+  outExtension() {
     return {
-      js: `.${format}.js`,
+      js: '.js',
     }
   },
 }
 
 const options: Options[] = [
   {
-    ...baseOptions,
+    ...commonOpts,
+    name: 'lib',
     entry: ['src/index.ts'],
-    format: ['esm'],
-    outDir: 'dist',
+    outDir: 'lib',
+    external: Object.keys(packageJson.peerDependencies),
+    loader: {
+      '.jpg': 'base64',
+      '.png': 'copy',
+      '.webp': 'file',
+    },
+  },
+  {
+    ...commonOpts,
+    name: 'locales',
+    entry: ['src/locales/*.ts', '!src/locales/index.ts'],
+    outDir: 'locales',
   },
 ]
 

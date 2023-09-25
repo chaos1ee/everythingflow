@@ -5,6 +5,7 @@ import type { RoleV2 } from '../../types'
 import { useAllPermissionsV2 } from '../../hooks'
 import PermissionCollapse from '../PermissionCollapse'
 import type { PermissionListPropsBase } from '../PermissionList'
+import { useTranslation } from '@/locales'
 
 const { Text } = Typography
 const { Option } = Select
@@ -18,9 +19,9 @@ const PermissionListV2: FC<PermissionListV2Props> = props => {
   const { expand = true, value, readonly, onChange } = props
   const { data: permissions, isLoading, error } = useAllPermissionsV2()
   const [gameList, setGameList] = useState<{ gameId: string; permissions: string[] }[]>([])
-
   const globalPermissions = permissions?.permission?.filter(item => item.is_common)
   const gamePermissions = permissions?.permission?.filter(item => !item.is_common)
+  const t = useTranslation()
 
   useEffect(() => {
     const list: { gameId: string; permissions: string[] }[] = []
@@ -37,7 +38,7 @@ const PermissionListV2: FC<PermissionListV2Props> = props => {
   if (error) {
     return (
       <div className="flex justify-center">
-        <Text type="danger">权限获取失败</Text>
+        <Text type="danger">{t('PermissionList.failedDescription')}</Text>
       </div>
     )
   }
@@ -53,7 +54,7 @@ const PermissionListV2: FC<PermissionListV2Props> = props => {
   return (
     <div className="flex flex-col w-full">
       <div className="mb-12">
-        <Divider dashed>平台基础权限</Divider>
+        <Divider dashed>{t('PermissionList.baseSectionTitle')}</Divider>
       </div>
       <Skeleton active loading={isLoading}>
         <PermissionCollapse
@@ -70,13 +71,13 @@ const PermissionListV2: FC<PermissionListV2Props> = props => {
         />
       </Skeleton>
       <div className="my-12">
-        <Divider dashed>游戏权限</Divider>
+        <Divider dashed>{t('PermissionList.gameSectionTitle')}</Divider>
       </div>
       {gameList.map((item, index) => (
         <Card
           title={
             <Space>
-              <Text>游戏</Text>
+              <Text>{t('game')}</Text>
               {readonly ? (
                 <Text>{permissions?.game?.find(game => game.id === item.gameId)?.name}</Text>
               ) : (
@@ -84,7 +85,7 @@ const PermissionListV2: FC<PermissionListV2Props> = props => {
                   disabled={readonly}
                   value={gameList[index].gameId || undefined}
                   style={{ width: '160px' }}
-                  placeholder="请选择游戏"
+                  placeholder={t('PermissionList.gameSelectPlaceholder')}
                   onChange={selectedValue => {
                     setGameList(pev => {
                       const temp = pev.slice()
@@ -112,7 +113,7 @@ const PermissionListV2: FC<PermissionListV2Props> = props => {
                   removeGame(index)
                 }}
               >
-                移除
+                {t('PermissionList.removeText')}
               </Button>
             )
           }
@@ -133,13 +134,13 @@ const PermissionListV2: FC<PermissionListV2Props> = props => {
               />
             </Skeleton>
           ) : (
-            <Empty description="请先选择游戏" />
+            <Empty description={t('PermissionList.gameSectionDescription')} />
           )}
         </Card>
       ))}
       {!readonly && (
         <Button block type="dashed" onClick={addGame}>
-          添加游戏权限
+          {t('PermissionList.addText')}
         </Button>
       )}
     </div>

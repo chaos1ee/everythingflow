@@ -1,10 +1,12 @@
 import useSWRImmutable from 'swr/immutable'
-import { request } from '@/utils'
-import { useToolkitContext } from '@/components'
+import { useToolkitsContext } from '@/components/ContextProvider'
+import { request } from '@/utils/request'
 
-export interface PermissionCheckResult {
-  [k: string]: boolean
-}
+type PermissionCheckResult =
+  | { has_all: true }
+  | {
+      [k: string]: boolean
+    }
 
 export function usePermissions(
   codes: string[],
@@ -13,20 +15,22 @@ export function usePermissions(
     suspense?: boolean
   },
 ) {
-  const { usePermissionV2 } = useToolkitContext()
+  const { usePermissionV2 } = useToolkitsContext()
 
   const { data, isLoading } = useSWRImmutable(
-    codes.length > 0 ? [usePermissionV2 ? '/api/usystem/user/checkV2' : '/api/usystem/user/check', codes] : null,
-    ([url, permissions]: [string, string[]]) =>
+    codes.length > 0 ? { url: usePermissionV2 ? '/api/usystem/user/checkV2' : '/api/usystem/user/check', codes } : null,
+    ({ url }) =>
       request<PermissionCheckResult>(
         url,
         {
           method: 'post',
-          body: { permissions },
+          body: {
+            permissions: codes,
+          },
         },
         opts?.isGlobalNS,
-      ).then(res => {
-        if (res.data.has_all) {
+      ).then(response => {
+        if (response.data.has_all) {
           return codes.reduce(
             (acc, curr) => {
               acc[curr] = true
@@ -38,7 +42,7 @@ export function usePermissions(
 
         return codes.reduce(
           (acc, curr) => {
-            acc[curr] = (res.data as Record<string, boolean>)[curr]
+            acc[curr] = (response.data as Record<string, boolean>)[curr]
             return acc
           },
           {} as Record<string, boolean>,
@@ -54,8 +58,14 @@ export function usePermissions(
   return { data, isValidating: isLoading }
 }
 
-export function usePermission(code: string | undefined, isGlobalNS?: boolean) {
-  const { data, isValidating } = usePermissions(code ? [code] : [], { isGlobalNS })
+export function usePermission(
+  code: string | undefined,
+  opts?: {
+    isGlobalNS?: boolean
+    suspense?: boolean
+  },
+) {
+  const { data, isValidating } = usePermissions(code ? [code] : [], opts)
 
   if (code === undefined) {
     return {
