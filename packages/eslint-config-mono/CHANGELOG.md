@@ -1,5 +1,11 @@
 # @flow97/eslint-config-mono
 
+## 0.0.3
+
+### Patch Changes
+
+- 860eeec: feat: support i18n
+
 ## 0.0.2
 
 ### Patch Changes
