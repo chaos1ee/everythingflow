@@ -12,6 +12,16 @@ const locale: Locale = {
   game: '游戏',
   user: '用户',
   role: '角色',
+  Login: {
+    title: '登录方式',
+    thirdParty: '第三方登录',
+    loginWithIDass: 'IDass 登录',
+    notRegistered: '您还未在平台注册，请联系管理员',
+  },
+  NotFound: {
+    subTitle: '访问的页面不存在',
+    buttonText: '返回页面',
+  },
   FilterFormWrapper: {
     confirmText: '查询',
     resetText: '重置',

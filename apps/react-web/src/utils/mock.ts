@@ -3,11 +3,11 @@ import dayjs from 'dayjs'
 import type { Path, ResponseTransformer, RestRequest } from 'msw'
 import { context, rest, RESTMethods } from 'msw'
 
-function randomArray({ min, max }: { min: number; max: number }) {
+export function randomArray({ min, max }: { min: number; max: number }) {
   return Array.from({ length: randNumber({ min, max, precision: 1 }) })
 }
 
-function getRequestMethod(method: RESTMethods = RESTMethods.GET) {
+export function getRequestMethod(method: RESTMethods = RESTMethods.GET) {
   switch (method) {
     case RESTMethods.POST:
       return rest.post
@@ -26,13 +26,13 @@ function getRequestMethod(method: RESTMethods = RESTMethods.GET) {
   }
 }
 
-function isFunctionType<T>(
+export function isFunctionType<T>(
   type: T | ((req: RestRequest) => T | Promise<T>),
 ): type is (req: RestRequest) => T | Promise<T> {
   return typeof type === 'function'
 }
 
-function plainRequest<T>(
+export function plainRequest<T>(
   path: Path,
   data: T | ((req: RestRequest) => Promise<T> | T),
   method: RESTMethods = RESTMethods.GET,
@@ -53,7 +53,7 @@ function plainRequest<T>(
   })
 }
 
-function listRequest<T>(
+export function listRequest<T>(
   path: Path,
   mockFn: (req: RestRequest) => T,
   method: RESTMethods = RESTMethods.GET,
@@ -78,26 +78,16 @@ function listRequest<T>(
   })
 }
 
-function datetime() {
+export function datetime() {
   return dayjs(randPastDate()).format('YYYY-MM-DD HH:mm:ss')
 }
 
-function timeStamp() {
+export function timeStamp() {
   return dayjs(randPastDate()).valueOf()
 }
 
-function unixTimestamp() {
+export function unixTimestamp() {
   return dayjs(randPastDate()).unix()
 }
 
-const delay = context.delay
-
-export const mock = {
-  listRequest,
-  plainRequest,
-  randomArray,
-  datetime,
-  timeStamp,
-  unixTimestamp,
-  delay,
-}
+export const delay = context.delay

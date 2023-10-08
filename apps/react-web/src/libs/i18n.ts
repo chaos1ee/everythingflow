@@ -40,7 +40,7 @@ await i18n
     interpolation: {
       escapeValue: false,
     },
-    fallbackLng: 'zh_CN',
+    fallbackLng: 'en_GB',
     ns: Object.keys(resources.en_GB),
     defaultNS,
     resources,

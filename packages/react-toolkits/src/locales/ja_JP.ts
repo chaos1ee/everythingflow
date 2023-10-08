@@ -12,6 +12,16 @@ const locale: Locale = {
   game: 'ゲーム',
   user: 'ユーザー',
   role: '役割',
+  Login: {
+    title: 'ログイン方法',
+    thirdParty: 'サードパーティログイン',
+    loginWithIDass: 'IDass ログイン',
+    notRegistered: 'あなたはまだプラットフォームに登録されていません、管理者に連絡してください',
+  },
+  NotFound: {
+    subTitle: 'アクセスしたページは存在しません',
+    buttonText: 'ページに戻る',
+  },
   FilterFormWrapper: {
     confirmText: '検索',
     resetText: 'リセット',

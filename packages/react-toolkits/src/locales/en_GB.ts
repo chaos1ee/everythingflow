@@ -12,6 +12,16 @@ const locale: Locale = {
   game: 'Game',
   user: 'User',
   role: 'Role',
+  Login: {
+    title: 'Login Method',
+    thirdParty: 'Third Party Login',
+    loginWithIDass: 'IDass Login',
+    notRegistered: 'You are not yet registered on the platform, please contact the administrator',
+  },
+  NotFound: {
+    subTitle: 'The page you visited does not exist',
+    buttonText: 'Return to page',
+  },
   FilterFormWrapper: {
     confirmText: 'Search',
     resetText: 'Reset',

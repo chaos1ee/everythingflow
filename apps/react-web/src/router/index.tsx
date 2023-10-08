@@ -3,7 +3,7 @@ import { baseRoutes, ContextProvider, Layout, permissionRoutes } from 'react-too
 import tableRoutes from '@/pages/table'
 import Root from '@/Root'
 import ErrorElement from '@/ErrorElement'
-import { LangSelector } from '@/components'
+import { LangSelect } from '@/components'
 
 const routes = [tableRoutes]
 
@@ -28,7 +28,7 @@ const router: any = createBrowserRouter([
             extras={[
               {
                 key: '1',
-                children: <LangSelector />,
+                children: <LangSelect />,
               },
             ]}
           >
@@ -44,7 +44,7 @@ const router: any = createBrowserRouter([
               extras={[
                 {
                   key: '1',
-                  children: <LangSelector />,
+                  children: <LangSelect />,
                 },
               ]}
             >
