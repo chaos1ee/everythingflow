@@ -3,7 +3,6 @@ import { baseRoutes, ContextProvider, Layout, permissionRoutes } from 'react-too
 import tableRoutes from '@/pages/table'
 import Root from '@/Root'
 import ErrorElement from '@/ErrorElement'
-import { LangSelect } from '@/components'
 
 const routes = [tableRoutes]
 
@@ -24,14 +23,7 @@ const router: any = createBrowserRouter([
       {
         path: 'console',
         element: (
-          <Layout
-            extras={[
-              {
-                key: '1',
-                children: <LangSelect />,
-              },
-            ]}
-          >
+          <Layout>
             <Outlet />
           </Layout>
         ),
@@ -40,14 +32,7 @@ const router: any = createBrowserRouter([
       {
         element: (
           <ContextProvider isGlobalNS>
-            <Layout
-              extras={[
-                {
-                  key: '1',
-                  children: <LangSelect />,
-                },
-              ]}
-            >
+            <Layout>
               <Outlet />
             </Layout>
           </ContextProvider>

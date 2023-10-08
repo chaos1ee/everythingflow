@@ -1,4 +1,5 @@
-const locale = {
+// eslint-disable-next-line
+const locale: any = {
   foo: 'foo',
 }
 

@@ -8,6 +8,7 @@ import Default from './default'
 import { useTokenStore } from '@/stores/token'
 import { request } from '@/utils/request'
 import { useTranslation } from '@/utils/i18n'
+import { useToolkitsContext } from '@/components/ContextProvider'
 
 const { Title } = Typography
 
@@ -17,6 +18,7 @@ const Login: FC<PropsWithChildren> = props => {
   const location = useLocation()
   const { token, setToken } = useTokenStore()
   const t = useTranslation()
+  const { localeDropdownMenu } = useToolkitsContext()
 
   useSWRImmutable(
     searchParams.has('ticket') ? `/api/usystem/user/login?ticket=${searchParams.get('ticket')}` : null,
@@ -35,6 +37,7 @@ const Login: FC<PropsWithChildren> = props => {
 
   return (
     <Row>
+      {localeDropdownMenu && <div className="fixed top-8 right-8">{localeDropdownMenu}</div>}
       <Col span={10} offset={3}>
         <div className="h-screen flex justify-end items-center">
           <Default />

@@ -24,7 +24,7 @@ const Layout: FC<LayoutProps> = props => {
   const {
     token: { colorBgContainer, colorBorder },
   } = theme.useToken()
-  const { title, usePermissionV2, isGlobalNS } = useToolkitsContext()
+  const { title, usePermissionV2, isGlobalNS, localeDropdownMenu } = useToolkitsContext()
   const { game } = useGameStore()
 
   return (
@@ -66,6 +66,7 @@ const Layout: FC<LayoutProps> = props => {
             <div>{usePermissionV2 && !isGlobalNS && <GameSelect />}</div>
             <Space size="small" split={<Divider type="vertical" />}>
               {extras?.map(extra => <span key={extra.key}>{extra.children}</span>)}
+              {localeDropdownMenu}
               <UserWidget />
             </Space>
           </div>
