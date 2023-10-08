@@ -12,7 +12,7 @@ import PermissionButton from '@/components/PermissionButton'
 import { request } from '@/utils/request'
 import Highlight from '@/components/Highlight'
 import QueryList from '@/components/QueryList'
-import { useTranslation } from '@/locales'
+import { useTranslation } from '@/utils/i18n'
 
 const url = '/api/usystem/role/list'
 

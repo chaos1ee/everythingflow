@@ -5,7 +5,7 @@ import type { RoleV2 } from '../../types'
 import { useAllPermissionsV2 } from '../../hooks'
 import PermissionCollapse from '../PermissionCollapse'
 import type { PermissionListPropsBase } from '../PermissionList'
-import { useTranslation } from '@/locales'
+import { useTranslation } from '@/utils/i18n'
 
 const { Text } = Typography
 const { Option } = Select

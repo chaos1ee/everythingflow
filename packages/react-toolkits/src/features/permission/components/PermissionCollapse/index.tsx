@@ -3,7 +3,7 @@ import type { FC } from 'react'
 import { useCallback, useEffect, useState } from 'react'
 import type { CheckboxChangeEvent } from 'antd/es/checkbox'
 import { Checkbox, Col, Collapse, Row } from 'antd'
-import { useTranslation } from '@/locales'
+import { useTranslation } from '@/utils/i18n'
 
 interface PermissionCollapseProps {
   expand?: boolean

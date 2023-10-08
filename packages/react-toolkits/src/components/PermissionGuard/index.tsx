@@ -1,6 +1,6 @@
 import { Result, Spin } from 'antd'
 import type { FC, PropsWithChildren } from 'react'
-import { useTranslation } from '@/locales'
+import { useTranslation } from '@/utils/i18n'
 import { usePermission } from '@/hooks/permission'
 
 export interface PermissionGuardProps {

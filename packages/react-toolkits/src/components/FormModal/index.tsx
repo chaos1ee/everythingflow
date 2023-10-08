@@ -4,7 +4,7 @@ import type { PropsWithChildren, ReactNode } from 'react'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { merge } from 'lodash-es'
-import { useTranslation } from '@/locales'
+import { useTranslation } from '@/utils/i18n'
 import type { Object } from 'ts-toolbelt'
 
 type FormModalFormProps<Values> = Pick<

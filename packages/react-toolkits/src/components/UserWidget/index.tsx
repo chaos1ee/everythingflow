@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { Dropdown, Space } from 'antd'
 import Link from 'antd/es/typography/Link'
 import { LogoutOutlined, UserOutlined } from '@ant-design/icons'
-import { useTranslation } from '@/locales'
+import { useTranslation } from '@/utils/i18n'
 import { useTokenStore } from '@/stores/token'
 
 const UserWidget: FC = () => {

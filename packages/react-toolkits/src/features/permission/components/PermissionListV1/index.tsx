@@ -4,7 +4,7 @@ import PermissionCollapse from '../PermissionCollapse'
 import type { RoleV1 } from '../../types'
 import type { PermissionListPropsBase } from '../PermissionList'
 import type { FC } from 'react'
-import { useTranslation } from '@/locales'
+import { useTranslation } from '@/utils/i18n'
 
 const { Text } = Typography
 
