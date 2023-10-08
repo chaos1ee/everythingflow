@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.3.3
+
+### Patch Changes
+
+- ce87e84: feat: add translations
+
 ## 0.3.2
 
 ### Patch Changes
