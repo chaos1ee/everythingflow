@@ -1,14 +1,16 @@
 import { Button, Result } from 'antd'
 import { useNavigate } from 'react-router-dom'
+import { useTranslation } from '@/locales'
 
 const NotFound = () => {
   const navigate = useNavigate()
+  const t = useTranslation()
   return (
     <div className="h-screen flex justify-center items-center">
       <Result
         status="404"
         title="404"
-        subTitle="访问的页面不存在"
+        subTitle={t('NotFound.subTitle')}
         extra={
           <Button
             type="primary"
@@ -16,7 +18,7 @@ const NotFound = () => {
               navigate('/')
             }}
           >
-            返回页面
+            {t('NotFound.buttonText')}
           </Button>
         }
       />

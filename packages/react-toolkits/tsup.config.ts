@@ -24,7 +24,7 @@ const commonOpts: Options = {
 const options: Options[] = [
   {
     ...commonOpts,
-    name: 'lib',
+    name: 'Build lib',
     entry: ['src/index.ts'],
     outDir: 'lib',
     external: Object.keys(packageJson.peerDependencies),
@@ -36,7 +36,7 @@ const options: Options[] = [
   },
   {
     ...commonOpts,
-    name: 'locales',
+    name: 'Build locales',
     entry: ['src/locales/*.ts', '!src/locales/index.ts'],
     outDir: 'locales',
   },

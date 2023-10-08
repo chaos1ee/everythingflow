@@ -2,9 +2,7 @@ import { rand, randFullName, randNumber, randText, randWord } from '@ngneat/fals
 import * as jose from 'jose'
 import { RESTMethods } from 'msw'
 import { SECRET } from '@/constants'
-import { mock } from '@/utils'
-
-const { plainRequest, listRequest, randomArray, delay, datetime } = mock
+import { datetime, delay, listRequest, plainRequest, randomArray } from '@/utils/mock'
 
 const handlers = [
   plainRequest('/api/usystem/user/login', async () => {
@@ -54,13 +52,13 @@ const handlers = [
   listRequest('/api/usystem/user/list', () => ({
     id: randNumber(),
     name: randFullName(),
-    Ctime: mock.datetime(),
-    roles: mock.randomArray({ min: 0, max: 4 }).map(() => randText()),
+    Ctime: datetime(),
+    roles: randomArray({ min: 0, max: 4 }).map(() => randText()),
   })),
   listRequest('/api/usystem/role/list', () => ({
     id: randNumber(),
     name: randFullName(),
-    ctime: mock.datetime(),
+    ctime: datetime(),
   })),
   plainRequest('/api/usystem/user/allPermssions', [
     {
@@ -416,7 +414,7 @@ const handlers = [
   plainRequest('/api/usystem/role/info', {
     id: randNumber(),
     name: randFullName(),
-    ctime: mock.datetime(),
+    ctime: datetime(),
     permissions: ['100001', '100002', '100003', '6001'],
   }),
   plainRequest('/api/usystem/role/infoV2', {

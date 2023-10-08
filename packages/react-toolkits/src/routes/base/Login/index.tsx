@@ -7,6 +7,7 @@ import useSWRImmutable from 'swr/immutable'
 import Default from './default'
 import { useTokenStore } from '@/stores/token'
 import { request } from '@/utils/request'
+import { useTranslation } from '@/locales'
 
 const { Title } = Typography
 
@@ -15,6 +16,7 @@ const Login: FC<PropsWithChildren> = props => {
   const [searchParams] = useSearchParams()
   const location = useLocation()
   const { token, setToken } = useTokenStore()
+  const t = useTranslation()
 
   useSWRImmutable(
     searchParams.has('ticket') ? `/api/usystem/user/login?ticket=${searchParams.get('ticket')}` : null,
@@ -43,14 +45,14 @@ const Login: FC<PropsWithChildren> = props => {
           <Card hoverable className="absolute left-0 right-0 top-1/2 -translate-y-1/2">
             {location.state?.notUser && (
               <div className="absolute -top-12 left-0 right-0">
-                <Alert banner closable message="您还未在平台注册，请联系管理员" type="error" />
+                <Alert banner closable message={t('Login.notRegistered')} type="error" />
               </div>
             )}
             <div className="text-center mb-6">
-              <Title level={5}>登录方式</Title>
+              <Title level={5}>{t('Login.title')}</Title>
               <div className="min-h-10">{children}</div>
             </div>
-            <Divider plain>第三方登录方式</Divider>
+            <Divider plain>{t('Login.thirdParty')}</Divider>
             <div className="w-full flex justify-center">
               <Space size="small">
                 <Button
@@ -61,7 +63,7 @@ const Login: FC<PropsWithChildren> = props => {
                   href={`${SSO_URL}/login?service=${encodeURIComponent(window.location.origin)}/login`}
                   target="_self"
                 >
-                  IDass 登录
+                  {t('Login.loginWithIDass')}
                 </Button>
               </Space>
             </div>

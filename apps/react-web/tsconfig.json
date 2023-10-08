@@ -9,14 +9,6 @@
   "compilerOptions": {
     "target": "ESNext",
     "module": "ESNext",
-    "moduleResolution": "Bundler",
-    "jsx": "react-jsx",
-    "allowSyntheticDefaultImports": true,
-    "noUnusedLocals": false,
-    "noImplicitAny": false,
-    "skipLibCheck": true,
-    "skipDefaultLibCheck": true,
-    "allowImportingTsExtensions": true,
     "baseUrl": ".",
     "paths": {
       "@/*": [

@@ -1,3 +1,3 @@
-import LangSelector from './LangSelector'
+import LangSelect from './LangSelect'
 
-export { LangSelector }
+export { LangSelect }
