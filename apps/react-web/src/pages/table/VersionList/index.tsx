@@ -7,7 +7,6 @@ import {
   useCreateVersion,
   useMergeVersion,
   useRemoveVersion,
-  useUpdateVersion,
   useUploadTableModal,
   VersionSelect,
 } from '@/features/table'
@@ -41,49 +40,6 @@ const useCreateModal = () => {
     async onConfirm(values) {
       await create.trigger(values)
       trigger(url, { page: 1 })
-    },
-  })
-}
-
-const useUpdateModal = () => {
-  const update = useUpdateVersion()
-  const trigger = useQueryListTrigger()
-
-  return useFormModal<{ id: string; name: string; comment?: string }>({
-    title: '更新版本信息',
-    content: (
-      <>
-        <Form.Item label="ID" name="id" rules={[{ required: true }]}>
-          <Input disabled />
-        </Form.Item>
-        <Form.Item label="名称" name="name" rules={[{ required: true }]}>
-          <Input />
-        </Form.Item>
-        <Form.Item label="备注" name="comment">
-          <Input />
-        </Form.Item>
-      </>
-    ),
-    async onConfirm(values) {
-      await update.trigger(values)
-      trigger<VersionListItem>(
-        url,
-        undefined,
-        prev => {
-          return produce(prev, draft => {
-            if (!draft?.list) return
-
-            const index = draft?.list.findIndex(item => item.id === values.id)
-
-            draft.list[index] = {
-              ...draft.list[index],
-              name: values.name,
-              comment: values.comment,
-            }
-          })
-        },
-        { revalidate: false },
-      )
     },
   })
 }

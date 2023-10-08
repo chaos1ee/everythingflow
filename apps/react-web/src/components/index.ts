@@ -1,3 +1,3 @@
-import LangSelect from './LangSelect'
+import LocaleDropdownMenu from './LocaleDropdownMenu'
 
-export { LangSelect }
+export { LocaleDropdownMenu }

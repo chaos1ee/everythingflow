@@ -30,6 +30,7 @@ import type { TokenState } from '@/stores/token'
 import { useTokenStore, useValidateToken } from '@/stores/token'
 import baseRoutes from '@/routes/base'
 import permissionRoutes from '@/routes/permission'
+import { useTranslation } from '@/utils/i18n'
 import { mixedStorage } from '@/utils/storage'
 import { request, RequestError } from '@/utils/request'
 
@@ -58,6 +59,7 @@ export {
   useQueryListTrigger,
   baseRoutes,
   permissionRoutes,
+  useTranslation,
   mixedStorage,
   useTokenStore,
   useValidateToken,

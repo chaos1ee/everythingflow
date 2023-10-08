@@ -6,11 +6,11 @@ import { ContextProvider, RequestError, useTokenStore, useValidateToken } from '
 import { Outlet, useNavigate } from 'react-router-dom'
 import { SWRConfig } from 'swr'
 import menuItems from '@/menu-items'
-import { useInitLocale, useLocaleStore } from '@/components/LangSelect'
+import { LocaleDropdownMenu } from '@/components'
+import { useLocaleStore } from '@/stores/locale'
 
 const Root: FC = () => {
   useValidateToken()
-  useInitLocale()
 
   const { notification } = App.useApp()
   const { clearToken } = useTokenStore()
@@ -44,7 +44,13 @@ const Root: FC = () => {
             />
           }
         >
-          <ContextProvider usePermissionV2 title="React Web" menuItems={menuItems} locale={locale?.toolkits}>
+          <ContextProvider
+            usePermissionV2
+            title="React Web"
+            menuItems={menuItems}
+            locale={locale?.toolkits}
+            localeDropdownMenu={<LocaleDropdownMenu />}
+          >
             <SWRConfig
               value={{
                 shouldRetryOnError: false,
