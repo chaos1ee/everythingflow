@@ -1,5 +1,11 @@
 # tsconfig
 
+## 0.0.3
+
+### Patch Changes
+
+- ce87e84: feat: add translations
+
 ## 0.0.2
 
 ### Patch Changes
