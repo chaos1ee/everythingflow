@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.3.4
+
+### Patch Changes
+
+- 3982f5e: feat: add localeDropdownMenu option
+
 ## 0.3.3
 
 ### Patch Changes
