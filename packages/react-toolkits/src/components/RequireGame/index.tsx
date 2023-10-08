@@ -1,6 +1,6 @@
 import { Card, Empty } from 'antd'
 import type { FC, PropsWithChildren } from 'react'
-import { useTranslation } from '@/locales'
+import { useTranslation } from '@/utils/i18n'
 import { useGameStore } from '@/components/GameSelect'
 import { useToolkitsContext } from '@/components/ContextProvider'
 

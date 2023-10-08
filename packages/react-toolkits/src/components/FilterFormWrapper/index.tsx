@@ -2,7 +2,7 @@
 import type { FormInstance } from 'antd'
 import { Button, Space, theme } from 'antd'
 import type { Key, PropsWithChildren, ReactNode } from 'react'
-import { useTranslation } from '@/locales'
+import { useTranslation } from '@/utils/i18n'
 
 export interface FilterFormWrapperProps<Values> extends PropsWithChildren {
   form: FormInstance<Values>

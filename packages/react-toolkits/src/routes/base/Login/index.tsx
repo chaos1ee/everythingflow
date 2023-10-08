@@ -7,7 +7,7 @@ import useSWRImmutable from 'swr/immutable'
 import Default from './default'
 import { useTokenStore } from '@/stores/token'
 import { request } from '@/utils/request'
-import { useTranslation } from '@/locales'
+import { useTranslation } from '@/utils/i18n'
 
 const { Title } = Typography
 

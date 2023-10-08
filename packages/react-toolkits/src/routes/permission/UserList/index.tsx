@@ -10,7 +10,7 @@ import { useFormModal } from '@/components/FormModal'
 import PermissionButton from '@/components/PermissionButton'
 import Highlight from '@/components/Highlight'
 import QueryList from '@/components/QueryList'
-import { useTranslation } from '@/locales'
+import { useTranslation } from '@/utils/i18n'
 
 const { Option } = Select
 
