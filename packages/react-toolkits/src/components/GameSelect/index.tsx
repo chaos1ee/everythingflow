@@ -8,7 +8,6 @@ import { useTranslation } from '@/utils/i18n'
 import { useToolkitsContext } from '@/components/ContextProvider'
 import { useTokenStore } from '@/stores/token'
 import { request } from '@/utils/request'
-import { useSWRConfig } from 'swr'
 
 const { Text } = Typography
 
@@ -58,7 +57,6 @@ const GameSelect = () => {
   const { game, setGame } = useGameStore()
   const { games, isLoading } = useGames()
   const t = useTranslation()
-  const { mutate } = useSWRConfig()
 
   const options = useMemo(
     () =>
@@ -71,25 +69,15 @@ const GameSelect = () => {
     [games, onlyDomesticGames],
   )
 
-  const clearCache = useCallback(() => {
-    mutate(key => typeof key !== 'string' || !key.startsWith('/api/usystem/game/all'), undefined, {
-      revalidate: false,
-    })
-
-    mutate(key => typeof key === 'string' && key.startsWith('/api/usystem/user/check'), undefined, {
-      revalidate: true,
-    })
-  }, [mutate])
-
   const onGameChange = useCallback(
     async (id: string) => {
       const matchGame = (games ?? []).find(item => item.id === id)
       if (matchGame) {
         setGame(matchGame)
-        await clearCache()
+        window.location.reload()
       }
     },
-    [clearCache, games, setGame],
+    [games, setGame],
   )
 
   return (
