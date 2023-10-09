@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.3.8
+
+### Patch Changes
+
+- a320abc: fix: app-id header not right in request function
+
 ## 0.3.7
 
 ### Patch Changes
