@@ -1,6 +1,6 @@
-import useSWRImmutable from 'swr/immutable'
 import { useToolkitsContext } from '@/components/ContextProvider'
 import { request } from '@/utils/request'
+import useSWR from 'swr'
 
 type PermissionCheckResult =
   | { has_all: true }
@@ -17,7 +17,7 @@ export function usePermissions(
 ) {
   const { usePermissionV2 } = useToolkitsContext()
 
-  const { data, isLoading } = useSWRImmutable(
+  const { data, isLoading } = useSWR(
     codes.length > 0 ? { url: usePermissionV2 ? '/api/usystem/user/checkV2' : '/api/usystem/user/check', codes } : null,
     ({ url }) =>
       request<PermissionCheckResult>(
