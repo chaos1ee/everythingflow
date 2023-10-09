@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.3.12
+
+### Patch Changes
+
+- ec2fb3c: feat: set isGlobalNS to true
+
 ## 0.3.11
 
 ### Patch Changes
