@@ -70,7 +70,7 @@ export async function request<T = any>(input: string | URL, init?: InitConfig, i
   if (contextStore.usePermissionV2) {
     const game = useGameStore.getState().game
 
-    if (isGlobalNS || (isGlobalNS === undefined && contextStore.isGlobalNS)) {
+    if (isGlobalNS) {
       headers.set('App-ID', 'global')
     } else if (game) {
       headers.set('App-ID', game.id)

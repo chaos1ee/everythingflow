@@ -7,11 +7,12 @@ import { usePermission } from '@/hooks/permission'
 export interface PermissionButtonProps extends Omit<ButtonProps, 'disabled'> {
   code: string
   showLoading?: boolean
+  isGlobalNS?: boolean
 }
 
 const PermissionButton: FC<PropsWithChildren<PermissionButtonProps>> = props => {
-  const { children, code, showLoading, ...restProps } = props
-  const { accessible, isValidating } = usePermission(code)
+  const { children, code, showLoading, isGlobalNS, ...restProps } = props
+  const { accessible, isValidating } = usePermission(code, { isGlobalNS })
   const t = useTranslation()
 
   if (isValidating) {

@@ -1,13 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type { FC, PropsWithChildren, ReactNode } from 'react'
-import { createContext, useContext, useEffect, useMemo } from 'react'
+import { createContext, useContext } from 'react'
 import type { NavMenuItem } from '../NavMenu'
 import type { Locale } from '@/locales'
 
 export interface ContextState {
   title: string
   menuItems: NavMenuItem[]
-  isGlobalNS: boolean // 显示游戏
+  hideGameSelect: boolean
   usePermissionV2: boolean // 使用 V2 版本的权限接口
   onlyDomesticGames: boolean // 仅显示国内游戏
   locale?: Locale
@@ -17,7 +17,7 @@ export interface ContextState {
 const defaultState: ContextState = {
   title: '',
   menuItems: [],
-  isGlobalNS: false,
+  hideGameSelect: false,
   usePermissionV2: false,
   onlyDomesticGames: false,
 }
@@ -33,17 +33,12 @@ export function useToolkitsContext() {
 const ContextProvider: FC<PropsWithChildren<Partial<ContextState>>> = ({ children, ...props }) => {
   const parentConfig = useToolkitsContext()
 
-  const config = useMemo(
-    () => ({
-      ...parentConfig,
-      ...props,
-    }),
-    [props, parentConfig],
-  )
+  const config = {
+    ...parentConfig,
+    ...props,
+  }
 
-  useEffect(() => {
-    contextStore = config
-  })
+  contextStore = config
 
   return <ToolkitsContext.Provider value={config}>{children}</ToolkitsContext.Provider>
 }

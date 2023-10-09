@@ -21,7 +21,7 @@ const Layout: FC<LayoutProps> = props => {
   const {
     token: { colorBgContainer, colorBorder },
   } = theme.useToken()
-  const { title, usePermissionV2, isGlobalNS, localeDropdownMenu } = useToolkitsContext()
+  const { title, usePermissionV2, hideGameSelect, localeDropdownMenu } = useToolkitsContext()
 
   return (
     <Antd.Layout hasSider className="h-screen">
@@ -59,7 +59,7 @@ const Layout: FC<LayoutProps> = props => {
           }}
         >
           <div className="flex justify-between items-center h-full">
-            <div>{usePermissionV2 && !isGlobalNS && <GameSelect />}</div>
+            <div>{usePermissionV2 && !hideGameSelect && <GameSelect />}</div>
             <Space size="small" split={<Divider type="vertical" />}>
               {extras?.map(extra => <span key={extra.key}>{extra.children}</span>)}
               {localeDropdownMenu}

@@ -9,7 +9,6 @@ import type { FilterFormWrapperProps } from '@/components/FilterFormWrapper'
 import FilterFormWrapper from '@/components/FilterFormWrapper'
 import { usePermission } from '@/hooks/permission'
 import { useQueryListStore, useQueryListTrigger } from '@/stores/queryList'
-import { useToolkitsContext } from '@/components/ContextProvider'
 import { request } from '@/utils/request'
 import useSWR from 'swr'
 
@@ -30,6 +29,7 @@ export interface QueryListProps<Item, Values, Response>
     Pick<FilterFormWrapperProps, 'confirmText'> {
   url: string
   code?: string
+  isGlobalNS?: boolean
   headers?: Record<string, string>
   renderForm?: (form: FormInstance<Values>) => ReactNode
   // 把表单的值和分页数据转换成请求参数
@@ -42,12 +42,21 @@ export interface QueryListProps<Item, Values, Response>
 const QueryList = <Item extends object, Values extends object | undefined, Response = ListResponse<Item>>(
   props: QueryListProps<Item, Values, Response>,
 ) => {
-  const { code, confirmText, url, headers, renderForm, transformArg, transformResponse, afterSuccess, ...tableProps } =
-    props
-  const { accessible, isValidating } = usePermission(code)
+  const {
+    code,
+    confirmText,
+    url,
+    headers,
+    isGlobalNS,
+    renderForm,
+    transformArg,
+    transformResponse,
+    afterSuccess,
+    ...tableProps
+  } = props
+  const { accessible, isValidating } = usePermission(code, { isGlobalNS })
   const [form] = Form.useForm<Values>()
   const { payloadMap } = useQueryListStore()
-  const { isGlobalNS } = useToolkitsContext()
   const action = useRef<QueryListAction>()
   const trigger = useQueryListTrigger()
   const t = useTranslation()
