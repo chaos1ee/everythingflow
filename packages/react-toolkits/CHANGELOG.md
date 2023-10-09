@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.3.5
+
+### Patch Changes
+
+- a745421: feat: clear swr cache when switching game
+
 ## 0.3.4
 
 ### Patch Changes
