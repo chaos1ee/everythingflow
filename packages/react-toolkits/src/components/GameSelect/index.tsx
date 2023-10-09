@@ -72,7 +72,7 @@ const GameSelect = () => {
   )
 
   const clearCache = () =>
-    mutate(key => typeof key !== 'string' || !key.startsWith('/api/usystem'), undefined, {
+    mutate(key => typeof key !== 'string' || !key.startsWith('/api/usystem/game/all'), undefined, {
       revalidate: false,
     })
 

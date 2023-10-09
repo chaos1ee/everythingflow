@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react'
 import useSWRImmutable from 'swr/immutable'
 import type { RequestError } from '@/utils/request'
 import { request } from '@/utils/request'
+import { useToolkitsContext } from '@/components/ContextProvider'
 
 interface UserInfo {
   authorityId: string
@@ -47,11 +48,16 @@ export function useValidateToken() {
   const navigate = useNavigate()
   const { clearToken } = useTokenStore()
   const [validated, setValidated] = useState(false)
+  const { usePermissionV2 } = useToolkitsContext()
 
   useSWRImmutable(
-    !validated && location.pathname !== '/login' ? '/api/usystem/user/check' : null,
-    () =>
-      request('/api/usystem/user/check', {
+    !validated && location.pathname !== '/login'
+      ? usePermissionV2
+        ? '/api/usystem/user/checkV2'
+        : '/api/usystem/user/check'
+      : null,
+    (url: string) =>
+      request(url, {
         method: 'post',
         body: { permissions: ['100001'] },
       }),
