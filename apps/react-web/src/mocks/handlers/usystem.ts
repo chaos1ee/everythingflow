@@ -1,4 +1,4 @@
-import { rand, randFullName, randNumber, randText, randWord } from '@ngneat/falso'
+import { randFullName, randNumber, randText } from '@ngneat/falso'
 import * as jose from 'jose'
 import { RESTMethods } from 'msw'
 import { SECRET } from '@/constants'
@@ -33,12 +33,20 @@ const handlers = [
   ),
   plainRequest(
     '/api/usystem/game/all',
-    randomArray({ min: 1, max: 5 }).map(() => ({
-      id: randNumber(),
-      name: randWord(),
-      area: rand(['cn', 'global']),
-      Ctime: datetime(),
-    })),
+    [
+      {
+        id: 1,
+        name: 'CN Game',
+        area: 'cn',
+        Ctime: datetime(),
+      },
+      {
+        id: 2,
+        name: 'Global Game',
+        area: 'global',
+        Ctime: datetime(),
+      },
+    ],
     RESTMethods.GET,
     delay(1000),
   ),

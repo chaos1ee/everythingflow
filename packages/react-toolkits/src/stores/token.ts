@@ -4,7 +4,7 @@ import jwtDecode from 'jwt-decode'
 import { useNavigate } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import useSWRImmutable from 'swr/immutable'
-import type { RequestError } from '@/utils/request';
+import type { RequestError } from '@/utils/request'
 import { request } from '@/utils/request'
 
 interface UserInfo {
@@ -49,7 +49,7 @@ export function useValidateToken() {
   const [validated, setValidated] = useState(false)
 
   useSWRImmutable(
-    !validated && location.pathname !== '/login' ? '/token/validate' : null,
+    !validated && location.pathname !== '/login' ? '/api/usystem/user/check' : null,
     () =>
       request('/api/usystem/user/check', {
         method: 'post',
