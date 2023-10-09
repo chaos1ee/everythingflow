@@ -27,11 +27,10 @@ const fallbackData = {
 
 export interface QueryListProps<Item, Values, Response>
   extends Pick<TableProps<Item>, 'columns' | 'rowKey' | 'tableLayout' | 'expandable' | 'rowSelection' | 'bordered'>,
-    Pick<FilterFormWrapperProps<Values>, 'confirmText'> {
+    Pick<FilterFormWrapperProps, 'confirmText'> {
   url: string
   code?: string
   headers?: Record<string, string>
-  form?: FormInstance<Values>
   renderForm?: (form: FormInstance<Values>) => ReactNode
   // 把表单的值和分页数据转换成请求参数
   transformArg?: (page: number, size: number, values: Values) => unknown
@@ -43,20 +42,10 @@ export interface QueryListProps<Item, Values, Response>
 const QueryList = <Item extends object, Values extends object | undefined, Response = ListResponse<Item>>(
   props: QueryListProps<Item, Values, Response>,
 ) => {
-  const {
-    code,
-    confirmText,
-    url,
-    headers,
-    form,
-    renderForm,
-    transformArg,
-    transformResponse,
-    afterSuccess,
-    ...tableProps
-  } = props
+  const { code, confirmText, url, headers, renderForm, transformArg, transformResponse, afterSuccess, ...tableProps } =
+    props
   const { accessible, isValidating } = usePermission(code)
-  const [internalForm] = Form.useForm<Values>(form)
+  const [form] = Form.useForm<Values>()
   const { payloadMap } = useQueryListStore()
   const { isGlobalNS } = useToolkitsContext()
   const action = useRef<QueryListAction>()
@@ -114,18 +103,23 @@ const QueryList = <Item extends object, Values extends object | undefined, Respo
     onChange: onPaginationChange,
   }
 
-  const afterConfirm = async (values: Values) => {
+  const onConfirm = async () => {
     action.current = QueryListAction.Confirm
+    const values = await form.validateFields()
     internalTrigger({
       page: 1,
       values,
     })
   }
 
-  const afterReset = async (values: Values) => {
+  const onReset = async () => {
     action.current = QueryListAction.Reset
+
+    form.resetFields()
+    const values = form.getFieldsValue()
+
     try {
-      await internalForm.validateFields()
+      await form.validateFields()
       internalTrigger({ page: 1, values })
     } catch (_) {
       internalTrigger({ page: 1, values }, fallbackData, { revalidate: false })
@@ -137,15 +131,15 @@ const QueryList = <Item extends object, Values extends object | undefined, Respo
       action.current = QueryListAction.Init
 
       try {
-        const values = await internalForm.validateFields()
+        const values = await form.validateFields()
         internalTrigger({ values })
       } catch (_) {
-        internalForm.resetFields()
+        form.resetFields()
       }
     }
 
     // 在不使用定时器时 Form.Item 的自定义校验有时不会被触发
-    setTimeout(init, 0)
+    setTimeout(init, 2000)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -169,13 +163,8 @@ const QueryList = <Item extends object, Values extends object | undefined, Respo
   return (
     <>
       {renderForm && (
-        <FilterFormWrapper
-          form={internalForm}
-          confirmText={confirmText}
-          afterReset={afterReset}
-          afterConfirm={afterConfirm}
-        >
-          {renderForm(internalForm)}
+        <FilterFormWrapper confirmText={confirmText} onReset={onReset} onConfirm={onConfirm}>
+          {renderForm(form)}
         </FilterFormWrapper>
       )}
       <Table {...tableProps} dataSource={data?.list} loading={isLoading} pagination={pagination} />

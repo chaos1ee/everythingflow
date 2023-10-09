@@ -21,7 +21,7 @@ import PermissionGuard from '@/components/PermissionGuard'
 import type { QueryListAction, QueryListProps } from '@/components/QueryList'
 import QueryList from '@/components/QueryList'
 import RequireGame from '@/components/RequireGame'
-import ContextProvider, { contextStore, useContextStore, useToolkitsContext } from '@/components/ContextProvider'
+import ContextProvider, { contextStore, useToolkitsContext } from '@/components/ContextProvider'
 import UserWidget from '@/components/UserWidget'
 import { usePermission, usePermissions } from '@/hooks/permission'
 import type { QueryListPayload } from '@/stores/queryList'
@@ -51,7 +51,6 @@ export {
   ContextProvider,
   contextStore,
   useToolkitsContext,
-  useContextStore,
   UserWidget,
   usePermissions,
   usePermission,

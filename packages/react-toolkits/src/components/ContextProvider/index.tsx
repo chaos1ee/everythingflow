@@ -2,7 +2,6 @@
 import type { FC, PropsWithChildren, ReactNode } from 'react'
 import { createContext, useContext, useEffect, useMemo } from 'react'
 import type { NavMenuItem } from '../NavMenu'
-import { create, useStore } from 'zustand'
 import type { Locale } from '@/locales'
 
 export interface ContextState {
@@ -23,16 +22,10 @@ const defaultState: ContextState = {
   onlyDomesticGames: false,
 }
 
-// 全局的上下文。因为 ContextProvider 支持嵌套，所以 toolkitContextStore 的值等同于最内层的 ContextProvider 包含的上下文。
-export const contextStore = create<ContextState>(() => defaultState)
+export let contextStore: ContextState = defaultState
 
 const ToolkitsContext = createContext<ContextState>(defaultState)
 
-export function useContextStore<T>(selector: (state: ContextState) => T): T {
-  return useStore(contextStore, selector)
-}
-
-// 最接近的祖先 ContextProvider 内包含的上下文。
 export function useToolkitsContext() {
   return useContext(ToolkitsContext)
 }
@@ -49,7 +42,7 @@ const ContextProvider: FC<PropsWithChildren<Partial<ContextState>>> = ({ childre
   )
 
   useEffect(() => {
-    contextStore.setState(config)
+    contextStore = config
   })
 
   return <ToolkitsContext.Provider value={config}>{children}</ToolkitsContext.Provider>

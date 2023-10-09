@@ -8,6 +8,7 @@ import { useTranslation } from '@/utils/i18n'
 import { useToolkitsContext } from '@/components/ContextProvider'
 import { useTokenStore } from '@/stores/token'
 import { request } from '@/utils/request'
+import { useSWRConfig } from 'swr'
 
 const { Text } = Typography
 
@@ -53,10 +54,11 @@ function useGames() {
 }
 
 const GameSelect = () => {
+  const t = useTranslation()
   const { onlyDomesticGames } = useToolkitsContext()
   const { game, setGame } = useGameStore()
   const { games, isLoading } = useGames()
-  const t = useTranslation()
+  const { mutate } = useSWRConfig()
 
   const options = useMemo(
     () =>
@@ -69,15 +71,40 @@ const GameSelect = () => {
     [games, onlyDomesticGames],
   )
 
+  const clearCache = useCallback(() => {
+    mutate(
+      key => {
+        return typeof key !== 'string' || !key.startsWith('/api/usystem/game/all')
+      },
+      undefined,
+      {
+        revalidate: false,
+      },
+    )
+
+    mutate(
+      key => {
+        return (
+          Array.isArray(key) &&
+          (key[0].startsWith('/api/usystem/user/check') || key[0].startsWith('/api/usystem/user/checkV2'))
+        )
+      },
+      undefined,
+      {
+        revalidate: true,
+      },
+    )
+  }, [mutate])
+
   const onGameChange = useCallback(
     async (id: string) => {
       const matchGame = (games ?? []).find(item => item.id === id)
       if (matchGame) {
         setGame(matchGame)
-        window.location.reload()
+        clearCache()
       }
     },
-    [games, setGame],
+    [games, setGame, clearCache],
   )
 
   return (
