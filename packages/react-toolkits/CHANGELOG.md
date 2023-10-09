@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.3.7
+
+### Patch Changes
+
+- 9712dc2: fix: useValidateToken hook 404
+
 ## 0.3.6
 
 ### Patch Changes
