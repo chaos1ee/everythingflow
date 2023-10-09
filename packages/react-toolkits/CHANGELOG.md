@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.3.11
+
+### Patch Changes
+
+- b9b1ce0: feat: remove isGlobalNS prop
+
 ## 0.3.10
 
 ### Patch Changes
