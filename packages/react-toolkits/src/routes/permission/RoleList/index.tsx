@@ -98,7 +98,7 @@ const useUpdateModal = () => {
 }
 
 const RoleList = () => {
-  const { accessible: viewable } = usePermission('200005')
+  const { accessible: viewable } = usePermission('200005', { isGlobalNS: true })
   const { modal, message } = App.useApp()
   const { usePermissionV2 } = useToolkitsContext()
   const remove = useRemoveRole()
