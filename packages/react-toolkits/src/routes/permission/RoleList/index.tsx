@@ -137,6 +137,7 @@ const RoleList = () => {
         return (
           <Space size="small">
             <PermissionButton
+              isGlobalNS
               code="200003"
               size="small"
               type="link"
@@ -159,6 +160,7 @@ const RoleList = () => {
               {t('edit')}
             </PermissionButton>
             <PermissionButton
+              isGlobalNS
               danger
               code="200004"
               size="small"
@@ -194,6 +196,7 @@ const RoleList = () => {
         title={t('role')}
         extra={
           <PermissionButton
+            isGlobalNS
             type="primary"
             code="200002"
             icon={<UsergroupAddOutlined />}
@@ -206,6 +209,7 @@ const RoleList = () => {
         }
       >
         <QueryList<RoleListItem, undefined, { List: RoleListItem[]; Total: number }>
+          isGlobalNS
           rowKey="name"
           columns={columns}
           code="200001"

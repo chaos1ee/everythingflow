@@ -1,5 +1,5 @@
 import { createBrowserRouter, Navigate, Outlet } from 'react-router-dom'
-import { baseRoutes, ContextProvider, Layout, permissionRoutes } from 'react-toolkits'
+import { baseRoutes, Layout, permissionRoutes } from 'react-toolkits'
 import tableRoutes from '@/pages/table'
 import Root from '@/Root'
 import ErrorElement from '@/ErrorElement'
@@ -31,7 +31,7 @@ const router: any = createBrowserRouter([
       },
       {
         element: (
-          <ContextProvider isGlobalNS>
+          <ContextProvider hideGameSelect>
             <Layout>
               <Outlet />
             </Layout>
