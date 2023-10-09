@@ -71,15 +71,10 @@ const GameSelect = () => {
     [games, onlyDomesticGames],
   )
 
-  const clearCache = useCallback(() => {
+  const clearCache = () =>
     mutate(key => typeof key !== 'string' || !key.startsWith('/api/usystem/game/all'), undefined, {
       revalidate: false,
     })
-
-    mutate(key => typeof key === 'string' && key.startsWith('/api/usystem/user/check'), undefined, {
-      revalidate: true,
-    })
-  }, [mutate])
 
   const onGameChange = useCallback(
     async (id: string) => {
