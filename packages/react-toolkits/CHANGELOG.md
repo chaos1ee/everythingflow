@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.3.6
+
+### Patch Changes
+
+- 36adce8: feat: pass formInstance to child
+
 ## 0.3.5
 
 ### Patch Changes
