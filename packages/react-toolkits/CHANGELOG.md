@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.3.9
+
+### Patch Changes
+
+- 5432d5b: feat(alpha): reload page after switching game
+
 ## 0.3.8
 
 ### Patch Changes
