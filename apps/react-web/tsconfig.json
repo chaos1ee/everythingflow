@@ -1,5 +1,4 @@
 {
-  "extends": "tsconfig/react-library.json",
   "include": [
     "src/**/*"
   ],
@@ -10,6 +9,16 @@
     "target": "ESNext",
     "module": "ESNext",
     "moduleResolution": "Bundler",
+    "lib": [
+      "DOM"
+    ],
+    "jsx": "react-jsx",
+    "strictNullChecks": true,
+    "esModuleInterop": true,
+    "experimentalDecorators": true,
+    "allowSyntheticDefaultImports": true,
+    "skipDefaultLibCheck": true,
+    "allowImportingTsExtensions": true,
     "baseUrl": ".",
     "paths": {
       "@/*": [

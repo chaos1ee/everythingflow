@@ -9,7 +9,7 @@ import toolkitsKo from 'react-toolkits/locales/ko_KR'
 import antdZh from 'antd/locale/zh_CN'
 import toolkitsZh from 'react-toolkits/locales/zh_CN'
 import { create } from 'zustand'
-import i18n from '@/libs/i18n.ts'
+import i18n from '@/libs/i18n'
 
 export const languages = {
   zh_CN: '简体中文',

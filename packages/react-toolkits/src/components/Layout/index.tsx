@@ -1,14 +1,11 @@
 import * as Antd from 'antd'
 import { Divider, Space } from 'antd'
 import type { FC, Key, PropsWithChildren, ReactNode } from 'react'
-import * as React from 'react'
 import { Suspense } from 'react'
 import { Link } from 'react-router-dom'
-import { SWRConfig } from 'swr'
 import logo from './logo.png'
-import RequireGame from '@/components/RequireGame'
 import { useToolkitsContext } from '@/components/ContextProvider'
-import GameSelect, { useGameStore } from '@/components/GameSelect'
+import GameSelect from '@/components/GameSelect'
 import NavMenu from '@/components/NavMenu'
 import UserWidget from '@/components/UserWidget'
 
@@ -25,7 +22,6 @@ const Layout: FC<LayoutProps> = props => {
     token: { colorBgContainer, colorBorder },
   } = theme.useToken()
   const { title, usePermissionV2, isGlobalNS, localeDropdownMenu } = useToolkitsContext()
-  const { game } = useGameStore()
 
   return (
     <Antd.Layout hasSider className="h-screen">
@@ -84,18 +80,7 @@ const Layout: FC<LayoutProps> = props => {
               />
             }
           >
-            <SWRConfig
-              value={{
-                // GameSelect 组件内的 game 变化时，会触发 children 的重新渲染，为了避免 SWR 使用缓存导致数据不更新，需要设置 revalidateOnMount 为 true。
-                revalidateOnMount: true,
-              }}
-            >
-              <RequireGame>
-                {usePermissionV2 && !isGlobalNS
-                  ? React.createElement('div', game ? { key: game.id } : undefined, children)
-                  : children}
-              </RequireGame>
-            </SWRConfig>
+            {children}
           </Suspense>
         </Content>
       </Antd.Layout>

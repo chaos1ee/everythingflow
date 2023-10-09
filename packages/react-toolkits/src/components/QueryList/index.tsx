@@ -4,7 +4,6 @@ import { Form, Result, Spin, Table } from 'antd'
 import type { TableProps } from 'antd/es/table'
 import type { ReactNode } from 'react'
 import { useCallback, useEffect, useRef } from 'react'
-import useSWR from 'swr'
 import { useTranslation } from '@/utils/i18n'
 import type { FilterFormWrapperProps } from '@/components/FilterFormWrapper'
 import FilterFormWrapper from '@/components/FilterFormWrapper'
@@ -12,6 +11,7 @@ import { usePermission } from '@/hooks/permission'
 import { useQueryListStore, useQueryListTrigger } from '@/stores/queryList'
 import { useToolkitsContext } from '@/components/ContextProvider'
 import { request } from '@/utils/request'
+import useSWR from 'swr'
 
 export enum QueryListAction {
   Confirm = 'confirm',
@@ -91,9 +91,9 @@ const QueryList = <Item extends object, Values extends object | undefined, Respo
     },
     {
       shouldRetryOnError: false,
-      keepPreviousData: true,
-      fallbackData,
       revalidateOnMount: false,
+      keepPreviousData: false,
+      fallbackData,
     },
   )
 
