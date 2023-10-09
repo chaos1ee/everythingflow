@@ -14,7 +14,7 @@ type FormModalFormProps<Values> = Pick<
 
 export type UseFormModalProps<Values extends object> = Omit<FormModalProps<Values>, 'open' | 'onCancel'> &
   FormModalFormProps<Values> & {
-    content?: ReactNode
+    content?: ReactNode | ((form: FormInstance<Values>) => ReactNode)
   }
 
 export function useFormModal<Values extends object>(props: UseFormModalProps<Values>) {
@@ -55,12 +55,12 @@ export function useFormModal<Values extends object>(props: UseFormModalProps<Val
       createPortal(
         <Form {...formProps}>
           <FormModal {...modalProps} open={open} onCancel={closeModal}>
-            {content}
+            {typeof content === 'function' ? content(form) : content}
           </FormModal>
         </Form>,
         document.body,
       ),
-    [closeModal, content, formProps, modalProps, open],
+    [closeModal, content, form, formProps, modalProps, open],
   )
 
   return {
