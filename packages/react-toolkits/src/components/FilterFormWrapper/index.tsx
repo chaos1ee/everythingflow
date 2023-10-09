@@ -1,19 +1,17 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import type { FormInstance } from 'antd'
 import { Button, Space, theme } from 'antd'
 import type { Key, PropsWithChildren, ReactNode } from 'react'
 import { useTranslation } from '@/utils/i18n'
 
-export interface FilterFormWrapperProps<Values> extends PropsWithChildren {
-  form: FormInstance<Values>
+export interface FilterFormWrapperProps extends PropsWithChildren {
   confirmText?: ReactNode
-  afterConfirm?: (values: Values) => void | Promise<void>
-  afterReset?: (values: Values) => void
-  extras?: { key: Key; render: ((form: FormInstance<Values>) => ReactNode) | ReactNode }[]
+  onConfirm?: () => void | Promise<void>
+  onReset?: () => void
+  extras?: { key: Key; children: ReactNode }[]
 }
 
-const FilterFormWrapper = <Values = any,>(props: FilterFormWrapperProps<Values>) => {
-  const { confirmText, form, extras, afterConfirm, afterReset, children } = props
+const FilterFormWrapper = (props: FilterFormWrapperProps) => {
+  const { confirmText, extras, onConfirm, onReset, children } = props
   const { token } = theme.useToken()
   const t = useTranslation()
 
@@ -28,32 +26,19 @@ const FilterFormWrapper = <Values = any,>(props: FilterFormWrapperProps<Values>)
     marginBottom: 24,
   }
 
-  const handleSubmit = async () => {
-    const values = await form.validateFields()
-    afterConfirm?.(values)
-  }
-
-  const handleReset = () => {
-    form.resetFields()
-    const values = form.getFieldsValue()
-    afterReset?.(values)
-  }
-
   return (
     <div style={formStyle}>
       <div className="flex">
         <div className="flex-1">{children}</div>
         <div className="ml-8">
           <Space>
-            <Button type="primary" onClick={handleSubmit}>
+            <Button type="primary" onClick={onConfirm}>
               {confirmText || t('FilterFormWrapper.confirmText')}
             </Button>
-            <Button htmlType="reset" onClick={handleReset}>
+            <Button htmlType="reset" onClick={onReset}>
               {t('FilterFormWrapper.resetText')}
             </Button>
-            {extras?.map(({ key, render }) => (
-              <span key={key}>{typeof render === 'function' ? render(form) : render}</span>
-            ))}
+            {extras?.map(item => <span key={item.key}>{item.children}</span>)}
           </Space>
         </div>
       </div>

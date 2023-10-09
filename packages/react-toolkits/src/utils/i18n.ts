@@ -1,6 +1,6 @@
 // eslint-disable-next-line camelcase
 import en_GB from '@/locales/en_GB'
-import { useContextStore } from '@/components/ContextProvider'
+import { useToolkitsContext } from '@/components/ContextProvider'
 import { get, has, template } from 'lodash-es'
 import type { Locale } from '@/locales'
 
@@ -19,8 +19,8 @@ type Paths<T, D extends number = 10> = [D] extends [never]
   : ''
 
 export function useTranslation() {
-  const { locale = en_GB } = useContextStore(state => state)
-  
+  const { locale = en_GB } = useToolkitsContext()
+
   return (key: Paths<Locale>, data?: Record<string, unknown>) =>
     has(locale, key) ? template(get(locale, key as string))(data) : key
 }

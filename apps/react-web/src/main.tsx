@@ -16,8 +16,4 @@ await worker.start({
 const container = document.getElementById('root') as HTMLElement
 const root = createRoot(container)
 
-root.render(
-  <React.StrictMode>
-    <RouterProvider router={router} />
-  </React.StrictMode>,
-)
+root.render(<RouterProvider router={router} />)

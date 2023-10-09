@@ -18,8 +18,8 @@ export function usePermissions(
   const { usePermissionV2 } = useToolkitsContext()
 
   const { data, isLoading } = useSWR(
-    codes.length > 0 ? { url: usePermissionV2 ? '/api/usystem/user/checkV2' : '/api/usystem/user/check', codes } : null,
-    ({ url }) =>
+    codes.length > 0 ? [usePermissionV2 ? '/api/usystem/user/checkV2' : '/api/usystem/user/check', codes] : null,
+    ([url]) =>
       request<PermissionCheckResult>(
         url,
         {

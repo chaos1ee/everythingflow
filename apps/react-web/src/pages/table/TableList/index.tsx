@@ -45,6 +45,7 @@ const TableList = () => {
   return (
     <Card title="表">
       <QueryList<TableListItem, FormValues, { List: TableListItem[]; Total: number }>
+        code="500000"
         rowKey="id"
         columns={columns}
         url={url}
@@ -56,18 +57,24 @@ const TableList = () => {
           <Form form={form} initialValues={{ type: 1 }}>
             <Row gutter={20}>
               <Col>
+                <Form.Item label="名称" name="name" rules={[{ required: true }]}>
+                  <Input />
+                </Form.Item>
+              </Col>
+              <Col>
                 <Form.Item
                   name="param"
                   dependencies={['type']}
                   rules={[
                     ({ getFieldValue }) => ({
+                      required: true,
                       validator(_, value) {
                         return new Promise((resolve, reject) => {
                           if (!value) {
                             if (getFieldValue('type') === 1) {
-                              reject(new Error('请输入渠道 UID'))
+                              reject(new Error('请输入实例'))
                             } else {
-                              reject(new Error('请输入身份证号'))
+                              reject(new Error('请输入数据库名称'))
                             }
                           }
                           resolve(1)
