@@ -18,7 +18,7 @@ export function useAllPermissionsV2() {
 }
 
 export function useAllRoles() {
-  const { accessible } = usePermission('200005')
+  const { accessible } = usePermission('200005', { isGlobalNS: true })
   return useSWR<RoleEnumItem[]>(accessible ? ['/api/usystem/role/all', {}, true] : null)
 }
 
@@ -130,10 +130,14 @@ export function useUpdateUser() {
         arg: { id: string; name: string; roles: string[] }
       },
     ) =>
-      request(url, {
-        method: 'post',
-        body: arg,
-      }),
+      request(
+        url,
+        {
+          method: 'post',
+          body: arg,
+        },
+        true,
+      ),
   )
 }
 
