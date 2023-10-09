@@ -50,11 +50,11 @@ const ContextProvider: FC<PropsWithChildren<Partial<ContextState>>> = ({ childre
 
   useEffect(() => {
     contextStore.setState(config)
-  })
+  }, [config])
 
   return <ToolkitsContext.Provider value={config}>{children}</ToolkitsContext.Provider>
 }
 
-ContextProvider.displayName = 'ToolkitsContextProvider'
+ContextProvider.displayName = 'ContextProvider'
 
 export default ContextProvider
