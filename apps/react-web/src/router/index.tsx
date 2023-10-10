@@ -1,5 +1,5 @@
 import { createBrowserRouter, Navigate, Outlet } from 'react-router-dom'
-import { baseRoutes, Layout, permissionRoutes } from 'react-toolkits'
+import { baseRoutes, ContextProvider, Layout, permissionRoutes } from 'react-toolkits'
 import tableRoutes from '@/pages/table'
 import Root from '@/Root'
 import ErrorElement from '@/ErrorElement'

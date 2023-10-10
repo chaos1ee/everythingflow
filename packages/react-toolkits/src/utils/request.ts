@@ -61,6 +61,7 @@ export async function request<T = any>(input: string | URL, init?: InitConfig, i
   }
 
   headers = new Headers(headers)
+
   const token = useTokenStore.getState().token
 
   if (token) {
@@ -86,7 +87,7 @@ export async function request<T = any>(input: string | URL, init?: InitConfig, i
   const config = {
     ...rest,
     headers,
-    body: !body || body instanceof FormData ? body : JSON.stringify(body),
+    body: body === null || body instanceof FormData ? body : JSON.stringify(body),
   }
 
   const response = await fetch(url, config)

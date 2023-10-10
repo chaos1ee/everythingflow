@@ -9,6 +9,7 @@ import { useToolkitsContext } from '@/components/ContextProvider'
 import { useTokenStore } from '@/stores/token'
 import { request } from '@/utils/request'
 import { useSWRConfig } from 'swr'
+import { has, isObject } from 'lodash-es'
 
 const { Text } = Typography
 
@@ -74,19 +75,10 @@ const GameSelect = () => {
   const clearCache = useCallback(() => {
     mutate(
       key => {
-        return typeof key !== 'string' || !key.startsWith('/api/usystem/game/all')
-      },
-      undefined,
-      {
-        revalidate: false,
-      },
-    )
-
-    mutate(
-      key => {
+        // 清除除了 QueryList 内的 useSWR 外的所有缓存
         return (
-          Array.isArray(key) &&
-          (key[0].startsWith('/api/usystem/user/check') || key[0].startsWith('/api/usystem/user/checkV2'))
+          !(typeof key === 'string' && key.startsWith('/api/usystem/game/all')) &&
+          !(isObject(key) && has(key, 'url') && has(key, 'payload'))
         )
       },
       undefined,
