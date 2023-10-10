@@ -18,8 +18,8 @@ import type { PermissionButtonProps } from '@/components/PermissionButton'
 import PermissionButton from '@/components/PermissionButton'
 import type { PermissionGuardProps } from '@/components/PermissionGuard'
 import PermissionGuard from '@/components/PermissionGuard'
-import type { QueryListAction, QueryListProps } from '@/components/QueryList'
-import QueryList from '@/components/QueryList'
+import type { QueryListProps } from '@/components/QueryList'
+import QueryList, { QueryListAction } from '@/components/QueryList'
 import RequireGame from '@/components/RequireGame'
 import ContextProvider, { contextStore, useToolkitsContext } from '@/components/ContextProvider'
 import UserWidget from '@/components/UserWidget'
@@ -40,6 +40,7 @@ export {
   PermissionButton,
   DynamicTags,
   QueryList,
+  QueryListAction,
   FilterFormWrapper,
   Highlight,
   GameSelect,
@@ -75,7 +76,6 @@ export {
   type NavMenuItem,
   type PermissionButtonProps,
   type PermissionGuardProps,
-  type QueryListAction,
   type QueryListProps,
   type QueryListPayload,
   type TokenState,

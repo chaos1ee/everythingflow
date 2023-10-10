@@ -5,7 +5,6 @@ import type { TableProps } from 'antd/es/table'
 import type { ReactNode } from 'react'
 import { useCallback, useEffect, useRef } from 'react'
 import { useTranslation } from '@/utils/i18n'
-import type { FilterFormWrapperProps } from '@/components/FilterFormWrapper'
 import FilterFormWrapper from '@/components/FilterFormWrapper'
 import { usePermission } from '@/hooks/permission'
 import { useQueryListStore, useQueryListTrigger } from '@/stores/queryList'
@@ -25,8 +24,7 @@ const fallbackData = {
 }
 
 export interface QueryListProps<Item, Values, Response>
-  extends Pick<TableProps<Item>, 'columns' | 'rowKey' | 'tableLayout' | 'expandable' | 'rowSelection' | 'bordered'>,
-    Pick<FilterFormWrapperProps, 'confirmText'> {
+  extends Pick<TableProps<Item>, 'columns' | 'rowKey' | 'tableLayout' | 'expandable' | 'rowSelection' | 'bordered'> {
   url: string
   code?: string
   isGlobalNS?: boolean
@@ -37,6 +35,7 @@ export interface QueryListProps<Item, Values, Response>
   // 当请求的返回值不满足时进行转换
   transformResponse?: (response: Response) => ListResponse<Item>
   afterSuccess?: (response: ListResponse<Item>, action?: QueryListAction) => void
+  confirmText?: ReactNode
 }
 
 const QueryList = <Item extends object, Values extends object | undefined, Response = ListResponse<Item>>(
