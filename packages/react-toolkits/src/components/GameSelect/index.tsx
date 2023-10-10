@@ -8,8 +8,6 @@ import { useTranslation } from '@/utils/i18n'
 import { useToolkitsContext } from '@/components/ContextProvider'
 import { useTokenStore } from '@/stores/token'
 import { request } from '@/utils/request'
-import { useSWRConfig } from 'swr'
-import { has, isObject } from 'lodash-es'
 
 const { Text } = Typography
 
@@ -59,7 +57,6 @@ const GameSelect = () => {
   const { onlyDomesticGames } = useToolkitsContext()
   const { game, setGame } = useGameStore()
   const { games, isLoading } = useGames()
-  const { mutate } = useSWRConfig()
 
   const options = useMemo(
     () =>
@@ -72,31 +69,32 @@ const GameSelect = () => {
     [games, onlyDomesticGames],
   )
 
-  const clearCache = useCallback(() => {
-    mutate(
-      key => {
-        // 清除除了 QueryList 内的 useSWR 外的所有缓存
-        return (
-          !(typeof key === 'string' && key.startsWith('/api/usystem/game/all')) &&
-          !(isObject(key) && has(key, 'url') && has(key, 'payload'))
-        )
-      },
-      undefined,
-      {
-        revalidate: true,
-      },
-    )
-  }, [mutate])
+  // const clearCache = useCallback(() => {
+  //   mutate(
+  //     key => {
+  //       // 清除除了 QueryList 内的 useSWR 外的所有缓存
+  //       return (
+  //         !(typeof key === 'string' && key.startsWith('/api/usystem/game/all')) &&
+  //         !(isObject(key) && has(key, 'url') && has(key, 'payload'))
+  //       )
+  //     },
+  //     undefined,
+  //     {
+  //       revalidate: true,
+  //     },
+  //   )
+  // }, [mutate])
 
   const onGameChange = useCallback(
     async (id: string) => {
       const matchGame = (games ?? []).find(item => item.id === id)
       if (matchGame) {
         setGame(matchGame)
-        clearCache()
+        window.location.reload()
+        // clearCache()
       }
     },
-    [games, setGame, clearCache],
+    [games, setGame],
   )
 
   return (
