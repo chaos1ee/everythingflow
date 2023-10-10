@@ -10,6 +10,7 @@ import { usePermission } from '@/hooks/permission'
 import { useQueryListStore, useQueryListTrigger } from '@/stores/queryList'
 import { request } from '@/utils/request'
 import useSWR from 'swr'
+import { useGameStore } from '@/components/GameSelect'
 
 export enum QueryListAction {
   Confirm = 'confirm',
@@ -38,7 +39,7 @@ export interface QueryListProps<Item, Values, Response>
   confirmText?: ReactNode
 }
 
-const QueryList = async <Item extends object, Values extends object | undefined, Response = ListResponse<Item>>(
+const QueryList = <Item extends object, Values extends object | undefined, Response = ListResponse<Item>>(
   props: QueryListProps<Item, Values, Response>,
 ) => {
   const {
@@ -54,6 +55,7 @@ const QueryList = async <Item extends object, Values extends object | undefined,
     ...tableProps
   } = props
   const { accessible, isValidating } = usePermission(code, { isGlobalNS })
+  const { game } = useGameStore()
   const [form] = Form.useForm<Values>()
   const { payloadMap } = useQueryListStore()
   const action = useRef<QueryListAction>()
@@ -73,13 +75,11 @@ const QueryList = async <Item extends object, Values extends object | undefined,
     { url, payload },
     async arg => {
       const { page = 1, size = 10, values } = arg.payload ?? {}
-
       const params = transformArg?.(page, size, values) ?? {
         ...values,
         page,
         size,
       }
-
       const response = await request<Response>(arg.url, { headers, params }, isGlobalNS)
       const list = transformResponse?.(response.data) ?? (response.data as ListResponse<Item>)
       afterSuccess?.(list, action.current)
@@ -88,8 +88,8 @@ const QueryList = async <Item extends object, Values extends object | undefined,
     },
     {
       shouldRetryOnError: false,
-      revalidateOnMount: false,
       keepPreviousData: false,
+      revalidateOnMount: false,
       fallbackData,
     },
   )
@@ -111,45 +111,39 @@ const QueryList = async <Item extends object, Values extends object | undefined,
     onChange: onPaginationChange,
   }
 
+  const fetchFirstPage = async () => {
+    const values = form.getFieldsValue()
+    try {
+      await form.validateFields()
+      internalTrigger({ page: 1, values }, undefined, { revalidate: true })
+    } catch (_) {
+      internalTrigger({ page: 1, values }, undefined, { revalidate: false })
+    }
+  }
+
   const onConfirm = async () => {
     action.current = QueryListAction.Confirm
-    const values = await form.validateFields()
-    internalTrigger({
-      page: 1,
-      values,
-    })
+    form.submit()
+    await fetchFirstPage()
   }
 
   const onReset = async () => {
     action.current = QueryListAction.Reset
-
     form.resetFields()
-    const values = form.getFieldsValue()
-
-    try {
-      await form.validateFields()
-      internalTrigger({ page: 1, values })
-    } catch (_) {
-      internalTrigger({ page: 1, values }, fallbackData, { revalidate: false })
-    }
+    await fetchFirstPage()
   }
 
   useEffect(() => {
     const init = async () => {
-      action.current = QueryListAction.Init
-
-      try {
-        const values = await form.validateFields()
-        internalTrigger({ values })
-      } catch (_) {
-        form.resetFields()
+      if (accessible) {
+        action.current = QueryListAction.Init
+        await fetchFirstPage()
       }
     }
 
-    // 在不使用定时器时 Form.Item 的自定义校验有时不会被触发
-    setTimeout(init, 0)
+    init()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [accessible, game])
 
   if (isValidating) {
     return (

@@ -61,40 +61,6 @@ const TableList = () => {
                   <Input />
                 </Form.Item>
               </Col>
-              {/* <Col> */}
-              {/*  <Form.Item */}
-              {/*    name="param" */}
-              {/*    dependencies={['type']} */}
-              {/*    rules={[ */}
-              {/*      ({ getFieldValue }) => ({ */}
-              {/*        required: true, */}
-              {/*        validator(_, value) { */}
-              {/*          return new Promise((resolve, reject) => { */}
-              {/*            if (!value) { */}
-              {/*              if (getFieldValue('type') === 1) { */}
-              {/*                reject(new Error('请输入实例')) */}
-              {/*              } else { */}
-              {/*                reject(new Error('请输入数据库名称')) */}
-              {/*              } */}
-              {/*            } */}
-              {/*            resolve(1) */}
-              {/*          }) */}
-              {/*        }, */}
-              {/*      }), */}
-              {/*    ]} */}
-              {/*  > */}
-              {/*    <Input */}
-              {/*      addonBefore={ */}
-              {/*        <Form.Item noStyle name="type"> */}
-              {/*          <Select> */}
-              {/*            <Select.Option value={1}>实例</Select.Option> */}
-              {/*            <Select.Option value={2}>数据库</Select.Option> */}
-              {/*          </Select> */}
-              {/*        </Form.Item> */}
-              {/*      } */}
-              {/*    /> */}
-              {/*  </Form.Item> */}
-              {/* </Col> */}
             </Row>
           </Form>
         )}
