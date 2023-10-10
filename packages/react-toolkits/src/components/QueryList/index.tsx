@@ -38,7 +38,7 @@ export interface QueryListProps<Item, Values, Response>
   confirmText?: ReactNode
 }
 
-const QueryList = <Item extends object, Values extends object | undefined, Response = ListResponse<Item>>(
+const QueryList = async <Item extends object, Values extends object | undefined, Response = ListResponse<Item>>(
   props: QueryListProps<Item, Values, Response>,
 ) => {
   const {
@@ -179,5 +179,7 @@ const QueryList = <Item extends object, Values extends object | undefined, Respo
     </>
   )
 }
+
+QueryList.displayName = 'QueryList'
 
 export default QueryList

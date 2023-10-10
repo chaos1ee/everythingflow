@@ -78,7 +78,7 @@ const GameSelect = () => {
       },
       undefined,
       {
-        revalidate: false,
+        revalidate: true,
       },
     )
 
