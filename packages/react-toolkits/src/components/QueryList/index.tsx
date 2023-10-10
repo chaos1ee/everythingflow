@@ -147,7 +147,7 @@ const QueryList = <Item extends object, Values extends object | undefined, Respo
     }
 
     // 在不使用定时器时 Form.Item 的自定义校验有时不会被触发
-    setTimeout(init, 2000)
+    setTimeout(init, 0)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
