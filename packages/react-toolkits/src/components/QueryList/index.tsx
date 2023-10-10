@@ -10,7 +10,6 @@ import { usePermission } from '@/hooks/permission'
 import { useQueryListStore, useQueryListTrigger } from '@/stores/queryList'
 import { request } from '@/utils/request'
 import useSWR from 'swr'
-import { useGameStore } from '@/components/GameSelect'
 
 export enum QueryListAction {
   Confirm = 'confirm',
@@ -55,7 +54,6 @@ const QueryList = <Item extends object, Values extends object | undefined, Respo
     ...tableProps
   } = props
   const { accessible, isValidating } = usePermission(code, { isGlobalNS })
-  const { game } = useGameStore()
   const [form] = Form.useForm<Values>()
   const { payloadMap } = useQueryListStore()
   const action = useRef<QueryListAction>()
@@ -75,11 +73,13 @@ const QueryList = <Item extends object, Values extends object | undefined, Respo
     { url, payload },
     async arg => {
       const { page = 1, size = 10, values } = arg.payload ?? {}
+
       const params = transformArg?.(page, size, values) ?? {
         ...values,
         page,
         size,
       }
+
       const response = await request<Response>(arg.url, { headers, params }, isGlobalNS)
       const list = transformResponse?.(response.data) ?? (response.data as ListResponse<Item>)
       afterSuccess?.(list, action.current)
@@ -88,8 +88,8 @@ const QueryList = <Item extends object, Values extends object | undefined, Respo
     },
     {
       shouldRetryOnError: false,
-      keepPreviousData: false,
       revalidateOnMount: false,
+      keepPreviousData: false,
       fallbackData,
     },
   )
@@ -111,39 +111,45 @@ const QueryList = <Item extends object, Values extends object | undefined, Respo
     onChange: onPaginationChange,
   }
 
-  const fetchFirstPage = async () => {
-    const values = form.getFieldsValue()
-    try {
-      await form.validateFields()
-      internalTrigger({ page: 1, values }, undefined, { revalidate: true })
-    } catch (_) {
-      internalTrigger({ page: 1, values }, undefined, { revalidate: false })
-    }
-  }
-
   const onConfirm = async () => {
     action.current = QueryListAction.Confirm
-    form.submit()
-    await fetchFirstPage()
+    const values = await form.validateFields()
+    internalTrigger({
+      page: 1,
+      values,
+    })
   }
 
   const onReset = async () => {
     action.current = QueryListAction.Reset
+
     form.resetFields()
-    await fetchFirstPage()
+    const values = form.getFieldsValue()
+
+    try {
+      await form.validateFields()
+      internalTrigger({ page: 1, values })
+    } catch (_) {
+      internalTrigger({ page: 1, values }, fallbackData, { revalidate: false })
+    }
   }
 
   useEffect(() => {
     const init = async () => {
       if (accessible) {
         action.current = QueryListAction.Init
-        await fetchFirstPage()
+        try {
+          const values = await form.validateFields()
+          internalTrigger({ values })
+        } catch (_) {
+          form.resetFields()
+        }
       }
     }
 
     init()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [accessible, game])
+  }, [accessible, form])
 
   if (isValidating) {
     return (
@@ -173,7 +179,5 @@ const QueryList = <Item extends object, Values extends object | undefined, Respo
     </>
   )
 }
-
-QueryList.displayName = 'QueryList'
 
 export default QueryList
