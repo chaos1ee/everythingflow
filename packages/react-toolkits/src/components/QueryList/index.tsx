@@ -10,6 +10,7 @@ import { usePermission } from '@/hooks/permission'
 import { useQueryListStore, useQueryListTrigger } from '@/stores/queryList'
 import { request } from '@/utils/request'
 import useSWR from 'swr'
+import { useGameStore } from '@/components/GameSelect'
 
 export enum QueryListAction {
   Confirm = 'confirm',
@@ -59,6 +60,7 @@ const QueryList = <Item extends object, Values extends object | undefined, Respo
   const action = useRef<QueryListAction>()
   const trigger = useQueryListTrigger()
   const t = useTranslation()
+  const { game } = useGameStore()
 
   const internalTrigger = useCallback(
     (...params: Parameters<typeof trigger> extends [infer _, ...infer Rest] ? Rest : never) => {
@@ -140,7 +142,7 @@ const QueryList = <Item extends object, Values extends object | undefined, Respo
         action.current = QueryListAction.Init
         try {
           const values = await form.validateFields()
-          internalTrigger({ values })
+          internalTrigger({ values }, data, { revalidate: true })
         } catch (_) {
           form.resetFields()
         }
@@ -149,7 +151,7 @@ const QueryList = <Item extends object, Values extends object | undefined, Respo
 
     init()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [accessible, form])
+  }, [accessible, form, game])
 
   if (isValidating) {
     return (
