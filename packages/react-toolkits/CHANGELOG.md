@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.3.15
+
+### Patch Changes
+
+- 217fae8: refactor: react-toolkits QueryList
+
 ## 0.3.14
 
 ### Patch Changes
