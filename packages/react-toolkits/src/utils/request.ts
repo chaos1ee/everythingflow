@@ -1,8 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { isNil, pick } from 'lodash-es'
+import { pick } from 'lodash-es'
 import { contextStore } from '@/components/ContextProvider'
 import { useGameStore } from '@/components/GameSelect'
 import { useTokenStore } from '@/stores/token'
+import qs from 'query-string'
 
 export class RequestError extends Error {
   status?: number
@@ -27,46 +28,30 @@ type JsonResponse<T> = (
   msg: string
 }
 
-const urlPattern = new RegExp(
-  '^(https?:\\/\\/)?' + // protocol
-    '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // domain name and extension
-    '((\\d{1,3}\\.){3}\\d{1,3}))' + // OR ip (v4) address
-    '(\\:\\d+)?' + // port
-    '(\\/[-a-z\\d%_.~+]*)*' + // path
-    '(\\?[;&a-z\\d%_.~+=-]*)?' + // query string
-    '(\\#[-a-z\\d_]*)?$',
-  'i',
-)
-
-interface InitConfig extends Omit<RequestInit, 'body'> {
+interface RequestOptions extends Omit<RequestInit, 'body'> {
   body?: Record<string | number, any> | FormData | null
-  params?: Record<string | number, string | number | undefined | null> | URLSearchParams | null
+  params?: Record<string | number, any> | URLSearchParams | null
   responseType?: 'json' | 'blob'
 }
 
-export async function request<T = any>(input: string | URL, init?: InitConfig, isGlobalNS?: boolean) {
-  let { body, params, headers, responseType = 'json', ...rest } = init ?? {}
+export async function request<T = any>(url: string, opts?: RequestOptions, isGlobalNS?: boolean) {
+  let { body, params, headers, responseType = 'json', ...rest } = opts ?? {}
 
-  const url =
-    typeof input === 'string' ? new URL(input, urlPattern.test(input) ? undefined : window.location.origin) : input
+  const queryString =
+    params &&
+    qs.stringify(params, {
+      skipNull: true,
+      skipEmptyString: true,
+      strict: true,
+      encode: true,
+    })
 
-  if (params) {
-    const entries = params instanceof URLSearchParams ? params.entries() : Object.entries(params)
+  url = queryString ? `${url}?${queryString}` : url
 
-    for (const [key, value] of entries) {
-      if (!isNil(value)) {
-        url.searchParams.append(key, JSON.stringify(value))
-      }
-    }
-  }
-
+  // 设置请求头
   headers = new Headers(headers)
-
   const token = useTokenStore.getState().token
-
-  if (token) {
-    headers.set('Authorization', `Bearer ${token}`)
-  }
+  headers.set('Authorization', `Bearer ${token}`)
 
   if (contextStore.usePermissionV2) {
     const game = useGameStore.getState().game

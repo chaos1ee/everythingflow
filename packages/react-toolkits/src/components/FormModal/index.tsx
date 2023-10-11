@@ -53,7 +53,7 @@ export function useFormModal<Values extends object>(props: UseFormModalProps<Val
   const InternalModal = useMemo(
     () =>
       createPortal(
-        <Form {...formProps}>
+        <Form {...formProps} preserve>
           <FormModal {...modalProps} open={open} onCancel={closeModal}>
             {typeof content === 'function' ? content(form) : content}
           </FormModal>
