@@ -33,9 +33,7 @@ const PermissionListV1: FC<PermissionListV1Props> = props => {
         permissions={permissions}
         readonly={readonly}
         expand={expand}
-        onChange={newValue => {
-          onChange?.(newValue)
-        }}
+        onChange={onChange}
       />
     </Skeleton>
   )

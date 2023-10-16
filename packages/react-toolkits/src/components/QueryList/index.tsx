@@ -82,7 +82,7 @@ const QueryList = <Item extends object, Values extends object | undefined, Respo
         size,
       }
 
-      const response = await request<Response>(arg.url, { headers, params }, isGlobalNS)
+      const response = await request<Response>(arg.url, { headers, params, isGlobalNS })
       const list = transformResponse?.(response.data) ?? (response.data as ListResponse<Item>)
       afterSuccess?.(list, action.current)
       action.current = undefined

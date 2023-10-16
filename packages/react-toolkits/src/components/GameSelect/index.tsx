@@ -43,7 +43,7 @@ function useGames() {
 
   const { data, isLoading } = useSWRImmutable(
     usePermissionV2 && user ? `/api/usystem/game/all?user=${user.authorityId}` : null,
-    url => request<Game[]>(url, undefined, true).then(response => response.data),
+    url => request<Game[]>(url, { isGlobalNS: true }).then(response => response.data),
   )
 
   return {

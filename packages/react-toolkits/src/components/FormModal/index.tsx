@@ -53,6 +53,7 @@ export function useFormModal<Values extends object>(props: UseFormModalProps<Val
   const InternalModal = useMemo(
     () =>
       createPortal(
+        // TODO: remove next line, and pass form instance from prop
         <Form {...formProps} preserve>
           <FormModal {...modalProps} open={open} onCancel={closeModal}>
             {typeof content === 'function' ? content(form) : content}
@@ -74,7 +75,7 @@ export function useFormModal<Values extends object>(props: UseFormModalProps<Val
 export interface FormModalProps<Values extends object>
   extends Omit<
     ModalProps,
-    'onCancel' | 'children' | 'destroyOnClose' | 'forceRender' | 'getContainer' | 'footer' | 'confirmLoading'
+    'onCancel' | 'children' | 'destroyOnClose' | 'forceRender' | 'getContainer' | 'footer' | 'confirmLoading' | 'onOk'
   > {
   renderFooter?: (form: FormInstance<Values>) => ReactNode
   onCancel?: VoidFunction
