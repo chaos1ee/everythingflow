@@ -20,16 +20,13 @@ export function usePermissions(
   const { data, isLoading } = useSWR(
     codes.length > 0 ? [usePermissionV2 ? '/api/usystem/user/checkV2' : '/api/usystem/user/check', codes] : null,
     ([url]) =>
-      request<PermissionCheckResult>(
-        url,
-        {
-          method: 'post',
-          body: {
-            permissions: codes,
-          },
+      request<PermissionCheckResult>(url, {
+        method: 'post',
+        body: {
+          permissions: codes,
         },
-        opts?.isGlobalNS,
-      ).then(response => {
+        isGlobalNS: opts?.isGlobalNS,
+      }).then(response => {
         if (response.data.has_all) {
           return codes.reduce(
             (acc, curr) => {

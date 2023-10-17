@@ -32,10 +32,13 @@ interface RequestOptions extends Omit<RequestInit, 'body'> {
   body?: Record<string | number, any> | FormData | null
   params?: Record<string | number, any> | URLSearchParams | null
   responseType?: 'json' | 'blob'
+  isGlobalNS?: boolean
 }
 
-export async function request<T = any>(url: string, opts?: RequestOptions, isGlobalNS?: boolean) {
-  let { body, params, headers, responseType = 'json', ...rest } = opts ?? {}
+type RequestResponse<T> = Pick<Response, 'headers' | 'status' | 'statusText' | 'url'> & { data: T }
+
+export async function request<T = any>(url: string, opts?: RequestOptions): Promise<RequestResponse<T>> {
+  let { body, params, headers, responseType = 'json', isGlobalNS, ...rest } = opts ?? {}
 
   const queryString =
     params &&

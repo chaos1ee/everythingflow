@@ -10,7 +10,7 @@ import { LocaleDropdownMenu } from '@/components'
 import { useLocaleStore } from '@/stores/locale'
 import router from '@/router'
 
-const Root: FC = () => {
+const App: FC = () => {
   const { locale } = useLocaleStore()
 
   return (
@@ -55,4 +55,4 @@ const Root: FC = () => {
   )
 }
 
-export default Root
+export default App

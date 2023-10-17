@@ -7,24 +7,27 @@ import { useToolkitsContext } from '@/components/ContextProvider'
 import { request } from '@/utils/request'
 
 export function useAllPermissions() {
-  return useSWR<PermissionEnumItem[]>(['/api/usystem/user/allPermssions', {}, true])
+  return useSWR<PermissionEnumItem[]>(['/api/usystem/user/allPermssions', { isGlobalNS: true }])
 }
 
 export function useAllPermissionsV2() {
   return useSWR<{
     game: Game[]
     permission: PermissionEnumItem[]
-  }>(['/api/usystem/user/allPermissionsV2', {}, true])
+  }>(['/api/usystem/user/allPermissionsV2', { isGlobalNS: true }])
 }
 
 export function useAllRoles() {
   const { accessible } = usePermission('200005', { isGlobalNS: true })
-  return useSWR<RoleEnumItem[]>(accessible ? ['/api/usystem/role/all', {}, true] : null)
+  return useSWR<RoleEnumItem[]>(accessible ? ['/api/usystem/role/all', { isGlobalNS: true }] : null)
 }
 
 export function useRole(name: string) {
   const { usePermissionV2 } = useToolkitsContext()
-  return useSWR<RoleV1 | RoleV2>([`/api/usystem/role/${usePermissionV2 ? 'infoV2' : 'info'}?name=${name}`, {}, true])
+  return useSWR<RoleV1 | RoleV2>([
+    `/api/usystem/role/${usePermissionV2 ? 'infoV2' : 'info'}?name=${name}`,
+    { isGlobalNS: true },
+  ])
 }
 
 export function useCreateRole() {
@@ -40,14 +43,11 @@ export function useCreateRole() {
         arg: { name: string; permissions: RoleV1['permissions'] | RoleV2['permissions'] }
       },
     ) =>
-      request(
-        url,
-        {
-          method: 'post',
-          body: arg,
-        },
-        true,
-      ),
+      request(url, {
+        method: 'post',
+        body: arg,
+        isGlobalNS: true,
+      }),
   )
 }
 
@@ -64,14 +64,11 @@ export function useUpdateRole() {
         arg: { id: number; name: string; permissions: RoleV1['permissions'] | RoleV2['permissions'] }
       },
     ) =>
-      request(
-        url,
-        {
-          method: 'post',
-          body: arg,
-        },
-        true,
-      ),
+      request(url, {
+        method: 'post',
+        body: arg,
+        isGlobalNS: true,
+      }),
   )
 }
 
@@ -86,14 +83,11 @@ export function useRemoveRole() {
         arg: { id: number; name: string }
       },
     ) =>
-      request(
-        url,
-        {
-          method: 'post',
-          body: arg,
-        },
-        true,
-      ),
+      request(url, {
+        method: 'post',
+        body: arg,
+        isGlobalNS: true,
+      }),
   )
 }
 
@@ -108,14 +102,11 @@ export function useCreateUser() {
         arg: { name: string; roles: string[] }
       },
     ) =>
-      request(
-        url,
-        {
-          method: 'post',
-          body: arg,
-        },
-        true,
-      ),
+      request(url, {
+        method: 'post',
+        body: arg,
+        isGlobalNS: true,
+      }),
   )
 }
 
@@ -130,14 +121,11 @@ export function useUpdateUser() {
         arg: { id: string; name: string; roles: string[] }
       },
     ) =>
-      request(
-        url,
-        {
-          method: 'post',
-          body: arg,
-        },
-        true,
-      ),
+      request(url, {
+        method: 'post',
+        body: arg,
+        isGlobalNS: true,
+      }),
   )
 }
 
@@ -152,13 +140,10 @@ export function useRemoveUser() {
         arg: { id: string; name: string }
       },
     ) =>
-      request(
-        url,
-        {
-          method: 'post',
-          body: arg,
-        },
-        true,
-      ),
+      request(url, {
+        method: 'post',
+        body: arg,
+        isGlobalNS: true,
+      }),
   )
 }
