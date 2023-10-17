@@ -1,5 +1,12 @@
 # react-toolkits
 
+## 0.3.19
+
+### Patch Changes
+
+- c67ef05: fix: RequireGame copywrite is wrong
+- 63a76e3: feat: change request options
+
 ## 0.3.18
 
 ### Patch Changes
