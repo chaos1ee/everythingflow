@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.3.20
+
+### Patch Changes
+
+- a90e311: refactor: change RequireGame display
+
 ## 0.3.19
 
 ### Patch Changes
