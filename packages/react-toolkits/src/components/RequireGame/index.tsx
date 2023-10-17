@@ -1,4 +1,4 @@
-import { Card, Empty } from 'antd'
+import { Card, Result } from 'antd'
 import type { FC, PropsWithChildren } from 'react'
 import { useTranslation } from '@/utils/i18n'
 import { useGameStore } from '@/components/GameSelect'
@@ -13,7 +13,7 @@ const RequireGame: FC<PropsWithChildren> = props => {
   if (usePermissionV2 && !hideGameSelect && !game) {
     return (
       <Card>
-        <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description={t('noEntitlement')} />
+        <Result status="info" title={t('RequireGame.description')} />
       </Card>
     )
   }
