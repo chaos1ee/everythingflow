@@ -57,7 +57,7 @@ export async function request<T = any>(url: string, opts?: RequestOptions): Prom
   const token = useTokenStore.getState().token
   headers.set('Authorization', `Bearer ${token}`)
 
-  if (contextStore.usePermissionV2) {
+  if (contextStore.usePermissionApiV2) {
     const game = useGameStore.getState().game
 
     if (isGlobalNS) {

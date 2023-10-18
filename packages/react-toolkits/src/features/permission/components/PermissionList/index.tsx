@@ -16,9 +16,9 @@ interface PermissionListProps extends PermissionListPropsBase {
 
 const PermissionList: FC<PermissionListProps> = (props: PermissionListProps) => {
   const { value } = props
-  const { usePermissionV2 } = useToolkitsContext()
+  const { usePermissionApiV2 } = useToolkitsContext()
 
-  if (usePermissionV2) {
+  if (usePermissionApiV2) {
     return <PermissionListV2 {...props} value={value as RoleV2['permissions']} />
   }
 

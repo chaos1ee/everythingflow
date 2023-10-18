@@ -113,7 +113,7 @@ const useUpdatingRoleModal = () => {
 const RoleList = () => {
   const { accessible: viewable } = usePermission('200005', { isGlobalNS: true })
   const { modal, message } = App.useApp()
-  const { usePermissionV2 } = useToolkitsContext()
+  const { usePermissionApiV2 } = useToolkitsContext()
   const remove = useRemoveRole()
   const mutate = useQueryListMutate()
   const { showModal: showCreatingModal, Modal: CreatingModal } = useCreatingUserModal()
@@ -156,7 +156,7 @@ const RoleList = () => {
               type="link"
               onClick={async () => {
                 const { data: role } = await request<RoleV1 | RoleV2>(
-                  `/api/usystem/role/info${usePermissionV2 ? 'V2' : ''}?name=${value.name}`,
+                  `/api/usystem/role/info${usePermissionApiV2 ? 'V2' : ''}?name=${value.name}`,
                   { isGlobalNS: true },
                 )
                 showUpdatingModal({

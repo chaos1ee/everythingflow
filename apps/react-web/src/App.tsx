@@ -28,7 +28,7 @@ const App: FC = () => {
     >
       <Antd.App>
         <ContextProvider
-          usePermissionV2
+          usePermissionApiV2
           title="React Web"
           menuItems={menuItems}
           locale={locale?.toolkits}

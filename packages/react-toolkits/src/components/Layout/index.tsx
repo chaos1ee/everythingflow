@@ -1,13 +1,14 @@
 import * as Antd from 'antd'
 import { Divider, Space } from 'antd'
 import type { FC, Key, PropsWithChildren, ReactNode } from 'react'
-import { Suspense } from 'react'
+import { cloneElement, Suspense } from 'react'
 import { Link } from 'react-router-dom'
 import logo from './logo.png'
 import { useToolkitsContext } from '@/components/ContextProvider'
 import GameSelect from '@/components/GameSelect'
 import NavMenu from '@/components/NavMenu'
 import UserWidget from '@/components/UserWidget'
+import RequireGame from '@/components/RequireGame'
 
 const { Spin, theme } = Antd
 const { Header, Sider, Content } = Antd.Layout
@@ -21,7 +22,7 @@ const Layout: FC<LayoutProps> = props => {
   const {
     token: { colorBgContainer, colorBorder },
   } = theme.useToken()
-  const { title, usePermissionV2, hideGameSelect, localeDropdownMenu } = useToolkitsContext()
+  const { title, usePermissionApiV2, hideGameSelect, localeDropdownMenu } = useToolkitsContext()
 
   return (
     <Antd.Layout hasSider className="h-screen">
@@ -59,7 +60,7 @@ const Layout: FC<LayoutProps> = props => {
           }}
         >
           <div className="flex justify-between items-center h-full">
-            <div>{usePermissionV2 && !hideGameSelect && <GameSelect />}</div>
+            <div>{usePermissionApiV2 && !hideGameSelect && <GameSelect />}</div>
             <Space size="small" split={<Divider type="vertical" />}>
               {extras?.map(extra => <span key={extra.key}>{extra.children}</span>)}
               {localeDropdownMenu}
@@ -80,7 +81,7 @@ const Layout: FC<LayoutProps> = props => {
               />
             }
           >
-            {children}
+            {cloneElement(usePermissionApiV2 && !hideGameSelect ? <RequireGame /> : <></>, undefined, children)}
           </Suspense>
         </Content>
       </Antd.Layout>

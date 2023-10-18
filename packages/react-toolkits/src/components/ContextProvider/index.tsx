@@ -3,13 +3,14 @@ import type { FC, PropsWithChildren, ReactNode } from 'react'
 import { createContext, useContext } from 'react'
 import type { NavMenuItem } from '../NavMenu'
 import type { Locale } from '@/locales'
+import type { Game } from '@/components/GameSelect'
 
 export interface ContextState {
   title: string
   menuItems: NavMenuItem[]
   hideGameSelect: boolean
-  usePermissionV2: boolean // 使用 V2 版本的权限接口
-  onlyDomesticGames: boolean // 仅显示国内游戏
+  usePermissionApiV2: boolean // 使用 V2 版本的权限接口
+  gameFilter?: (game: Game) => boolean
   locale?: Locale
   localeDropdownMenu?: ReactNode
 }
@@ -18,8 +19,7 @@ const defaultState: ContextState = {
   title: '',
   menuItems: [],
   hideGameSelect: false,
-  usePermissionV2: false,
-  onlyDomesticGames: false,
+  usePermissionApiV2: false,
 }
 
 export let contextStore: ContextState = defaultState

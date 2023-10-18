@@ -8,6 +8,7 @@ import { useTranslation } from '@/utils/i18n'
 import { useToolkitsContext } from '@/components/ContextProvider'
 import { useTokenStore } from '@/stores/token'
 import { request } from '@/utils/request'
+import { useSWRConfig } from 'swr'
 
 const { Text } = Typography
 
@@ -38,11 +39,11 @@ export const useGameStore = create<GameState>()(
 )
 
 function useGames() {
-  const { usePermissionV2 } = useToolkitsContext()
+  const { usePermissionApiV2 } = useToolkitsContext()
   const user = useTokenStore(state => state.getUser())
 
   const { data, isLoading } = useSWRImmutable(
-    usePermissionV2 && user ? `/api/usystem/game/all?user=${user.authorityId}` : null,
+    usePermissionApiV2 && user ? `/api/usystem/game/all?user=${user.authorityId}` : null,
     url => request<Game[]>(url, { isGlobalNS: true }).then(response => response.data),
   )
 
@@ -54,47 +55,52 @@ function useGames() {
 
 const GameSelect = () => {
   const t = useTranslation()
-  const { onlyDomesticGames } = useToolkitsContext()
+  const { gameFilter } = useToolkitsContext()
   const { game, setGame } = useGameStore()
   const { games, isLoading } = useGames()
+  const { mutate } = useSWRConfig()
 
   const options = useMemo(
     () =>
       (games ?? [])
-        .filter(item => !onlyDomesticGames || item.area === 'cn')
+        ?.filter(item => !gameFilter || gameFilter(item))
         ?.map(item => ({
           label: item.name,
           value: item.id,
         })),
-    [games, onlyDomesticGames],
+    [games, gameFilter],
   )
 
-  // const clearCache = useCallback(() => {
-  //   mutate(
-  //     key => {
-  //       // 清除除了 QueryList 内的 useSWR 外的所有缓存
-  //       return (
-  //         !(typeof key === 'string' && key.startsWith('/api/usystem/game/all')) &&
-  //         !(isObject(key) && has(key, 'url') && has(key, 'payload'))
-  //       )
-  //     },
-  //     undefined,
-  //     {
-  //       revalidate: true,
-  //     },
-  //   )
-  // }, [mutate])
+  const clearCache = useCallback(() => {
+    mutate(
+      key => {
+        // 清除除了 QueryList 内的 useSWR 外的所有缓存
+
+        console.log('key ', key)
+
+        return false
+        // return (
+        //   !(typeof key === 'string' && key.startsWith('/api/usystem/game/all')) &&
+        //   !(isObject(key) && has(key, 'url') && has(key, 'payload'))
+        // )
+      },
+      undefined,
+      {
+        revalidate: true,
+      },
+    )
+  }, [mutate])
 
   const onGameChange = useCallback(
     async (id: string) => {
       const matchGame = (games ?? []).find(item => item.id === id)
       if (matchGame) {
         setGame(matchGame)
-        window.location.reload()
-        // clearCache()
+        // window.location.reload()
+        clearCache()
       }
     },
-    [games, setGame],
+    [games, setGame, clearCache],
   )
 
   return (
