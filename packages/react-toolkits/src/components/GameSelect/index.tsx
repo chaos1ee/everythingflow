@@ -1,5 +1,5 @@
 import { Select, Space, Typography } from 'antd'
-import { useCallback, useMemo } from 'react'
+import { useCallback, useEffect, useMemo } from 'react'
 import useSWRImmutable from 'swr/immutable'
 import { create } from 'zustand'
 import { createJSONStorage, persist } from 'zustand/middleware'
@@ -22,7 +22,7 @@ export interface Game {
 
 export interface GameState {
   game: Game | null
-  setGame: (game: Game) => void
+  setGame: (game: Game | null) => void
 }
 
 export const useGameStore = create<GameState>()(
@@ -79,8 +79,7 @@ const GameSelect = () => {
           if (key.startsWith('/api/usystem/game/all')) {
             return false
           }
-
-          // 不更新 QueryList 的缓存
+          // 不更新 key 中包含查询参数 page 和 size（QueryList 组件内列表的请求）的缓存
           const { query } = qs.parseUrl(key)
           if (key.startsWith('/api') && query.page && query.size) {
             return false
@@ -103,6 +102,12 @@ const GameSelect = () => {
     },
     [games, setGame, clearCache],
   )
+
+  useEffect(() => {
+    if (options.length === 0 || options.every(item => item.value !== game?.id)) {
+      setGame(null)
+    }
+  }, [game, options, setGame])
 
   return (
     <Space>
