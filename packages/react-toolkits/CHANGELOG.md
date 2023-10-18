@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.3.22
+
+### Patch Changes
+
+- cf4e541: feat: preseve data when mutating
+
 ## 0.3.21
 
 ### Patch Changes
