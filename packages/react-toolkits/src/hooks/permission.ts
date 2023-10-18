@@ -47,7 +47,6 @@ export function usePermissions(
       }),
     {
       suspense: opts?.suspense,
-      revalidateOnFocus: true,
       shouldRetryOnError: false,
     },
   )

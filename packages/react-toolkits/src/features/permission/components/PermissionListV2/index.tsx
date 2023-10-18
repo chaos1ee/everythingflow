@@ -17,10 +17,10 @@ interface PermissionListV2Props extends PermissionListPropsBase {
 
 const PermissionListV2: FC<PermissionListV2Props> = props => {
   const { expand = true, value, readonly, onChange } = props
-  const { data: permissions, isLoading, error } = useAllPermissionsV2()
+  const { data: { permission, game: games } = {}, isLoading, error } = useAllPermissionsV2()
   const [gameList, setGameList] = useState<{ gameId: string; permissions: string[] }[]>([])
-  const globalPermissions = permissions?.permission?.filter(item => item.is_common)
-  const gamePermissions = permissions?.permission?.filter(item => !item.is_common)
+  const globalPermissions = permission?.filter(item => item.is_common)
+  const gamePermissions = permission?.filter(item => !item.is_common)
   const t = useTranslation()
 
   useEffect(() => {
@@ -79,7 +79,7 @@ const PermissionListV2: FC<PermissionListV2Props> = props => {
             <Space>
               <Text>{t('game')}</Text>
               {readonly ? (
-                <Text>{permissions?.game?.find(game => game.id === item.gameId)?.name}</Text>
+                <Text>{games?.find(game => game.id === item.gameId)?.name}</Text>
               ) : (
                 <Select
                   disabled={readonly}
@@ -94,7 +94,7 @@ const PermissionListV2: FC<PermissionListV2Props> = props => {
                     })
                   }}
                 >
-                  {permissions?.game?.map(game => (
+                  {games?.map(game => (
                     <Option key={game.id} value={game.id} disabled={gameList.some(({ gameId }) => gameId === game.id)}>
                       {game.name}
                     </Option>

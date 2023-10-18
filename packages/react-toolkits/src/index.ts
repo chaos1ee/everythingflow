@@ -24,8 +24,7 @@ import RequireGame from '@/components/RequireGame'
 import ContextProvider, { contextStore, useToolkitsContext } from '@/components/ContextProvider'
 import UserWidget from '@/components/UserWidget'
 import { usePermission, usePermissions } from '@/hooks/permission'
-import type { QueryListPayload } from '@/stores/queryList'
-import { useQueryListStore, useQueryListTrigger } from '@/stores/queryList'
+import { useQueryListMutate, useQueryListStore } from '@/stores/queryList'
 import type { TokenState } from '@/stores/token'
 import { useTokenStore, useValidateToken } from '@/stores/token'
 import baseRoutes from '@/routes/base'
@@ -56,7 +55,7 @@ export {
   usePermissions,
   usePermission,
   useQueryListStore,
-  useQueryListTrigger,
+  useQueryListMutate,
   baseRoutes,
   permissionRoutes,
   useTranslation,
@@ -77,6 +76,5 @@ export {
   type PermissionButtonProps,
   type PermissionGuardProps,
   type QueryListProps,
-  type QueryListPayload,
   type TokenState,
 }

@@ -114,7 +114,7 @@
 ### Patch Changes
 
 - 860eeec: feat: support i18n
-- 3dbfca6: refactor: combine useQueryListJump and useQueryListMutate into useQueryListTrigger
+- 3dbfca6: refactor: combine useQueryListJump and useQueryListMutate into useQueryListMutate
 
 ## 0.3.1
 
