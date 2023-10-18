@@ -9,6 +9,7 @@ import { useToolkitsContext } from '@/components/ContextProvider'
 import { useTokenStore } from '@/stores/token'
 import { request } from '@/utils/request'
 import { useSWRConfig } from 'swr'
+import qs from 'query-string'
 
 const { Text } = Typography
 
@@ -74,20 +75,21 @@ const GameSelect = () => {
   const clearCache = useCallback(() => {
     mutate(
       key => {
-        // 清除除了 QueryList 内的 useSWR 外的所有缓存
+        if (typeof key === 'string') {
+          if (key.startsWith('/api/usystem/game/all')) {
+            return false
+          }
 
-        console.log('key ', key)
+          // 不更新 QueryList 的缓存
+          const { query } = qs.parseUrl(key)
+          if (key.startsWith('/api') && query.page && query.size) {
+            return false
+          }
+        }
 
-        return false
-        // return (
-        //   !(typeof key === 'string' && key.startsWith('/api/usystem/game/all')) &&
-        //   !(isObject(key) && has(key, 'url') && has(key, 'payload'))
-        // )
+        return true
       },
-      undefined,
-      {
-        revalidate: true,
-      },
+      prev => prev,
     )
   }, [mutate])
 
@@ -96,7 +98,6 @@ const GameSelect = () => {
       const matchGame = (games ?? []).find(item => item.id === id)
       if (matchGame) {
         setGame(matchGame)
-        // window.location.reload()
         clearCache()
       }
     },

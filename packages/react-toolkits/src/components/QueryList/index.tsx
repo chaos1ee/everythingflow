@@ -9,9 +9,9 @@ import FilterFormWrapper from '@/components/FilterFormWrapper'
 import { usePermission } from '@/hooks/permission'
 import { request } from '@/utils/request'
 import useSWR from 'swr'
-import { useGameStore } from '@/components/GameSelect'
 import qs from 'query-string'
-import { useQueryListStore } from '@/stores/queryList'
+import { useQueryListMutate, useQueryListStore } from '@/stores/queryList'
+import { useGameStore } from '@/components/GameSelect'
 
 export enum QueryListAction {
   Confirm = 'confirm',
@@ -60,6 +60,7 @@ const QueryList = <Item extends object, Values extends object | undefined, Respo
   const action = useRef<QueryListAction>()
   const t = useTranslation()
   const { game } = useGameStore()
+  const mutate = useQueryListMutate()
   const [page, setPage] = useState(1)
   const [size, setSize] = useState(10)
   const [formValues, setFormValues] = useState<Values>()
@@ -139,21 +140,26 @@ const QueryList = <Item extends object, Values extends object | undefined, Respo
     const init = async () => {
       if (accessible) {
         action.current = QueryListAction.Init
+        form.resetFields()
         const values = form.getFieldsValue()
         setFormValues(values)
+        setPage(1)
 
         try {
           await form.validateFields()
+          mutate(url, { page: 1 }, undefined, { revalidate: true })
           setIsValid(true)
         } catch (_) {
           form.resetFields()
+          mutate(url, { page: 1 }, undefined, { revalidate: false })
           setIsValid(false)
         }
       }
     }
 
     init()
-  }, [accessible, form, game])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [accessible, url, form, game])
 
   useEffect(() => {
     useQueryListStore.setState(prev => ({
@@ -172,7 +178,7 @@ const QueryList = <Item extends object, Values extends object | undefined, Respo
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
-          height: 200,
+          height: 300,
         }}
       />
     )
