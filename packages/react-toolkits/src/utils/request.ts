@@ -3,6 +3,7 @@ import { pick } from 'lodash-es'
 import { contextStore } from '@/components/ContextProvider'
 import { useGameStore } from '@/components/GameSelect'
 import { useTokenStore } from '@/stores/token'
+import type { StringifyOptions } from 'query-string'
 import qs from 'query-string'
 
 export class RequestError extends Error {
@@ -40,16 +41,16 @@ type RequestResponse<T> = Pick<Response, 'headers' | 'status' | 'statusText' | '
 export async function request<T = any>(url: string, opts?: RequestOptions): Promise<RequestResponse<T>> {
   let { body, params, headers, responseType = 'json', isGlobalNS, ...rest } = opts ?? {}
 
-  const queryString =
-    params &&
-    qs.stringify(params, {
-      skipNull: true,
-      skipEmptyString: true,
-      strict: true,
-      encode: true,
-    })
-
-  url = queryString ? `${url}?${queryString}` : url
+  const parsed = qs.parseUrl(url)
+  const queryParams = Object.assign({}, parsed.query, params)
+  const options: StringifyOptions = {
+    skipNull: true,
+    skipEmptyString: true,
+    strict: true,
+    encode: true,
+  }
+  const queryString = qs.stringify(queryParams, options)
+  url = queryString ? `${parsed.url}?${queryString}` : url
 
   // 设置请求头
   headers = new Headers(headers)

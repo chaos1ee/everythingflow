@@ -8,7 +8,7 @@ interface FormValues {
   type: 1 | 2
 }
 
-const url = '/api/tables'
+const url = '/api/tables?foo=123'
 
 const TableList = () => {
   const mutate = useQueryListMutate()

@@ -69,8 +69,11 @@ const QueryList = <Item extends object, Values extends object | undefined, Respo
     page,
     size,
   }
-  const queryString = qs.stringify(params)
-  const swrKey = isValid ? `${url}?${queryString}` : null
+
+  const parsed = qs.parseUrl(url)
+  const queryParams = Object.assign({}, parsed.query, params)
+  const queryString = qs.stringify(queryParams)
+  const swrKey = isValid ? `${parsed.url}?${queryString}` : null
 
   const { data, isLoading } = useSWR(
     swrKey,
