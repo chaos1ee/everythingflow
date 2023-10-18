@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.3.23
+
+### Patch Changes
+
+- a0fa291: feat: set game to null while current game is not exsiting in options
+
 ## 0.3.22
 
 ### Patch Changes
