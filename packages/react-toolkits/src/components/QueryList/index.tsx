@@ -3,13 +3,14 @@ import type { FormInstance, TablePaginationConfig } from 'antd'
 import { Form, Result, Spin, Table } from 'antd'
 import type { TableProps } from 'antd/es/table'
 import type { ReactNode } from 'react'
-import { useCallback, useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from '@/utils/i18n'
 import FilterFormWrapper from '@/components/FilterFormWrapper'
 import { usePermission } from '@/hooks/permission'
-import { useQueryListStore, useQueryListTrigger } from '@/stores/queryList'
 import { request } from '@/utils/request'
 import useSWR from 'swr'
+import qs from 'query-string'
+import { useQueryListMutate, useQueryListStore } from '@/stores/queryList'
 import { useGameStore } from '@/components/GameSelect'
 
 export enum QueryListAction {
@@ -32,7 +33,7 @@ export interface QueryListProps<Item, Values, Response>
   headers?: Record<string, string>
   renderForm?: (form: FormInstance<Values>) => ReactNode
   // 把表单的值和分页数据转换成请求参数
-  transformArg?: (page: number, size: number, values: Values) => unknown
+  transformArg?: (page: number, size: number, values: Values | undefined) => unknown
   // 当请求的返回值不满足时进行转换
   transformResponse?: (response: Response) => ListResponse<Item>
   afterSuccess?: (response: ListResponse<Item>, action?: QueryListAction) => void
@@ -56,33 +57,29 @@ const QueryList = <Item extends object, Values extends object | undefined, Respo
   } = props
   const { accessible, isValidating } = usePermission(code, { isGlobalNS })
   const [form] = Form.useForm<Values>()
-  const { payloadMap } = useQueryListStore()
   const action = useRef<QueryListAction>()
-  const trigger = useQueryListTrigger()
   const t = useTranslation()
   const { game } = useGameStore()
+  const mutate = useQueryListMutate()
+  const [page, setPage] = useState(1)
+  const [size, setSize] = useState(10)
+  const [formValues, setFormValues] = useState<Values>()
+  const [isValid, setIsValid] = useState(false)
+  const params = transformArg?.(page, size, formValues) ?? {
+    ...formValues,
+    page,
+    size,
+  }
 
-  const internalTrigger = useCallback(
-    (...params: Parameters<typeof trigger> extends [infer _, ...infer Rest] ? Rest : never) => {
-      trigger(url, ...params)
-    },
-    [trigger, url],
-  )
-
-  const payload = payloadMap.get(url)
+  const parsed = qs.parseUrl(url)
+  const queryParams = Object.assign({}, parsed.query, params)
+  const queryString = qs.stringify(queryParams)
+  const swrKey = isValid ? `${parsed.url}?${queryString}` : null
 
   const { data, isLoading } = useSWR(
-    { url, payload },
-    async arg => {
-      const { page = 1, size = 10, values } = arg.payload ?? {}
-
-      const params = transformArg?.(page, size, values) ?? {
-        ...values,
-        page,
-        size,
-      }
-
-      const response = await request<Response>(arg.url, { headers, params, isGlobalNS })
+    swrKey,
+    async key => {
+      const response = await request<Response>(key, { headers, isGlobalNS })
       const list = transformResponse?.(response.data) ?? (response.data as ListResponse<Item>)
       afterSuccess?.(list, action.current)
       action.current = undefined
@@ -90,7 +87,6 @@ const QueryList = <Item extends object, Values extends object | undefined, Respo
     },
     {
       shouldRetryOnError: false,
-      revalidateOnMount: false,
       keepPreviousData: false,
       fallbackData,
     },
@@ -98,41 +94,45 @@ const QueryList = <Item extends object, Values extends object | undefined, Respo
 
   const onPaginationChange = async (currentPage: number, currentSize: number) => {
     action.current = QueryListAction.Jump
-    internalTrigger({
-      page: currentPage,
-      size: currentSize,
-    })
+    setPage(currentPage)
+    setSize(currentSize)
   }
 
   const pagination: TablePaginationConfig = {
     showSizeChanger: true,
     showQuickJumper: true,
-    current: payload?.page,
-    pageSize: payload?.size,
+    current: page,
+    pageSize: size,
     total: data?.total,
     onChange: onPaginationChange,
   }
 
   const onConfirm = async () => {
     action.current = QueryListAction.Confirm
-    const values = await form.validateFields()
-    internalTrigger({
-      page: 1,
-      values,
-    })
+    const values = form.getFieldsValue()
+    setFormValues(values)
+    setPage(1)
+
+    try {
+      await form.validateFields()
+      setIsValid(true)
+    } catch (_) {
+      setIsValid(false)
+    }
   }
 
   const onReset = async () => {
     action.current = QueryListAction.Reset
-
     form.resetFields()
     const values = form.getFieldsValue()
+    setFormValues(values)
+    setPage(1)
 
     try {
       await form.validateFields()
-      internalTrigger({ page: 1, values })
+      setIsValid(true)
     } catch (_) {
-      internalTrigger({ page: 1, values }, fallbackData, { revalidate: false })
+      setIsValid(false)
     }
   }
 
@@ -140,18 +140,36 @@ const QueryList = <Item extends object, Values extends object | undefined, Respo
     const init = async () => {
       if (accessible) {
         action.current = QueryListAction.Init
+        form.resetFields()
+        const values = form.getFieldsValue()
+        setFormValues(values)
+        setPage(1)
+
         try {
-          const values = await form.validateFields()
-          internalTrigger({ values }, data, { revalidate: true })
+          await form.validateFields()
+          mutate(url, { page: 1 }, undefined, { revalidate: true })
+          setIsValid(true)
         } catch (_) {
           form.resetFields()
+          mutate(url, { page: 1 }, undefined, { revalidate: false })
+          setIsValid(false)
         }
       }
     }
 
     init()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [accessible, form, game])
+  }, [accessible, url, form, game])
+
+  useEffect(() => {
+    useQueryListStore.setState(prev => ({
+      cacheMap: new Map(prev.cacheMap).set(url, {
+        swrKey,
+        setPage,
+        setSize,
+      }),
+    }))
+  }, [swrKey, url])
 
   if (isValidating) {
     return (
@@ -160,7 +178,7 @@ const QueryList = <Item extends object, Values extends object | undefined, Respo
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
-          height: 200,
+          height: 300,
         }}
       />
     )

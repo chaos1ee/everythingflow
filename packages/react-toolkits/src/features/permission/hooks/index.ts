@@ -23,18 +23,18 @@ export function useAllRoles() {
 }
 
 export function useRole(name: string) {
-  const { usePermissionV2 } = useToolkitsContext()
+  const { usePermissionApiV2 } = useToolkitsContext()
   return useSWR<RoleV1 | RoleV2>([
-    `/api/usystem/role/${usePermissionV2 ? 'infoV2' : 'info'}?name=${name}`,
+    `/api/usystem/role/${usePermissionApiV2 ? 'infoV2' : 'info'}?name=${name}`,
     { isGlobalNS: true },
   ])
 }
 
 export function useCreateRole() {
-  const { usePermissionV2 } = useToolkitsContext()
+  const { usePermissionApiV2 } = useToolkitsContext()
 
   return useSWRMutation(
-    usePermissionV2 ? '/api/usystem/role/createV2' : '/api/usystem/role/create',
+    usePermissionApiV2 ? '/api/usystem/role/createV2' : '/api/usystem/role/create',
     (
       url: string,
       {
@@ -52,10 +52,10 @@ export function useCreateRole() {
 }
 
 export function useUpdateRole() {
-  const { usePermissionV2 } = useToolkitsContext()
+  const { usePermissionApiV2 } = useToolkitsContext()
 
   return useSWRMutation(
-    usePermissionV2 ? '/api/usystem/role/updateV2' : '/api/usystem/role/update',
+    usePermissionApiV2 ? '/api/usystem/role/updateV2' : '/api/usystem/role/update',
     (
       url: string,
       {

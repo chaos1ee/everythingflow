@@ -1,6 +1,6 @@
 import type { MenuProps } from 'antd'
 import { App, Button, Card, Col, Divider, Dropdown, Form, Input, Row, Space } from 'antd'
-import { Highlight, PermissionButton, QueryList, useFormModal, useQueryListTrigger } from 'react-toolkits'
+import { Highlight, PermissionButton, QueryList, useFormModal, useQueryListMutate } from 'react-toolkits'
 import type { ColumnsType } from 'antd/es/table'
 import type { VersionListItem } from '@/features/table'
 import {
@@ -19,7 +19,7 @@ const url = '/api/version/list'
 
 const useCreateModal = () => {
   const create = useCreateVersion()
-  const trigger = useQueryListTrigger()
+  const mutate = useQueryListMutate()
 
   return useFormModal<{ name: string; comment?: string; parent_version?: string }>({
     title: '创建版本',
@@ -39,7 +39,7 @@ const useCreateModal = () => {
     ),
     async onConfirm(values) {
       await create.trigger(values)
-      trigger(url, { page: 1 })
+      mutate(url, { page: 1 })
     },
   })
 }
@@ -80,7 +80,7 @@ const useMergeModal = () => {
 const VersionList = () => {
   const { modal } = App.useApp()
   const remove = useRemoveVersion()
-  const trigger = useQueryListTrigger()
+  const mutate = useQueryListMutate()
 
   const { showModal: showCreateModal, Modal: CreateModal } = useCreateModal()
   const { showModal: showUploadModal, Modal: UploadModal } = useUploadTableModal()
@@ -100,7 +100,7 @@ const VersionList = () => {
         ),
         onOk: async () => {
           await remove.trigger(record.id)
-          trigger<VersionListItem>(
+          mutate<VersionListItem>(
             url,
             undefined,
             prev =>
@@ -114,7 +114,7 @@ const VersionList = () => {
         },
       })
     },
-    [modal, trigger, remove],
+    [modal, mutate, remove],
   )
 
   const columns: ColumnsType<VersionListItem> = [

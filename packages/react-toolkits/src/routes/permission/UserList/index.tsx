@@ -5,12 +5,13 @@ import type { TableColumnsType } from 'antd'
 import { App, Card, Col, Form, Input, Row, Select, Space, Tag } from 'antd'
 import type { FC } from 'react'
 import { Link } from 'react-router-dom'
-import { useQueryListTrigger } from '@/stores/queryList'
+import { useQueryListMutate } from '@/stores/queryList'
 import { useFormModal } from '@/components/FormModal'
 import PermissionButton from '@/components/PermissionButton'
 import Highlight from '@/components/Highlight'
 import QueryList from '@/components/QueryList'
 import { useTranslation } from '@/utils/i18n'
+import { produce } from 'immer'
 
 const { Option } = Select
 
@@ -20,7 +21,7 @@ function useCreatingUserModal() {
   const { message } = App.useApp()
   const create = useCreateUser()
   const { data: roles, isLoading } = useAllRoles()
-  const trigger = useQueryListTrigger()
+  const mutate = useQueryListMutate()
   const t = useTranslation()
 
   return useFormModal<{ id: string; name: string; roles: string[] }>({
@@ -28,12 +29,8 @@ function useCreatingUserModal() {
     labelCol: { flex: '80px' },
     content: (
       <>
-        <Form.Item noStyle shouldUpdate={(prevValues, currentValue) => prevValues.type !== currentValue.type}>
-          {({ getFieldValue }) => (
-            <Form.Item label={t('name')} name="name" rules={[{ required: true }]}>
-              <Input disabled={getFieldValue('id')} />
-            </Form.Item>
-          )}
+        <Form.Item label={t('name')} name="name" rules={[{ required: true }]}>
+          <Input />
         </Form.Item>
         <Form.Item label={t('role')} name="roles">
           <Select allowClear mode="multiple" loading={isLoading}>
@@ -48,7 +45,7 @@ function useCreatingUserModal() {
     ),
     async onConfirm(values) {
       await create.trigger(values)
-      trigger(url, { page: 1 })
+      mutate(url, { page: 1 })
       message.success(t('UserList.createSuccessfully'))
     },
   })
@@ -58,7 +55,7 @@ function useUpdatingUserModal() {
   const { message } = App.useApp()
   const update = useUpdateUser()
   const { data: roles, isLoading } = useAllRoles()
-  const trigger = useQueryListTrigger()
+  const mutate = useQueryListMutate()
   const t = useTranslation()
 
   return useFormModal<{ id: string; name: string; roles: string[] }>({
@@ -69,12 +66,8 @@ function useUpdatingUserModal() {
         <Form.Item hidden name="id">
           <Input />
         </Form.Item>
-        <Form.Item noStyle shouldUpdate={(prevValues, currentValue) => prevValues.type !== currentValue.type}>
-          {({ getFieldValue }) => (
-            <Form.Item label={t('name')} name="name" rules={[{ required: true }]}>
-              <Input disabled={getFieldValue('id')} />
-            </Form.Item>
-          )}
+        <Form.Item label={t('name')} name="name" rules={[{ required: true }]}>
+          <Input readOnly />
         </Form.Item>
         <Form.Item label={t('role')} name="roles">
           <Select allowClear mode="multiple" loading={isLoading}>
@@ -89,7 +82,19 @@ function useUpdatingUserModal() {
     ),
     async onConfirm(values) {
       await update.trigger(values)
-      trigger(url)
+      mutate(
+        url,
+        undefined,
+        prev =>
+          produce(prev, draft => {
+            const match = draft?.list?.find(item => item.id === values.id)
+
+            if (match) {
+              match.roles = values.roles
+            }
+          }),
+        { revalidate: false },
+      )
       message.success(t('UserList.updateSuccessfully'))
     },
   })
@@ -98,7 +103,7 @@ function useUpdatingUserModal() {
 const UserList: FC = () => {
   const { modal, message } = App.useApp()
   const remove = useRemoveUser()
-  const trigger = useQueryListTrigger()
+  const mutate = useQueryListMutate()
   const { showModal: showCreatingModal, Modal: CreatingModal } = useCreatingUserModal()
   const { showModal: showUpdatingModal, Modal: UpdatingModal } = useUpdatingUserModal()
   const t = useTranslation()
@@ -182,7 +187,14 @@ const UserList: FC = () => {
                     id: value.id,
                     name: value.name,
                   })
-                  trigger(url, { page: 1 })
+                  mutate(url, undefined, prev => {
+                    return produce(prev, draft => {
+                      const index = draft?.list?.findIndex(item => item.id === value.id)
+                      if (index) {
+                        draft?.list?.splice(index, 1)
+                      }
+                    })
+                  })
                   message.success(t('UserList.deleteSuccessfully'))
                 },
               })

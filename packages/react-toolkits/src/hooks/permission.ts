@@ -15,10 +15,10 @@ export function usePermissions(
     suspense?: boolean
   },
 ) {
-  const { usePermissionV2 } = useToolkitsContext()
+  const { usePermissionApiV2 } = useToolkitsContext()
 
   const { data, isLoading } = useSWR(
-    codes.length > 0 ? [usePermissionV2 ? '/api/usystem/user/checkV2' : '/api/usystem/user/check', codes] : null,
+    codes.length > 0 ? [usePermissionApiV2 ? '/api/usystem/user/checkV2' : '/api/usystem/user/check', codes] : null,
     ([url]) =>
       request<PermissionCheckResult>(url, {
         method: 'post',
@@ -47,7 +47,6 @@ export function usePermissions(
       }),
     {
       suspense: opts?.suspense,
-      revalidateOnFocus: true,
       shouldRetryOnError: false,
     },
   )

@@ -48,11 +48,11 @@ export function useValidateToken() {
   const navigate = useNavigate()
   const { clearToken } = useTokenStore()
   const [validated, setValidated] = useState(false)
-  const { usePermissionV2 } = useToolkitsContext()
+  const { usePermissionApiV2 } = useToolkitsContext()
 
   useSWRImmutable(
     !validated && location.pathname !== '/login'
-      ? usePermissionV2
+      ? usePermissionApiV2
         ? '/api/usystem/user/checkV2'
         : '/api/usystem/user/check'
       : null,

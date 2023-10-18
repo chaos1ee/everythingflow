@@ -45,6 +45,7 @@
     "antd": "^5.7.3",
     "dayjs": "^1.11.9",
     "events": "^3.3.0",
+    "immer": "^10.0.2",
     "jwt-decode": "^3.1.2",
     "lodash-es": "^4.17.21",
     "query-string": "^8.1.0",
