@@ -147,7 +147,7 @@ const QueryList = <Item extends object, Values extends object | undefined, Respo
 
         try {
           await form.validateFields()
-          mutate(url, { page: 1 })
+          mutate(url, { page: 1 }, prev => prev, { revalidate: true })
           setIsValid(true)
         } catch (_) {
           form.resetFields()
