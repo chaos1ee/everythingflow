@@ -1,5 +1,15 @@
 # react-toolkits
 
+## 0.3.21
+
+### Patch Changes
+
+- 6d92622: refactor: rename ContextProvider api
+- 639b0db: refactor: use new swr key in QueryList component
+- c3d640b: feat: merge queries in url and params
+- 639b0db: refactor: new QueryList swr key
+- d26afc9: refactor: change game change callback
+
 ## 0.3.20
 
 ### Patch Changes
