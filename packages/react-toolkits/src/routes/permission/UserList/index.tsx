@@ -5,7 +5,7 @@ import type { TableColumnsType } from 'antd'
 import { App, Card, Col, Form, Input, Row, Select, Space, Tag } from 'antd'
 import type { FC } from 'react'
 import { Link } from 'react-router-dom'
-import { useQueryListMutate } from '@/stores/queryList'
+import { useQueryListStore } from '@/stores/queryList'
 import { useFormModal } from '@/components/FormModal'
 import PermissionButton from '@/components/PermissionButton'
 import Highlight from '@/components/Highlight'
@@ -21,7 +21,7 @@ function useCreatingUserModal() {
   const { message } = App.useApp()
   const create = useCreateUser()
   const { data: roles, isLoading } = useAllRoles()
-  const mutate = useQueryListMutate()
+  const { mutate } = useQueryListStore()
   const t = useTranslation()
 
   return useFormModal<{ id: string; name: string; roles: string[] }>({
@@ -55,7 +55,7 @@ function useUpdatingUserModal() {
   const { message } = App.useApp()
   const update = useUpdateUser()
   const { data: roles, isLoading } = useAllRoles()
-  const mutate = useQueryListMutate()
+  const { mutate } = useQueryListStore()
   const t = useTranslation()
 
   return useFormModal<{ id: string; name: string; roles: string[] }>({
@@ -103,7 +103,7 @@ function useUpdatingUserModal() {
 const UserList: FC = () => {
   const { modal, message } = App.useApp()
   const remove = useRemoveUser()
-  const mutate = useQueryListMutate()
+  const { mutate } = useQueryListStore()
   const { showModal: showCreatingModal, Modal: CreatingModal } = useCreatingUserModal()
   const { showModal: showUpdatingModal, Modal: UpdatingModal } = useUpdatingUserModal()
   const t = useTranslation()

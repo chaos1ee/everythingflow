@@ -4,7 +4,6 @@ import { UsergroupAddOutlined } from '@ant-design/icons'
 import type { TableColumnsType } from 'antd'
 import { App, Card, Form, Input, Space } from 'antd'
 import { Link } from 'react-router-dom'
-import { useQueryListMutate } from '@/stores/queryList'
 import { useFormModal } from '@/components/FormModal'
 import { usePermission } from '@/hooks/permission'
 import { useToolkitsContext } from '@/components/ContextProvider'
@@ -14,12 +13,13 @@ import Highlight from '@/components/Highlight'
 import QueryList from '@/components/QueryList'
 import { useTranslation } from '@/utils/i18n'
 import { produce } from 'immer'
+import { useQueryListStore } from '@/stores/queryList'
 
 const url = '/api/usystem/role/list'
 
 const useCreatingUserModal = () => {
   const { message } = App.useApp()
-  const mutate = useQueryListMutate()
+  const { mutate } = useQueryListStore()
   const create = useCreateRole()
   const t = useTranslation()
 
@@ -55,7 +55,7 @@ const useCreatingUserModal = () => {
 
 const useUpdatingRoleModal = () => {
   const { message } = App.useApp()
-  const mutate = useQueryListMutate()
+  const { mutate } = useQueryListStore()
   const update = useUpdateRole()
   const t = useTranslation()
 
@@ -115,7 +115,7 @@ const RoleList = () => {
   const { modal, message } = App.useApp()
   const { usePermissionApiV2 } = useToolkitsContext()
   const remove = useRemoveRole()
-  const mutate = useQueryListMutate()
+  const { mutate } = useQueryListStore()
   const { showModal: showCreatingModal, Modal: CreatingModal } = useCreatingUserModal()
   const { showModal: showUpdatingModal, Modal: UpdatingModal } = useUpdatingRoleModal()
   const t = useTranslation()
