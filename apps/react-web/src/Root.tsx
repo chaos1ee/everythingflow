@@ -35,7 +35,6 @@ const Root: FC = () => {
     <SWRConfig
       value={{
         use: [logger],
-        refreshInterval: 5000,
         shouldRetryOnError: false,
         revalidateOnFocus: false,
         onError: error => {

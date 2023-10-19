@@ -48,8 +48,8 @@ export const useQueryListStore = create<QueryListState>((_set, get) => ({
       ) {
         mutate(swrKey, data, opts)
       } else {
-        setPage(payload.page ?? query.page ? Number(query.page) : 1)
-        setSize(payload.size ?? query.size ? Number(query.size) : 10)
+        setPage(payload.page ?? (query.page ? Number(query.page) : 1))
+        setSize(payload.size ?? (query.size ? Number(query.size) : 10))
       }
     } else {
       mutate(swrKey, data, opts)
