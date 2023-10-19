@@ -1,5 +1,12 @@
 # react-toolkits
 
+## 0.3.24
+
+### Patch Changes
+
+- 34b3bd1: fix: game should not to be null
+- 55755e5: refactor: remove useQueryListMutate hook
+
 ## 0.3.23
 
 ### Patch Changes
