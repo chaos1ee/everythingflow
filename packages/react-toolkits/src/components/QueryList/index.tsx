@@ -10,7 +10,7 @@ import { usePermission } from '@/hooks/permission'
 import { request } from '@/utils/request'
 import useSWR from 'swr'
 import qs from 'query-string'
-import { useQueryListMutate, useQueryListStore } from '@/stores/queryList'
+import { useQueryListStore } from '@/stores/queryList'
 import { useGameStore } from '@/components/GameSelect'
 
 export enum QueryListAction {
@@ -55,12 +55,15 @@ const QueryList = <Item extends object, Values extends object | undefined, Respo
     afterSuccess,
     ...tableProps
   } = props
-  const { accessible, isValidating } = usePermission(code, { isGlobalNS })
+  const { accessible, isValidating: isPermissionValidating } = usePermission(code, { isGlobalNS })
   const [form] = Form.useForm<Values>()
   const action = useRef<QueryListAction>()
   const t = useTranslation()
+  const { mutate } = useQueryListStore()
+  const _mutate = (...args: Parameters<typeof mutate> extends [infer _, ...infer Rest] ? Rest : never) =>
+    mutate(url, ...args)
+
   const { game } = useGameStore()
-  const mutate = useQueryListMutate()
   const [page, setPage] = useState(1)
   const [size, setSize] = useState(10)
   const [formValues, setFormValues] = useState<Values>()
@@ -76,7 +79,7 @@ const QueryList = <Item extends object, Values extends object | undefined, Respo
   const queryString = qs.stringify(queryParams)
   const swrKey = isValid ? `${parsed.url}?${queryString}` : null
 
-  const { data, isLoading } = useSWR(
+  const { data, isLoading, isValidating } = useSWR(
     swrKey,
     async key => {
       const response = await request<Response>(key, { headers, isGlobalNS })
@@ -87,15 +90,13 @@ const QueryList = <Item extends object, Values extends object | undefined, Respo
     },
     {
       shouldRetryOnError: false,
-      keepPreviousData: false,
       fallbackData,
     },
   )
 
   const onPaginationChange = async (currentPage: number, currentSize: number) => {
     action.current = QueryListAction.Jump
-    setPage(currentPage)
-    setSize(currentSize)
+    _mutate({ page: currentPage, size: currentSize })
   }
 
   const pagination: TablePaginationConfig = {
@@ -109,51 +110,43 @@ const QueryList = <Item extends object, Values extends object | undefined, Respo
 
   const onConfirm = async () => {
     action.current = QueryListAction.Confirm
-    const values = form.getFieldsValue()
-    setFormValues(values)
-    setPage(1)
+    setFormValues(form.getFieldsValue())
 
     try {
       await form.validateFields()
+      _mutate({ page: 1 }, undefined, { revalidate: true })
       setIsValid(true)
     } catch (_) {
+      _mutate({ page: 1 }, undefined, { revalidate: false })
       setIsValid(false)
     }
   }
 
-  const onReset = async () => {
-    action.current = QueryListAction.Reset
+  const refetch = async () => {
     form.resetFields()
-    const values = form.getFieldsValue()
-    setFormValues(values)
-    setPage(1)
+    setFormValues(form.getFieldsValue())
 
     try {
       await form.validateFields()
+      _mutate({ page: 1 }, undefined, { revalidate: true })
       setIsValid(true)
     } catch (_) {
+      form.resetFields()
+      _mutate({ page: 1 }, undefined, { revalidate: false })
       setIsValid(false)
     }
+  }
+
+  const onReset = () => {
+    action.current = QueryListAction.Reset
+    refetch()
   }
 
   useEffect(() => {
-    const init = async () => {
+    const init = () => {
       if (accessible) {
         action.current = QueryListAction.Init
-        form.resetFields()
-        const values = form.getFieldsValue()
-        setFormValues(values)
-        setPage(1)
-
-        try {
-          await form.validateFields()
-          mutate(url, { page: 1 }, prev => prev, { revalidate: true })
-          setIsValid(true)
-        } catch (_) {
-          form.resetFields()
-          mutate(url, { page: 1 }, undefined, { revalidate: false })
-          setIsValid(false)
-        }
+        refetch()
       }
     }
 
@@ -171,7 +164,7 @@ const QueryList = <Item extends object, Values extends object | undefined, Respo
     }))
   }, [swrKey, url])
 
-  if (isValidating) {
+  if (isPermissionValidating) {
     return (
       <Spin
         style={{
@@ -195,7 +188,7 @@ const QueryList = <Item extends object, Values extends object | undefined, Respo
           {renderForm(form)}
         </FilterFormWrapper>
       )}
-      <Table {...tableProps} dataSource={data?.list} loading={isLoading} pagination={pagination} />
+      <Table {...tableProps} dataSource={data?.list} loading={isLoading || isValidating} pagination={pagination} />
     </>
   )
 }

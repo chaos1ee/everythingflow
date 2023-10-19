@@ -1,5 +1,5 @@
 import { Select, Space, Typography } from 'antd'
-import { useCallback, useEffect, useMemo } from 'react'
+import { useEffect } from 'react'
 import useSWRImmutable from 'swr/immutable'
 import { create } from 'zustand'
 import { createJSONStorage, persist } from 'zustand/middleware'
@@ -61,50 +61,40 @@ const GameSelect = () => {
   const { games, isLoading } = useGames()
   const { mutate } = useSWRConfig()
 
-  const options = useMemo(
-    () =>
-      (games ?? [])
-        ?.filter(item => !gameFilter || gameFilter(item))
-        ?.map(item => ({
-          label: item.name,
-          value: item.id,
-        })),
-    [games, gameFilter],
-  )
+  const options = (games ?? [])
+    ?.filter(item => !gameFilter || gameFilter(item))
+    ?.map(item => ({
+      label: item.name,
+      value: item.id,
+    }))
 
-  const clearCache = useCallback(() => {
-    mutate(
-      key => {
-        if (typeof key === 'string') {
-          if (key.startsWith('/api/usystem/game/all')) {
-            return false
-          }
-          // 不更新 key 中包含查询参数 page 和 size（QueryList 组件内列表的请求）的缓存
-          const { query } = qs.parseUrl(key)
-          if (key.startsWith('/api') && query.page && query.size) {
-            return false
-          }
+  const clearCache = () => {
+    mutate(key => {
+      if (typeof key === 'string') {
+        if (key.startsWith('/api/usystem/game/all')) {
+          return false
         }
-
-        return true
-      },
-      prev => prev,
-    )
-  }, [mutate])
-
-  const onGameChange = useCallback(
-    async (id: string) => {
-      const matchGame = (games ?? []).find(item => item.id === id)
-      if (matchGame) {
-        setGame(matchGame)
-        clearCache()
+        // 不更新 key 中包含查询参数 page 和 size（QueryList 组件内列表的请求）的缓存
+        const { query } = qs.parseUrl(key)
+        if (key.startsWith('/api') && query.page && query.size) {
+          return false
+        }
       }
-    },
-    [games, setGame, clearCache],
-  )
+
+      return true
+    })
+  }
+
+  const onGameChange = async (id: string) => {
+    const matchGame = (games ?? []).find(item => item.id === id)
+    if (matchGame) {
+      setGame(matchGame)
+      clearCache()
+    }
+  }
 
   useEffect(() => {
-    if (!isLoading && (options.length === 0 || options.every(item => item.value !== game?.id))) {
+    if (!isLoading && (options.length === 0 || !options.some(item => item.value === game?.id))) {
       setGame(null)
     }
   }, [isLoading, game, options, setGame])

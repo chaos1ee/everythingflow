@@ -1,5 +1,5 @@
 import { Card, Col, Form, Input, Row } from 'antd'
-import { QueryList, useQueryListMutate } from 'react-toolkits'
+import { QueryList, useQueryListStore } from 'react-toolkits'
 import type { ColumnsType } from 'antd/es/table'
 import type { TableListItem } from '@/features/table'
 
@@ -11,7 +11,7 @@ interface FormValues {
 const url = '/api/tables?foo=123'
 
 const TableList = () => {
-  const mutate = useQueryListMutate()
+  const { mutate } = useQueryListStore()
 
   const columns: ColumnsType<TableListItem> = [
     {

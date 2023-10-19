@@ -1,6 +1,6 @@
 import type { MenuProps } from 'antd'
 import { App, Button, Card, Col, Divider, Dropdown, Form, Input, Row, Space } from 'antd'
-import { Highlight, PermissionButton, QueryList, useFormModal, useQueryListMutate } from 'react-toolkits'
+import { Highlight, PermissionButton, QueryList, useFormModal, useQueryListStore } from 'react-toolkits'
 import type { ColumnsType } from 'antd/es/table'
 import type { VersionListItem } from '@/features/table'
 import {
@@ -19,7 +19,7 @@ const url = '/api/version/list'
 
 const useCreateModal = () => {
   const create = useCreateVersion()
-  const mutate = useQueryListMutate()
+  const { mutate } = useQueryListStore()
 
   return useFormModal<{ name: string; comment?: string; parent_version?: string }>({
     title: '创建版本',
@@ -80,7 +80,7 @@ const useMergeModal = () => {
 const VersionList = () => {
   const { modal } = App.useApp()
   const remove = useRemoveVersion()
-  const mutate = useQueryListMutate()
+  const { mutate } = useQueryListStore()
 
   const { showModal: showCreateModal, Modal: CreateModal } = useCreateModal()
   const { showModal: showUploadModal, Modal: UploadModal } = useUploadTableModal()

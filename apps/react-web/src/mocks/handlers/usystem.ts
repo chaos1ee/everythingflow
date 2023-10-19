@@ -57,12 +57,17 @@ const handlers = [
       name: randFullName(),
     })),
   ),
-  listRequest('/api/usystem/user/list', () => ({
-    id: randNumber(),
-    name: randFullName(),
-    Ctime: datetime(),
-    roles: randomArray({ min: 0, max: 4 }).map(() => randText()),
-  })),
+  listRequest(
+    '/api/usystem/user/list',
+    () => ({
+      id: randNumber(),
+      name: randFullName(),
+      Ctime: datetime(),
+      roles: randomArray({ min: 0, max: 4 }).map(() => randText()),
+    }),
+    RESTMethods.GET,
+    delay(2000),
+  ),
   listRequest('/api/usystem/role/list', () => ({
     id: randNumber(),
     name: randFullName(),

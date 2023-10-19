@@ -1,9 +1,28 @@
 /* eslint-disable camelcase */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import type { FC } from 'react'
 import { App } from 'antd'
 import { RequestError, useTokenStore, useValidateToken } from 'react-toolkits'
 import { Outlet, useNavigate } from 'react-router-dom'
+import type { BareFetcher, Key, Middleware, SWRConfiguration } from 'swr'
 import { SWRConfig } from 'swr'
+import type { defaultConfig } from 'swr/_internal'
+
+const logger: Middleware =
+  useSWRNext =>
+  <Data = any, Error = any>(
+    key: Key,
+    fetcher: BareFetcher<Data> | null,
+    config: typeof defaultConfig & SWRConfiguration<Data, Error, BareFetcher<Data>>,
+  ) => {
+    // 将日志记录器添加到原始 fetcher。
+    const extendedFetcher = (...args: any[]) => {
+      console.log('SWR Request:', key)
+      return fetcher?.(...args)
+    }
+
+    return useSWRNext(key, process.env.NODE_ENV === 'development' ? extendedFetcher : fetcher, config)
+  }
 
 const Root: FC = () => {
   useValidateToken()
@@ -15,6 +34,7 @@ const Root: FC = () => {
   return (
     <SWRConfig
       value={{
+        use: [logger],
         shouldRetryOnError: false,
         revalidateOnFocus: false,
         onError: error => {
