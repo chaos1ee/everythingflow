@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.3.25
+
+### Patch Changes
+
+- c078f70: fix: maximum update depth exceeded
+
 ## 0.3.24
 
 ### Patch Changes
