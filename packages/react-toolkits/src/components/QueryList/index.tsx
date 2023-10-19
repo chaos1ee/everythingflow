@@ -55,7 +55,7 @@ const QueryList = <Item extends object, Values extends object | undefined, Respo
     afterSuccess,
     ...tableProps
   } = props
-  const { accessible, isValidating: isPermissionValidating } = usePermission(code, { isGlobalNS })
+  const { accessible, isValidating } = usePermission(code, { isGlobalNS })
   const [form] = Form.useForm<Values>()
   const action = useRef<QueryListAction>()
   const t = useTranslation()
@@ -79,7 +79,7 @@ const QueryList = <Item extends object, Values extends object | undefined, Respo
   const queryString = qs.stringify(queryParams)
   const swrKey = isValid ? `${parsed.url}?${queryString}` : null
 
-  const { data, isLoading, isValidating } = useSWR(
+  const { data, isLoading } = useSWR(
     swrKey,
     async key => {
       const response = await request<Response>(key, { headers, isGlobalNS })
@@ -164,7 +164,7 @@ const QueryList = <Item extends object, Values extends object | undefined, Respo
     }))
   }, [swrKey, url])
 
-  if (isPermissionValidating) {
+  if (isValidating) {
     return (
       <Spin
         style={{
@@ -188,7 +188,7 @@ const QueryList = <Item extends object, Values extends object | undefined, Respo
           {renderForm(form)}
         </FilterFormWrapper>
       )}
-      <Table {...tableProps} dataSource={data?.list} loading={isLoading || isValidating} pagination={pagination} />
+      <Table {...tableProps} dataSource={data?.list} loading={isLoading} pagination={pagination} />
     </>
   )
 }
