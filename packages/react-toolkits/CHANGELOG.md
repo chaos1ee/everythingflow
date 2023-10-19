@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.3.28
+
+### Patch Changes
+
+- 5616b2e: fix: operator priority error
+
 ## 0.3.27
 
 ### Patch Changes
