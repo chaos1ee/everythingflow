@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.3.27
+
+### Patch Changes
+
+- 3b0180e: feat: replace isValidating with isLoading
+
 ## 0.3.26
 
 ### Patch Changes
