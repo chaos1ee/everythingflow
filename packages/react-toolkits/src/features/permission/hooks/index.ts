@@ -7,27 +7,32 @@ import { useToolkitsContext } from '@/components/ContextProvider'
 import { request } from '@/utils/request'
 
 export function useAllPermissions() {
-  return useSWR<PermissionEnumItem[]>(['/api/usystem/user/allPermssions', { isGlobalNS: true }])
+  return useSWR('/api/usystem/user/allPermssions', url =>
+    request<PermissionEnumItem[]>(url, { isGlobalNS: true }).then(response => response.data),
+  )
 }
 
 export function useAllPermissionsV2() {
-  return useSWR<{
-    game: Game[]
-    permission: PermissionEnumItem[]
-  }>(['/api/usystem/user/allPermissionsV2', { isGlobalNS: true }])
+  return useSWR('/api/usystem/user/allPermissionsV2', url =>
+    request<{
+      game: Game[]
+      permission: PermissionEnumItem[]
+    }>(url, { isGlobalNS: true }).then(response => response.data),
+  )
 }
 
 export function useAllRoles() {
   const { accessible } = usePermission('200005', { isGlobalNS: true })
-  return useSWR<RoleEnumItem[]>(accessible ? ['/api/usystem/role/all', { isGlobalNS: true }] : null)
+  return useSWR(accessible ? '/api/usystem/role/all' : null, url =>
+    request<RoleEnumItem[]>(url, { isGlobalNS: true }).then(response => response.data),
+  )
 }
 
 export function useRole(name: string) {
   const { usePermissionApiV2 } = useToolkitsContext()
-  return useSWR<RoleV1 | RoleV2>([
-    `/api/usystem/role/${usePermissionApiV2 ? 'infoV2' : 'info'}?name=${name}`,
-    { isGlobalNS: true },
-  ])
+  return useSWR(`/api/usystem/role/${usePermissionApiV2 ? 'infoV2' : 'info'}?name=${name}`, (url: string) =>
+    request<RoleV1 | RoleV2>(url, { isGlobalNS: true }).then(response => response.data),
+  )
 }
 
 export function useCreateRole() {

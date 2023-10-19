@@ -104,10 +104,10 @@ const GameSelect = () => {
   )
 
   useEffect(() => {
-    if (options.length === 0 || options.every(item => item.value !== game?.id)) {
+    if (!isLoading && (options.length === 0 || options.every(item => item.value !== game?.id))) {
       setGame(null)
     }
-  }, [game, options, setGame])
+  }, [isLoading, game, options, setGame])
 
   return (
     <Space>

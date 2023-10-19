@@ -37,7 +37,7 @@ const router: any = createBrowserRouter([
             </Layout>
           </ContextProvider>
         ),
-        children: [permissionRoutes],
+        children: [...permissionRoutes],
       },
       // 放在最后，否则会覆盖其他的路由
       baseRoutes,
