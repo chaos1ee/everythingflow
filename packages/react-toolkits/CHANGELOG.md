@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.3.26
+
+### Patch Changes
+
+- fe3888f: fix: pagination number may be NaN
+
 ## 0.3.25
 
 ### Patch Changes
