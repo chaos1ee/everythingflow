@@ -39,16 +39,17 @@ export const useQueryListStore = create<QueryListState>((_set, get) => ({
     if (swrKey === null) return
 
     const parsed = qs.parseUrl(swrKey)
-    const query = parsed.query as { size: string; page: string }
-    const page = +query.page
-    const size = +query.size
+    const query = parsed.query as { size?: string; page?: string }
 
     if (payload) {
-      if ((payload.page === page || !payload.page) && (payload.size === size || !payload.size)) {
+      if (
+        (!payload.page || payload.page === Number(query.page)) &&
+        (!payload.size || payload.size === Number(query.size))
+      ) {
         mutate(swrKey, data, opts)
       } else {
-        setPage(payload.page ?? page)
-        setSize(payload.size ?? size)
+        setPage(payload.page ?? query.page ? Number(query.page) : 1)
+        setSize(payload.size ?? query.size ? Number(query.size) : 10)
       }
     } else {
       mutate(swrKey, data, opts)
