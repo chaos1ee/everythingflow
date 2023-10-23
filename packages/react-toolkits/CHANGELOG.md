@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.3.30
+
+### Patch Changes
+
+- b818404: feat: add "refreshInterval" prop for QueryList component
+
 ## 0.3.29
 
 ### Patch Changes
