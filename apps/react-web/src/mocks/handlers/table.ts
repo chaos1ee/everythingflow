@@ -1,5 +1,5 @@
-import { datetime, listRequest } from '@/utils/mock'
-import { randFullName, randSentence, randUuid, randWord } from '@ngneat/falso'
+import { datetime, listRequest, plainRequest, randomArray } from '@/utils/mock'
+import { randDatabase, randFullName, randSentence, randUuid, randWord } from '@ngneat/falso'
 import type { TableListItem, VersionListItem } from '@/features/table'
 
 const handlers = [
@@ -15,6 +15,13 @@ const handlers = [
     ctime: datetime(),
     auth: randFullName(),
   })),
+  plainRequest(
+    '/api/databases',
+    randomArray({ min: 1, max: 10 }).map(() => ({
+      name: randDatabase(),
+      id: randUuid(),
+    })),
+  ),
 ]
 
 export default handlers

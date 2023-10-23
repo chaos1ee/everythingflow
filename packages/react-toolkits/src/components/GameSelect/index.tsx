@@ -8,8 +8,6 @@ import { useTranslation } from '@/utils/i18n'
 import { useToolkitsContext } from '@/components/ContextProvider'
 import { useTokenStore } from '@/stores/token'
 import { request } from '@/utils/request'
-import { useSWRConfig } from 'swr'
-import qs from 'query-string'
 
 const { Text } = Typography
 
@@ -59,7 +57,6 @@ const GameSelect = () => {
   const { gameFilter } = useToolkitsContext()
   const { game, setGame } = useGameStore()
   const { games, isLoading } = useGames()
-  const { mutate } = useSWRConfig()
 
   const options = useMemo(
     () =>
@@ -72,32 +69,14 @@ const GameSelect = () => {
     [games, gameFilter],
   )
 
-  const clearCache = useCallback(() => {
-    mutate(key => {
-      if (typeof key === 'string') {
-        if (key.startsWith('/api/usystem/game/all')) {
-          return false
-        }
-        // 不更新 key 中包含查询参数 page 和 size（QueryList 组件内列表的请求）的缓存
-        const { query } = qs.parseUrl(key)
-        if (key.startsWith('/api') && query.page && query.size) {
-          return false
-        }
-      }
-
-      return true
-    })
-  }, [mutate])
-
   const onGameChange = useCallback(
     async (id: string) => {
       const matchGame = (games ?? []).find(item => item.id === id)
       if (matchGame) {
         setGame(matchGame)
-        clearCache()
       }
     },
-    [games, setGame, clearCache],
+    [games, setGame],
   )
 
   useEffect(() => {
