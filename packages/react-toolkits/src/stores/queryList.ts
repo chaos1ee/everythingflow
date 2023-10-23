@@ -3,17 +3,10 @@ import { create } from 'zustand'
 import { mutate } from 'swr'
 import type { ListResponse } from '@/types'
 import type { MutatorCallback, MutatorOptions } from 'swr/_internal'
-import type { Dispatch, SetStateAction } from 'react'
-import qs from 'query-string'
-
-interface QueryListCacheValue {
-  swrKey: string | null
-  setPage: Dispatch<SetStateAction<number>>
-  setSize: Dispatch<SetStateAction<number>>
-}
 
 export interface QueryListState {
-  cacheMap: Map<string, QueryListCacheValue>
+  keyMap: Map<string, string | null>
+  paginationMap: Map<string, { page: number; size: number }>
   mutate: <T = any>(
     key: string,
     payload?: Partial<{ page: number; size: number }>,
@@ -22,34 +15,29 @@ export interface QueryListState {
   ) => void
 }
 
-export const useQueryListStore = create<QueryListState>((_set, get) => ({
-  cacheMap: new Map(),
+export const useQueryListStore = create<QueryListState>((set, get) => ({
+  keyMap: new Map(),
+  paginationMap: new Map(),
   mutate: <T = any>(
     key: string,
     payload?: Partial<{ page: number; size: number }>,
     data?: ListResponse<T> | Promise<ListResponse<T>> | MutatorCallback<ListResponse<T>>,
     opts?: MutatorOptions<ListResponse<T>>,
   ) => {
-    const cacheMap = get().cacheMap
-
-    if (!cacheMap.has(key)) return
-
-    const { swrKey, setSize, setPage } = cacheMap.get(key) as QueryListCacheValue
-
-    if (swrKey === null) return
-
-    const parsed = qs.parseUrl(swrKey)
-    const query = parsed.query as { size?: string; page?: string }
+    const { keyMap, paginationMap } = get()
+    const swrKey = keyMap.get(key)
+    const { page = 1, size = 10 } = paginationMap.get(key) ?? {}
 
     if (payload) {
-      if (
-        (!payload.page || payload.page === Number(query.page)) &&
-        (!payload.size || payload.size === Number(query.size))
-      ) {
+      if ((!payload.page || payload.page === page) && (!payload.size || payload.size === size)) {
         mutate(swrKey, data, opts)
       } else {
-        setPage(payload.page ?? (query.page ? Number(query.page) : 1))
-        setSize(payload.size ?? (query.size ? Number(query.size) : 10))
+        set({
+          paginationMap: new Map(paginationMap).set(key, {
+            page: payload.page ?? page,
+            size: payload.size ?? size,
+          }),
+        })
       }
     } else {
       mutate(swrKey, data, opts)

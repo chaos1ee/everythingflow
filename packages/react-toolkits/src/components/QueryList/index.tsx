@@ -8,7 +8,7 @@ import { useTranslation } from '@/utils/i18n'
 import FilterFormWrapper from '@/components/FilterFormWrapper'
 import { usePermission } from '@/hooks/permission'
 import { request } from '@/utils/request'
-import useSWR from 'swr'
+import useSWR, { useSWRConfig } from 'swr'
 import qs from 'query-string'
 import { useQueryListStore } from '@/stores/queryList'
 
@@ -37,7 +37,6 @@ export interface QueryListProps<Item, Values, Response>
   transformResponse?: (response: Response) => ListResponse<Item>
   afterSuccess?: (response: ListResponse<Item>, action?: QueryListAction) => void
   confirmText?: ReactNode
-  refreshInterval?: number
 }
 
 const QueryList = <Item extends object, Values extends object | undefined, Response = ListResponse<Item>>(
@@ -49,36 +48,37 @@ const QueryList = <Item extends object, Values extends object | undefined, Respo
     url,
     headers,
     isGlobalNS,
-    refreshInterval = 0,
     renderForm,
     transformArg,
     transformResponse,
     afterSuccess,
     ...tableProps
   } = props
+  const t = useTranslation()
   const { accessible, isLoading } = usePermission(code, { isGlobalNS })
   const [form] = Form.useForm<Values>()
   const action = useRef<QueryListAction>()
-  const t = useTranslation()
-  const { mutate } = useQueryListStore()
-  const _mutate = useCallback(
-    (...args: Parameters<typeof mutate> extends [infer _, ...infer Rest] ? Rest : never) => mutate(url, ...args),
-    [mutate, url],
-  )
-  const [page, setPage] = useState(1)
-  const [size, setSize] = useState(10)
+  const { mutate, paginationMap, keyMap } = useQueryListStore()
+  const { page = 1, size = 10 } = paginationMap.get(url) ?? {}
   const [formValues, setFormValues] = useState<Values>()
   const [isValid, setIsValid] = useState(false)
+
   const params = transformArg?.(page, size, formValues) ?? {
     ...formValues,
     page,
     size,
   }
 
+  const _mutate = useCallback(
+    (...args: Parameters<typeof mutate> extends [infer _, ...infer Rest] ? Rest : never) => mutate(url, ...args),
+    [mutate, url],
+  )
+
   const parsed = qs.parseUrl(url)
   const queryParams = Object.assign({}, parsed.query, params)
   const queryString = qs.stringify(queryParams)
   const swrKey = isValid ? `${parsed.url}?${queryString}` : null
+  const { refreshInterval } = useSWRConfig()
 
   const {
     data,
@@ -95,7 +95,6 @@ const QueryList = <Item extends object, Values extends object | undefined, Respo
     },
     {
       shouldRetryOnError: false,
-      refreshInterval,
       fallbackData,
     },
   )
@@ -156,14 +155,8 @@ const QueryList = <Item extends object, Values extends object | undefined, Respo
   }, [accessible, url, form, refetch])
 
   useEffect(() => {
-    useQueryListStore.setState(prev => ({
-      cacheMap: new Map(prev.cacheMap).set(url, {
-        swrKey,
-        setPage,
-        setSize,
-      }),
-    }))
-  }, [swrKey, url])
+    keyMap.set(url, swrKey)
+  }, [keyMap, swrKey, url])
 
   if (isLoading) {
     return (
