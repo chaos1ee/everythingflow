@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.3.32
+
+### Patch Changes
+
+- cf5b4d8: refactor: store pagination data in map
+
 ## 0.3.31
 
 ### Patch Changes
