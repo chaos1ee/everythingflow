@@ -1,7 +1,8 @@
-import { Card, Col, Form, Input, Row } from 'antd'
+import { Card, Col, Form, Row, Select } from 'antd'
 import { QueryList, useQueryListStore } from 'react-toolkits'
 import type { ColumnsType } from 'antd/es/table'
 import type { TableListItem } from '@/features/table'
+import { useDatabases } from '@/features/table'
 
 interface FormValues {
   param: number
@@ -12,6 +13,7 @@ const url = '/api/tables?foo=123'
 
 const TableList = () => {
   const { mutate } = useQueryListStore()
+  const { data } = useDatabases()
 
   const columns: ColumnsType<TableListItem> = [
     {
@@ -58,7 +60,10 @@ const TableList = () => {
             <Row gutter={20}>
               <Col>
                 <Form.Item label="名称" name="name" rules={[{ required: true }]}>
-                  <Input />
+                  <Select
+                    style={{ width: '150px' }}
+                    options={data?.map(item => ({ label: item.name, value: item.id }))}
+                  />
                 </Form.Item>
               </Col>
             </Row>

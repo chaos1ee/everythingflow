@@ -1,7 +1,7 @@
 import * as Antd from 'antd'
 import { Divider, Space } from 'antd'
 import type { FC, Key, PropsWithChildren, ReactNode } from 'react'
-import { cloneElement, Suspense } from 'react'
+import { Suspense } from 'react'
 import { Link } from 'react-router-dom'
 import logo from './logo.png'
 import { useToolkitsContext } from '@/components/ContextProvider'
@@ -81,7 +81,7 @@ const Layout: FC<LayoutProps> = props => {
               />
             }
           >
-            {cloneElement(usePermissionApiV2 && !hideGameSelect ? <RequireGame /> : <></>, undefined, children)}
+            {usePermissionApiV2 && !hideGameSelect ? <RequireGame>{children}</RequireGame> : children}
           </Suspense>
         </Content>
       </Antd.Layout>

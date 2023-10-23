@@ -4,6 +4,7 @@ import type { UploadFile } from 'antd'
 import { Button, Form, Input, Select, Upload } from 'antd'
 import { UploadOutlined } from '@ant-design/icons'
 import useSWRImmutable from 'swr/immutable'
+import useSWR from 'swr'
 
 export function useVersions() {
   return useSWRImmutable<{ list: { id: number; name: string; last_version?: number }[] }>({
@@ -150,5 +151,16 @@ export function useMergeVersion() {
         method: 'post',
         body: arg,
       }),
+  )
+}
+
+export function useDatabases() {
+  return useSWR('/api/databases', url =>
+    request<
+      {
+        name: string
+        id: string
+      }[]
+    >(url).then(response => response.data),
   )
 }

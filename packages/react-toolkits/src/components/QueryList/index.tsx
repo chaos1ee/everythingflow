@@ -3,7 +3,7 @@ import type { FormInstance, TablePaginationConfig } from 'antd'
 import { Form, Result, Spin, Table } from 'antd'
 import type { TableProps } from 'antd/es/table'
 import type { ReactNode } from 'react'
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { useTranslation } from '@/utils/i18n'
 import FilterFormWrapper from '@/components/FilterFormWrapper'
 import { usePermission } from '@/hooks/permission'
@@ -11,7 +11,6 @@ import { request } from '@/utils/request'
 import useSWR from 'swr'
 import qs from 'query-string'
 import { useQueryListStore } from '@/stores/queryList'
-import { useGameStore } from '@/components/GameSelect'
 
 export enum QueryListAction {
   Confirm = 'confirm',
@@ -60,10 +59,10 @@ const QueryList = <Item extends object, Values extends object | undefined, Respo
   const action = useRef<QueryListAction>()
   const t = useTranslation()
   const { mutate } = useQueryListStore()
-  const _mutate = (...args: Parameters<typeof mutate> extends [infer _, ...infer Rest] ? Rest : never) =>
-    mutate(url, ...args)
-
-  const { game } = useGameStore()
+  const _mutate = useCallback(
+    (...args: Parameters<typeof mutate> extends [infer _, ...infer Rest] ? Rest : never) => mutate(url, ...args),
+    [mutate, url],
+  )
   const [page, setPage] = useState(1)
   const [size, setSize] = useState(10)
   const [formValues, setFormValues] = useState<Values>()
@@ -122,7 +121,7 @@ const QueryList = <Item extends object, Values extends object | undefined, Respo
     }
   }
 
-  const refetch = async () => {
+  const refetch = useCallback(async () => {
     form.resetFields()
     setFormValues(form.getFieldsValue())
 
@@ -135,7 +134,7 @@ const QueryList = <Item extends object, Values extends object | undefined, Respo
       _mutate({ page: 1 }, undefined, { revalidate: false })
       setIsValid(false)
     }
-  }
+  }, [form, _mutate])
 
   const onReset = () => {
     action.current = QueryListAction.Reset
@@ -143,16 +142,11 @@ const QueryList = <Item extends object, Values extends object | undefined, Respo
   }
 
   useEffect(() => {
-    const init = () => {
-      if (accessible) {
-        action.current = QueryListAction.Init
-        refetch()
-      }
+    if (accessible) {
+      action.current = QueryListAction.Init
+      refetch()
     }
-
-    init()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [accessible, url, form, game])
+  }, [accessible, url, form, refetch])
 
   useEffect(() => {
     useQueryListStore.setState(prev => ({
