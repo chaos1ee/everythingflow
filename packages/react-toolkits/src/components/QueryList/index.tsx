@@ -192,7 +192,7 @@ const QueryList = <Item extends object, Values extends object | undefined, Respo
       <Table
         {...tableProps}
         dataSource={data?.list}
-        loading={refreshInterval === 0 ? isDataLoading : isDataValidating}
+        loading={refreshInterval === 0 ? isDataValidating : isDataLoading}
         pagination={pagination}
       />
     </div>
