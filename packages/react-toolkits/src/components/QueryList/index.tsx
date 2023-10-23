@@ -37,6 +37,7 @@ export interface QueryListProps<Item, Values, Response>
   transformResponse?: (response: Response) => ListResponse<Item>
   afterSuccess?: (response: ListResponse<Item>, action?: QueryListAction) => void
   confirmText?: ReactNode
+  refreshInterval?: number
 }
 
 const QueryList = <Item extends object, Values extends object | undefined, Response = ListResponse<Item>>(
@@ -48,6 +49,7 @@ const QueryList = <Item extends object, Values extends object | undefined, Respo
     url,
     headers,
     isGlobalNS,
+    refreshInterval = 0,
     renderForm,
     transformArg,
     transformResponse,
@@ -78,7 +80,11 @@ const QueryList = <Item extends object, Values extends object | undefined, Respo
   const queryString = qs.stringify(queryParams)
   const swrKey = isValid ? `${parsed.url}?${queryString}` : null
 
-  const { data, isLoading: isDataLoading } = useSWR(
+  const {
+    data,
+    isLoading: isDataLoading,
+    isValidating: isDataValidating,
+  } = useSWR(
     swrKey,
     async key => {
       const response = await request<Response>(key, { headers, isGlobalNS })
@@ -89,6 +95,7 @@ const QueryList = <Item extends object, Values extends object | undefined, Respo
     },
     {
       shouldRetryOnError: false,
+      refreshInterval,
       fallbackData,
     },
   )
@@ -176,14 +183,19 @@ const QueryList = <Item extends object, Values extends object | undefined, Respo
   }
 
   return (
-    <>
+    <div>
       {renderForm && (
         <FilterFormWrapper confirmText={confirmText} onReset={onReset} onConfirm={onConfirm}>
           {renderForm(form)}
         </FilterFormWrapper>
       )}
-      <Table {...tableProps} dataSource={data?.list} loading={isDataLoading} pagination={pagination} />
-    </>
+      <Table
+        {...tableProps}
+        dataSource={data?.list}
+        loading={refreshInterval === 0 ? isDataLoading : isDataValidating}
+        pagination={pagination}
+      />
+    </div>
   )
 }
 
