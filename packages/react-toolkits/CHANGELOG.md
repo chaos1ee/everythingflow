@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.3.31
+
+### Patch Changes
+
+- 2851b4b: fix: typo
+
 ## 0.3.30
 
 ### Patch Changes
