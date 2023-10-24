@@ -14,6 +14,7 @@ const url = '/api/tables?foo=123'
 const TableList = () => {
   const { mutate } = useQueryListStore()
   const { data } = useDatabases()
+  const [form] = Form.useForm<FormValues>()
 
   const columns: ColumnsType<TableListItem> = [
     {
@@ -55,20 +56,23 @@ const TableList = () => {
           const { List, Total } = response
           return { list: List, total: Total }
         }}
-        renderForm={form => (
-          <Form form={form} initialValues={{ type: 1 }}>
-            <Row gutter={20}>
-              <Col>
-                <Form.Item label="名称" name="name" rules={[{ required: true }]}>
-                  <Select
-                    style={{ width: '150px' }}
-                    options={data?.map(item => ({ label: item.name, value: item.id }))}
-                  />
-                </Form.Item>
-              </Col>
-            </Row>
-          </Form>
-        )}
+        form={{
+          instance: form,
+          children: (
+            <Form form={form} initialValues={{ type: 1 }}>
+              <Row gutter={20}>
+                <Col>
+                  <Form.Item label="名称" name="name" rules={[{ required: true }]}>
+                    <Select
+                      style={{ width: '150px' }}
+                      options={data?.map(item => ({ label: item.name, value: item.id }))}
+                    />
+                  </Form.Item>
+                </Col>
+              </Row>
+            </Form>
+          ),
+        }}
       />
     </Card>
   )
