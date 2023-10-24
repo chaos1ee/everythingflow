@@ -1,5 +1,12 @@
 # react-toolkits
 
+## 0.3.33
+
+### Patch Changes
+
+- 0370608: refactor: access form instance from outside of useFormModal hook
+- 0bf188e: refactor: access form instance from outside of QueryList
+
 ## 0.3.32
 
 ### Patch Changes
