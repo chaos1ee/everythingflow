@@ -26,9 +26,8 @@ function useCreatingUserModal() {
 
   return useFormModal<{ id: string; name: string; roles: string[] }>({
     title: t('UserList.createTitle'),
-    labelCol: { flex: '80px' },
-    content: (
-      <>
+    content: form => (
+      <Form form={form} labelCol={{ flex: '80px' }}>
         <Form.Item label={t('name')} name="name" rules={[{ required: true }]}>
           <Input />
         </Form.Item>
@@ -41,7 +40,7 @@ function useCreatingUserModal() {
             ))}
           </Select>
         </Form.Item>
-      </>
+      </Form>
     ),
     async onConfirm(values) {
       await create.trigger(values)
@@ -60,9 +59,8 @@ function useUpdatingUserModal() {
 
   return useFormModal<{ id: string; name: string; roles: string[] }>({
     title: t('UserList.updateTitle'),
-    labelCol: { flex: '80px' },
-    content: (
-      <>
+    content: form => (
+      <Form form={form} labelCol={{ flex: '80px' }}>
         <Form.Item hidden name="id">
           <Input />
         </Form.Item>
@@ -78,7 +76,7 @@ function useUpdatingUserModal() {
             ))}
           </Select>
         </Form.Item>
-      </>
+      </Form>
     ),
     async onConfirm(values) {
       await update.trigger(values)

@@ -1,6 +1,6 @@
 import type { ListResponse } from '@/types'
 import type { FormInstance, TablePaginationConfig } from 'antd'
-import { Form, Result, Spin, Table } from 'antd'
+import { Result, Spin, Table } from 'antd'
 import type { TableProps } from 'antd/es/table'
 import type { ReactNode } from 'react'
 import { useCallback, useEffect, useRef, useState } from 'react'
@@ -30,13 +30,13 @@ export interface QueryListProps<Item, Values, Response>
   code?: string
   isGlobalNS?: boolean
   headers?: Record<string, string>
-  renderForm?: (form: FormInstance<Values>) => ReactNode
   // 把表单的值和分页数据转换成请求参数
   transformArg?: (page: number, size: number, values: Values | undefined) => unknown
   // 当请求的返回值不满足时进行转换
   transformResponse?: (response: Response) => ListResponse<Item>
   afterSuccess?: (response: ListResponse<Item>, action?: QueryListAction) => void
   confirmText?: ReactNode
+  form?: { instance: FormInstance<Values>; children: ReactNode }
 }
 
 const QueryList = <Item extends object, Values extends object | undefined, Response = ListResponse<Item>>(
@@ -48,15 +48,15 @@ const QueryList = <Item extends object, Values extends object | undefined, Respo
     url,
     headers,
     isGlobalNS,
-    renderForm,
     transformArg,
     transformResponse,
     afterSuccess,
+    form,
     ...tableProps
   } = props
   const t = useTranslation()
+  const { instance, children } = form ?? {}
   const { accessible, isLoading } = usePermission(code, { isGlobalNS })
-  const [form] = Form.useForm<Values>()
   const action = useRef<QueryListAction>()
   const { mutate, paginationMap, keyMap } = useQueryListStore()
   const { page = 1, size = 10 } = paginationMap.get(url) ?? {}
@@ -115,10 +115,10 @@ const QueryList = <Item extends object, Values extends object | undefined, Respo
 
   const onConfirm = async () => {
     action.current = QueryListAction.Confirm
-    setFormValues(form.getFieldsValue())
+    setFormValues(instance?.getFieldsValue())
 
     try {
-      await form.validateFields()
+      await instance?.validateFields()
       _mutate({ page: 1 }, undefined, { revalidate: true })
       setIsValid(true)
     } catch (_) {
@@ -128,19 +128,19 @@ const QueryList = <Item extends object, Values extends object | undefined, Respo
   }
 
   const refetch = useCallback(async () => {
-    form.resetFields()
-    setFormValues(form.getFieldsValue())
+    instance?.resetFields()
+    setFormValues(instance?.getFieldsValue())
 
     try {
-      await form.validateFields()
+      await instance?.validateFields()
       _mutate({ page: 1 }, undefined, { revalidate: true })
       setIsValid(true)
     } catch (_) {
-      form.resetFields()
+      instance?.resetFields()
       _mutate({ page: 1 }, undefined, { revalidate: false })
       setIsValid(false)
     }
-  }, [form, _mutate])
+  }, [instance, _mutate])
 
   const onReset = () => {
     action.current = QueryListAction.Reset
@@ -177,9 +177,9 @@ const QueryList = <Item extends object, Values extends object | undefined, Respo
 
   return (
     <div>
-      {renderForm && (
+      {children && (
         <FilterFormWrapper confirmText={confirmText} onReset={onReset} onConfirm={onConfirm}>
-          {renderForm(form)}
+          {children}
         </FilterFormWrapper>
       )}
       <Table

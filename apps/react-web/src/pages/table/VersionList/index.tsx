@@ -23,9 +23,8 @@ const useCreateModal = () => {
 
   return useFormModal<{ name: string; comment?: string; parent_version?: string }>({
     title: '创建版本',
-    labelCol: { flex: '80px' },
-    content: (
-      <>
+    content: form => (
+      <Form form={form} labelCol={{ flex: '80px' }}>
         <Form.Item label="名称" name="name" rules={[{ required: true }]}>
           <Input />
         </Form.Item>
@@ -35,7 +34,7 @@ const useCreateModal = () => {
         <Form.Item label="继承版本" name="parent_version">
           <VersionSelect />
         </Form.Item>
-      </>
+      </Form>
     ),
     async onConfirm(values) {
       await create.trigger(values)
@@ -50,9 +49,8 @@ const useMergeModal = () => {
 
   return useFormModal<{ source: string; target: string; comment?: string }>({
     title: '合并版本',
-    layout: 'vertical',
-    content: (
-      <>
+    content: form => (
+      <Form form={form} layout="vertical">
         <Row gutter={20}>
           <Col span={12}>
             <Form.Item label="源版本" name="source" rules={[{ required: true }]}>
@@ -68,7 +66,7 @@ const useMergeModal = () => {
         <Form.Item label="备注" name="comment">
           <Input.TextArea rows={2} />
         </Form.Item>
-      </>
+      </Form>
     ),
     async onConfirm(values) {
       await merge.trigger(values)
@@ -90,14 +88,12 @@ const VersionList = () => {
     (record: VersionListItem) => {
       modal.confirm({
         title: '删除版本',
-        content: (
-          <Highlight texts={[record.name]}>
-            确定要删除版本
-            {record.name}
-            {' '}
-            吗？
-          </Highlight>
-        ),
+        content: <Highlight texts={[record.name]}>
+          确定要删除版本
+          {record.name}
+          {' '}
+          吗？
+        </Highlight>,
         onOk: async () => {
           await remove.trigger(record.id)
           mutate<VersionListItem>(

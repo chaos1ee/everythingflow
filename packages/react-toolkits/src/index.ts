@@ -4,7 +4,7 @@ import type { DynamicTagsProps } from '@/components/DynamicTags'
 import DynamicTags from '@/components/DynamicTags'
 import type { FilterFormWrapperProps } from '@/components/FilterFormWrapper'
 import FilterFormWrapper from '@/components/FilterFormWrapper'
-import type { UseFormModalProps } from '@/components/FormModal'
+import type { UseFormModalOptions } from '@/components/FormModal'
 import FormModal, { useFormModal } from '@/components/FormModal'
 import type { Game, GameState } from '@/components/GameSelect'
 import GameSelect, { useGameStore } from '@/components/GameSelect'
@@ -66,7 +66,7 @@ export {
   type Locale,
   type DynamicTagsProps,
   type FilterFormWrapperProps,
-  type UseFormModalProps,
+  type UseFormModalOptions,
   type Game,
   type GameState,
   type HighlightTextsProps,
