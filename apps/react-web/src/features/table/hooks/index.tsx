@@ -90,8 +90,8 @@ export function useUploadTableModal(cb?: VoidFunction) {
     comment?: string
   }>({
     title: '上传表',
-    content: (
-      <>
+    content: form => (
+      <Form form={form}>
         <Form.Item label="版本 ID" name="versionId" rules={[{ required: true }]}>
           <Input readOnly />
         </Form.Item>
@@ -117,7 +117,7 @@ export function useUploadTableModal(cb?: VoidFunction) {
         <Form.Item label="备注" name="comment">
           <Input.TextArea rows={2} />
         </Form.Item>
-      </>
+      </Form>
     ),
     async onConfirm({ versionId, type, fileList, comment }) {
       const formData = new FormData()

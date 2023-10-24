@@ -38,16 +38,15 @@ const useCreatingUserModal = () => {
   }>({
     title: t('RoleList.createTitle'),
     width: '50vw',
-    layout: 'vertical',
-    content: (
-      <>
+    content: form => (
+      <Form form={form} layout="vertical">
         <Form.Item label={t('name')} name="name" rules={[{ required: true }]}>
           <Input addonBefore="role_" />
         </Form.Item>
         <Form.Item name="permissions">
           <PermissionList />
         </Form.Item>
-      </>
+      </Form>
     ),
     onConfirm,
   })
@@ -92,9 +91,8 @@ const useUpdatingRoleModal = () => {
   }>({
     title: t('RoleList.updateTitle'),
     width: '50vw',
-    layout: 'vertical',
-    content: (
-      <>
+    content: form => (
+      <Form form={form}>
         <Form.Item hidden label="ID" name="id">
           <Input />
         </Form.Item>
@@ -104,7 +102,7 @@ const useUpdatingRoleModal = () => {
         <Form.Item name="permissions">
           <PermissionList />
         </Form.Item>
-      </>
+      </Form>
     ),
     onConfirm,
   })

@@ -4,6 +4,7 @@ import { createContext, useContext } from 'react'
 import type { NavMenuItem } from '../NavMenu'
 import type { Locale } from '@/locales'
 import type { Game } from '@/components/GameSelect'
+import { merge } from 'lodash-es'
 
 export interface ContextState {
   title: string
@@ -32,14 +33,8 @@ export function useToolkitsContext() {
 
 const ContextProvider: FC<PropsWithChildren<Partial<ContextState>>> = ({ children, ...props }) => {
   const parentConfig = useToolkitsContext()
-
-  const config = {
-    ...parentConfig,
-    ...props,
-  }
-
+  const config = merge({}, parentConfig ?? contextStore, props)
   contextStore = config
-
   return <ToolkitsContext.Provider value={config}>{children}</ToolkitsContext.Provider>
 }
 

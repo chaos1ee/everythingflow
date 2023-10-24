@@ -12,7 +12,7 @@ import { Link, useLocation } from 'react-router-dom'
 import { useNavStore } from '@/components/NavMenu/store'
 import { useToolkitsContext } from '@/components/ContextProvider'
 import { usePermissions } from '@/hooks/permission'
-import type { Merge } from 'ts-toolbelt/out/Object/Merge'
+import type { Merge } from 'ts-essentials'
 
 // 扩展 antd Menu 的类型，使其支持一些我们想要的自定义字段。
 type MenuItemType2 = Merge<
