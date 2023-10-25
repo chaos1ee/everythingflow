@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.3.35
+
+### Patch Changes
+
+- 450ac93: feat: clear swr cache
+
 ## 0.3.34
 
 ### Patch Changes
