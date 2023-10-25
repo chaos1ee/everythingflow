@@ -60,7 +60,7 @@ export interface FormModalProps<Values extends object>
   form: FormInstance<Values>
   renderFooter?: (form: FormInstance<Values>) => ReactNode
   onCancel?: VoidFunction
-  onConfirm?: (values: Values) => Promise<void>
+  onConfirm?: (values: Values, form: FormInstance<Values>) => Promise<void>
   initialValues?: DeepPartial<Values>
 }
 
@@ -77,7 +77,7 @@ const FormModal = <Values extends object>(props: FormModalProps<Values>) => {
     try {
       setConfirming(true)
       const values = await form.validateFields()
-      await onConfirm?.(values)
+      await onConfirm?.(values, form)
       onCancel?.()
       form.resetFields()
     } finally {
