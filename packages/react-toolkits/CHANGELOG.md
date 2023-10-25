@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.3.34
+
+### Patch Changes
+
+- d40c98d: feat: access form instance in onConfirm callback
+
 ## 0.3.33
 
 ### Patch Changes
