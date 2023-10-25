@@ -27,6 +27,10 @@ const fallbackData = {
 export interface QueryListProps<Item, Values, Response>
   extends Pick<TableProps<Item>, 'columns' | 'rowKey' | 'tableLayout' | 'expandable' | 'rowSelection' | 'bordered'> {
   url: string
+  form?: {
+    instance: FormInstance<Values>
+    children: ReactNode
+  }
   code?: string
   isGlobalNS?: boolean
   headers?: Record<string, string>
@@ -36,22 +40,21 @@ export interface QueryListProps<Item, Values, Response>
   transformResponse?: (response: Response) => ListResponse<Item>
   afterSuccess?: (response: ListResponse<Item>, action?: QueryListAction) => void
   confirmText?: ReactNode
-  form?: { instance: FormInstance<Values>; children: ReactNode }
 }
 
 const QueryList = <Item extends object, Values extends object | undefined, Response = ListResponse<Item>>(
   props: QueryListProps<Item, Values, Response>,
 ) => {
   const {
+    url,
+    form,
     code,
     confirmText,
-    url,
     headers,
     isGlobalNS,
     transformArg,
     transformResponse,
     afterSuccess,
-    form,
     ...tableProps
   } = props
   const t = useTranslation()

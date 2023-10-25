@@ -50,6 +50,7 @@ export function useValidateToken() {
   const [validated, setValidated] = useState(false)
   const { usePermissionApiV2 } = useToolkitsContext()
 
+  // 发送请求验证 token 是否有效，无效则跳转到登录页。
   useSWRImmutable(
     !validated && location.pathname !== '/login'
       ? usePermissionApiV2
