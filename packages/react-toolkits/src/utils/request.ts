@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { pick } from 'lodash-es'
 import { contextStore } from '@/components/ContextProvider'
 import { useGameStore } from '@/components/GameSelect'
 import { useTokenStore } from '@/stores/token'
+import { pick } from 'lodash-es'
 import type { StringifyOptions } from 'query-string'
 import qs from 'query-string'
 
@@ -57,7 +57,7 @@ export async function request<T = any>(url: string, opts?: RequestOptions): Prom
   const token = useTokenStore.getState().token
   headers.set('Authorization', `Bearer ${token}`)
 
-  if (contextStore.usePermissionApiV2) {
+  if (contextStore.getState().usePermissionApiV2) {
     const game = useGameStore.getState().game
 
     if (isGlobalNS) {

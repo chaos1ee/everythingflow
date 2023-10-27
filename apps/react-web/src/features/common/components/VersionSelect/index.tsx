@@ -1,4 +1,4 @@
-import { useVersions } from '@/features/table'
+import { useVersions } from '@/features/common'
 import { Select } from 'antd'
 import type { FC } from 'react'
 

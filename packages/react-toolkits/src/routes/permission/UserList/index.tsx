@@ -1,17 +1,17 @@
+import Highlight from '@/components/Highlight'
+import PermissionButton from '@/components/PermissionButton'
+import QueryList from '@/components/QueryList'
 import type { UserListItem } from '@/features/permission'
 import { useAllRoles, useCreateUser, useRemoveUser, useUpdateUser } from '@/features/permission'
+import { useFormModal } from '@/hooks/formModal'
+import { useQueryListStore } from '@/stores/queryList'
+import { useTranslation } from '@/utils/i18n'
 import { UserAddOutlined } from '@ant-design/icons'
 import type { TableColumnsType } from 'antd'
 import { App, Card, Col, Form, Input, Row, Select, Space, Tag } from 'antd'
+import { produce } from 'immer'
 import type { FC } from 'react'
 import { Link } from 'react-router-dom'
-import { useQueryListStore } from '@/stores/queryList'
-import { useFormModal } from '@/components/FormModal'
-import PermissionButton from '@/components/PermissionButton'
-import Highlight from '@/components/Highlight'
-import QueryList from '@/components/QueryList'
-import { useTranslation } from '@/utils/i18n'
-import { produce } from 'immer'
 
 const { Option } = Select
 
@@ -102,8 +102,8 @@ const UserList: FC = () => {
   const { modal, message } = App.useApp()
   const remove = useRemoveUser()
   const { mutate } = useQueryListStore()
-  const { showModal: showCreatingModal, Modal: CreatingModal } = useCreatingUserModal()
-  const { showModal: showUpdatingModal, Modal: UpdatingModal } = useUpdatingUserModal()
+  const { show: showCreatingModal, contextHolder: creatingContextHolder } = useCreatingUserModal()
+  const { show: showUpdatingModal, contextHolder: updatingContextHolder } = useUpdatingUserModal()
   const t = useTranslation()
 
   const columns: TableColumnsType<UserListItem> = [
@@ -206,38 +206,36 @@ const UserList: FC = () => {
   ]
 
   return (
-    <>
-      <Card
-        title={t('user')}
-        extra={
-          <PermissionButton
-            isGlobalNS
-            type="primary"
-            icon={<UserAddOutlined />}
-            code="100002"
-            onClick={() => {
-              showCreatingModal()
-            }}
-          >
-            {t('UserList.createTitle')}
-          </PermissionButton>
-        }
-      >
-        <QueryList<UserListItem, undefined, { List: UserListItem[]; Total: number }>
+    <Card
+      title={t('user')}
+      extra={
+        <PermissionButton
           isGlobalNS
-          code="100001"
-          url={url}
-          rowKey="id"
-          columns={columns}
-          transformResponse={response => {
-            const { List, Total } = response
-            return { list: List, total: Total }
+          type="primary"
+          icon={<UserAddOutlined />}
+          code="100002"
+          onClick={() => {
+            showCreatingModal()
           }}
-        />
-      </Card>
-      {CreatingModal}
-      {UpdatingModal}
-    </>
+        >
+          {t('UserList.createTitle')}
+        </PermissionButton>
+      }
+    >
+      <QueryList<UserListItem, undefined, { List: UserListItem[]; Total: number }>
+        isGlobalNS
+        code="100001"
+        url={url}
+        rowKey="id"
+        columns={columns}
+        transformResponse={response => {
+          const { List, Total } = response
+          return { list: List, total: Total }
+        }}
+      />
+      {creatingContextHolder}
+      {updatingContextHolder}
+    </Card>
   )
 }
 

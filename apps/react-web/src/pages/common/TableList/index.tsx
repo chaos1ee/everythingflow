@@ -1,8 +1,8 @@
+import type { TableListItem } from '@/features/common'
+import { useDatabases } from '@/features/common'
 import { Card, Col, Form, Row, Select } from 'antd'
-import { QueryList, useQueryListStore } from 'react-toolkits'
 import type { ColumnsType } from 'antd/es/table'
-import type { TableListItem } from '@/features/table'
-import { useDatabases } from '@/features/table'
+import { QueryList, useQueryListStore } from 'react-toolkits'
 
 interface FormValues {
   param: number

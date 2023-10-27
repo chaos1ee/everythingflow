@@ -18,7 +18,6 @@
     "stripInternal": true,
     "noUnusedParameters": true,
     "noUnusedLocals": true,
-    "noImplicitAny": true,
-    "allowImportingTsExtensions": true
+    "noImplicitAny": true
   }
 }

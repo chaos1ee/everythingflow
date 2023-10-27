@@ -3,3 +3,8 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+
+.toolkits-modal .ant-modal-confirm-content {
+    max-width: 100% !important;
+}
