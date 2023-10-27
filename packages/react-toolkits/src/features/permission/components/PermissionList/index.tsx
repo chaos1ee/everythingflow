@@ -1,8 +1,8 @@
+import { useToolkitsContext } from '@/components/ContextProvider'
 import type { RoleV1, RoleV2 } from '@/features/permission'
 import type { FC } from 'react'
 import PermissionListV1 from '../PermissionListV1'
 import PermissionListV2 from '../PermissionListV2'
-import { useToolkitsContext } from '@/components/ContextProvider'
 
 export interface PermissionListPropsBase {
   expand?: boolean
@@ -18,11 +18,15 @@ const PermissionList: FC<PermissionListProps> = (props: PermissionListProps) => 
   const { value } = props
   const { usePermissionApiV2 } = useToolkitsContext()
 
-  if (usePermissionApiV2) {
-    return <PermissionListV2 {...props} value={value as RoleV2['permissions']} />
-  }
-
-  return <PermissionListV1 {...props} value={value as RoleV1['permissions']} />
+  return (
+    <>
+      {usePermissionApiV2 ? (
+        <PermissionListV2 {...props} value={value as RoleV2['permissions']} />
+      ) : (
+        <PermissionListV1 {...props} value={value as RoleV1['permissions']} />
+      )}
+    </>
+  )
 }
 
 export default PermissionList

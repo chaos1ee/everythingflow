@@ -1,9 +1,9 @@
 import type { PermissionEnumItem } from '@/features/permission'
+import { useTranslation } from '@/utils/i18n'
+import { Checkbox, Col, Collapse, Row } from 'antd'
+import type { CheckboxChangeEvent } from 'antd/es/checkbox'
 import type { FC } from 'react'
 import { useCallback, useEffect, useState } from 'react'
-import type { CheckboxChangeEvent } from 'antd/es/checkbox'
-import { Checkbox, Col, Collapse, Row } from 'antd'
-import { useTranslation } from '@/utils/i18n'
 
 interface PermissionCollapseProps {
   expand?: boolean
@@ -62,7 +62,7 @@ const PermissionCollapse: FC<PermissionCollapseProps> = props => {
   useEffect(() => {
     const checkedValue = (permissions ?? []).reduce(
       (acc, curr) => {
-        acc[curr.category] = curr.permissions.every(item => internalValue.includes(item.value))
+        acc[curr.category] = curr.permissions.every(item => internalValue?.includes(item.value))
         return acc
       },
       {} as Record<string, boolean>,

@@ -18,7 +18,6 @@
     "experimentalDecorators": true,
     "allowSyntheticDefaultImports": true,
     "skipDefaultLibCheck": true,
-    "allowImportingTsExtensions": true,
     "baseUrl": ".",
     "paths": {
       "@/*": [

@@ -1,19 +1,19 @@
+import { useToolkitsContext } from '@/components/ContextProvider'
+import Highlight from '@/components/Highlight'
+import PermissionButton from '@/components/PermissionButton'
+import QueryList from '@/components/QueryList'
 import type { RoleListItem, RoleV1, RoleV2 } from '@/features/permission'
 import { PermissionList, useCreateRole, useRemoveRole, useUpdateRole } from '@/features/permission'
+import { useFormModal } from '@/hooks/formModal'
+import { usePermission } from '@/hooks/permission'
+import { useQueryListStore } from '@/stores/queryList'
+import { useTranslation } from '@/utils/i18n'
+import { request } from '@/utils/request'
 import { UsergroupAddOutlined } from '@ant-design/icons'
 import type { TableColumnsType } from 'antd'
 import { App, Card, Form, Input, Space } from 'antd'
-import { Link } from 'react-router-dom'
-import { useFormModal } from '@/components/FormModal'
-import { usePermission } from '@/hooks/permission'
-import { useToolkitsContext } from '@/components/ContextProvider'
-import PermissionButton from '@/components/PermissionButton'
-import { request } from '@/utils/request'
-import Highlight from '@/components/Highlight'
-import QueryList from '@/components/QueryList'
-import { useTranslation } from '@/utils/i18n'
 import { produce } from 'immer'
-import { useQueryListStore } from '@/stores/queryList'
+import { Link } from 'react-router-dom'
 
 const url = '/api/usystem/role/list'
 
@@ -58,34 +58,7 @@ const useUpdatingRoleModal = () => {
   const update = useUpdateRole()
   const t = useTranslation()
 
-  const onConfirm = async (values: {
-    id: number
-    name: string
-    permissions: RoleV1['permissions'] | RoleV2['permissions']
-  }) => {
-    await update.trigger({
-      id: values.id,
-      name: `role_${values.name}`,
-      permissions: values.permissions,
-    })
-    mutate(
-      url,
-      undefined,
-      prev =>
-        produce(prev, draft => {
-          const match = draft?.list?.find(item => item.id === values.id)
-
-          if (match) {
-            match.permissions = values.permissions
-          }
-        }),
-      { revalidate: false },
-    )
-    message.success(t('RoleList.updateSuccessfully'))
-  }
-
   return useFormModal<{
-    id: number
     name: string
     permissions: RoleV1['permissions'] | RoleV2['permissions']
   }>({
@@ -93,9 +66,6 @@ const useUpdatingRoleModal = () => {
     width: '50vw',
     content: form => (
       <Form form={form}>
-        <Form.Item hidden label="ID" name="id">
-          <Input />
-        </Form.Item>
         <Form.Item label={t('name')} name="name" rules={[{ required: true }]}>
           <Input readOnly addonBefore="role_" />
         </Form.Item>
@@ -104,7 +74,28 @@ const useUpdatingRoleModal = () => {
         </Form.Item>
       </Form>
     ),
-    onConfirm,
+    onConfirm: async (values, _form, extraValues: { id: number }) => {
+      await update.trigger({
+        id: extraValues.id as number,
+        name: `role_${values.name}`,
+        permissions: values.permissions,
+      })
+
+      mutate(
+        url,
+        undefined,
+        prev =>
+          produce(prev, draft => {
+            const match = draft?.list?.find(item => item.id === extraValues.id)
+
+            if (match) {
+              match.permissions = values.permissions
+            }
+          }),
+        { revalidate: false },
+      )
+      message.success(t('RoleList.updateSuccessfully'))
+    },
   })
 }
 
@@ -114,8 +105,8 @@ const RoleList = () => {
   const { usePermissionApiV2 } = useToolkitsContext()
   const remove = useRemoveRole()
   const { mutate } = useQueryListStore()
-  const { showModal: showCreatingModal, Modal: CreatingModal } = useCreatingUserModal()
-  const { showModal: showUpdatingModal, Modal: UpdatingModal } = useUpdatingRoleModal()
+  const { show: showCreatingModal, contextHolder: creatingContextHolder } = useCreatingUserModal()
+  const { show: showUpdatingModal, contextHolder: updatingContextHolder } = useUpdatingRoleModal()
   const t = useTranslation()
 
   const columns: TableColumnsType<RoleListItem> = [
@@ -159,9 +150,11 @@ const RoleList = () => {
                 )
                 showUpdatingModal({
                   initialValues: {
-                    id: role?.id,
                     permissions: role?.permissions,
                     name: role?.name.replace(/^role_/, ''),
+                  },
+                  extraValues: {
+                    id: role?.id,
                   },
                 })
               }}
@@ -207,39 +200,36 @@ const RoleList = () => {
   ]
 
   return (
-    <>
-      <Card
-        title={t('role')}
-        extra={
-          <PermissionButton
-            isGlobalNS
-            type="primary"
-            code="200002"
-            icon={<UsergroupAddOutlined />}
-            onClick={() => {
-              showCreatingModal()
-            }}
-          >
-            {t('RoleList.createTitle')}
-          </PermissionButton>
-        }
-      >
-        <QueryList<RoleListItem, undefined, { List: RoleListItem[]; Total: number }>
+    <Card
+      title={t('role')}
+      extra={
+        <PermissionButton
           isGlobalNS
-          rowKey="name"
-          columns={columns}
-          code="200001"
-          url={url}
-          // 后端接口返回的数据不满足时转换一下
-          transformResponse={response => {
-            const { List, Total } = response
-            return { list: List, total: Total }
+          type="primary"
+          code="200002"
+          icon={<UsergroupAddOutlined />}
+          onClick={() => {
+            showCreatingModal()
           }}
-        />
-      </Card>
-      {CreatingModal}
-      {UpdatingModal}
-    </>
+        >
+          {t('RoleList.createTitle')}
+        </PermissionButton>
+      }
+    >
+      <QueryList<RoleListItem, undefined, { List: RoleListItem[]; Total: number }>
+        isGlobalNS
+        rowKey="name"
+        columns={columns}
+        code="200001"
+        url={url}
+        transformResponse={response => {
+          const { List, Total } = response
+          return { list: List, total: Total }
+        }}
+      />
+      {creatingContextHolder}
+      {updatingContextHolder}
+    </Card>
   )
 }
 

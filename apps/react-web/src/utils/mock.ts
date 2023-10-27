@@ -78,6 +78,23 @@ export function listRequest<T>(
   })
 }
 
+export function listRequest2<T>(
+  path: Path,
+  mockFn: (req: RestRequest) => T,
+  method: RESTMethods = RESTMethods.GET,
+  ...transformers: ResponseTransformer[]
+) {
+  return plainRequest(
+    path,
+    req => ({
+      list: randomArray({ min: 1, max: 10 }).map(mockFn.bind(null, req)),
+      total: 24,
+    }),
+    method,
+    ...transformers,
+  )
+}
+
 export function datetime() {
   return dayjs(randPastDate()).format('YYYY-MM-DD HH:mm:ss')
 }
