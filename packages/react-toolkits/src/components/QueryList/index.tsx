@@ -1,16 +1,16 @@
-import type { ListResponse } from '@/types'
-import type { FormInstance, TablePaginationConfig } from 'antd'
-import { Result, Spin, Table } from 'antd'
-import type { TableProps } from 'antd/es/table'
-import type { ReactNode } from 'react'
-import { useCallback, useEffect, useRef, useState } from 'react'
-import { useTranslation } from '@/utils/i18n'
 import FilterFormWrapper from '@/components/FilterFormWrapper'
 import { usePermission } from '@/hooks/permission'
-import { request } from '@/utils/request'
-import useSWR, { useSWRConfig } from 'swr'
-import qs from 'query-string'
 import { useQueryListStore } from '@/stores/queryList'
+import type { ListResponse } from '@/types'
+import { useTranslation } from '@/utils/i18n'
+import { request } from '@/utils/request'
+import type { FormInstance } from 'antd'
+import { Result, Spin, Table } from 'antd'
+import type { TableProps } from 'antd/es/table'
+import qs from 'query-string'
+import type { ReactNode } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
+import useSWR, { useSWRConfig } from 'swr'
 
 export enum QueryListAction {
   Confirm = 'confirm',
@@ -40,6 +40,8 @@ export interface QueryListProps<Item, Values, Response>
   transformResponse?: (response: Response) => ListResponse<Item>
   afterSuccess?: (response: ListResponse<Item>, action?: QueryListAction) => void
   confirmText?: ReactNode
+  // 不分页
+  noPagination?: boolean
 }
 
 const QueryList = <Item extends object, Values extends object | undefined, Response = ListResponse<Item>>(
@@ -52,6 +54,7 @@ const QueryList = <Item extends object, Values extends object | undefined, Respo
     confirmText,
     headers,
     isGlobalNS,
+    noPagination,
     transformArg,
     transformResponse,
     afterSuccess,
@@ -66,11 +69,15 @@ const QueryList = <Item extends object, Values extends object | undefined, Respo
   const [formValues, setFormValues] = useState<Values>()
   const [isValid, setIsValid] = useState(false)
 
-  const params = transformArg?.(page, size, formValues) ?? {
-    ...formValues,
-    page,
-    size,
-  }
+  const params =
+    transformArg?.(page, size, formValues) ??
+    (noPagination
+      ? formValues
+      : {
+          ...formValues,
+          page,
+          size,
+        })
 
   const _mutate = useCallback(
     (...args: Parameters<typeof mutate> extends [infer _, ...infer Rest] ? Rest : never) => mutate(url, ...args),
@@ -107,14 +114,16 @@ const QueryList = <Item extends object, Values extends object | undefined, Respo
     _mutate({ page: currentPage, size: currentSize })
   }
 
-  const pagination: TablePaginationConfig = {
-    showSizeChanger: true,
-    showQuickJumper: true,
-    current: page,
-    pageSize: size,
-    total: data?.total,
-    onChange: onPaginationChange,
-  }
+  const pagination = noPagination
+    ? false
+    : {
+        showSizeChanger: true,
+        showQuickJumper: true,
+        current: page,
+        pageSize: size,
+        total: data?.total,
+        onChange: onPaginationChange,
+      }
 
   const onConfirm = async () => {
     action.current = QueryListAction.Confirm
