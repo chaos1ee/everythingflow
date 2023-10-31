@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.3.37
+
+### Patch Changes
+
+- eb59f47: feat: add noPagination prop in QueryList component
+
 ## 0.3.36
 
 ### Patch Changes
