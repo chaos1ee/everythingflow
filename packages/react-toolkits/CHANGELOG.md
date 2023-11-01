@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.3.38
+
+### Patch Changes
+
+- a8e08cf: fix: encountered two children with the same key 'modal-holder'
+
 ## 0.3.37
 
 ### Patch Changes
