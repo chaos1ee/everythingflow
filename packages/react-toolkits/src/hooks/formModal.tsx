@@ -14,13 +14,14 @@ type RecursivePartial<T> = NonNullable<T> extends object
   : T
 
 export interface UseFormModalProps<Values>
-  extends Omit<ModalFuncProps, 'icon' | 'className' | 'content' | 'type' | 'onOk'> {
+  extends Omit<ModalFuncProps, 'icon' | 'className' | 'content' | 'type' | 'onOk' | 'onCancel'> {
   content?: (form: FormInstance<Values>) => ReactNode
   onConfirm?: (values: Values, form: FormInstance<Values>, extraValues: any) => Promise<void>
+  onCancel?: (form: FormInstance<Values>) => void
 }
 
 export function useFormModal<Values>(props: UseFormModalProps<Values>) {
-  const { onConfirm, content, ...restProps } = props
+  const { onConfirm, content, onCancel, ...restProps } = props
   const [modal, contextHolder] = Modal.useModal()
   const [form] = Form.useForm<Values>()
 
@@ -50,12 +51,19 @@ export function useFormModal<Values>(props: UseFormModalProps<Values>) {
       await onConfirm?.(values, form, extraValues)
     }
 
-    return modal.confirm({ ...defaultProps, ...restScopedProps, onOk })
+    return modal.confirm({
+      ...defaultProps,
+      ...restScopedProps,
+      onOk,
+      onCancel() {
+        onCancel?.(form)
+      },
+    })
   }
 
   return {
     show,
     form,
-    contextHolder,
+    contextHolder: <div>{contextHolder}</div>,
   }
 }
