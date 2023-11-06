@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.3.39
+
+### Patch Changes
+
+- 5018e65: fix: dataSource been cleared while the pagiantion data changed
+
 ## 0.3.38
 
 ### Patch Changes
