@@ -61,7 +61,7 @@ const QueryList = <Item extends object, Values extends object | undefined, Respo
     ...tableProps
   } = props
   const t = useTranslation()
-  const { instance, children } = form ?? {}
+  const instance = form?.instance
   const { accessible, isLoading } = usePermission(code, { isGlobalNS })
   const action = useRef<QueryListAction>()
   const { mutate, paginationMap, keyMap } = useQueryListStore()
@@ -139,7 +139,7 @@ const QueryList = <Item extends object, Values extends object | undefined, Respo
     }
   }
 
-  const refetch = useCallback(async () => {
+  const refetch = async () => {
     instance?.resetFields()
     setFormValues(instance?.getFieldsValue())
 
@@ -152,7 +152,7 @@ const QueryList = <Item extends object, Values extends object | undefined, Respo
       _mutate({ page: 1 }, undefined, { revalidate: false })
       setIsValid(false)
     }
-  }, [instance, _mutate])
+  }
 
   const onReset = () => {
     action.current = QueryListAction.Reset
@@ -164,7 +164,8 @@ const QueryList = <Item extends object, Values extends object | undefined, Respo
       action.current = QueryListAction.Init
       refetch()
     }
-  }, [accessible, url, form, refetch])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   useEffect(() => {
     keyMap.set(url, swrKey)
@@ -189,9 +190,9 @@ const QueryList = <Item extends object, Values extends object | undefined, Respo
 
   return (
     <div>
-      {children && (
+      {form?.children && (
         <FilterFormWrapper confirmText={confirmText} onReset={onReset} onConfirm={onConfirm}>
-          {children}
+          {form?.children}
         </FilterFormWrapper>
       )}
       <Table
