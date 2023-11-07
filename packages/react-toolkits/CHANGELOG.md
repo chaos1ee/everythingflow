@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.3.40
+
+### Patch Changes
+
+- 0a3655e: fix: not initialized sometimes
+
 ## 0.3.39
 
 ### Patch Changes
