@@ -165,7 +165,7 @@ const QueryList = <Item extends object, Values extends object | undefined, Respo
       refetch()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [accessible])
 
   useEffect(() => {
     keyMap.set(url, swrKey)
