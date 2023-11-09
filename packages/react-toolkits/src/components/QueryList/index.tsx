@@ -6,13 +6,23 @@ import type { ListResponse } from '@/types'
 import { useTranslation } from '@/utils/i18n'
 import { request } from '@/utils/request'
 import type { FormInstance } from 'antd'
-import { Result, Spin, Table } from 'antd'
+import { Form, Result, Spin, Table } from 'antd'
 import type { NamePath } from 'antd/es/form/interface'
 import type { TableProps } from 'antd/es/table'
 import qs from 'query-string'
-import type { ForwardedRef, ReactNode } from 'react'
+import type { ReactElement, ReactNode, Ref } from 'react'
 import { forwardRef, useCallback, useEffect, useImperativeHandle, useRef, useState } from 'react'
 import useSWR, { useSWRConfig } from 'swr'
+
+type RecursivePartial<T> = NonNullable<T> extends object
+  ? {
+      [P in keyof T]?: NonNullable<T[P]> extends (infer U)[]
+        ? RecursivePartial<U>[]
+        : NonNullable<T[P]> extends object
+        ? RecursivePartial<T[P]>
+        : T[P]
+    }
+  : T
 
 export enum QueryListAction {
   Confirm = 'confirm',
@@ -21,8 +31,9 @@ export enum QueryListAction {
   Init = 'init',
 }
 
-export interface QueryListRef {
+export interface QueryListRef<Values = any> {
   setFieldValue: (name: NamePath, value: any) => void
+  setFieldsValue: (values: RecursivePartial<Values>) => void
 }
 
 const fallbackData = {
@@ -30,13 +41,10 @@ const fallbackData = {
   total: 0,
 }
 
-export interface QueryListProps<Item, Values, Response>
+export interface QueryListProps<Item = any, Values = any, Response = any>
   extends Pick<TableProps<Item>, 'columns' | 'rowKey' | 'tableLayout' | 'expandable' | 'rowSelection' | 'bordered'> {
   url: string
-  form?: {
-    instance: FormInstance<Values>
-    children: ReactNode
-  }
+  renderForm?: (form: FormInstance<Values>) => ReactNode
   code?: string
   isGlobalNS?: boolean
   headers?: Record<string, string>
@@ -50,26 +58,25 @@ export interface QueryListProps<Item, Values, Response>
   noPagination?: boolean
 }
 
-const QueryList = forwardRef(function QueryList<
-  Item extends object,
-  Values extends object | undefined,
-  Response = ListResponse<Item>,
->(props: QueryListProps<Item, Values, Response>, ref: ForwardedRef<QueryListRef>) {
+const InternalQueryList = <Item extends object, Values extends object | undefined, Response = ListResponse<Item>>(
+  props: QueryListProps<Item, Values, Response>,
+  ref: Ref<QueryListRef<Values>>,
+) => {
   const {
     url,
-    form,
     code,
     confirmText,
     headers,
     isGlobalNS,
     noPagination,
+    renderForm,
     transformArg,
     transformResponse,
     afterSuccess,
     ...tableProps
   } = props
   const t = useTranslation()
-  const instance = form?.instance
+  const [form] = Form.useForm<Values>()
   const { accessible, isLoading } = usePermission(code, { isGlobalNS })
   const action = useRef<QueryListAction>()
   const { mutate, paginationMap, keyMap } = useQueryListStore()
@@ -135,10 +142,10 @@ const QueryList = forwardRef(function QueryList<
 
   const onConfirm = async () => {
     action.current = QueryListAction.Confirm
-    setFormValues(instance?.getFieldsValue())
+    setFormValues(form.getFieldsValue())
 
     try {
-      await instance?.validateFields()
+      await form.validateFields()
       _mutate({ page: 1 }, undefined, { revalidate: true })
       setIsValid(true)
     } catch (_) {
@@ -148,15 +155,15 @@ const QueryList = forwardRef(function QueryList<
   }
 
   const refetch = async () => {
-    instance?.resetFields()
-    setFormValues(instance?.getFieldsValue())
+    form.resetFields()
+    setFormValues(form.getFieldsValue())
 
     try {
-      await instance?.validateFields()
+      await form.validateFields()
       _mutate({ page: 1 }, undefined, { revalidate: true })
       setIsValid(true)
     } catch (_) {
-      instance?.resetFields()
+      form.resetFields()
       _mutate({ page: 1 }, undefined, { revalidate: false })
       setIsValid(false)
     }
@@ -181,10 +188,12 @@ const QueryList = forwardRef(function QueryList<
 
   useImperativeHandle(ref, () => ({
     setFieldValue: (name: NamePath, value: any) => {
-      if (instance) {
-        instance.setFieldValue(name, value)
-        setFormValues(instance.getFieldsValue())
-      }
+      form.setFieldValue(name, value)
+      setFormValues(form.getFieldsValue())
+    },
+    setFieldsValue: (values: RecursivePartial<Values>) => {
+      form.setFieldsValue(values)
+      setFormValues(form.getFieldsValue())
     },
   }))
 
@@ -207,10 +216,12 @@ const QueryList = forwardRef(function QueryList<
 
   return (
     <div>
-      {form?.children && (
+      {renderForm ? (
         <FilterFormWrapper confirmText={confirmText} onReset={onReset} onConfirm={onConfirm}>
-          {form?.children}
+          {renderForm(form)}
         </FilterFormWrapper>
+      ) : (
+        <Form form={form} />
       )}
       <Table
         {...tableProps}
@@ -220,6 +231,14 @@ const QueryList = forwardRef(function QueryList<
       />
     </div>
   )
-})
+}
+
+const QueryList = forwardRef(InternalQueryList) as <
+  Item extends object,
+  Values extends object | undefined,
+  Response = ListResponse<Item>,
+>(
+  props: QueryListProps<Item, Values, Response> & { ref?: Ref<QueryListRef<Values>> },
+) => ReactElement
 
 export default QueryList

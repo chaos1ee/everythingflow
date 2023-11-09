@@ -80,20 +80,17 @@ const VersionList = () => {
         rowKey="id"
         columns={columns}
         url={url}
-        form={{
-          instance: form,
-          children: (
-            <Form form={form}>
-              <Row>
-                <Col>
-                  <Form.Item label="名称" name="name">
-                    <Input />
-                  </Form.Item>
-                </Col>
-              </Row>
-            </Form>
-          ),
-        }}
+        renderForm={form => (
+          <Form form={form}>
+            <Row gutter={10}>
+              <Col>
+                <Form.Item label="名称" name="name">
+                  <Input />
+                </Form.Item>
+              </Col>
+            </Row>
+          </Form>
+        )}
       />
       {contextHolder}
     </Card>
