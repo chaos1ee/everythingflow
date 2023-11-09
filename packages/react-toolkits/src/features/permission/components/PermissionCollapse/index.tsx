@@ -93,12 +93,11 @@ const PermissionCollapse: FC<PermissionCollapseProps> = props => {
           </Checkbox>
         ),
         children: (
-          <Checkbox.Group style={{ width: '100%' }} value={internalValue}>
+          <Checkbox.Group style={{ width: '100%' }} value={internalValue} disabled={readonly}>
             <Row gutter={[10, 10]} style={{ width: '100%' }}>
               {item.permissions.map(permission => (
                 <Col key={permission.value} span={6}>
                   <Checkbox
-                    disabled={readonly}
                     value={permission.value}
                     onChange={e => {
                       onCheckChange(e, [permission.value])
