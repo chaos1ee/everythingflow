@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.3.42
+
+### Patch Changes
+
+- 4cadbbc: feat: change ref of QueryList
+
 ## 0.3.41
 
 ### Patch Changes
