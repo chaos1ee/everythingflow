@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.3.41
+
+### Patch Changes
+
+- 8035fcf: feat: ref of QueryList
+
 ## 0.3.40
 
 ### Patch Changes
