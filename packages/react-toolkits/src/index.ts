@@ -15,7 +15,7 @@ import type { PermissionButtonProps } from '@/components/PermissionButton'
 import PermissionButton from '@/components/PermissionButton'
 import type { PermissionGuardProps } from '@/components/PermissionGuard'
 import PermissionGuard from '@/components/PermissionGuard'
-import type { QueryListProps } from '@/components/QueryList'
+import type { QueryListProps, QueryListRef } from '@/components/QueryList'
 import QueryList, { QueryListAction } from '@/components/QueryList'
 import RequireGame from '@/components/RequireGame'
 import UserWidget from '@/components/UserWidget'
@@ -74,5 +74,6 @@ export {
   type PermissionButtonProps,
   type PermissionGuardProps,
   type QueryListProps,
+  type QueryListRef,
   type TokenState,
 }

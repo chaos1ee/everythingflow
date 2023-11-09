@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import FilterFormWrapper from '@/components/FilterFormWrapper'
 import { usePermission } from '@/hooks/permission'
 import { useQueryListStore } from '@/stores/queryList'
@@ -6,10 +7,11 @@ import { useTranslation } from '@/utils/i18n'
 import { request } from '@/utils/request'
 import type { FormInstance } from 'antd'
 import { Result, Spin, Table } from 'antd'
+import type { NamePath } from 'antd/es/form/interface'
 import type { TableProps } from 'antd/es/table'
 import qs from 'query-string'
-import type { ReactNode } from 'react'
-import { useCallback, useEffect, useRef, useState } from 'react'
+import type { ForwardedRef, ReactNode } from 'react'
+import { forwardRef, useCallback, useEffect, useImperativeHandle, useRef, useState } from 'react'
 import useSWR, { useSWRConfig } from 'swr'
 
 export enum QueryListAction {
@@ -17,6 +19,10 @@ export enum QueryListAction {
   Reset = 'reset',
   Jump = 'jump',
   Init = 'init',
+}
+
+export interface QueryListRef {
+  setFieldValue: (name: NamePath, value: any) => void
 }
 
 const fallbackData = {
@@ -44,9 +50,11 @@ export interface QueryListProps<Item, Values, Response>
   noPagination?: boolean
 }
 
-const QueryList = <Item extends object, Values extends object | undefined, Response = ListResponse<Item>>(
-  props: QueryListProps<Item, Values, Response>,
-) => {
+const QueryList = forwardRef(function QueryList<
+  Item extends object,
+  Values extends object | undefined,
+  Response = ListResponse<Item>,
+>(props: QueryListProps<Item, Values, Response>, ref: ForwardedRef<QueryListRef>) {
   const {
     url,
     form,
@@ -171,6 +179,15 @@ const QueryList = <Item extends object, Values extends object | undefined, Respo
     keyMap.set(url, swrKey)
   }, [keyMap, swrKey, url])
 
+  useImperativeHandle(ref, () => ({
+    setFieldValue: (name: NamePath, value: any) => {
+      if (instance) {
+        instance.setFieldValue(name, value)
+        setFormValues(instance.getFieldsValue())
+      }
+    },
+  }))
+
   if (isLoading) {
     return (
       <Spin
@@ -203,6 +220,6 @@ const QueryList = <Item extends object, Values extends object | undefined, Respo
       />
     </div>
   )
-}
+})
 
 export default QueryList
