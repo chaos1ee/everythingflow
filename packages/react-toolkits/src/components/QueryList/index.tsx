@@ -57,9 +57,14 @@ export interface QueryListProps<Item = any, Values = any, Response = any>
   confirmText?: ReactNode
   // 不分页
   noPagination?: boolean
+  extra?: (response: Response | undefined, form: FormInstance<Values>) => ReactNode
 }
 
-const InternalQueryList = <Item extends object, Values extends object | undefined, Response = ListResponse<Item>>(
+const InternalQueryList = <
+  Item extends object,
+  Values extends object | undefined,
+  Response extends ListResponse<Item> = ListResponse<Item>,
+>(
   props: QueryListProps<Item, Values, Response>,
   ref: Ref<QueryListRef<Values>>,
 ) => {
@@ -70,6 +75,7 @@ const InternalQueryList = <Item extends object, Values extends object | undefine
     headers,
     isGlobalNS,
     noPagination,
+    extra,
     renderForm,
     transformArg,
     transformResponse,
@@ -84,6 +90,7 @@ const InternalQueryList = <Item extends object, Values extends object | undefine
   const { page = 1, size = 10 } = paginationMap.get(url) ?? {}
   const [formValues, setFormValues] = useState<Values>()
   const [isValid, setIsValid] = useState(false)
+  const [response, setResponse] = useState<Response>()
 
   const params =
     transformArg?.(page, size, formValues) ??
@@ -113,8 +120,9 @@ const InternalQueryList = <Item extends object, Values extends object | undefine
   } = useSWR(
     swrKey,
     async key => {
-      const response = await request<Response>(key, { headers, isGlobalNS })
-      const list = transformResponse?.(response.data) ?? (response.data as ListResponse<Item>)
+      const _response = await request<Response>(key, { headers, isGlobalNS })
+      setResponse(_response.data)
+      const list = transformResponse?.(_response.data) ?? _response.data
       afterSuccess?.(list, action.current)
       action.current = undefined
       return list
@@ -225,6 +233,7 @@ const InternalQueryList = <Item extends object, Values extends object | undefine
       ) : (
         <Form form={form} />
       )}
+      {extra && <div className="my-2">{extra(response, form)}</div>}
       <Table
         {...tableProps}
         dataSource={data?.list}
