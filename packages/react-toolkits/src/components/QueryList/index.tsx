@@ -32,6 +32,7 @@ export enum QueryListAction {
 }
 
 export interface QueryListRef<Values = any> {
+  form: FormInstance<Values>
   setFieldValue: (name: NamePath, value: any) => void
   setFieldsValue: (values: RecursivePartial<Values>) => void
 }
@@ -187,6 +188,7 @@ const InternalQueryList = <Item extends object, Values extends object | undefine
   }, [keyMap, swrKey, url])
 
   useImperativeHandle(ref, () => ({
+    form,
     setFieldValue: (name: NamePath, value: any) => {
       form.setFieldValue(name, value)
       setFormValues(form.getFieldsValue())
