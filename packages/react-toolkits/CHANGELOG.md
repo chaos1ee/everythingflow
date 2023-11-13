@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.3.43
+
+### Patch Changes
+
+- 060f3ae: feat: add form field in QueryList ref
+
 ## 0.3.42
 
 ### Patch Changes
