@@ -233,7 +233,7 @@ const InternalQueryList = <
       ) : (
         <Form form={form} />
       )}
-      {extra && <div className="my-2">{extra(response, form)}</div>}
+      {extra && <div className="mt-2 mb-4">{extra(response, form)}</div>}
       <Table
         {...tableProps}
         dataSource={data?.list}

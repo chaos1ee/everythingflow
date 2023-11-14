@@ -57,6 +57,10 @@ export async function request<T = any>(url: string, opts?: RequestOptions): Prom
   const token = useTokenStore.getState().token
   headers.set('Authorization', `Bearer ${token}`)
 
+  if (!headers.has('Content-Type')) {
+    headers.set('Content-Type', 'application/json')
+  }
+
   if (contextStore.getState().usePermissionApiV2) {
     const game = useGameStore.getState().game
 
