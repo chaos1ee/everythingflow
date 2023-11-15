@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.3.46
+
+### Patch Changes
+
+- 794d9dd: feat: change locale scope
+
 ## 0.3.45
 
 ### Patch Changes
