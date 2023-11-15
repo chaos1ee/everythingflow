@@ -1,17 +1,19 @@
 import type { Locale } from '@/locales'
 
 const locale: Locale = {
-  noEntitlement: '无权限，请联系管理员。',
-  name: '名称',
-  creationTime: '创建时间',
-  operation: '操作',
-  update: '更新',
-  edit: '编辑',
-  delete: '删除',
-  selectAll: '全选',
-  game: '游戏',
-  user: '用户',
-  role: '角色',
+  global: {
+    noEntitlement: '无权限，请联系管理员。',
+    name: '名称',
+    creationTime: '创建时间',
+    operation: '操作',
+    update: '更新',
+    edit: '编辑',
+    delete: '删除',
+    selectAll: '全选',
+    game: '游戏',
+    user: '用户',
+    role: '角色',
+  },
   Login: {
     title: '登录方式',
     thirdParty: '第三方登录',

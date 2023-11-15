@@ -1,8 +1,8 @@
+import { usePermission } from '@/hooks/permission'
+import { useTranslation } from '@/utils/i18n'
 import type { ButtonProps } from 'antd'
 import { Button, Tooltip } from 'antd'
 import type { FC, PropsWithChildren } from 'react'
-import { useTranslation } from '@/utils/i18n'
-import { usePermission } from '@/hooks/permission'
 
 export interface PermissionButtonProps extends Omit<ButtonProps, 'disabled'> {
   code: string
@@ -25,7 +25,7 @@ const PermissionButton: FC<PropsWithChildren<PermissionButtonProps>> = props => 
 
   if (!accessible) {
     return (
-      <Tooltip defaultOpen={false} title={t('noEntitlement')}>
+      <Tooltip defaultOpen={false} title={t('global.noEntitlement')}>
         <Button disabled {...restProps}>
           {children}
         </Button>

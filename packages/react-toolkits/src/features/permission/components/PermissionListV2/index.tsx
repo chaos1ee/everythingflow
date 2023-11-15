@@ -1,11 +1,11 @@
+import { useTranslation } from '@/utils/i18n'
 import { Button, Card, Divider, Empty, Select, Skeleton, Space, Typography } from 'antd'
 import type { FC } from 'react'
 import { useEffect, useState } from 'react'
-import type { RoleV2 } from '../../types'
 import { useAllPermissionsV2 } from '../../hooks'
+import type { RoleV2 } from '../../types'
 import PermissionCollapse from '../PermissionCollapse'
 import type { PermissionListPropsBase } from '../PermissionList'
-import { useTranslation } from '@/utils/i18n'
 
 const { Text } = Typography
 const { Option } = Select
@@ -77,7 +77,7 @@ const PermissionListV2: FC<PermissionListV2Props> = props => {
         <Card
           title={
             <Space>
-              <Text>{t('game')}</Text>
+              <Text>{t('global.game')}</Text>
               {readonly ? (
                 <Text>{games?.find(game => game.id === item.gameId)?.name}</Text>
               ) : (

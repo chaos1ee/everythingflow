@@ -40,7 +40,7 @@ const useCreatingUserModal = () => {
     width: '50vw',
     content: form => (
       <Form form={form} layout="vertical">
-        <Form.Item label={t('name')} name="name" rules={[{ required: true }]}>
+        <Form.Item label={t('global.name')} name="name" rules={[{ required: true }]}>
           <Input addonBefore="role_" />
         </Form.Item>
         <Form.Item name="permissions">
@@ -66,7 +66,7 @@ const useUpdatingRoleModal = () => {
     width: '50vw',
     content: form => (
       <Form form={form}>
-        <Form.Item label={t('name')} name="name" rules={[{ required: true }]}>
+        <Form.Item label={t('global.name')} name="name" rules={[{ required: true }]}>
           <Input readOnly addonBefore="role_" />
         </Form.Item>
         <Form.Item name="permissions">
@@ -111,7 +111,7 @@ const RoleList = () => {
 
   const columns: TableColumnsType<RoleListItem> = [
     {
-      title: t('name'),
+      title: t('global.name'),
       key: 'name',
       render(value: RoleListItem) {
         if (viewable) {
@@ -127,12 +127,12 @@ const RoleList = () => {
       key: 'id',
     },
     {
-      title: t('creationTime'),
+      title: t('global.creationTime'),
       dataIndex: 'ctime',
       key: 'ctime',
     },
     {
-      title: t('operation'),
+      title: t('global.operation'),
       width: 150,
       align: 'center',
       render: (value: RoleListItem) => {
@@ -159,7 +159,7 @@ const RoleList = () => {
                 })
               }}
             >
-              {t('edit')}
+              {t('global.edit')}
             </PermissionButton>
             <PermissionButton
               isGlobalNS
@@ -191,7 +191,7 @@ const RoleList = () => {
                 })
               }}
             >
-              {t('delete')}
+              {t('global.delete')}
             </PermissionButton>
           </Space>
         )
@@ -201,7 +201,7 @@ const RoleList = () => {
 
   return (
     <Card
-      title={t('role')}
+      title={t('global.role')}
       extra={
         <PermissionButton
           isGlobalNS
