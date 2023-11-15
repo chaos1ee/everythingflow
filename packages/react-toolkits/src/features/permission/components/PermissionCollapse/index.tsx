@@ -89,7 +89,7 @@ const PermissionCollapse: FC<PermissionCollapseProps> = props => {
               )
             }}
           >
-            {t('selectAll')}
+            {t('global.selectAll')}
           </Checkbox>
         ),
         children: (

@@ -1,17 +1,19 @@
 import type { Locale } from '@/locales'
 
 const locale: Locale = {
-  noEntitlement: '권한이 없습니다, 관리자에게 문의하십시오.',
-  name: '이름',
-  creationTime: '생성 시간',
-  operation: '작업',
-  update: '업데이트',
-  edit: '편집',
-  delete: '삭제',
-  selectAll: '모두 선택',
-  game: '게임',
-  user: '사용자',
-  role: '역할',
+  global: {
+    noEntitlement: '권한이 없습니다, 관리자에게 문의하십시오.',
+    name: '이름',
+    creationTime: '생성 시간',
+    operation: '작업',
+    update: '업데이트',
+    edit: '편집',
+    delete: '삭제',
+    selectAll: '모두 선택',
+    game: '게임',
+    user: '사용자',
+    role: '역할',
+  },
   Login: {
     title: '로그인 방법',
     thirdParty: '제3자 로그인',

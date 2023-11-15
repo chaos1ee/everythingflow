@@ -56,6 +56,7 @@ export function useFormModal<Values>(props: UseFormModalProps<Values>) {
       ...restScopedProps,
       onOk,
       onCancel() {
+        form.resetFields()
         onCancel?.(form)
       },
     })

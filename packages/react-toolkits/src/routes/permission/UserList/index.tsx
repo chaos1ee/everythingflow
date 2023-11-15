@@ -28,10 +28,10 @@ function useCreatingUserModal() {
     title: t('UserList.createTitle'),
     content: form => (
       <Form form={form} labelCol={{ flex: '80px' }}>
-        <Form.Item label={t('name')} name="name" rules={[{ required: true }]}>
+        <Form.Item label={t('global.name')} name="name" rules={[{ required: true }]}>
           <Input />
         </Form.Item>
-        <Form.Item label={t('role')} name="roles">
+        <Form.Item label={t('global.role')} name="roles">
           <Select allowClear mode="multiple" loading={isLoading}>
             {(roles ?? []).map(role => (
               <Option value={role.name} key={role.id}>
@@ -64,10 +64,10 @@ function useUpdatingUserModal() {
         <Form.Item hidden name="id">
           <Input />
         </Form.Item>
-        <Form.Item label={t('name')} name="name" rules={[{ required: true }]}>
+        <Form.Item label={t('global.name')} name="name" rules={[{ required: true }]}>
           <Input readOnly />
         </Form.Item>
-        <Form.Item label={t('role')} name="roles">
+        <Form.Item label={t('global.role')} name="roles">
           <Select allowClear mode="multiple" loading={isLoading}>
             {(roles ?? []).map(role => (
               <Option value={role.name} key={role.id}>
@@ -108,7 +108,7 @@ const UserList: FC = () => {
 
   const columns: TableColumnsType<UserListItem> = [
     {
-      title: t('name'),
+      title: t('global.name'),
       dataIndex: 'name',
       key: 'name',
     },
@@ -118,7 +118,7 @@ const UserList: FC = () => {
       key: 'id',
     },
     {
-      title: t('role'),
+      title: t('global.role'),
       dataIndex: 'roles',
       key: 'roles',
       width: '40%',
@@ -141,12 +141,12 @@ const UserList: FC = () => {
       },
     },
     {
-      title: t('creationTime'),
+      title: t('global.creationTime'),
       dataIndex: 'Ctime',
       key: 'ctime',
     },
     {
-      title: t('operation'),
+      title: t('global.operation'),
       width: 150,
       align: 'center',
       render: (value: UserListItem) => (
@@ -166,7 +166,7 @@ const UserList: FC = () => {
               })
             }}
           >
-            {t('update')}
+            {t('global.update')}
           </PermissionButton>
           <PermissionButton
             isGlobalNS
@@ -198,7 +198,7 @@ const UserList: FC = () => {
               })
             }}
           >
-            {t('delete')}
+            {t('global.delete')}
           </PermissionButton>
         </Space>
       ),
@@ -207,7 +207,7 @@ const UserList: FC = () => {
 
   return (
     <Card
-      title={t('user')}
+      title={t('global.user')}
       extra={
         <PermissionButton
           isGlobalNS

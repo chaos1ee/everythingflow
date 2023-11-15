@@ -1,7 +1,7 @@
+import { usePermission } from '@/hooks/permission'
+import { useTranslation } from '@/utils/i18n'
 import { Result, Spin } from 'antd'
 import type { FC, PropsWithChildren } from 'react'
-import { useTranslation } from '@/utils/i18n'
-import { usePermission } from '@/hooks/permission'
 
 export interface PermissionGuardProps {
   code: string
@@ -26,7 +26,7 @@ const PermissionGuard: FC<PropsWithChildren<PermissionGuardProps>> = props => {
   }
 
   if (!accessible) {
-    return <Result status="403" subTitle={t('noEntitlement')} />
+    return <Result status="403" subTitle={t('global.noEntitlement')} />
   }
 
   return <>{children}</>

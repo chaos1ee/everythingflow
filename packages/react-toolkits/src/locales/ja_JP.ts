@@ -1,17 +1,19 @@
 import type { Locale } from '@/locales'
 
 const locale: Locale = {
-  noEntitlement: '権限がありません、管理者に連絡してください。',
-  name: '名前',
-  creationTime: '作成時間',
-  operation: '操作',
-  update: '更新',
-  edit: '編集',
-  delete: '削除',
-  selectAll: '全て選択',
-  game: 'ゲーム',
-  user: 'ユーザー',
-  role: '役割',
+  global: {
+    noEntitlement: '権限がありません、管理者に連絡してください。',
+    name: '名前',
+    creationTime: '作成時間',
+    operation: '操作',
+    update: '更新',
+    edit: '編集',
+    delete: '削除',
+    selectAll: '全て選択',
+    game: 'ゲーム',
+    user: 'ユーザー',
+    role: '役割',
+  },
   Login: {
     title: 'ログイン方法',
     thirdParty: 'サードパーティログイン',

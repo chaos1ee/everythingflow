@@ -1,17 +1,19 @@
 import type { Locale } from '@/locales'
 
 const locale: Locale = {
-  noEntitlement: 'No permission, please contact the administrator.',
-  name: 'Name',
-  creationTime: 'Creation Time',
-  operation: 'Operation',
-  update: 'Update',
-  edit: 'Edit',
-  delete: 'Delete',
-  selectAll: 'Select All',
-  game: 'Game',
-  user: 'User',
-  role: 'Role',
+  global: {
+    noEntitlement: 'No permission, please contact the administrator.',
+    name: 'Name',
+    creationTime: 'Creation Time',
+    operation: 'Operation',
+    update: 'Update',
+    edit: 'Edit',
+    delete: 'Delete',
+    selectAll: 'Select All',
+    game: 'Game',
+    user: 'User',
+    role: 'Role',
+  },
   Login: {
     title: 'Login Method',
     thirdParty: 'Third Party Login',

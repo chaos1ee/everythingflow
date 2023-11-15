@@ -221,7 +221,7 @@ const InternalQueryList = <
   }
 
   if (!accessible) {
-    return <Result status={403} subTitle={t('noEntitlement')} />
+    return <Result status={403} subTitle={t('global.noEntitlement')} />
   }
 
   return (

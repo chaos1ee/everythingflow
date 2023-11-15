@@ -1,15 +1,17 @@
 export type Locale = {
-  noEntitlement: string
-  name: string
-  creationTime: string
-  operation: string
-  update: string
-  edit: string
-  delete: string
-  selectAll: string
-  game: string
-  user: string
-  role: string
+  global: {
+    noEntitlement: string
+    name: string
+    creationTime: string
+    operation: string
+    update: string
+    edit: string
+    delete: string
+    selectAll: string
+    game: string
+    user: string
+    role: string
+  }
   Login: {
     title: string
     thirdParty: string
