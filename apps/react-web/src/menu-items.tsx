@@ -20,6 +20,12 @@ const navItems: NavMenuItem[] = [
     ],
   },
   {
+    key: 'operation_log',
+    label: '操作日志',
+    icon: <ConsoleSqlOutlined />,
+    route: '/log/operation_log',
+  },
+  {
     key: 'permission',
     label: '权限管理',
     icon: <SafetyOutlined />,

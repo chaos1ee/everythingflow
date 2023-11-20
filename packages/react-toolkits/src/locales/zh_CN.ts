@@ -13,6 +13,12 @@ const locale: Locale = {
     game: '游戏',
     user: '用户',
     role: '角色',
+    username: '用户名',
+    label: '标签',
+    method: '方法',
+    route: '路由',
+    request: '请求',
+    response: '响应',
   },
   Login: {
     title: '登录方式',

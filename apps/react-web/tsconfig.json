@@ -1,16 +1,19 @@
 {
-  "include": [
-    "src/**/*"
-  ],
-  "exclude": [
-    "**/*.spec.ts"
-  ],
+  "ts-node": {
+    "types": [
+      "node"
+    ],
+    "compilerOptions": {
+      "module": "commonjs"
+    }
+  },
   "compilerOptions": {
     "target": "ESNext",
     "module": "ESNext",
     "moduleResolution": "Bundler",
     "lib": [
-      "DOM"
+      "DOM",
+      "ES5"
     ],
     "jsx": "react-jsx",
     "strictNullChecks": true,
@@ -24,5 +27,12 @@
         "./src/*"
       ]
     }
-  }
+  },
+  "include": [
+    "src/**/*",
+    "webpack.config.ts"
+  ],
+  "exclude": [
+    "**/*.spec.ts"
+  ]
 }

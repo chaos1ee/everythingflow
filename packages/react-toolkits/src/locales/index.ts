@@ -11,6 +11,12 @@ export type Locale = {
     game: string
     user: string
     role: string
+    username: string
+    label: string
+    method: string
+    route: string
+    request: string
+    response: string
   }
   Login: {
     title: string

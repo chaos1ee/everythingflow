@@ -13,6 +13,12 @@ const locale: Locale = {
     game: 'Game',
     user: 'User',
     role: 'Role',
+    username: 'Username',
+    label: 'Label',
+    method: 'Method',
+    route: 'Route',
+    request: 'Request',
+    response: 'Response',
   },
   Login: {
     title: 'Login Method',

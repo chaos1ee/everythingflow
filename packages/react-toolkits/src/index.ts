@@ -24,6 +24,7 @@ import { useFormModal } from '@/hooks/formModal'
 import { usePermission, usePermissions } from '@/hooks/permission'
 import type { Locale } from '@/locales'
 import baseRoutes from '@/routes/base'
+import logRoutes from '@/routes/log'
 import permissionRoutes from '@/routes/permission'
 import { useQueryListStore } from '@/stores/queryList'
 import type { TokenState } from '@/stores/token'
@@ -55,6 +56,7 @@ export {
   usePermission,
   useQueryListStore,
   baseRoutes,
+  logRoutes,
   permissionRoutes,
   useTranslation,
   mixedStorage,

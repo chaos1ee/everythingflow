@@ -1,6 +1,7 @@
-const path = require('path')
-const HtmlWebpackPlugin = require('html-webpack-plugin')
-const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin')
+import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin'
+import HtmlWebpackPlugin from 'html-webpack-plugin'
+import path from 'path'
+import webpack from 'webpack'
 
 module.exports = {
   mode: 'development',
@@ -48,6 +49,9 @@ module.exports = {
     ],
   },
   plugins: [
+    new webpack.DefinePlugin({
+      'process.env': JSON.stringify(process.env),
+    }),
     new HtmlWebpackPlugin({
       template: path.resolve(__dirname, './public/index.html'),
       title: 'React Web',
