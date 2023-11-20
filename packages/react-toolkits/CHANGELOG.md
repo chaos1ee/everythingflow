@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.3.47
+
+### Patch Changes
+
+- eadcc84: feat: add log routes
+
 ## 0.3.46
 
 ### Patch Changes
