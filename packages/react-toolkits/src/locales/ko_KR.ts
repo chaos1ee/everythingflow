@@ -13,6 +13,12 @@ const locale: Locale = {
     game: '게임',
     user: '사용자',
     role: '역할',
+    username: '사용자 이름',
+    label: '라벨',
+    method: '방법',
+    route: '노선',
+    request: '요청',
+    response: '응답',
   },
   Login: {
     title: '로그인 방법',
