@@ -1,3 +1,5 @@
+import ContextProvider from '@/components/ContextProvider'
+import Layout from '@/components/Layout'
 import { lazy } from 'react'
 import type { RouteObject } from 'react-router-dom'
 import { Navigate } from 'react-router-dom'
@@ -16,15 +18,33 @@ const routes: RouteObject[] = [
       },
       {
         path: 'user',
-        element: <UserList />,
+        element: (
+          <ContextProvider hideGameSelect>
+            <Layout>
+              <UserList />
+            </Layout>
+          </ContextProvider>
+        ),
       },
       {
         path: 'role',
-        element: <RoleList />,
+        element: (
+          <ContextProvider hideGameSelect>
+            <Layout>
+              <RoleList />
+            </Layout>
+          </ContextProvider>
+        ),
       },
       {
         path: 'role/:name',
-        element: <RoleDetail />,
+        element: (
+          <ContextProvider hideGameSelect>
+            <Layout>
+              <RoleDetail />
+            </Layout>
+          </ContextProvider>
+        ),
       },
     ],
   },

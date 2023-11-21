@@ -1,10 +1,16 @@
 import ErrorElement from '@/ErrorElement'
-import tableRoutes from '@/pages/common'
+import commonRoutes from '@/pages/common'
 import Root from '@/Root'
-import { createBrowserRouter, Navigate, Outlet } from 'react-router-dom'
-import { baseRoutes, ContextProvider, Layout, logRoutes, permissionRoutes } from 'react-toolkits'
+import { createBrowserRouter, Navigate } from 'react-router-dom'
+import { baseRoutes, logRoutes, permissionRoutes } from 'react-toolkits'
 
-const routes = [tableRoutes]
+const routes = [
+  ...commonRoutes,
+  ...logRoutes,
+  ...permissionRoutes,
+  // 放在最后，否则会覆盖其他的路由
+  ...baseRoutes,
+]
 
 // PNPM 的符号链接方式导致 Typescript 报错："The inferred type of 'router' cannot be named without a reference to 'xxx'. This is likely not portable. A type annotation is necessary"）
 // 解决方案可以参照 https://github.com/microsoft/TypeScript/issues/42873#issuecomment-1372144595。
@@ -19,29 +25,9 @@ const router: any = createBrowserRouter(
       children: [
         {
           index: true,
-          element: <Navigate to="/console/table" />,
+          element: <Navigate to="/table" />,
         },
-        {
-          path: 'console',
-          element: (
-            <Layout>
-              <Outlet />
-            </Layout>
-          ),
-          children: routes,
-        },
-        {
-          element: (
-            <ContextProvider hideGameSelect>
-              <Layout>
-                <Outlet />
-              </Layout>
-            </ContextProvider>
-          ),
-          children: [...logRoutes, ...permissionRoutes],
-        },
-        // 放在最后，否则会覆盖其他的路由
-        baseRoutes,
+        ...routes,
       ],
     },
   ],
