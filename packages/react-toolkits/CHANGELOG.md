@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.3.48
+
+### Patch Changes
+
+- 1928769: feat: wrap page component with Layout
+
 ## 0.3.47
 
 ### Patch Changes
