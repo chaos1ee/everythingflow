@@ -1,3 +1,5 @@
+import ContextProvider from '@/components/ContextProvider'
+import Layout from '@/components/Layout'
 import { lazy } from 'react'
 import type { RouteObject } from 'react-router-dom'
 import { Navigate } from 'react-router-dom'
@@ -14,7 +16,13 @@ const routes: RouteObject[] = [
       },
       {
         path: 'operation_log',
-        element: <OperationLogList />,
+        element: (
+          <ContextProvider hideGameSelect>
+            <Layout>
+              <OperationLogList />
+            </Layout>
+          </ContextProvider>
+        ),
       },
     ],
   },

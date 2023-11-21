@@ -3,7 +3,7 @@ import type { Game } from '@/components/GameSelect'
 import type { Locale } from '@/locales'
 import type { FC, PropsWithChildren, ReactNode } from 'react'
 import { createContext, useContext } from 'react'
-import { create, useStore } from 'zustand'
+import { createStore } from 'zustand'
 import type { NavMenuItem } from '../NavMenu'
 
 export interface ContextState {
@@ -24,13 +24,9 @@ const defaultState: ContextState = {
 }
 
 // 全局的上下文。因为 ContextProvider 支持嵌套，所以 toolkitContextStore 的值等同于最内层的 ContextProvider 包含的上下文。
-export const contextStore = create<ContextState>(() => defaultState)
+export const contextStore = createStore<ContextState>(() => defaultState)
 
 const ToolkitsContext = createContext<ContextState>(defaultState)
-
-export function useContextStore<T>(selector: (state: ContextState) => T): T {
-  return useStore(contextStore, selector)
-}
 
 // 最接近的祖先 ContextProvider 内包含的上下文。
 export function useToolkitsContext() {

@@ -1,14 +1,14 @@
 /* eslint-disable camelcase */
+import { LocaleDropdownMenu } from '@/components'
+import menuItems from '@/menu-items'
+import router from '@/router'
+import { useLocaleStore } from '@/stores/locale'
+import * as Antd from 'antd'
 import type { FC } from 'react'
 import * as React from 'react'
 import { Suspense } from 'react'
-import * as Antd from 'antd'
-import { ContextProvider } from 'react-toolkits'
 import { RouterProvider } from 'react-router-dom'
-import menuItems from '@/menu-items'
-import { LocaleDropdownMenu } from '@/components'
-import { useLocaleStore } from '@/stores/locale'
-import router from '@/router'
+import { ContextProvider } from 'react-toolkits'
 
 const App: FC = () => {
   const { locale } = useLocaleStore()

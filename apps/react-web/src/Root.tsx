@@ -1,9 +1,9 @@
 /* eslint-disable camelcase */
+import { App } from 'antd'
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type { FC } from 'react'
-import { App } from 'antd'
-import { RequestError, useTokenStore, useValidateToken } from 'react-toolkits'
 import { Outlet, useNavigate } from 'react-router-dom'
+import { RequestError, useTokenStore, useValidateToken } from 'react-toolkits'
 import type { BareFetcher, Key, Middleware, SWRConfiguration } from 'swr'
 import { SWRConfig } from 'swr'
 import type { defaultConfig } from 'swr/_internal'
