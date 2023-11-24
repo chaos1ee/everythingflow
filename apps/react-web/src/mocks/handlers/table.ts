@@ -1,26 +1,38 @@
 import type { TableListItem, VersionListItem } from '@/features/common'
-import { datetime, listRequest, plainRequest, randomArray } from '@/utils/mock'
-import { randDatabase, randFullName, randSentence, randUuid, randWord } from '@ngneat/falso'
+import { datetime, jsonResolver, listResolver } from '@/utils/mock'
+import { randDatabase, randFullName, randSentence, randUuid, randWord, toCollection } from '@ngneat/falso'
+import { http } from 'msw'
 
 const handlers = [
-  listRequest<TableListItem>('/api/tables', () => ({
-    id: randUuid(),
-    name: randWord(),
-    ctime: datetime(),
-  })),
-  listRequest<VersionListItem>('/api/version/list', () => ({
-    id: randUuid(),
-    name: randWord(),
-    comment: randSentence(),
-    ctime: datetime(),
-    auth: randFullName(),
-  })),
-  plainRequest(
-    '/api/databases',
-    randomArray({ min: 1, max: 10 }).map(() => ({
-      name: randDatabase(),
+  http.get(
+    '/api/tables',
+    listResolver<TableListItem>(() => ({
       id: randUuid(),
+      name: randWord(),
+      ctime: datetime(),
     })),
+  ),
+  http.get(
+    '/api/version/list',
+    listResolver<VersionListItem>(() => ({
+      id: randUuid(),
+      name: randWord(),
+      comment: randSentence(),
+      ctime: datetime(),
+      auth: randFullName(),
+    })),
+  ),
+  http.get(
+    '/api/databases',
+    jsonResolver(
+      toCollection(
+        () => ({
+          name: randDatabase(),
+          id: randUuid(),
+        }),
+        { length: 10 },
+      ),
+    ),
   ),
 ]
 
