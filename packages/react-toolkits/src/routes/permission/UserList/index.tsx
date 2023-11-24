@@ -68,13 +68,17 @@ function useUpdatingUserModal() {
           <Input readOnly />
         </Form.Item>
         <Form.Item label={t('global.role')} name="roles">
-          <Select allowClear mode="multiple" loading={isLoading}>
-            {(roles ?? []).map(role => (
-              <Option value={role.name} key={role.id}>
-                {role.name}
-              </Option>
-            ))}
-          </Select>
+          <Select
+            allowClear
+            mode="multiple"
+            loading={isLoading}
+            options={roles?.map(role => ({
+              label: role.name,
+              value: role.name,
+            }))}
+            // FIXME: 在项目中引入是弹出框会被 Modal 遮盖，暂时不知道原因。
+            dropdownStyle={{ zIndex: 9999 }}
+          />
         </Form.Item>
       </Form>
     ),
