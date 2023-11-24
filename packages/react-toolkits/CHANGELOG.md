@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.3.49
+
+### Patch Changes
+
+- bd7138b: fix: select dropdown menu was overrided by Modal
+
 ## 0.3.48
 
 ### Patch Changes
