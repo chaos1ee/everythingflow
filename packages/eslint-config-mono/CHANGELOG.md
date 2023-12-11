@@ -1,5 +1,12 @@
 # @flow97/eslint-config-mono
 
+## 0.0.4
+
+### Patch Changes
+
+- 6f0f3ea: 1. refacotr: optimize the rendering of NavMenu
+  2: feat: add cypress test cases 2. chore: update react-web demo
+
 ## 0.0.3
 
 ### Patch Changes
