@@ -14,10 +14,13 @@ const { Spin, theme } = Antd
 const { Header, Sider, Content } = Antd.Layout
 
 export interface LayoutProps extends PropsWithChildren {
-  extras?: { key: Key; children: ReactNode }[]
+  extras?: {
+    key: Key
+    children: ReactNode
+  }[]
 }
 
-const Layout: FC<LayoutProps> = props => {
+const Layout: FC<LayoutProps> = (props: LayoutProps) => {
   const { children, extras } = props
   const {
     token: { colorBgContainer, colorBorder },

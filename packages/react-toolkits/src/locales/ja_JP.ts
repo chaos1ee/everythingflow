@@ -19,6 +19,7 @@ const locale: Locale = {
     route: 'ルート',
     request: 'リクエスト',
     response: 'レスポンス',
+    add: 'ついか',
   },
   Login: {
     title: 'ログイン方法',
@@ -46,7 +47,7 @@ const locale: Locale = {
     description: 'ゲームを選択してください',
   },
   UserWidget: {
-    logoutText: 'ログアウト',
+    signOutText: 'ログアウト',
   },
   UserList: {
     createTitle: 'ユーザーを作成',
@@ -77,6 +78,11 @@ const locale: Locale = {
   },
   RoleDetail: {
     title: '役割詳細',
+  },
+  InfiniteList: {
+    loadingText: '読み込み中',
+    reachEndText: '最後まで到達しました',
+    loadMoreText: 'もっと読み込む',
   },
 }
 

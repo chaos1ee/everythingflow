@@ -19,6 +19,7 @@ const locale: Locale = {
     route: '路由',
     request: '请求',
     response: '响应',
+    add: '添加',
   },
   Login: {
     title: '登录方式',
@@ -46,7 +47,7 @@ const locale: Locale = {
     description: '请选择游戏',
   },
   UserWidget: {
-    logoutText: '登出',
+    signOutText: '登出',
   },
   UserList: {
     createTitle: '创建用户',
@@ -77,6 +78,11 @@ const locale: Locale = {
   },
   RoleDetail: {
     title: '角色详情',
+  },
+  InfiniteList: {
+    loadingText: '加载中',
+    reachEndText: '已经到底了',
+    loadMoreText: '加载更多',
   },
 }
 

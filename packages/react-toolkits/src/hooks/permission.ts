@@ -21,13 +21,13 @@ export function usePermissions(
     codes.length > 0 ? [usePermissionApiV2 ? '/api/usystem/user/checkV2' : '/api/usystem/user/check', codes] : null,
     ([url]) =>
       request<PermissionCheckResult>(url, {
-        method: 'post',
+        method: 'POST',
         body: {
           permissions: codes,
         },
         isGlobalNS: opts?.isGlobalNS,
       }).then(response => {
-        if (response.data.has_all) {
+        if (response.data?.has_all) {
           return codes.reduce(
             (acc, curr) => {
               acc[curr] = true
@@ -39,7 +39,7 @@ export function usePermissions(
 
         return codes.reduce(
           (acc, curr) => {
-            acc[curr] = (response.data as Record<string, boolean>)[curr]
+            acc[curr] = (response.data as Record<string, boolean>)?.[curr] ?? false
             return acc
           },
           {} as Record<string, boolean>,

@@ -19,6 +19,7 @@ const locale: Locale = {
     route: 'Route',
     request: 'Request',
     response: 'Response',
+    add: 'Add',
   },
   Login: {
     title: 'Login Method',
@@ -46,7 +47,7 @@ const locale: Locale = {
     description: 'Please select a game',
   },
   UserWidget: {
-    logoutText: 'Logout',
+    signOutText: 'Sign Out',
   },
   UserList: {
     createTitle: 'Create User',
@@ -77,6 +78,11 @@ const locale: Locale = {
   },
   RoleDetail: {
     title: 'Role Details',
+  },
+  InfiniteList: {
+    loadingText: 'Loading...',
+    reachEndText: "You've reached the end",
+    loadMoreText: 'Load more',
   },
 }
 

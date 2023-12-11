@@ -17,6 +17,7 @@ export type Locale = {
     route: string
     request: string
     response: string
+    add: string
   }
   Login: {
     title: string
@@ -44,7 +45,7 @@ export type Locale = {
     description: string
   }
   UserWidget: {
-    logoutText: string
+    signOutText: string
   }
   UserList: {
     createTitle: string
@@ -75,5 +76,10 @@ export type Locale = {
   }
   RoleDetail: {
     title: string
+  }
+  InfiniteList: {
+    loadingText: string
+    reachEndText: string
+    loadMoreText: string
   }
 }

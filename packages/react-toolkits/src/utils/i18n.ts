@@ -1,8 +1,8 @@
 // eslint-disable-next-line camelcase
-import en_GB from '@/locales/en_GB'
 import { useToolkitsContext } from '@/components/ContextProvider'
-import { get, has, template } from 'lodash-es'
 import type { Locale } from '@/locales'
+import zh_CN from '@/locales/zh_CN'
+import { get, has, template } from 'lodash-es'
 
 type Join<K, P> = K extends string | number
   ? P extends string | number
@@ -13,13 +13,13 @@ type Join<K, P> = K extends string | number
 type Paths<T, D extends number = 10> = [D] extends [never]
   ? never
   : T extends object
-  ? {
-      [K in keyof T]-?: K extends string | number ? `${K}` | Join<K, Paths<T[K]>> : never
-    }[keyof T]
-  : ''
+    ? {
+        [K in keyof T]-?: K extends string | number ? `${K}` | Join<K, Paths<T[K]>> : never
+      }[keyof T]
+    : ''
 
 export function useTranslation() {
-  const { locale = en_GB } = useToolkitsContext()
+  const { locale = zh_CN } = useToolkitsContext()
 
   return (key: Paths<Locale>, data?: Record<string, unknown>) =>
     has(locale, key) ? template(get(locale, key as string))(data) : key

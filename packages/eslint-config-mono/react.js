@@ -232,6 +232,7 @@ module.exports = {
     'use-isnan': 'warn',
     'valid-typeof': 'warn',
     'getter-return': 'warn',
+    camelcase: 'off',
 
     // https://github.com/benmosher/eslint-plugin-import/tree/master/docs/rules
     'import/first': 'error',
@@ -283,7 +284,7 @@ module.exports = {
     'jsx-a11y/role-supports-aria-props': 'warn',
     'jsx-a11y/scope': 'warn',
     'react-hooks/rules-of-hooks': 'error',
-    'react-hooks/exhaustive-deps': 'warn',
+    'react-hooks/exhaustive-deps': 'off',
     'react/jsx-uses-react': 'error',
     'react/jsx-filename-extension': [
       1,
@@ -293,12 +294,7 @@ module.exports = {
     ],
     'react/no-array-index-key': 'off',
     'react/jsx-indent': ['error', 2],
-    'react/jsx-one-expression-per-line': [
-      'error',
-      {
-        allow: 'single-child',
-      },
-    ],
+    'react/jsx-one-expression-per-line': 'off',
     'react/no-typos': 'error',
     'react/style-prop-object': 'warn',
     'react/no-is-mounted': 'error',

@@ -1,10 +1,7 @@
 import { useToolkitsContext } from '@/components/ContextProvider'
-import type { RequestError } from '@/utils/request'
 import { request } from '@/utils/request'
 import { jwtDecode } from 'jwt-decode'
-import { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import useSWRImmutable from 'swr/immutable'
+import useSWR from 'swr'
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 
@@ -44,40 +41,21 @@ export const useTokenStore = create<TokenState>()(
   ),
 )
 
-export function useValidateToken() {
-  const navigate = useNavigate()
-  const { clearToken } = useTokenStore()
-  const [validated, setValidated] = useState(false)
+export function useValidateToken(skip: boolean) {
   const { usePermissionApiV2 } = useToolkitsContext()
 
-  // 发送请求验证 token 是否有效，无效则跳转到登录页。
-  useSWRImmutable(
-    !validated && location.pathname !== '/login'
-      ? usePermissionApiV2
-        ? '/api/usystem/user/checkV2'
-        : '/api/usystem/user/check'
-      : null,
+  useSWR(
+    !skip ? (usePermissionApiV2 ? '/api/usystem/user/checkV2' : '/api/usystem/user/check') : null,
     (url: string) =>
       request(url, {
-        method: 'post',
-        body: { permissions: ['100001'] },
+        method: 'POST',
+        body: {
+          permissions: ['100001'],
+        },
       }),
     {
       suspense: true,
-      shouldRetryOnError: false,
-      onError(err: RequestError) {
-        if (err.status === 401) {
-          clearToken()
-          navigate('/login')
-        } else if (err.status === 412) {
-          clearToken()
-          navigate('/login', { state: { notUser: true } })
-        }
-      },
+      dedupingInterval: 0,
     },
   )
-
-  useEffect(() => {
-    setValidated(true)
-  }, [])
 }
