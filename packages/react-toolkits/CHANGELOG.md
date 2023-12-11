@@ -1,5 +1,12 @@
 # react-toolkits
 
+## 0.4.0
+
+### Minor Changes
+
+- 6f0f3ea: 1. refacotr: optimize the rendering of NavMenu
+  2: feat: add cypress test cases 2. chore: update react-web demo
+
 ## 0.3.50
 
 ### Patch Changes
