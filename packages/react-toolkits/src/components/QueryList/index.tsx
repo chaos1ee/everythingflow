@@ -19,8 +19,8 @@ type RecursivePartial<T> = NonNullable<T> extends object
       [P in keyof T]?: NonNullable<T[P]> extends (infer U)[]
         ? RecursivePartial<U>[]
         : NonNullable<T[P]> extends object
-        ? RecursivePartial<T[P]>
-        : T[P]
+          ? RecursivePartial<T[P]>
+          : T[P]
     }
   : T
 
@@ -48,7 +48,7 @@ export interface QueryListProps<Item = any, Values = any, Response = any>
   renderForm?: (form: FormInstance<Values>) => ReactNode
   code?: string
   isGlobalNS?: boolean
-  headers?: Record<string, string>
+  headers?: Record<string, string> | ((form: FormInstance<Values>) => Record<string, string>)
   // 把表单的值和分页数据转换成请求参数
   transformArg?: (page: number, size: number, values: Values | undefined) => unknown
   // 当请求的返回值不满足时进行转换
@@ -120,7 +120,10 @@ const InternalQueryList = <
   } = useSWR(
     swrKey,
     async key => {
-      const _response = await request<Response>(key, { headers, isGlobalNS })
+      const _response = await request<Response>(key, {
+        headers: typeof headers === 'function' ? headers(form) : headers,
+        isGlobalNS,
+      })
       setResponse(_response.data)
       const list = transformResponse?.(_response.data) ?? _response.data
       afterSuccess?.(list, action.current)
@@ -188,7 +191,6 @@ const InternalQueryList = <
       action.current = QueryListAction.Init
       refetch()
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [accessible])
 
   useEffect(() => {

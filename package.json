@@ -5,11 +5,14 @@
   "scripts": {
     "dev": "turbo dev --filter=\"react-web\" --no-daemon",
     "build": "dotenv -c production turbo build",
+    "test": "turbo run test",
     "clean": "turbo clean",
     "lint": "turbo lint",
+    "cypress:open": "cypress open",
+    "cypress:run": "cypress run --browser chrome",
     "preinstall": "npx only-allow pnpm",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
-    "clear": "rimraf -g 'apps/*/node_modules' && rimraf -g 'packages/*/node_modules' && rimraf node_modules"
+    "clear": "rimraf -g '**/node_modules'"
   },
   "repository": "git@github.com:chaos1ee/everythingflow.git",
   "author": "chaos1ee <chaos.maybeeee@gmail.com>",
@@ -19,11 +22,14 @@
     "@changesets/cli": "^2.26.2",
     "@flow97/prettier-config": "workspace:*",
     "@types/node": "^20.8.3",
+    "cypress": "^13.6.0",
     "dotenv-cli": "^7.3.0",
     "eslint": "^8.51.0",
+    "jose": "^5.1.1",
     "prettier": "^3.0.3",
     "rimraf": "^5.0.5",
-    "turbo": "^1.10.15"
+    "turbo": "^1.10.15",
+    "typescript": "^5.3.2"
   },
   "prettier": "@flow97/prettier-config"
 }

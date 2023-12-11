@@ -54,8 +54,12 @@ export async function request<T = any>(url: string, opts?: RequestOptions): Prom
 
   // 设置请求头
   headers = new Headers(headers)
-  const token = useTokenStore.getState().token
-  headers.set('Authorization', `Bearer ${token}`)
+
+  const token = useTokenStore?.getState()?.token
+
+  if (token) {
+    headers.set('Authorization', `Bearer ${token}`)
+  }
 
   if (!headers.has('Content-Type')) {
     headers.set('Content-Type', 'application/json')

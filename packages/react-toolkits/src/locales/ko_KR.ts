@@ -19,6 +19,7 @@ const locale: Locale = {
     route: '노선',
     request: '요청',
     response: '응답',
+    add: '추가',
   },
   Login: {
     title: '로그인 방법',
@@ -46,7 +47,7 @@ const locale: Locale = {
     description: '게임을 선택해주세요',
   },
   UserWidget: {
-    logoutText: '로그아웃',
+    signOutText: '로그아웃',
   },
   UserList: {
     createTitle: '사용자 생성',
@@ -77,6 +78,11 @@ const locale: Locale = {
   },
   RoleDetail: {
     title: '역할 세부 정보',
+  },
+  InfiniteList: {
+    loadingText: '로딩 중',
+    reachEndText: '끝에 도달했습니다',
+    loadMoreText: '더 로드하기',
   },
 }
 

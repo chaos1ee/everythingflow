@@ -1,3 +1,7 @@
+import { useToolkitsContext } from '@/components/ContextProvider'
+import { useNavStore } from '@/components/NavMenu/store'
+import { usePermissions } from '@/hooks/permission'
+import type { MenuProps } from 'antd'
 import { Menu } from 'antd'
 import type {
   ItemType,
@@ -6,20 +10,19 @@ import type {
   MenuItemType,
   SubMenuType,
 } from 'antd/es/menu/hooks/useItems'
-import type { FC, ReactNode } from 'react'
-import { useCallback, useEffect, useMemo } from 'react'
+import type { ReactNode } from 'react'
+import { memo, useEffect } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { useNavStore } from '@/components/NavMenu/store'
-import { useToolkitsContext } from '@/components/ContextProvider'
-import { usePermissions } from '@/hooks/permission'
 import type { Merge } from 'ts-essentials'
 
 // 扩展 antd Menu 的类型，使其支持一些我们想要的自定义字段。
 type MenuItemType2 = Merge<
   MenuItemType,
   {
-    code /** 权限编号 **/?: string
-    route /** 前端路由地址 **/?: string
+    // 权限编号
+    code?: string
+    // 前端路由地址
+    route?: string
   }
 >
 
@@ -35,10 +38,6 @@ type MenuItemGroupType2 = Merge<MenuItemGroupType, { children?: NavMenuItem[] }>
 export type NavMenuItem = MenuItemType2 | SubMenuType2 | MenuItemGroupType2 | MenuDividerType | null
 
 const withLink = (label?: ReactNode, route?: string): ReactNode => {
-  if (!label) {
-    return <></>
-  }
-
   if (route) {
     return <Link to={route}>{label}</Link>
   }
@@ -99,23 +98,27 @@ function flatItems(
   return result
 }
 
-const NavMenu: FC = () => {
+const NavMenu = memo(function NavMenu() {
   const location = useLocation()
   const { menuItems } = useToolkitsContext()
-  const flattenItems = useMemo(() => flatItems(menuItems ?? []), [menuItems])
+  const flattenItems = flatItems(menuItems ?? [])
   const codes = flattenItems.map(item => item.code).filter(Boolean) as string[]
   const { data: permissions } = usePermissions(codes, { isGlobalNS: true, suspense: true })
-  const internalItems = useMemo(() => transformItems(menuItems ?? [], permissions), [menuItems, permissions])
+  const internalItems = transformItems(menuItems ?? [], permissions)
   const { openKeys, selectedKeys, setOpenKeys, setSelectedKeys } = useNavStore()
 
-  const onOpenChange = useCallback(
-    (keys: string[]) => {
-      const latestOpenKey = keys?.find(key => openKeys?.indexOf(key) === -1)
-      const match = flattenItems.find(item => latestOpenKey === item.key)
-      setOpenKeys((match?.keypath ?? [latestOpenKey]) as string[])
-    },
-    [flattenItems, openKeys, setOpenKeys],
-  )
+  const onOpenChange: MenuProps['onOpenChange'] = keys => {
+    const latestOpenKey = keys?.find(key => openKeys?.indexOf(key) === -1)
+    const match = flattenItems.find(item => latestOpenKey === item.key)
+    setOpenKeys((match?.keypath ?? [latestOpenKey]) as string[])
+  }
+
+  const onMenuItemClick: MenuProps['onClick'] = data => {
+    const key = data.key
+    const keyPath = data.keyPath
+    setSelectedKeys([key])
+    setOpenKeys(keyPath)
+  }
 
   useEffect(() => {
     const match = flattenItems.find(item => location.pathname === item.route)
@@ -126,7 +129,7 @@ const NavMenu: FC = () => {
       setSelectedKeys([key])
       setOpenKeys(keypath)
     }
-  }, [flattenItems, location, setOpenKeys, setSelectedKeys])
+  }, [])
 
   return (
     <Menu
@@ -136,9 +139,10 @@ const NavMenu: FC = () => {
       openKeys={openKeys}
       selectedKeys={selectedKeys}
       onOpenChange={onOpenChange}
+      onClick={onMenuItemClick}
     />
   )
-}
+})
 
 NavMenu.displayName = 'NavMenu'
 

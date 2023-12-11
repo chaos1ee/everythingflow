@@ -1,7 +1,8 @@
+import { useTranslation } from '@/utils/i18n'
 import { PlusOutlined } from '@ant-design/icons'
 import type { InputRef } from 'antd'
 import { Input, Space, Tag, theme } from 'antd'
-import type { FC } from 'react'
+import type { ChangeEvent, CSSProperties, FC } from 'react'
 import { useEffect, useRef, useState } from 'react'
 
 export interface DynamicTagsProps {
@@ -16,6 +17,7 @@ export interface DynamicTagsProps {
 
 const DynamicTags: FC<DynamicTagsProps> = props => {
   const { initialTags, addable, removable, addCallback, removeCallback } = props
+  const t = useTranslation()
   const { token } = theme.useToken()
   const [tags, setTags] = useState<string[]>([])
   const [inputVisible, setInputVisible] = useState(false)
@@ -52,7 +54,7 @@ const DynamicTags: FC<DynamicTagsProps> = props => {
     setInputVisible(true)
   }
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     setInputValue(e.target.value)
   }
 
@@ -69,7 +71,7 @@ const DynamicTags: FC<DynamicTagsProps> = props => {
     setInputValue('')
   }
 
-  const handleEditInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleEditInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     setEditInputValue(e.target.value)
   }
 
@@ -81,12 +83,12 @@ const DynamicTags: FC<DynamicTagsProps> = props => {
     setInputValue('')
   }
 
-  const tagInputStyle: React.CSSProperties = {
+  const tagInputStyle: CSSProperties = {
     width: 78,
     verticalAlign: 'top',
   }
 
-  const tagPlusStyle: React.CSSProperties = {
+  const tagPlusStyle: CSSProperties = {
     background: token.colorBgContainer,
     borderStyle: 'dashed',
   }
@@ -150,7 +152,7 @@ const DynamicTags: FC<DynamicTagsProps> = props => {
         ) : (
           <Tag style={tagPlusStyle} onClick={showInput}>
             <PlusOutlined />
-            &nbsp;添加
+            &nbsp;{t('global.add')}
           </Tag>
         ))}
     </Space>

@@ -7,6 +7,8 @@ import type { Game, GameState } from '@/components/GameSelect'
 import GameSelect, { useGameStore } from '@/components/GameSelect'
 import type { HighlightTextsProps } from '@/components/Highlight'
 import Highlight from '@/components/Highlight'
+import type { InfiniteListProps } from '@/components/InfiniteList'
+import InfiniteList from '@/components/InfiniteList'
 import type { LayoutProps } from '@/components/Layout'
 import Layout from '@/components/Layout'
 import type { NavMenuItem } from '@/components/NavMenu'
@@ -23,15 +25,13 @@ import type { UseFormModalProps } from '@/hooks/formModal'
 import { useFormModal } from '@/hooks/formModal'
 import { usePermission, usePermissions } from '@/hooks/permission'
 import type { Locale } from '@/locales'
-import baseRoutes from '@/routes/base'
-import logRoutes from '@/routes/log'
-import permissionRoutes from '@/routes/permission'
 import { useQueryListStore } from '@/stores/queryList'
 import type { TokenState } from '@/stores/token'
 import { useTokenStore, useValidateToken } from '@/stores/token'
 import '@/styles/index.css'
 import { useTranslation } from '@/utils/i18n'
 import { request, RequestError } from '@/utils/request'
+import { withBaseRoutes, withoutGameSelect } from '@/utils/router'
 import { mixedStorage } from '@/utils/storage'
 
 export {
@@ -40,6 +40,7 @@ export {
   DynamicTags,
   QueryList,
   QueryListAction,
+  InfiniteList,
   FilterFormWrapper,
   Highlight,
   GameSelect,
@@ -55,14 +56,13 @@ export {
   usePermissions,
   usePermission,
   useQueryListStore,
-  baseRoutes,
-  logRoutes,
-  permissionRoutes,
   useTranslation,
   mixedStorage,
   useTokenStore,
   useValidateToken,
   request,
+  withoutGameSelect,
+  withBaseRoutes,
   RequestError,
   type Locale,
   type DynamicTagsProps,
@@ -75,6 +75,7 @@ export {
   type NavMenuItem,
   type PermissionButtonProps,
   type PermissionGuardProps,
+  type InfiniteListProps,
   type QueryListProps,
   type QueryListRef,
   type TokenState,

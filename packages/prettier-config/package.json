@@ -3,9 +3,6 @@
   "version": "0.0.3",
   "description": "Shared prettier configuration file.",
   "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
   "keywords": [],
   "homepage": "https://github.com/chaos1ee/everythingflow/tree/main/packages/prettier-config#readme",
   "author": "chaos1ee <chaos.maybeeee@gmail.com>",

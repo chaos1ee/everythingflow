@@ -13,6 +13,13 @@
       ]
     },
     "lint": {},
+    "test": {
+      "dependsOn": [
+        "lint",
+        "^build",
+        "^dev"
+      ]
+    },
     "dev": {
       "cache": false,
       "persistent": true
