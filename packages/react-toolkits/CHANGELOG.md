@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.4.1
+
+### Patch Changes
+
+- ec72527: feat: ignore app-id header while game select is hidden
+
 ## 0.4.0
 
 ### Minor Changes
