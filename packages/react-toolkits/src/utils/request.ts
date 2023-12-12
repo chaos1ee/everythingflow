@@ -65,13 +65,14 @@ export async function request<T = any>(url: string, opts?: RequestOptions): Prom
     headers.set('Content-Type', 'application/json')
   }
 
-  if (!contextStore.getState().hideGameSelect && contextStore.getState().usePermissionApiV2) {
-    const game = useGameStore.getState().game
-
+  if (contextStore.getState().usePermissionApiV2) {
     if (isGlobalNS) {
       headers.set('App-ID', 'global')
-    } else if (game) {
-      headers.set('App-ID', game.id)
+    } else if (!contextStore.getState().hideGameSelect) {
+      const game = useGameStore.getState().game
+      if (game) {
+        headers.set('App-ID', game.id)
+      }
     }
   }
 
