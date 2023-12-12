@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.4.2
+
+### Patch Changes
+
+- 46ca83c: fix: missing app-id while isGlobalNS is true
+
 ## 0.4.1
 
 ### Patch Changes
