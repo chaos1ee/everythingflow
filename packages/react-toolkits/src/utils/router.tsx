@@ -7,9 +7,9 @@ import { Navigate, Route, Routes } from 'react-router-dom'
 
 const NotFound = lazy(() => import('@/pages/NotFound'))
 const OperationLogList = lazy(() => import('@/pages/OperationLogList'))
+const SignIn = lazy(() => import('@/pages/SignIn'))
 const RoleDetail = lazy(() => import('@/pages/RoleDetail'))
 const RoleList = lazy(() => import('@/pages/RoleList'))
-const SignIn = lazy(() => import('@/pages/SignIn'))
 const UserList = lazy(() => import('@/pages/UserList'))
 
 export const withLayout = (WrappedComponent: ComponentType, props?: Partial<ContextState>) => {
@@ -26,7 +26,7 @@ export const withLayout = (WrappedComponent: ComponentType, props?: Partial<Cont
   return ComponentWithLayout
 }
 
-const PermissionRoutes = () => {
+const Permission = () => {
   return (
     <Routes>
       <Route index element={<Navigate to="user" />} />
@@ -39,13 +39,13 @@ const PermissionRoutes = () => {
 
 export function withBaseRoutes(WrappedComponent: ComponentType, props?: Partial<Omit<ContextState, 'hideGameSelect'>>) {
   const ComponentWithBaseRoutes = () => {
-    const _props = Object.assign({}, props, { hideGameSelect: false })
+    const sharedProps = Object.assign({}, props, { hideGameSelect: true })
 
     return (
       <Routes>
         <Route path="/*" element={<WrappedComponent />} />
-        <Route path="/operation_log" Component={withLayout(OperationLogList, _props)} />
-        <Route path="/permission/*" Component={withLayout(PermissionRoutes, _props)} />
+        <Route path="/operation_log" Component={withLayout(OperationLogList, sharedProps)} />
+        <Route path="/permission/*" Component={withLayout(Permission, sharedProps)} />
         <Route path="/sign_in" element={<SignIn />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
