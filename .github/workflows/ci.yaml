@@ -46,7 +46,7 @@ jobs:
       - name: Install dependencies
         run: |
           pnpm config set auto-install-peers true --location project
-          pnpm install --no-frozen-lockfile --ignore-scripts
+          pnpm install --ignore-scripts
 
       - name: Build
         run: pnpm build
