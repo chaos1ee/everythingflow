@@ -1,3 +1,4 @@
+import type { ContextState} from '@/components/ContextProvider';
 import ContextProvider, { contextStore, useToolkitsContext } from '@/components/ContextProvider'
 import type { DynamicTagsProps } from '@/components/DynamicTags'
 import DynamicTags from '@/components/DynamicTags'
@@ -64,6 +65,7 @@ export {
   withoutGameSelect,
   withBaseRoutes,
   RequestError,
+  type ContextState,
   type Locale,
   type DynamicTagsProps,
   type FilterFormWrapperProps,
