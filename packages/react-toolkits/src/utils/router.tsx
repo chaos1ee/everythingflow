@@ -1,27 +1,29 @@
-/* eslint-disable react/function-component-definition */
+import type { ContextState } from '@/components/ContextProvider'
 import ContextProvider from '@/components/ContextProvider'
 import Layout from '@/components/Layout'
-import type { ComponentType, ReactElement } from 'react'
+import type { ComponentType } from 'react'
 import { lazy } from 'react'
 import { Navigate, Route, Routes } from 'react-router-dom'
 
-const NotFound = lazy(() => import('@/Pages/NotFound'))
-const OperationLogList = lazy(() => import('@/Pages/OperationLogList'))
-const RoleDetail = lazy(() => import('@/Pages/RoleDetail'))
-const RoleList = lazy(() => import('@/Pages/RoleList'))
-const SignIn = lazy(() => import('@/Pages/SignIn'))
-const UserList = lazy(() => import('@/Pages/UserList'))
+const NotFound = lazy(() => import('@/pages/NotFound'))
+const OperationLogList = lazy(() => import('@/pages/OperationLogList'))
+const RoleDetail = lazy(() => import('@/pages/RoleDetail'))
+const RoleList = lazy(() => import('@/pages/RoleList'))
+const SignIn = lazy(() => import('@/pages/SignIn'))
+const UserList = lazy(() => import('@/pages/UserList'))
 
-export const withoutGameSelect = (WrappedComponent: ComponentType) => {
-  return function ComponentWithLayout() {
+export const withLayout = (WrappedComponent: ComponentType, props?: Partial<ContextState>) => {
+  const ComponentWithLayout = () => {
     return (
-      <ContextProvider hideGameSelect>
+      <ContextProvider {...props}>
         <Layout>
           <WrappedComponent />
         </Layout>
       </ContextProvider>
     )
   }
+
+  return ComponentWithLayout
 }
 
 const PermissionRoutes = () => {
@@ -35,16 +37,20 @@ const PermissionRoutes = () => {
   )
 }
 
-export function withBaseRoutes(element: ReactElement) {
-  return function MixedRoutes() {
+export function withBaseRoutes(WrappedComponent: ComponentType, props?: Partial<Omit<ContextState, 'hideGameSelect'>>) {
+  const ComponentWithBaseRoutes = () => {
+    const _props = Object.assign({}, props, { hideGameSelect: false })
+
     return (
       <Routes>
-        <Route path="/*" element={element} />
-        <Route path="/operation_log" Component={withoutGameSelect(OperationLogList)} />
-        <Route path="/permission/*" Component={withoutGameSelect(PermissionRoutes)} />
+        <Route path="/*" element={<WrappedComponent />} />
+        <Route path="/operation_log" Component={withLayout(OperationLogList, _props)} />
+        <Route path="/permission/*" Component={withLayout(PermissionRoutes, _props)} />
         <Route path="/sign_in" element={<SignIn />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     )
   }
+
+  return ComponentWithBaseRoutes
 }
