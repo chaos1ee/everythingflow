@@ -1,5 +1,14 @@
 # react-toolkits
 
+## 0.4.3
+
+### Patch Changes
+
+- b9f9fac: fix: missing props in withBaseRoutes
+- 6085010: chore: update demo
+- bae44cb: fix: directory name capitalization error
+- 5132166: fix: missing export member
+
 ## 0.4.2
 
 ### Patch Changes
