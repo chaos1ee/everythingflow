@@ -11,7 +11,7 @@ import type {
   SubMenuType,
 } from 'antd/es/menu/hooks/useItems'
 import type { ReactNode } from 'react'
-import { memo, useEffect } from 'react'
+import { memo, useLayoutEffect } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import type { Merge } from 'ts-essentials'
 
@@ -120,7 +120,7 @@ const NavMenu = memo(function NavMenu() {
     setOpenKeys(keyPath)
   }
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const match = flattenItems.find(item => location.pathname === item.route)
 
     if (match) {
