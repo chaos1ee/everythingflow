@@ -1,4 +1,4 @@
-import type { ContextState} from '@/components/ContextProvider';
+import type { ContextState } from '@/components/ContextProvider'
 import ContextProvider, { contextStore, useToolkitsContext } from '@/components/ContextProvider'
 import type { DynamicTagsProps } from '@/components/DynamicTags'
 import DynamicTags from '@/components/DynamicTags'
@@ -32,7 +32,7 @@ import { useTokenStore, useValidateToken } from '@/stores/token'
 import '@/styles/index.css'
 import { useTranslation } from '@/utils/i18n'
 import { request, RequestError } from '@/utils/request'
-import { withBaseRoutes, withoutGameSelect } from '@/utils/router'
+import { withBaseRoutes } from '@/utils/router'
 import { mixedStorage } from '@/utils/storage'
 
 export {
@@ -62,7 +62,6 @@ export {
   useTokenStore,
   useValidateToken,
   request,
-  withoutGameSelect,
   withBaseRoutes,
   RequestError,
   type ContextState,
