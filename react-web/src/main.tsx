@@ -1,7 +1,6 @@
 import App from '@/App'
 import '@/libs/i18n'
 import '@/styles/index.css'
-import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import 'react-toolkits/style.css'
 
@@ -15,8 +14,4 @@ await worker.start({
 const container = document.getElementById('root') as HTMLElement
 const root = createRoot(container)
 
-root.render(
-  <StrictMode>
-    <App />
-  </StrictMode>,
-)
+root.render(<App />)

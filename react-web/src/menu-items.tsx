@@ -1,7 +1,7 @@
 import { ConsoleSqlOutlined, SafetyOutlined, TableOutlined } from '@ant-design/icons'
 import type { NavMenuItem } from 'react-toolkits'
 
-const navItems: NavMenuItem[] = [
+const menuItems: NavMenuItem[] = [
   {
     key: 'list',
     label: 'List',
@@ -44,4 +44,4 @@ const navItems: NavMenuItem[] = [
   },
 ]
 
-export default navItems
+export default menuItems

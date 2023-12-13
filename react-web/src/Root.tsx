@@ -2,10 +2,11 @@
 import { App } from 'antd'
 import type { ComponentType } from 'react'
 import { lazy } from 'react'
-import { Navigate, Route, Routes, useLocation, useNavigate } from 'react-router-dom'
-import { Layout, RequestError, useTokenStore, useValidateToken, withBaseRoutes } from 'react-toolkits'
+import { Navigate, Route, Routes, useNavigate } from 'react-router-dom'
+import { Layout, RequestError, useTokenStore, withBaseRoutes } from 'react-toolkits'
 import type { BareFetcher, Key, SWRConfiguration, SWRHook, SWRResponse } from 'swr'
 import { SWRConfig } from 'swr'
+import Providers from './Providers'
 
 const List = lazy(() => import('@/pages/list/List'))
 const InfiniteList = lazy(() => import('@/pages/list/Infinite'))
@@ -94,18 +95,23 @@ const ListRoutes = () => {
   )
 }
 
-const Root = () => {
-  const location = useLocation()
-  useValidateToken(location.pathname === '/sign_in')
+const AppRoute = () => {
+  return (
+    <Routes>
+      <Route index element={<Navigate to="/list" />} />
+      <Route path="list/*" Component={withLayout(ListRoutes)} />
+    </Routes>
+  )
+}
 
-  return withSWRConfig(
-    withBaseRoutes(
-      <Routes>
-        <Route index element={<Navigate to="/list" />} />
-        <Route path="list/*" Component={withLayout(ListRoutes)} />
-      </Routes>,
-    ),
-  )()
+const RootRoute = withBaseRoutes(AppRoute)
+
+const Root = () => {
+  return (
+    <Providers>
+      <RootRoute />
+    </Providers>
+  )
 }
 
 export default Root

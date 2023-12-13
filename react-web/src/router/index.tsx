@@ -3,6 +3,7 @@ import { App } from 'antd'
 import { createBrowserRouter, Navigate, useRouteError } from 'react-router-dom'
 import { RequestError, useTokenStore } from 'react-toolkits'
 
+// 捕获 Suspense 组件中的错误
 const RootErrorBoundary = () => {
   const error = useRouteError()
   const { notification } = App.useApp()
@@ -18,10 +19,10 @@ const RootErrorBoundary = () => {
         return
       case 401:
         clearToken()
-        return <Navigate to="/sign_in" />
+        return <Navigate relative="path" to="/sign_in" />
       case 412:
         clearToken()
-        return <Navigate to="/sign_in" state={{ notUser: true }} />
+        return <Navigate relative="path" to="/sign_in" state={{ notUser: true }} />
       case 403:
         notification.error({
           message: '未授权',
@@ -42,12 +43,15 @@ const RootErrorBoundary = () => {
   return <h1>Unknown Error</h1>
 }
 
-const router = createBrowserRouter([
-  {
-    path: '*',
-    Component: Root,
-    errorElement: <RootErrorBoundary />,
-  },
-])
+const router = createBrowserRouter(
+  [
+    {
+      path: '*',
+      element: <Root />,
+      errorElement: <RootErrorBoundary />,
+    },
+  ],
+  { basename: import.meta.env.BASE_URL },
+)
 
 export default router
