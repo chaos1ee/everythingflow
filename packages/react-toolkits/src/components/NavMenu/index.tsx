@@ -11,7 +11,7 @@ import type {
   SubMenuType,
 } from 'antd/es/menu/hooks/useItems'
 import type { ReactNode } from 'react'
-import { memo, useLayoutEffect } from 'react'
+import { memo, useEffect, useMemo } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import type { Merge } from 'ts-essentials'
 
@@ -87,9 +87,9 @@ function flatItems(
     const children = (item as SubMenuType2 | MenuItemGroupType2)!.children as NavMenuItem[]
 
     if (Array.isArray(children)) {
-      const _keys =
+      const keys =
         (item as MenuItemGroupType2)!.type !== 'group' && item!.key ? [...keypath, item!.key as string] : keypath
-      flatItems(children, result, _keys)
+      flatItems(children, result, keys)
     } else {
       result.push(Object.assign(item as MenuItemType2, { keypath }))
     }
@@ -101,10 +101,10 @@ function flatItems(
 const NavMenu = memo(function NavMenu() {
   const location = useLocation()
   const { menuItems } = useToolkitsContext()
-  const flattenItems = flatItems(menuItems ?? [])
+  const flattenItems = useMemo(() => flatItems(menuItems ?? []), [menuItems])
   const codes = flattenItems.map(item => item.code).filter(Boolean) as string[]
   const { data: permissions } = usePermissions(codes, { isGlobalNS: true, suspense: true })
-  const internalItems = transformItems(menuItems ?? [], permissions)
+  const internalItems = useMemo(() => transformItems(menuItems ?? [], permissions), [menuItems, permissions])
   const { openKeys, selectedKeys, setOpenKeys, setSelectedKeys } = useNavStore()
 
   const onOpenChange: MenuProps['onOpenChange'] = keys => {
@@ -113,14 +113,7 @@ const NavMenu = memo(function NavMenu() {
     setOpenKeys((match?.keypath ?? [latestOpenKey]) as string[])
   }
 
-  const onMenuItemClick: MenuProps['onClick'] = data => {
-    const key = data.key
-    const keyPath = data.keyPath
-    setSelectedKeys([key])
-    setOpenKeys(keyPath)
-  }
-
-  useLayoutEffect(() => {
+  useEffect(() => {
     const match = flattenItems.find(item => location.pathname === item.route)
 
     if (match) {
@@ -129,7 +122,7 @@ const NavMenu = memo(function NavMenu() {
       setSelectedKeys([key])
       setOpenKeys(keypath)
     }
-  }, [])
+  }, [flattenItems, location])
 
   return (
     <Menu
@@ -139,11 +132,12 @@ const NavMenu = memo(function NavMenu() {
       openKeys={openKeys}
       selectedKeys={selectedKeys}
       onOpenChange={onOpenChange}
-      onClick={onMenuItemClick}
     />
   )
 })
 
-NavMenu.displayName = 'NavMenu'
+if (process.env.NODE_ENV === 'development') {
+  NavMenu.displayName = 'NavMenu'
+}
 
 export default NavMenu
