@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.4.4
+
+### Patch Changes
+
+- 4bc6083: fix: openKeys and selectedKeys is wrong while react-router redirect
+
 ## 0.4.3
 
 ### Patch Changes
