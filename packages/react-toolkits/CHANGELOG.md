@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.4.5
+
+### Patch Changes
+
+- 9e342fd: feat: override default styles
+
 ## 0.4.4
 
 ### Patch Changes
