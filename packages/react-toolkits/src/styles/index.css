@@ -5,6 +5,6 @@
 @tailwind utilities;
 
 
-.toolkits-modal .ant-modal-confirm-content {
+.toolkits-modal .ant-modal-confirm-paragraph {
     max-width: 100% !important;
 }
