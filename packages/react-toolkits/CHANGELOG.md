@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.5.0
+
+### Minor Changes
+
+- dc3a327: build: replace tsup with vite
+
 ## 0.4.5
 
 ### Patch Changes

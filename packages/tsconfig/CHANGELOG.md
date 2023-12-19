@@ -1,5 +1,11 @@
 # tsconfig
 
+## 0.0.5
+
+### Patch Changes
+
+- dc3a327: build: replace tsup with vite
+
 ## 0.0.4
 
 ### Patch Changes
