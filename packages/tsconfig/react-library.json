@@ -3,21 +3,24 @@
   "display": "React Library",
   "extends": "./base.json",
   "compilerOptions": {
-    "jsx": "react-jsx",
-    "target": "es6",
-    "strictNullChecks": true,
-    "module": "esnext",
-    "moduleResolution": "node",
+    "target": "ES2020",
     "lib": [
-      "dom",
-      "es2017"
+      "ES2020",
+      "DOM"
     ],
-    "esModuleInterop": true,
-    "experimentalDecorators": true,
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "useDefineForClassFields": true,
     "skipLibCheck": true,
-    "stripInternal": true,
-    "noUnusedParameters": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "jsx": "react-jsx",
+    "strict": true,
     "noUnusedLocals": true,
-    "noImplicitAny": true
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+    "strictNullChecks": true,
+    "allowSyntheticDefaultImports": true
   }
 }

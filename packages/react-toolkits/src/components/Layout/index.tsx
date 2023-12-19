@@ -1,13 +1,13 @@
-import { useToolkitsContext } from '@/components/ContextProvider'
-import GameSelect from '@/components/GameSelect'
-import NavMenu from '@/components/NavMenu'
-import RequireGame from '@/components/RequireGame'
-import UserWidget from '@/components/UserWidget'
 import * as Antd from 'antd'
 import { Divider, Space } from 'antd'
 import type { FC, Key, PropsWithChildren, ReactNode } from 'react'
 import { Suspense } from 'react'
 import { Link } from 'react-router-dom'
+import { useToolkitsContext } from '../ContextProvider'
+import GameSelect from '../GameSelect'
+import NavMenu from '../NavMenu'
+import RequireGame from '../RequireGame'
+import UserWidget from '../UserWidget'
 import logo from './logo.png'
 
 const { Spin, theme } = Antd

@@ -1,10 +1,10 @@
-import { useTokenStore } from '@/stores/token'
-import { useTranslation } from '@/utils/i18n'
 import { LogoutOutlined, UserOutlined } from '@ant-design/icons'
 import { Dropdown, Space } from 'antd'
 import Link from 'antd/es/typography/Link'
 import type { FC } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useTranslation } from '../../hooks/i18n'
+import { useTokenStore } from '../../stores/token'
 
 const UserWidget: FC = () => {
   const navigate = useNavigate()

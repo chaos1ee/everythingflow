@@ -1,14 +1,14 @@
-import { useToolkitsContext } from '@/components/ContextProvider'
-import { useTokenStore } from '@/stores/token'
-import { useTranslation } from '@/utils/i18n'
-import { request } from '@/utils/request'
-import { mixedStorage } from '@/utils/storage'
 import { Select, Space, Typography } from 'antd'
 import { useCallback, useEffect, useMemo } from 'react'
 import { useSWRConfig } from 'swr'
 import useSWRImmutable from 'swr/immutable'
 import { create } from 'zustand'
 import { createJSONStorage, persist } from 'zustand/middleware'
+import { useTranslation } from '../../hooks/i18n'
+import { useTokenStore } from '../../stores/token'
+import { request } from '../../utils/request'
+import { mixedStorage } from '../../utils/storage'
+import { useToolkitsContext } from '../ContextProvider'
 
 const { Text } = Typography
 

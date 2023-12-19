@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import type { Game } from '@/components/GameSelect'
-import type { Locale } from '@/locales'
 import type { FC, PropsWithChildren, ReactNode } from 'react'
 import { createContext, useContext } from 'react'
 import { createStore } from 'zustand'
+import type { Locale } from '../../types'
+import type { Game } from '../GameSelect'
 import type { NavMenuItem } from '../NavMenu'
 
 export interface ContextState {

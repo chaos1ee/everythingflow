@@ -1,10 +1,8 @@
-@import "antd/dist/reset.css";
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 
-.toolkits-modal .ant-modal-confirm-paragraph {
+.toolkits-modal .ant-modal-confirm .ant-modal-confirm-paragraph {
     max-width: 100% !important;
 }

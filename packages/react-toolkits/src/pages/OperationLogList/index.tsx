@@ -1,10 +1,10 @@
-import QueryList from '@/components/QueryList'
-import type { OperationLogListItem } from '@/features/log'
-import { useTranslation } from '@/utils/i18n'
 import { Card, Col, Form, Input, Row, Select, Typography } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
 import dayjs from 'dayjs'
 import type { FC } from 'react'
+import QueryList from '../../components/QueryList'
+import type { OperationLogListItem } from '../../features/log'
+import { useTranslation } from '../../hooks/i18n'
 
 const { Option } = Select
 const { Paragraph } = Typography

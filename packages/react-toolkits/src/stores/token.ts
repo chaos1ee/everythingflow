@@ -1,9 +1,9 @@
-import { useToolkitsContext } from '@/components/ContextProvider'
-import { request } from '@/utils/request'
 import { jwtDecode } from 'jwt-decode'
 import useSWR from 'swr'
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
+import { useToolkitsContext } from '../components/ContextProvider'
+import { request } from '../utils/request'
 
 interface UserInfo {
   authorityId: string

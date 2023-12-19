@@ -6,8 +6,7 @@ import { App, ConfigProvider, Spin } from 'antd'
 import antdLocale from 'antd/locale/zh_CN'
 import type { FC, PropsWithChildren } from 'react'
 import { Suspense } from 'react'
-import { useLocation, useNavigate } from 'react-router-dom'
-import { ContextProvider, request, RequestError, useTokenStore, useValidateToken } from 'react-toolkits'
+import { ContextProvider, request } from 'react-toolkits'
 import type { BareFetcher, Key as SWRKey, SWRConfiguration, SWRHook, SWRResponse } from 'swr'
 import { SWRConfig } from 'swr'
 
@@ -29,12 +28,6 @@ const logger =
   }
 
 const Providers: FC<PropsWithChildren> = ({ children }) => {
-  const location = useLocation()
-  useValidateToken(location.pathname === '/sign_in')
-  const { notification } = App.useApp()
-  const clearToken = useTokenStore(state => state.clearToken)
-  const navigate = useNavigate()
-
   const { locale } = useLocaleStore()
 
   return (
@@ -64,34 +57,6 @@ const Providers: FC<PropsWithChildren> = ({ children }) => {
               fetcher: (args: Parameters<typeof request>) => request(...args).then(response => response.data),
               shouldRetryOnError: false,
               revalidateOnFocus: false,
-              onError(error) {
-                if (error instanceof RequestError) {
-                  switch (error.status) {
-                    case 200:
-                      notification.error({
-                        message: '请求出错',
-                        description: error.message,
-                      })
-                      return
-                    case 401:
-                      clearToken()
-                      navigate('/sign_in')
-                      return
-                    case 412:
-                      clearToken()
-                      navigate('/sign_in', { state: { notUser: true } })
-                      return
-                    case 403:
-                      notification.error({
-                        message: '未授权',
-                        description: '无权限，请联系管理员进行授权',
-                      })
-                      return
-                    default:
-                      throw new Error(error.message)
-                  }
-                }
-              },
             }}
           >
             <Suspense

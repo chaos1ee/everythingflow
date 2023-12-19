@@ -1,10 +1,10 @@
 import { Skeleton, Typography } from 'antd'
-import { useAllPermissions } from '../../hooks'
-import PermissionCollapse from '../PermissionCollapse'
-import type { RoleV1 } from '../../types'
-import type { PermissionListPropsBase } from '../PermissionList'
 import type { FC } from 'react'
-import { useTranslation } from '@/utils/i18n'
+import { useTranslation } from '../../../../hooks/i18n'
+import { useAllPermissions } from '../../hooks'
+import type { RoleV1 } from '../../types'
+import PermissionCollapse from '../PermissionCollapse'
+import type { PermissionListPropsBase } from '../PermissionList'
 
 const { Text } = Typography
 

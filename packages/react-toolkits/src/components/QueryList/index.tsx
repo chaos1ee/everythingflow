@@ -1,10 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import FilterFormWrapper from '@/components/FilterFormWrapper'
-import { usePermission } from '@/hooks/permission'
-import { useQueryListStore } from '@/stores/queryList'
-import type { ListResponse } from '@/types'
-import { useTranslation } from '@/utils/i18n'
-import { request } from '@/utils/request'
 import type { FormInstance } from 'antd'
 import { Form, Result, Spin, Table } from 'antd'
 import type { NamePath } from 'antd/es/form/interface'
@@ -13,6 +7,12 @@ import qs from 'query-string'
 import type { ReactElement, ReactNode, Ref } from 'react'
 import { forwardRef, useCallback, useEffect, useImperativeHandle, useRef, useState } from 'react'
 import useSWR, { useSWRConfig } from 'swr'
+import { useTranslation } from '../../hooks/i18n'
+import { usePermission } from '../../hooks/permission'
+import { useQueryListStore } from '../../stores/queryList'
+import type { ListResponse } from '../../types'
+import { request } from '../../utils/request'
+import FilterFormWrapper from '../FilterFormWrapper'
 
 type RecursivePartial<T> = NonNullable<T> extends object
   ? {

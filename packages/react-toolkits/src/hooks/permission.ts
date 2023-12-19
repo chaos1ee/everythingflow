@@ -1,6 +1,6 @@
-import { useToolkitsContext } from '@/components/ContextProvider'
-import { request } from '@/utils/request'
 import useSWR from 'swr'
+import { useToolkitsContext } from '../components/ContextProvider'
+import { request } from '../utils/request'
 
 type PermissionCheckResult =
   | { has_all: true }

@@ -8,13 +8,13 @@ const menuItems: NavMenuItem[] = [
     icon: <TableOutlined />,
     children: [
       {
-        key: 'normal_list',
-        label: 'List',
+        key: 'pagination_list',
+        label: 'Pagination List',
         route: '/list',
       },
       {
         key: 'infinite_list',
-        label: 'InfiniteList',
+        label: 'Infinite List',
         route: '/list/infinite',
       },
     ],

@@ -1,9 +1,9 @@
-import { useTranslation } from '@/utils/i18n'
 import { PlusOutlined } from '@ant-design/icons'
 import type { InputRef } from 'antd'
 import { Input, Space, Tag, theme } from 'antd'
 import type { ChangeEvent, CSSProperties, FC } from 'react'
 import { useEffect, useRef, useState } from 'react'
+import { useTranslation } from '../../hooks/i18n'
 
 export interface DynamicTagsProps {
   initialTags?: string[]
