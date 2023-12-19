@@ -1,8 +1,8 @@
 import { Card, Empty } from 'antd'
 import type { FC, PropsWithChildren } from 'react'
-import { useTranslation } from '@/utils/i18n'
-import { useGameStore } from '@/components/GameSelect'
-import { useToolkitsContext } from '@/components/ContextProvider'
+import { useTranslation } from '../../hooks/i18n'
+import { useToolkitsContext } from '../ContextProvider'
+import { useGameStore } from '../GameSelect'
 
 const RequireGame: FC<PropsWithChildren> = props => {
   const { children } = props

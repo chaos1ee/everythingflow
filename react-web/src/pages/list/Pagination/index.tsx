@@ -6,7 +6,7 @@ import { QueryList } from 'react-toolkits'
 
 const url = '/api/list'
 
-const List = () => {
+const Pagination = () => {
   const columns: ColumnsType<ListItem> = [
     {
       key: 'id',
@@ -34,4 +34,4 @@ const List = () => {
     </Card>
   )
 }
-export default List
+export default Pagination

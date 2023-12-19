@@ -1,21 +1,21 @@
 {
   "name": "react-toolkits",
-  "version": "0.4.5",
+  "version": "0.4.4",
   "packageManager": "^pnpm@8.7.5",
   "sideEffects": [
     "**/*.css"
   ],
-  "module": "./lib/index.mjs",
-  "types": "./lib/index.d.mts",
+  "module": "./lib/index.js",
+  "types": "./lib/index.d.ts",
   "exports": {
-    "./style.css": "./lib/index.css",
+    "./style.css": "./lib/style.css",
     ".": {
       "import": "./lib/index.js",
-      "types": "./lib/index.d.mts"
+      "types": "./lib/index.d.ts"
     },
     "./locales/*": {
       "import": "./locales/*.js",
-      "types": "./locales/*.d.mts"
+      "types": "./locales/*.d.ts"
     }
   },
   "files": [
@@ -26,7 +26,7 @@
   ],
   "license": "MIT",
   "scripts": {
-    "build": "tsup",
+    "build": "ts-node --project tsconfig.node.json build.ts",
     "lint": "eslint --fix --ext .ts,.tsx,.js,.jsx ."
   },
   "author": "chaos1ee <chaos.maybeeee@gmail.com>",
@@ -42,36 +42,41 @@
   },
   "dependencies": {
     "@ant-design/icons": "^5.2.6",
-    "antd": "^5.12.2",
     "dayjs": "^1.11.10",
-    "events": "^3.3.0",
     "immer": "^10.0.3",
     "jwt-decode": "^4.0.0",
     "lodash-es": "^4.17.21",
     "query-string": "^8.1.0",
     "swr": "^2.2.4",
-    "zustand": "^4.4.6"
+    "zustand": "^4.4.7"
   },
   "devDependencies": {
     "@flow97/eslint-config-mono": "workspace:*",
+    "@rollup/plugin-typescript": "^11.1.5",
     "@types/lodash-es": "^4.17.12",
-    "@types/node": "^20.9.5",
-    "@types/react": "^18.2.38",
-    "@types/react-dom": "^18.2.17",
+    "@types/node": "^20.10.5",
+    "@types/react": "^18.2.45",
+    "@types/react-dom": "^18.2.18",
+    "@vitejs/plugin-react": "^4.2.1",
+    "antd": "^5.12.2",
     "autoprefixer": "^10.4.16",
-    "postcss": "^8.4.31",
-    "prettier": "^3.1.0",
+    "postcss": "^8.4.32",
+    "prettier": "^3.1.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-router-dom": "^6.20.0",
+    "react-router-dom": "^6.21.0",
+    "rollup-plugin-dts": "^6.1.0",
     "tailwind-config": "workspace:*",
-    "tailwindcss": "^3.3.5",
+    "tailwindcss": "^3.3.7",
     "ts-essentials": "^9.4.1",
+    "ts-node": "^10.9.2",
     "tsconfig": "workspace:*",
-    "tsup": "^8.0.1",
-    "typescript": "^5.3.2"
+    "typescript": "^5.3.3",
+    "vite": "^5.0.10",
+    "vite-plugin-dts": "^3.6.4"
   },
   "peerDependencies": {
+    "antd": "^5.12.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.14.2"

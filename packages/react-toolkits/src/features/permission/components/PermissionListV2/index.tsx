@@ -1,7 +1,7 @@
-import { useTranslation } from '@/utils/i18n'
 import { Button, Card, Divider, Empty, Select, Skeleton, Space, Typography } from 'antd'
 import type { FC } from 'react'
 import { useEffect, useState } from 'react'
+import { useTranslation } from '../../../../hooks/i18n'
 import { useAllPermissionsV2 } from '../../hooks'
 import type { RoleV2 } from '../../types'
 import PermissionCollapse from '../PermissionCollapse'

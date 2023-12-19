@@ -1,10 +1,10 @@
 import useSWR from 'swr'
 import useSWRMutation from 'swr/mutation'
+import { useToolkitsContext } from '../../../components/ContextProvider'
+import type { Game } from '../../../components/GameSelect'
+import { usePermission } from '../../../hooks/permission'
+import { request } from '../../../utils/request'
 import type { PermissionEnumItem, RoleEnumItem, RoleV1, RoleV2 } from '../types'
-import type { Game } from '@/components/GameSelect'
-import { usePermission } from '@/hooks/permission'
-import { useToolkitsContext } from '@/components/ContextProvider'
-import { request } from '@/utils/request'
 
 export function useAllPermissions() {
   return useSWR('/api/usystem/user/allPermssions', url =>

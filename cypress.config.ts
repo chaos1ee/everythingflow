@@ -1,6 +1,7 @@
 import { defineConfig } from 'cypress'
 import { SignJWT } from 'jose'
-import { SECRET } from './constants'
+import configs from './packages/react-toolkits/build'
+import { SECRET } from './react-web/src/constants'
 
 export default defineConfig({
   retries: {
@@ -28,6 +29,13 @@ export default defineConfig({
             .sign(SECRET)
         },
       })
+    },
+  },
+  component: {
+    devServer: {
+      framework: 'react',
+      bundler: 'vite',
+      viteConfig: configs[0],
     },
   },
 })

@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { contextStore } from '@/components/ContextProvider'
-import { useGameStore } from '@/components/GameSelect'
-import { useTokenStore } from '@/stores/token'
 import { pick } from 'lodash-es'
 import type { StringifyOptions } from 'query-string'
 import qs from 'query-string'
+import { contextStore } from '../components/ContextProvider'
+import { useGameStore } from '../components/GameSelect'
+import { useTokenStore } from '../stores/token'
 
 export class RequestError extends Error {
   status?: number
@@ -52,17 +52,12 @@ export async function request<T = any>(url: string, opts?: RequestOptions): Prom
   const queryString = qs.stringify(queryParams, options)
   url = queryString ? `${parsed.url}?${queryString}` : url
 
-  // 设置请求头
   headers = new Headers(headers)
 
   const token = useTokenStore?.getState()?.token
 
   if (token) {
     headers.set('Authorization', `Bearer ${token}`)
-  }
-
-  if (!headers.has('Content-Type')) {
-    headers.set('Content-Type', 'application/json')
   }
 
   if (contextStore.getState().usePermissionApiV2) {
@@ -82,13 +77,19 @@ export async function request<T = any>(url: string, opts?: RequestOptions): Prom
     headers.append('Accept', 'application/json')
   }
 
-  const config = {
-    ...rest,
-    headers,
-    body: body === null || body instanceof FormData ? body : JSON.stringify(body),
+  const isJsonBody = !!(body && typeof body === 'object' && !(body instanceof FormData))
+
+  if (isJsonBody) {
+    headers.set('Content-Type', 'application/json')
   }
 
-  const response = await fetch(url, config)
+  const response = await fetch(
+    url,
+    Object.assign(rest, {
+      headers,
+      body: isJsonBody ? JSON.stringify(body) : body,
+    }) as RequestInit,
+  )
 
   if (!response.ok) {
     throw new RequestError({ status: response.status })

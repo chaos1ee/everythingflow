@@ -1,8 +1,8 @@
-import { usePermission } from '@/hooks/permission'
-import { useTranslation } from '@/utils/i18n'
 import type { ButtonProps } from 'antd'
 import { Button, Tooltip } from 'antd'
 import type { FC, PropsWithChildren } from 'react'
+import { useTranslation } from '../../hooks/i18n'
+import { usePermission } from '../../hooks/permission'
 
 export interface PermissionButtonProps extends Omit<ButtonProps, 'disabled'> {
   code: string

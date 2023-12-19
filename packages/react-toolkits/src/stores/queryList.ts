@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import type { ListResponse } from '@/types'
 import { mutate } from 'swr'
 import type { MutatorCallback, MutatorOptions } from 'swr/_internal'
 import { create } from 'zustand'
+import type { ListResponse } from '../types'
 
 type QueryListMutator = <T = any>(
   key: string,

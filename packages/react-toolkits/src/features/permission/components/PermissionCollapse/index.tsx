@@ -1,9 +1,9 @@
-import type { PermissionEnumItem } from '@/features/permission'
-import { useTranslation } from '@/utils/i18n'
 import { Checkbox, Col, Collapse, Row } from 'antd'
 import type { CheckboxChangeEvent } from 'antd/es/checkbox'
 import type { FC } from 'react'
 import { useCallback, useEffect, useState } from 'react'
+import { useTranslation } from '../../../../hooks/i18n'
+import type { PermissionEnumItem } from '../../types'
 
 interface PermissionCollapseProps {
   expand?: boolean

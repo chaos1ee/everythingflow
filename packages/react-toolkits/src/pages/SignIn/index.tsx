@@ -1,13 +1,13 @@
-import { useToolkitsContext } from '@/components/ContextProvider'
-import { SSO_URL } from '@/constants'
-import { useTokenStore } from '@/stores/token'
-import { useTranslation } from '@/utils/i18n'
-import { request } from '@/utils/request'
 import { AliyunOutlined } from '@ant-design/icons'
 import { Alert, Button, Card, Col, Divider, Row, Space, Typography } from 'antd'
 import type { FC, PropsWithChildren } from 'react'
 import { Navigate, useLocation, useSearchParams } from 'react-router-dom'
 import useSWRImmutable from 'swr/immutable'
+import { useToolkitsContext } from '../../components/ContextProvider'
+import { SSO_URL } from '../../constants'
+import { useTranslation } from '../../hooks/i18n'
+import { useTokenStore } from '../../stores/token'
+import { request } from '../../utils/request'
 import Default from './default'
 
 const { Title } = Typography

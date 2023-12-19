@@ -1,4 +1,4 @@
-import type { StateStorage } from 'zustand/esm/middleware'
+import type { StateStorage } from 'zustand/middleware'
 
 // 通过 SessionStorage 隔离数据，防止多开页面时的数据冲突
 export const mixedStorage: StateStorage = {

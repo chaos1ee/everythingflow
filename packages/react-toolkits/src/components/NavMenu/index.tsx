@@ -1,6 +1,3 @@
-import { useToolkitsContext } from '@/components/ContextProvider'
-import { useNavStore } from '@/components/NavMenu/store'
-import { usePermissions } from '@/hooks/permission'
 import type { MenuProps } from 'antd'
 import { Menu } from 'antd'
 import type {
@@ -14,6 +11,9 @@ import type { ReactNode } from 'react'
 import { memo, useEffect, useMemo } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import type { Merge } from 'ts-essentials'
+import { usePermissions } from '../../hooks/permission'
+import { useToolkitsContext } from '../ContextProvider'
+import { useNavStore } from '../NavMenu/store'
 
 // 扩展 antd Menu 的类型，使其支持一些我们想要的自定义字段。
 type MenuItemType2 = Merge<

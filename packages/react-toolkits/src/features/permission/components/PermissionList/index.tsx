@@ -1,6 +1,6 @@
-import { useToolkitsContext } from '@/components/ContextProvider'
-import type { RoleV1, RoleV2 } from '@/features/permission'
 import type { FC } from 'react'
+import { useToolkitsContext } from '../../../../components/ContextProvider'
+import type { RoleV1, RoleV2 } from '../../types'
 import PermissionListV1 from '../PermissionListV1'
 import PermissionListV2 from '../PermissionListV2'
 

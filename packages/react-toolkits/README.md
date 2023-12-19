@@ -20,7 +20,7 @@ const root = createRoot(container)
 const items: NavMenuItem[] = []
 
 root.render(
-  <ReactToolkitsProvider title="React Web" menuItems={items}>
+  <ContextProvider title="React Web" menuItems={items}>
     <RouterProvider
       router={router}
       fallbackElement={
@@ -35,7 +35,7 @@ root.render(
         />
       }
     />
-  </ReactToolkitsProvider>,
+  </ContextProvider>,
 )
 
 ```

@@ -1,8 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import FilterFormWrapper from '@/components/FilterFormWrapper'
-import { usePermission } from '@/hooks/permission'
-import { useTranslation } from '@/utils/i18n'
-import { request } from '@/utils/request'
 import type { FormInstance } from 'antd'
 import { Button, Form, Result, Spin, Table } from 'antd'
 import type { TableProps } from 'antd/es/table'
@@ -10,6 +6,10 @@ import qs from 'query-string'
 import type { Key, ReactNode } from 'react'
 import { useEffect, useState } from 'react'
 import useSWRInfinite from 'swr/infinite'
+import { useTranslation } from '../../hooks/i18n'
+import { usePermission } from '../../hooks/permission'
+import { request } from '../../utils/request'
+import FilterFormWrapper from '../FilterFormWrapper'
 
 interface InfiniteListExtra<Values> {
   key: Key

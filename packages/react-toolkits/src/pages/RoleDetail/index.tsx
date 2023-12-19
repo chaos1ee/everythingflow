@@ -1,7 +1,7 @@
-import { PermissionList, useRole } from '@/features/permission'
-import { useTranslation } from '@/utils/i18n'
 import { Breadcrumb, Card, Descriptions, Skeleton } from 'antd'
 import { Link, useParams } from 'react-router-dom'
+import { PermissionList, useRole } from '../../features/permission'
+import { useTranslation } from '../../hooks/i18n'
 
 const RoleDetail = () => {
   const params = useParams()
