@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.6.1
+
+### Patch Changes
+
+- 3fa4f14: fix: hide Alert in sign in page
+
 ## 0.6.0
 
 ### Minor Changes
