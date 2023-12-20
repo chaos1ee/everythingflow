@@ -28,7 +28,7 @@ const locale: Locale = {
     thirdParty: 'Third party sign in',
     signInWithIDass: 'Sign in width IDass',
     notRegistered: 'You are not yet registered on the platform, please contact the administrator',
-    welcome: 'Welcome to the platform',
+    welcome: 'Welcome',
   },
   NotFound: {
     subTitle: 'The page you visited does not exist',

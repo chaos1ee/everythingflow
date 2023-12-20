@@ -1,6 +1,6 @@
 import { defineConfig } from 'cypress'
 import { SignJWT } from 'jose'
-import configs from './packages/react-toolkits/build'
+import configs from './packages/react-toolkits/scripts/build'
 import { SECRET } from './react-web/src/constants'
 
 export default defineConfig({
