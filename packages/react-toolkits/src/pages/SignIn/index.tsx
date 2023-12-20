@@ -34,11 +34,11 @@ const SignIn: FC = () => {
 
   return (
     <div className="w-screen h-screen relative flex">
-      {localeDropdownMenu && <div className="absolute top-8 right-10 z-10">{localeDropdownMenu}</div>}
-      <div className="absolute left-10 top-4">
-        <Typography.Title italic level={3}>
+      {localeDropdownMenu && <div className="absolute top-16 right-16 z-10">{localeDropdownMenu}</div>}
+      <div className="absolute left-14 top-6">
+        <Typography.Title level={3}>
           <Space align="center">
-            <img src={logoUrl} className="w-10" alt="logo" />
+            <img src={logoUrl} className="w-8" alt="logo" />
             {appTitle}
           </Space>
         </Typography.Title>
@@ -52,7 +52,6 @@ const SignIn: FC = () => {
             <div className="flex flex-col justify-center">
               <div className="h-10">
                 {location.state?.notUser && <Alert banner closable message={t('SignIn.notRegistered')} type="error" />}
-                <Alert banner closable message={t('SignIn.notRegistered')} type="error" />
               </div>
               <Typography.Title level={2}>{t('SignIn.welcome')}</Typography.Title>
               <div className="mt-4">
@@ -80,7 +79,7 @@ const SignIn: FC = () => {
                   href={`${SSO_URL}/login?service=${encodeURIComponent(window.location.origin + '/sign_in')}`}
                   target="_self"
                 >
-                  <img src={logoUrl} className="w-[18px] mr-2 -mb-1" alt="logo" />
+                  <img src={logoUrl} className="w-[18px] mr-2 -mb-0.5" alt="logo" />
                   {t('SignIn.signInWithIDass')}
                 </Button>
               </div>

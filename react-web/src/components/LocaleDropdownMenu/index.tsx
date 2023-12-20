@@ -25,7 +25,7 @@ const LocaleDropdownMenu: FC = () => {
       placement="bottomRight"
     >
       <Typography.Link>
-        <TranslationOutlined style={{ fontSize: '18px' }} />
+        <TranslationOutlined style={{ fontSize: '20px' }} />
       </Typography.Link>
     </Dropdown>
   )
