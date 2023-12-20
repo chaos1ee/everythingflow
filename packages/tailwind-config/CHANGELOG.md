@@ -1,5 +1,11 @@
 # tailwind-config
 
+## 0.1.1
+
+### Patch Changes
+
+- 3fa4f14: fix: hide Alert in sign in page
+
 ## 0.1.0
 
 ### Minor Changes
