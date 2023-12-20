@@ -18,18 +18,21 @@ export type Locale = {
     user: string
     role: string
     username: string
+    password: string
     label: string
     method: string
     route: string
     request: string
     response: string
     add: string
+    signIn: string
   }
-  Login: {
+  SignIn: {
     title: string
     thirdParty: string
-    loginWithIDass: string
+    signInWithIDass: string
     notRegistered: string
+    welcome: string
   }
   NotFound: {
     subTitle: string

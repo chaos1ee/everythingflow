@@ -148,6 +148,9 @@ importers:
       autoprefixer:
         specifier: ^10.4.16
         version: 10.4.16(postcss@8.4.32)
+      glob:
+        specifier: ^10.3.10
+        version: 10.3.10
       postcss:
         specifier: ^8.4.32
         version: 8.4.32

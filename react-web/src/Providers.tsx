@@ -46,7 +46,7 @@ const Providers: FC<PropsWithChildren> = ({ children }) => {
       <App>
         <ContextProvider
           usePermissionApiV2
-          title={import.meta.env.VITE_APP_TITLE}
+          appTitle={import.meta.env.VITE_APP_TITLE}
           locale={locale?.toolkits}
           localeDropdownMenu={<LocaleDropdownMenu />}
           menuItems={menuItems}

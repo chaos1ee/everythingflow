@@ -1,9 +1,10 @@
 #!/usr/bin/env ts-node
 import react from '@vitejs/plugin-react'
+import { globSync } from 'glob'
 import type { UserConfig } from 'vite'
 import { build } from 'vite'
 import dts from 'vite-plugin-dts'
-import packageJson from './package.json'
+import packageJson from '../package.json'
 
 const configs: UserConfig[] = [
   {
@@ -39,7 +40,7 @@ const configs: UserConfig[] = [
     ],
     build: {
       lib: {
-        entry: ['src/locales/en_GB.ts', 'src/locales/ja_JP.ts', 'src/locales/ko_KR.ts', 'src/locales/zh_CN.ts'],
+        entry: globSync('src/locales/*.ts'),
         formats: ['es'],
         fileName: () => '[name].js',
       },
