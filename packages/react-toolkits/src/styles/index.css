@@ -2,6 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+html, body {
+    padding: 0;
+    margin: 0;
+}
 
 .toolkits-modal .ant-modal-confirm .ant-modal-confirm-paragraph {
     max-width: 100% !important;

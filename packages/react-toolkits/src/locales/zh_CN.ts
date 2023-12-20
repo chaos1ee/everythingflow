@@ -14,22 +14,25 @@ const locale: Locale = {
     user: '用户',
     role: '角色',
     username: '用户名',
+    password: '密码',
     label: '标签',
     method: '方法',
     route: '路由',
     request: '请求',
     response: '响应',
     add: '添加',
+    signIn: '登录',
   },
-  Login: {
+  SignIn: {
     title: '登录方式',
     thirdParty: '第三方登录',
-    loginWithIDass: 'IDass 登录',
+    signInWithIDass: 'IDass 登录',
     notRegistered: '您还未在平台注册，请联系管理员',
+    welcome: '欢迎',
   },
   NotFound: {
     subTitle: '访问的页面不存在',
-    buttonText: '返回页面',
+    buttonText: '返回首页',
   },
   FilterFormWrapper: {
     confirmText: '查询',

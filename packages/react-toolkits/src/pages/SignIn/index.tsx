@@ -1,24 +1,21 @@
-import { AliyunOutlined } from '@ant-design/icons'
-import { Alert, Button, Card, Col, Divider, Row, Space, Typography } from 'antd'
-import type { FC, PropsWithChildren } from 'react'
+import { Alert, Button, Divider, Form, Input, Space, Typography } from 'antd'
+import type { FC } from 'react'
 import { Navigate, useLocation, useSearchParams } from 'react-router-dom'
 import useSWRImmutable from 'swr/immutable'
+import backgroundUrl from '../../assets/background.svg'
+import logoUrl from '../../assets/logo.png'
 import { useToolkitsContext } from '../../components/ContextProvider'
 import { SSO_URL } from '../../constants'
 import { useTranslation } from '../../hooks/i18n'
 import { useTokenStore } from '../../stores/token'
 import { request } from '../../utils/request'
-import Default from './default'
 
-const { Title } = Typography
-
-const Login: FC<PropsWithChildren> = props => {
-  const { children } = props
+const SignIn: FC = () => {
   const [searchParams] = useSearchParams()
   const location = useLocation()
   const { token, setToken } = useTokenStore()
   const t = useTranslation()
-  const { localeDropdownMenu } = useToolkitsContext()
+  const { appTitle, localeDropdownMenu } = useToolkitsContext()
 
   useSWRImmutable(
     searchParams.has('ticket') ? `/api/usystem/user/login?ticket=${searchParams.get('ticket')}` : null,
@@ -36,45 +33,63 @@ const Login: FC<PropsWithChildren> = props => {
   }
 
   return (
-    <Row>
-      {localeDropdownMenu && <div className="fixed top-8 right-8">{localeDropdownMenu}</div>}
-      <Col span={10} offset={3}>
-        <div className="h-screen flex justify-end items-center">
-          <Default />
-        </div>
-      </Col>
-      <Col span={5} offset={3}>
-        <div className="h-screen relative">
-          <Card hoverable className="absolute left-0 right-0 top-1/2 -translate-y-1/2">
-            {location.state?.notUser && (
-              <div className="absolute -top-12 left-0 right-0">
-                <Alert banner closable message={t('Login.notRegistered')} type="error" />
+    <div className="w-screen h-screen relative flex">
+      {localeDropdownMenu && <div className="absolute top-8 right-10 z-10">{localeDropdownMenu}</div>}
+      <div className="absolute left-10 top-4">
+        <Typography.Title italic level={3}>
+          <Space align="center">
+            <img src={logoUrl} className="w-10" alt="logo" />
+            {appTitle}
+          </Space>
+        </Typography.Title>
+      </div>
+      <div className="flex-1 flex justify-center items-center bg-slate-50">
+        <img src={backgroundUrl} alt="background" className="w-10/12" />
+      </div>
+      <div className="w-[650px] relative top-0 left-0 right-0 bottom-0">
+        <div className="absolute top-1/2 -translate-y-1/2 left-0 right-0">
+          <div className="-translate-y-10 px-36">
+            <div className="flex flex-col justify-center">
+              <div className="h-10">
+                {location.state?.notUser && <Alert banner closable message={t('SignIn.notRegistered')} type="error" />}
+                <Alert banner closable message={t('SignIn.notRegistered')} type="error" />
               </div>
-            )}
-            <div className="text-center mb-6">
-              <Title level={5}>{t('Login.title')}</Title>
-              <div className="min-h-10">{children}</div>
-            </div>
-            <Divider plain>{t('Login.thirdParty')}</Divider>
-            <div className="w-full flex justify-center">
-              <Space size="small">
+              <Typography.Title level={2}>{t('SignIn.welcome')}</Typography.Title>
+              <div className="mt-4">
+                <Form layout="vertical" autoComplete="off">
+                  <Form.Item label={t('global.username')} name="username" rules={[{ required: true }]}>
+                    <Input />
+                  </Form.Item>
+                  <Form.Item label={t('global.password')} name="password" rules={[{ required: true }]}>
+                    <Input.Password />
+                  </Form.Item>
+                  <Form.Item>
+                    <Button block type="primary" shape="round" htmlType="submit">
+                      {t('global.signIn')}
+                    </Button>
+                  </Form.Item>
+                </Form>
+              </div>
+              <Divider plain dashed>
+                {t('SignIn.thirdParty')}
+              </Divider>
+              <div className="flex justify-center items-center">
                 <Button
-                  type="link"
-                  size="small"
+                  block
                   shape="round"
-                  icon={<AliyunOutlined />}
                   href={`${SSO_URL}/login?service=${encodeURIComponent(window.location.origin + '/sign_in')}`}
                   target="_self"
                 >
-                  {t('Login.loginWithIDass')}
+                  <img src={logoUrl} className="w-[18px] mr-2 -mb-1" alt="logo" />
+                  {t('SignIn.signInWithIDass')}
                 </Button>
-              </Space>
+              </div>
             </div>
-          </Card>
+          </div>
         </div>
-      </Col>
-    </Row>
+      </div>
+    </div>
   )
 }
 
-export default Login
+export default SignIn

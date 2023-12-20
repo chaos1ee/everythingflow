@@ -3,12 +3,12 @@ import { Divider, Space } from 'antd'
 import type { FC, Key, PropsWithChildren, ReactNode } from 'react'
 import { Suspense } from 'react'
 import { Link } from 'react-router-dom'
+import logo from '../../assets/logo.png'
 import { useToolkitsContext } from '../ContextProvider'
 import GameSelect from '../GameSelect'
 import NavMenu from '../NavMenu'
 import RequireGame from '../RequireGame'
 import UserWidget from '../UserWidget'
-import logo from './logo.png'
 
 const { Spin, theme } = Antd
 const { Header, Sider, Content } = Antd.Layout
@@ -25,7 +25,7 @@ const Layout: FC<LayoutProps> = (props: LayoutProps) => {
   const {
     token: { colorBgContainer, colorBorder },
   } = theme.useToken()
-  const { title, usePermissionApiV2, hideGameSelect, localeDropdownMenu } = useToolkitsContext()
+  const { appTitle, usePermissionApiV2, hideGameSelect, localeDropdownMenu } = useToolkitsContext()
 
   return (
     <Antd.Layout hasSider className="h-screen">
@@ -47,7 +47,7 @@ const Layout: FC<LayoutProps> = (props: LayoutProps) => {
         <div className="flex items-end px-6 py-4">
           <img src={logo} alt="logo" className="w-8 h-8" />
           <Link className="font-bold text-lg ml-2" to="/">
-            {title}
+            {appTitle}
           </Link>
         </div>
         <NavMenu />

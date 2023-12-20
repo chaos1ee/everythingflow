@@ -14,18 +14,21 @@ const locale: Locale = {
     user: '사용자',
     role: '역할',
     username: '사용자 이름',
+    password: '비밀번호',
     label: '라벨',
     method: '방법',
     route: '노선',
     request: '요청',
     response: '응답',
     add: '추가',
+    signIn: '로그인',
   },
-  Login: {
+  SignIn: {
     title: '로그인 방법',
     thirdParty: '제3자 로그인',
-    loginWithIDass: 'IDass 로그인',
+    signInWithIDass: 'IDass 로그인',
     notRegistered: '플랫폼에 아직 등록되지 않았습니다, 관리자에게 문의하십시오',
+    welcome: '웰컴',
   },
   NotFound: {
     subTitle: '방문한 페이지가 존재하지 않습니다',

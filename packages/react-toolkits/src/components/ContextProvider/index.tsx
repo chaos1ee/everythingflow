@@ -7,7 +7,7 @@ import type { Game } from '../GameSelect'
 import type { NavMenuItem } from '../NavMenu'
 
 export interface ContextState {
-  title: string
+  appTitle: string
   menuItems: NavMenuItem[]
   hideGameSelect: boolean
   usePermissionApiV2: boolean // 使用 V2 版本的权限接口
@@ -17,7 +17,7 @@ export interface ContextState {
 }
 
 const defaultState: ContextState = {
-  title: '',
+  appTitle: '',
   menuItems: [],
   hideGameSelect: false,
   usePermissionApiV2: false,

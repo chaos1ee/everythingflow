@@ -14,18 +14,21 @@ const locale: Locale = {
     user: 'ユーザー',
     role: '役割',
     username: 'ユーザー名',
+    password: 'パスワード',
     label: 'ラベル',
     method: '方法',
     route: 'ルート',
     request: 'リクエスト',
     response: 'レスポンス',
     add: 'ついか',
+    signIn: 'ログイン',
   },
-  Login: {
+  SignIn: {
     title: 'ログイン方法',
     thirdParty: 'サードパーティログイン',
-    loginWithIDass: 'IDass ログイン',
+    signInWithIDass: 'IDass ログイン',
     notRegistered: 'あなたはまだプラットフォームに登録されていません、管理者に連絡してください',
+    welcome: 'ウェルカム',
   },
   NotFound: {
     subTitle: 'アクセスしたページは存在しません',
