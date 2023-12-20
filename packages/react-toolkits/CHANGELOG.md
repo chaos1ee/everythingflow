@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.6.0
+
+### Minor Changes
+
+- ecf620a: refactor: new sign in page design
+
 ## 0.5.0
 
 ### Minor Changes
