@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.6.3
+
+### Patch Changes
+
+- 139646e: chore: set revalidateOnFocus to false
+
 ## 0.6.2
 
 ### Patch Changes
