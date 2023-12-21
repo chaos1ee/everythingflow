@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.6.2
+
+### Patch Changes
+
+- b15ba30: feat: add 'onTableChange' prop
+
 ## 0.6.1
 
 ### Patch Changes
