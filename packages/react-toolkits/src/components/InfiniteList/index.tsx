@@ -18,7 +18,7 @@ interface InfiniteListExtra<Values> {
 
 export interface InfiniteListProps<Item, Values, Response>
   extends Pick<TableProps<Item>, 'columns' | 'rowKey' | 'tableLayout' | 'expandable' | 'rowSelection' | 'bordered'> {
-  url: string
+  action: string
   getRowKey: (response: Response) => any
   getDataSource: (data: Response[] | undefined) => Item[]
   code?: string
@@ -35,7 +35,7 @@ const InfiniteList = <Item extends object, Values extends object | undefined = u
 ) => {
   const {
     code,
-    url,
+    action,
     extras,
     headers,
     isGlobalNS,
@@ -58,7 +58,7 @@ const InfiniteList = <Item extends object, Values extends object | undefined = u
     const args = transformArg(formValues, pageIndex !== 0 ? getRowKey(previousPageData) : undefined)
     const queryString = qs.stringify(args)
 
-    return queryString ? `${url}?${qs.stringify(args)}` : url
+    return queryString ? `${action}?${qs.stringify(args)}` : action
   }
 
   const {

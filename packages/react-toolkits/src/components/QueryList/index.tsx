@@ -44,7 +44,7 @@ const fallbackData = {
 
 export interface QueryListProps<Item = any, Values = any, Response = any>
   extends Pick<TableProps<Item>, 'columns' | 'rowKey' | 'tableLayout' | 'expandable' | 'rowSelection' | 'bordered'> {
-  url: string
+  action: string
   renderForm?: (form: FormInstance<Values>) => ReactNode
   code?: string
   isGlobalNS?: boolean
@@ -58,6 +58,7 @@ export interface QueryListProps<Item = any, Values = any, Response = any>
   // 不分页
   noPagination?: boolean
   extra?: (response: Response | undefined, form: FormInstance<Values>) => ReactNode
+  onTableChange?: TableProps<Item>['onChange']
 }
 
 const InternalQueryList = <
@@ -69,7 +70,7 @@ const InternalQueryList = <
   ref: Ref<QueryListRef<Values>>,
 ) => {
   const {
-    url,
+    action,
     code,
     confirmText,
     headers,
@@ -80,14 +81,15 @@ const InternalQueryList = <
     transformArg,
     transformResponse,
     afterSuccess,
+    onTableChange,
     ...tableProps
   } = props
   const t = useTranslation()
   const [form] = Form.useForm<Values>()
   const { accessible, isLoading } = usePermission(code, { isGlobalNS })
-  const action = useRef<QueryListAction>()
+  const listAction = useRef<QueryListAction>()
   const { mutate, paginationMap, keyMap } = useQueryListStore()
-  const { page = 1, size = 10 } = paginationMap.get(url) ?? {}
+  const { page = 1, size = 10 } = paginationMap.get(action) ?? {}
   const [formValues, setFormValues] = useState<Values>()
   const [isValid, setIsValid] = useState(false)
   const [response, setResponse] = useState<Response>()
@@ -103,11 +105,11 @@ const InternalQueryList = <
         })
 
   const _mutate = useCallback(
-    (...args: Parameters<typeof mutate> extends [infer _, ...infer Rest] ? Rest : never) => mutate(url, ...args),
-    [mutate, url],
+    (...args: Parameters<typeof mutate> extends [infer _, ...infer Rest] ? Rest : never) => mutate(action, ...args),
+    [mutate, action],
   )
 
-  const parsed = qs.parseUrl(url)
+  const parsed = qs.parseUrl(action)
   const queryParams = Object.assign({}, parsed.query, params)
   const queryString = qs.stringify(queryParams)
   const swrKey = isValid ? `${parsed.url}?${queryString}` : null
@@ -126,8 +128,8 @@ const InternalQueryList = <
       })
       setResponse(_response.data)
       const list = transformResponse?.(_response.data) ?? _response.data
-      afterSuccess?.(list, action.current)
-      action.current = undefined
+      afterSuccess?.(list, listAction.current)
+      listAction.current = undefined
       return list
     },
     {
@@ -137,7 +139,7 @@ const InternalQueryList = <
   )
 
   const onPaginationChange = async (currentPage: number, currentSize: number) => {
-    action.current = QueryListAction.Jump
+    listAction.current = QueryListAction.Jump
     _mutate({ page: currentPage, size: currentSize })
   }
 
@@ -153,7 +155,7 @@ const InternalQueryList = <
       }
 
   const onConfirm = async () => {
-    action.current = QueryListAction.Confirm
+    listAction.current = QueryListAction.Confirm
     setFormValues(form.getFieldsValue())
 
     try {
@@ -182,20 +184,20 @@ const InternalQueryList = <
   }
 
   const onReset = () => {
-    action.current = QueryListAction.Reset
+    listAction.current = QueryListAction.Reset
     refetch()
   }
 
   useEffect(() => {
     if (accessible) {
-      action.current = QueryListAction.Init
+      listAction.current = QueryListAction.Init
       refetch()
     }
   }, [accessible])
 
   useEffect(() => {
-    keyMap.set(url, swrKey)
-  }, [keyMap, swrKey, url])
+    keyMap.set(action, swrKey)
+  }, [keyMap, swrKey, action])
 
   useImperativeHandle(ref, () => ({
     form,
@@ -241,6 +243,7 @@ const InternalQueryList = <
         dataSource={data?.list}
         loading={refreshInterval === 0 ? isDataValidating : isDataLoading}
         pagination={pagination}
+        onChange={onTableChange}
       />
     </div>
   )
