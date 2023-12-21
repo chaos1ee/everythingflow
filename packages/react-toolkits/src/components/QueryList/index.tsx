@@ -5,7 +5,7 @@ import type { NamePath } from 'antd/es/form/interface'
 import type { TableProps } from 'antd/es/table'
 import qs from 'query-string'
 import type { ReactElement, ReactNode, Ref } from 'react'
-import { forwardRef, useCallback, useEffect, useImperativeHandle, useRef, useState } from 'react'
+import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react'
 import useSWR, { useSWRConfig } from 'swr'
 import { useTranslation } from '../../hooks/i18n'
 import { usePermission } from '../../hooks/permission'
@@ -88,26 +88,27 @@ const InternalQueryList = <
   const [form] = Form.useForm<Values>()
   const { accessible, isLoading } = usePermission(code, { isGlobalNS })
   const listAction = useRef<QueryListAction>()
-  const { mutate, paginationMap, keyMap } = useQueryListStore()
-  const { page = 1, size = 10 } = paginationMap.get(action) ?? {}
-  const [formValues, setFormValues] = useState<Values>()
+  const { mutate, getPayload, setPayload, keyMap } = useQueryListStore()
+  const { page, size, formValue } = getPayload(action)
   const [isValid, setIsValid] = useState(false)
   const [response, setResponse] = useState<Response>()
 
   const params =
-    transformArg?.(page, size, formValues) ??
+    transformArg?.(page, size, formValue) ??
     (noPagination
-      ? formValues
+      ? formValue
       : {
-          ...formValues,
+          ...formValue,
           page,
           size,
         })
 
-  const _mutate = useCallback(
-    (...args: Parameters<typeof mutate> extends [infer _, ...infer Rest] ? Rest : never) => mutate(action, ...args),
-    [mutate, action],
-  )
+  const createBoundAction = <T extends any[], R>(actionFn: (action: string, ...args: T) => R): ((...args: T) => R) => {
+    return (...args: T) => actionFn(action, ...args)
+  }
+
+  const _setPayload = createBoundAction(setPayload)
+  const _mutate = createBoundAction(mutate)
 
   const parsed = qs.parseUrl(action)
   const queryParams = Object.assign({}, parsed.query, params)
@@ -140,7 +141,10 @@ const InternalQueryList = <
 
   const onPaginationChange = async (currentPage: number, currentSize: number) => {
     listAction.current = QueryListAction.Jump
-    _mutate({ page: currentPage, size: currentSize })
+    _setPayload({
+      page: currentPage,
+      size: currentSize,
+    })
   }
 
   const pagination = noPagination
@@ -156,29 +160,34 @@ const InternalQueryList = <
 
   const onConfirm = async () => {
     listAction.current = QueryListAction.Confirm
-    setFormValues(form.getFieldsValue())
+
+    _setPayload({
+      page: 1,
+      formValue: form.getFieldsValue(),
+    })
 
     try {
       await form.validateFields()
-      _mutate({ page: 1 }, undefined, { revalidate: true })
       setIsValid(true)
     } catch (_) {
-      _mutate({ page: 1 }, undefined, { revalidate: false })
       setIsValid(false)
+      _mutate(undefined, { revalidate: false })
     }
   }
 
   const refetch = async () => {
     form.resetFields()
-    setFormValues(form.getFieldsValue())
+    _setPayload({
+      page: 1,
+      formValue: form.getFieldsValue(),
+    })
 
     try {
       await form.validateFields()
-      _mutate({ page: 1 }, undefined, { revalidate: true })
       setIsValid(true)
     } catch (_) {
       form.resetFields()
-      _mutate({ page: 1 }, undefined, { revalidate: false })
+      _mutate(undefined, { revalidate: false })
       setIsValid(false)
     }
   }
@@ -203,11 +212,11 @@ const InternalQueryList = <
     form,
     setFieldValue: (name: NamePath, value: any) => {
       form.setFieldValue(name, value)
-      setFormValues(form.getFieldsValue())
+      _setPayload({ formValue: form.getFieldsValue() })
     },
     setFieldsValue: (values: RecursivePartial<Values>) => {
       form.setFieldsValue(values)
-      setFormValues(form.getFieldsValue())
+      _setPayload({ formValue: form.getFieldsValue() })
     },
   }))
 

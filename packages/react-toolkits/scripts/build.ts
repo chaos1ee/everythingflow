@@ -16,6 +16,7 @@ const configs: UserConfig[] = [
       }),
     ],
     build: {
+      sourcemap: true,
       lib: {
         entry: 'src/index.ts',
         formats: ['es'],

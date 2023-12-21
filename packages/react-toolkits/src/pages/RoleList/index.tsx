@@ -15,11 +15,11 @@ import { usePermission } from '../../hooks/permission'
 import { useQueryListStore } from '../../stores/queryList'
 import { request } from '../../utils/request'
 
-const url = '/api/usystem/role/list'
+const action = '/api/usystem/role/list'
 
 const useCreatingUserModal = () => {
   const { message } = App.useApp()
-  const { mutate } = useQueryListStore()
+  const { setPage } = useQueryListStore()
   const create = useCreateRole()
   const t = useTranslation()
 
@@ -28,7 +28,7 @@ const useCreatingUserModal = () => {
       name: `role_${values.name}`,
       permissions: values.permissions,
     })
-    mutate(url, { page: 1 })
+    setPage(action, 1)
     message.success(t('RoleList.createSuccessfully'))
   }
 
@@ -82,8 +82,7 @@ const useUpdatingRoleModal = () => {
       })
 
       mutate(
-        url,
-        undefined,
+        action,
         prev =>
           produce(prev, draft => {
             const match = draft?.list?.find(item => item.id === extraValues.id)
@@ -178,7 +177,7 @@ const RoleList = () => {
                       id: value.id,
                       name: value.name,
                     })
-                    mutate(url, undefined, prev => {
+                    mutate(action, prev => {
                       return produce(prev, draft => {
                         const index = draft?.list?.findIndex(item => item.id === value.id)
                         if (index) {
@@ -221,7 +220,7 @@ const RoleList = () => {
         rowKey="name"
         columns={columns}
         code="200001"
-        url={url}
+        action={action}
         transformResponse={response => {
           const { List, Total } = response
           return { list: List, total: Total }

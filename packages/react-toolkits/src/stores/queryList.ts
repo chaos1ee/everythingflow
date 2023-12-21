@@ -6,34 +6,64 @@ import type { ListResponse } from '../types'
 
 type QueryListMutator = <T = any>(
   key: string,
-  payload?: Partial<{ page: number; size: number }>,
   data?: ListResponse<T> | Promise<ListResponse<T>> | MutatorCallback<ListResponse<T>>,
   opts?: MutatorOptions<ListResponse<T>>,
 ) => void
 
+interface QueryListPayload {
+  page: number
+  size: number
+  formValue?: any
+}
+
 export interface QueryListState {
   keyMap: Map<string, string | null>
-  paginationMap: Map<string, { page: number; size: number }>
+  payloadMap: Map<string, QueryListPayload>
   mutate: QueryListMutator
+
+  getPayload(key: string): QueryListPayload
+
+  setPayload(
+    key: string,
+    payload: Partial<{
+      page: number
+      size: number
+      formValue?: any
+    }>,
+    preventUpdate?: boolean,
+  ): void
 }
 
 export const useQueryListStore = create<QueryListState>((set, get) => ({
   keyMap: new Map(),
   paginationMap: new Map(),
-  mutate: (key, payload, data, opts) => {
-    const { keyMap, paginationMap } = get()
-    const swrKey = keyMap.get(key)
-    const { page = 1, size = 10 } = paginationMap.get(key) ?? {}
+  valueMap: new Map(),
+  payloadMap: new Map(),
+  getPayload(key) {
+    return get().payloadMap.get(key) ?? { page: 1, size: 10 }
+  },
+  setPayload(key, payload, preventUpdate = true) {
+    const map = get().payloadMap
 
-    if (!payload || ((!payload.page || payload.page === page) && (!payload.size || payload.size === size))) {
-      mutate(swrKey, data, opts)
+    if (preventUpdate) {
+      map.set(key, {
+        page: payload.page ?? map.get(key)?.page ?? 1,
+        size: payload.size ?? map.get(key)?.size ?? 10,
+        formValue: payload.formValue ?? map.get(key)?.formValue,
+      })
     } else {
       set({
-        paginationMap: new Map(paginationMap).set(key, {
-          page: payload.page ?? page,
-          size: payload.size ?? size,
+        payloadMap: new Map(map).set(key, {
+          page: payload.page ?? map.get(key)?.page ?? 1,
+          size: payload.size ?? map.get(key)?.size ?? 10,
+          formValue: payload.formValue ?? map.get(key)?.formValue,
         }),
       })
     }
+  },
+  mutate: (key, data, opts) => {
+    const { keyMap } = get()
+    const swrKey = keyMap.get(key)
+    mutate(swrKey, data, opts)
   },
 }))
