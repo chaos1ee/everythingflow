@@ -124,7 +124,7 @@ const OperationLogList: FC = () => {
         )}
         rowKey="id"
         columns={columns}
-        url="/api/usystem/log/list"
+        action="/api/usystem/log/list"
         transformArg={(page, size, values) => ({ ...values, page, size })}
         transformResponse={response => {
           return {
