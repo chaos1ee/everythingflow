@@ -15,13 +15,13 @@ import { useQueryListStore } from '../../stores/queryList'
 
 const { Option } = Select
 
-export const action = '/api/usystem/user/list'
+export const url = '/api/usystem/user/list'
 
 function useCreatingUserModal() {
   const { message } = App.useApp()
   const create = useCreateUser()
   const { data: roles, isLoading } = useAllRoles()
-  const { setPage } = useQueryListStore()
+  const { mutate } = useQueryListStore()
   const t = useTranslation()
 
   return useFormModal<{ id: string; name: string; roles: string[] }>({
@@ -44,7 +44,7 @@ function useCreatingUserModal() {
     ),
     async onConfirm(values) {
       await create.trigger(values)
-      setPage(action, 1)
+      mutate(url, { page: 1 })
       message.success(t('UserList.createSuccessfully'))
     },
   })
@@ -85,7 +85,8 @@ function useUpdatingUserModal() {
     async onConfirm(values) {
       await update.trigger(values)
       mutate(
-        action,
+        url,
+        undefined,
         prev =>
           produce(prev, draft => {
             const match = draft?.list?.find(item => item.id === values.id)
@@ -188,7 +189,7 @@ const UserList: FC = () => {
                     id: value.id,
                     name: value.name,
                   })
-                  mutate(action, prev => {
+                  mutate(url, undefined, prev => {
                     return produce(prev, draft => {
                       const index = draft?.list?.findIndex(item => item.id === value.id)
                       if (index) {
@@ -228,7 +229,7 @@ const UserList: FC = () => {
       <QueryList<UserListItem, undefined, { List: UserListItem[]; Total: number }>
         isGlobalNS
         code="100001"
-        action={action}
+        url={url}
         rowKey="id"
         columns={columns}
         transformResponse={response => {

@@ -48,7 +48,6 @@ export function usePermissions(
     {
       suspense: opts?.suspense,
       shouldRetryOnError: false,
-      revalidateOnFocus: false,
     },
   )
 
