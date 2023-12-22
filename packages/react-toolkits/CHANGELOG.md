@@ -1,5 +1,12 @@
 # react-toolkits
 
+## 0.6.4
+
+### Patch Changes
+
+- d14f602: Revert "chore: set revalidateOnFocus to false in usePermissions hook"
+- d14f602: feat: set revalidateOnFocus to false of usePermissions hook
+
 ## 0.6.3
 
 ### Patch Changes
