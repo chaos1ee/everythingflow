@@ -15,7 +15,7 @@ const FilterFormWrapper = (props: FilterFormWrapperProps) => {
   const { token } = theme.useToken()
   const t = useTranslation()
 
-  const formStyle = {
+  const style = {
     maxWidth: 'none',
     background: token.colorFillAlter,
     borderWidth: token.lineWidth,
@@ -27,7 +27,7 @@ const FilterFormWrapper = (props: FilterFormWrapperProps) => {
   }
 
   return (
-    <div style={formStyle}>
+    <div style={style}>
       <div className="flex">
         <div className="flex-1">{children}</div>
         <div className="ml-8">

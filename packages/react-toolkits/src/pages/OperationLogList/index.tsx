@@ -93,6 +93,16 @@ const OperationLogList: FC = () => {
         }
       >
         tableLayout="fixed"
+        rowKey="id"
+        columns={columns}
+        action="/api/usystem/log/list"
+        transformArg={(page, size, values) => ({ ...values, page, size })}
+        transformResponse={response => {
+          return {
+            list: response.List,
+            total: response.Total,
+          }
+        }}
         renderForm={form => (
           <Form form={form}>
             <Row gutter={10}>
@@ -122,16 +132,6 @@ const OperationLogList: FC = () => {
             </Row>
           </Form>
         )}
-        rowKey="id"
-        columns={columns}
-        url="/api/usystem/log/list"
-        transformArg={(page, size, values) => ({ ...values, page, size })}
-        transformResponse={response => {
-          return {
-            list: response.List,
-            total: response.Total,
-          }
-        }}
       />
     </Card>
   )

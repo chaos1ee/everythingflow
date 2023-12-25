@@ -8,6 +8,7 @@ import packageJson from '../package.json'
 
 const configs: UserConfig[] = [
   {
+    appType: 'custom',
     plugins: [
       react(),
       dts({
@@ -32,6 +33,7 @@ const configs: UserConfig[] = [
     },
   },
   {
+    appType: 'custom',
     plugins: [
       dts({
         outDir: 'locales',

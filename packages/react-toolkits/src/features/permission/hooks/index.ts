@@ -22,7 +22,7 @@ export function useAllPermissionsV2() {
 }
 
 export function useAllRoles() {
-  const { accessible } = usePermission('200005', { isGlobalNS: true })
+  const { accessible } = usePermission('200005', true)
   return useSWR(accessible ? '/api/usystem/role/all' : null, url =>
     request<RoleEnumItem[]>(url, { isGlobalNS: true }).then(response => response.data),
   )
