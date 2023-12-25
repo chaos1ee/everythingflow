@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.6.5
+
+### Patch Changes
+
+- 6b8bb8b: refactor: add arg prop in useQueryListStore payload
+
 ## 0.6.4
 
 ### Patch Changes
