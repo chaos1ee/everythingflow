@@ -12,7 +12,7 @@ export interface PermissionButtonProps extends Omit<ButtonProps, 'disabled'> {
 
 const PermissionButton: FC<PropsWithChildren<PermissionButtonProps>> = props => {
   const { children, code, showLoading, isGlobalNS, ...restProps } = props
-  const { accessible, isLoading } = usePermission(code, { isGlobalNS })
+  const { accessible, isLoading } = usePermission(code, isGlobalNS)
   const t = useTranslation()
 
   if (isLoading) {

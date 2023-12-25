@@ -103,7 +103,7 @@ const NavMenu = memo(function NavMenu() {
   const { menuItems } = useToolkitsContext()
   const flattenItems = useMemo(() => flatItems(menuItems ?? []), [menuItems])
   const codes = flattenItems.map(item => item.code).filter(Boolean) as string[]
-  const { data: permissions } = usePermissions(codes, { isGlobalNS: true, suspense: true })
+  const { data: permissions } = usePermissions(codes, true, { suspense: true })
   const internalItems = useMemo(() => transformItems(menuItems ?? [], permissions), [menuItems, permissions])
   const { openKeys, selectedKeys, setOpenKeys, setSelectedKeys } = useNavStore()
 

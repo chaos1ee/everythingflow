@@ -29,7 +29,7 @@ type JsonResponse<T> = (
   msg: string
 }
 
-interface RequestOptions extends Omit<RequestInit, 'body'> {
+export interface RequestOptions extends Omit<RequestInit, 'body'> {
   body?: Record<string | number, any> | FormData | null
   params?: Record<string | number, any> | URLSearchParams | null
   responseType?: 'json' | 'blob'

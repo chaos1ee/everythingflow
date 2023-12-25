@@ -54,6 +54,7 @@ export function useFormModal<Values>(props: UseFormModalProps<Values>) {
     return modal.confirm({
       ...defaultProps,
       ...restScopedProps,
+      className: 'toolkits-modal',
       onOk,
       onCancel() {
         form.resetFields()

@@ -1,3 +1,4 @@
+import type { SWRConfiguration } from 'swr'
 import useSWR from 'swr'
 import { useToolkitsContext } from '../components/ContextProvider'
 import { request } from '../utils/request'
@@ -8,13 +9,7 @@ type PermissionCheckResult =
       [k: string]: boolean
     }
 
-export function usePermissions(
-  codes: string[],
-  opts?: {
-    isGlobalNS?: boolean
-    suspense?: boolean
-  },
-) {
+export function usePermissions(codes: string[], isGlobalNS?: boolean, config?: SWRConfiguration) {
   const { usePermissionApiV2 } = useToolkitsContext()
 
   const { data, isValidating, isLoading } = useSWR(
@@ -25,7 +20,7 @@ export function usePermissions(
         body: {
           permissions: codes,
         },
-        isGlobalNS: opts?.isGlobalNS,
+        isGlobalNS,
       }).then(response => {
         if (response.data?.has_all) {
           return codes.reduce(
@@ -45,24 +40,14 @@ export function usePermissions(
           {} as Record<string, boolean>,
         )
       }),
-    {
-      suspense: opts?.suspense,
-      shouldRetryOnError: false,
-      revalidateOnFocus: false,
-    },
+    config,
   )
 
   return { data, isValidating, isLoading }
 }
 
-export function usePermission(
-  code: string | undefined,
-  opts?: {
-    isGlobalNS?: boolean
-    suspense?: boolean
-  },
-) {
-  const { data, isValidating, isLoading } = usePermissions(code ? [code] : [], opts)
+export function usePermission(code: string | undefined, isGlobalNS?: boolean, config?: SWRConfiguration) {
+  const { data, isValidating, isLoading } = usePermissions(code ? [code] : [], isGlobalNS, config)
 
   if (code === undefined) {
     return {
