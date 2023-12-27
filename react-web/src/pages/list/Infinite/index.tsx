@@ -5,7 +5,7 @@ import type { ColumnsType } from 'antd/es/table'
 import { last } from 'lodash-es'
 import { InfiniteList } from 'react-toolkits'
 
-const url = '/api/infinite'
+const action = '/api/infinite'
 
 const Infinite = () => {
   const columns: ColumnsType<InfiniteListItem> = [
@@ -24,7 +24,7 @@ const Infinite = () => {
   return (
     <Card title="InfiniteList">
       <InfiniteList<InfiniteListItem, undefined, InfiniteListResponse<InfiniteListItem>>
-        url={url}
+        action={action}
         rowKey="id"
         columns={columns}
         getRowKey={data => last(data.list)?.id}

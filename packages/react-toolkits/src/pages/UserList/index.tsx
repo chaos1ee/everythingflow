@@ -231,10 +231,8 @@ const UserList: FC = () => {
         action={action}
         rowKey="id"
         columns={columns}
-        transformResponse={response => {
-          const { List, Total } = response
-          return { list: List, total: Total }
-        }}
+        getTotal={response => response.Total}
+        getDataSource={response => response.List}
       />
       {creatingContextHolder}
       {updatingContextHolder}

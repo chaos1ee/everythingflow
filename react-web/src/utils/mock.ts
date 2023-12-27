@@ -2,7 +2,7 @@
 import { SECRET } from '@/constants'
 import type { ListResponse } from '@/types'
 import { randPastDate, toCollection } from '@ngneat/falso'
-import * as dayjs from 'dayjs'
+import dayjs from 'dayjs'
 import { jwtVerify } from 'jose'
 import type { ResponseResolver } from 'msw'
 import { HttpResponse, passthrough } from 'msw'
