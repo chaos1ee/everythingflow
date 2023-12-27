@@ -1,27 +1,26 @@
-name: CI
+name: Run tests on PR
 
 on:
-  push:
-    branches:
-      - main
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - synchronize
+      - ready_for_review
 
-concurrency: ${{ github.workflow }}-${{ github.ref }}
 
 jobs:
-  Publish:
-    timeout-minutes: 15
+  cypress-run:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout code repository
         uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
 
       - name: Setup node.js
         uses: actions/setup-node@v3
         with:
           node-version: 16
+          registry-url: 'https://registry.npmjs.org'
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v2
@@ -48,15 +47,5 @@ jobs:
           pnpm config set auto-install-peers true --location project
           pnpm install --ignore-scripts
 
-      - name: Build
-        run: pnpm build
-
-      - name: Create and publish versions
-        uses: changesets/action@v1
-        with:
-          commit: "ci: release packages"
-          title: "ci: publish to npm"
-          publish: pnpm changeset publish
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - name: Run tests
+        run: pnpm test
