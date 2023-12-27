@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.7.0
+
+### Minor Changes
+
+- b30e737: refactor: change QueryList api
+
 ## 0.6.5
 
 ### Patch Changes
