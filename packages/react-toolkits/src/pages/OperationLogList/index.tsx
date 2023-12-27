@@ -96,13 +96,9 @@ const OperationLogList: FC = () => {
         rowKey="id"
         columns={columns}
         action="/api/usystem/log/list"
-        transformArg={(page, size, values) => ({ ...values, page, size })}
-        transformResponse={response => {
-          return {
-            list: response.List,
-            total: response.Total,
-          }
-        }}
+        params={({ page, size, arg }) => ({ ...arg, page, size })}
+        getTotal={response => response.Total}
+        getDataSource={response => response.List}
         renderForm={form => (
           <Form form={form}>
             <Row gutter={10}>

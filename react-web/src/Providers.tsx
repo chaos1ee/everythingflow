@@ -17,7 +17,6 @@ const logger =
     fetcher: BareFetcher<Data> | null,
     config: SWRConfiguration<Data, Error, BareFetcher<Data>>,
   ): SWRResponse<Data, Error> => {
-    // 将日志记录器添加到原始 fetcher。
     const extendedFetcher = (...args: any[]) => {
       console.log('SWR Request:', key)
       if (fetcher === null) throw new Error('fetcher is null')

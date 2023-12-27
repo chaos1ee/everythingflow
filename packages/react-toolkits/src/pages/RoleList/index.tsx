@@ -221,10 +221,8 @@ const RoleList = () => {
         columns={columns}
         code="200001"
         action={action}
-        transformResponse={response => {
-          const { List, Total } = response
-          return { list: List, total: Total }
-        }}
+        getTotal={response => response.Total}
+        getDataSource={response => response.List}
       />
       {creatingContextHolder}
       {updatingContextHolder}

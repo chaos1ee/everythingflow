@@ -10,7 +10,7 @@ type QueryListMutator = <T = any>(
   opts?: MutatorOptions<ListResponse<T>>,
 ) => void
 
-interface QueryListPayload {
+export interface QueryListPayload {
   page?: number
   size?: number
   arg?: object
@@ -21,7 +21,7 @@ export interface QueryListState {
   payloadMap: Map<string, QueryListPayload>
   mutate: QueryListMutator
 
-  setPayload(key: string, payload: QueryListPayload, onlyUpdateStore?: boolean): void
+  setPayload(key: string, payload: QueryListPayload, triggerUpdate?: boolean): void
 }
 
 export const useQueryListStore = create<QueryListState>((set, get) => ({
@@ -29,7 +29,7 @@ export const useQueryListStore = create<QueryListState>((set, get) => ({
   paginationMap: new Map(),
   valueMap: new Map(),
   payloadMap: new Map(),
-  setPayload(key, payload, onlyUpdateStore = false) {
+  setPayload(key, payload, triggerUpdate = true) {
     const map = get().payloadMap
 
     const newValue = {
@@ -41,10 +41,10 @@ export const useQueryListStore = create<QueryListState>((set, get) => ({
       },
     }
 
-    if (onlyUpdateStore) {
-      map.set(key, newValue)
-    } else {
+    if (triggerUpdate) {
       set({ payloadMap: new Map(map).set(key, newValue) })
+    } else {
+      map.set(key, newValue)
     }
   },
   mutate: (key, data, opts) => {
