@@ -55,7 +55,7 @@ export function useValidateToken(skip: boolean) {
       }),
     {
       suspense: true,
-      dedupingInterval: 0,
+      revalidateIfStale: false,
     },
   )
 }
