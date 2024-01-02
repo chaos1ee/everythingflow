@@ -26,7 +26,9 @@
   ],
   "license": "MIT",
   "scripts": {
-    "build": "ts-node --project tsconfig.node.json scripts/build.ts",
+    "build": "pnpm run build:prod",
+    "build:prod": "cross-env NODE_ENV=\"production\" ts-node --project tsconfig.node.json scripts/build.ts",
+    "build:dev": "cross-env NODE_ENV=\"development\" ts-node --project tsconfig.node.json scripts/build.ts",
     "lint": "eslint --fix --ext .ts,.tsx,.js,.jsx ."
   },
   "author": "chaos1ee <chaos.maybeeee@gmail.com>",
@@ -60,6 +62,7 @@
     "@vitejs/plugin-react": "^4.2.1",
     "antd": "^5.12.4",
     "autoprefixer": "^10.4.16",
+    "cross-env": "^7.0.3",
     "glob": "^10.3.10",
     "postcss": "^8.4.32",
     "prettier": "^3.1.1",
