@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.7.2
+
+### Patch Changes
+
+- 7d91a12: fix: useValidateToken hook excution twice not allowed
+
 ## 0.7.1
 
 ### Patch Changes
