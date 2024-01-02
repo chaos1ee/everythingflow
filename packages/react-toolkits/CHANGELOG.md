@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.7.1
+
+### Patch Changes
+
+- 0053d0e: fix: QueryList data not initialized sometimes
+
 ## 0.7.0
 
 ### Minor Changes
