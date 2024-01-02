@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.7.3
+
+### Patch Changes
+
+- abd52b3: feat: set revalidateOnFocus to false
+
 ## 0.7.2
 
 ### Patch Changes
