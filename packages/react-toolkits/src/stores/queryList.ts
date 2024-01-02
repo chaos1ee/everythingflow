@@ -10,10 +10,10 @@ type QueryListMutator = <T = any>(
   opts?: MutatorOptions<ListResponse<T>>,
 ) => void
 
-export interface QueryListPayload {
+export interface QueryListPayload<Arg = any> {
   page?: number
   size?: number
-  arg?: object
+  arg?: Arg
 }
 
 export interface QueryListState {

@@ -22,12 +22,13 @@ const Pagination = () => {
 
   return (
     <Card title="List">
-      <QueryList<ListItem, undefined, ListResponse<ListItem>>
+      <QueryList<ListItem, { name: string }, ListResponse<ListItem>>
         action={action}
         rowKey="id"
         columns={columns}
         getTotal={response => response.Total}
         getDataSource={response => response.List}
+        params={({ page, size, arg }) => ({ page, size, ...arg })}
         renderForm={form => (
           <Form form={form}>
             <Row>

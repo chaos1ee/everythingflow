@@ -6,7 +6,7 @@ import { isEqual } from 'lodash-es'
 import qs from 'query-string'
 import type { ReactElement, ReactNode, Ref } from 'react'
 import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react'
-import useSWR, { useSWRConfig } from 'swr'
+import useSWR from 'swr'
 import { useTranslation } from '../../hooks/i18n'
 import { usePermission } from '../../hooks/permission'
 import type { QueryListPayload } from '../../stores/queryList'
@@ -33,7 +33,7 @@ export interface QueryListRef<Item = any, Values = any> {
   form: FormInstance<Values>
 }
 
-export interface QueryListProps<Item = any, Values = any, Response = any>
+export interface QueryListProps<Item = any, Values = any, Response = any, Arg extends Values = Values>
   extends Pick<TableProps<Item>, 'columns' | 'rowKey' | 'tableLayout' | 'expandable' | 'rowSelection' | 'bordered'> {
   renderForm?: (form: FormInstance<Values>) => ReactNode
   code?: string
@@ -42,9 +42,9 @@ export interface QueryListProps<Item = any, Values = any, Response = any>
   onTableChange?: TableProps<Item>['onChange']
   action: string
   method?: string
-  headers?: RequestOptions['headers'] | ((payload: QueryListPayload) => RequestOptions['headers'])
-  body?: RequestOptions['body'] | ((payload: QueryListPayload) => RequestOptions['body'])
-  params?: RequestOptions['params'] | ((payload: QueryListPayload) => RequestOptions['params'])
+  headers?: RequestOptions['headers'] | ((payload: QueryListPayload<Arg>) => RequestOptions['headers'])
+  body?: RequestOptions['body'] | ((payload: QueryListPayload<Arg>) => RequestOptions['body'])
+  params?: RequestOptions['params'] | ((payload: QueryListPayload<Arg>) => RequestOptions['params'])
   afterSuccess?: (action: QueryListAction, data: QueryListDataType<Item>) => void
   // 无分页
   onePage?: boolean
@@ -52,10 +52,16 @@ export interface QueryListProps<Item = any, Values = any, Response = any>
   // 默认的接口返回类型为 ListResponse<Item>，当符合时无需设置 getTotal、getDataSource 就可以让组件正确获取 total 与 dataSource。
   getTotal?: (response: Response) => number
   getDataSource?: (response: Response) => Item[]
+  refreshInterval?: number
 }
 
-const InternalQueryList = <Item extends object, Values extends object | undefined, Response = ListResponse<Item>>(
-  props: QueryListProps<Item, Values, Response>,
+const InternalQueryList = <
+  Item extends object,
+  Values extends object | undefined,
+  Response = ListResponse<Item>,
+  Arg extends Values = Values,
+>(
+  props: QueryListProps<Item, Values, Response, Arg>,
   ref: Ref<QueryListRef<Item, Values>>,
 ) => {
   const {
@@ -68,6 +74,7 @@ const InternalQueryList = <Item extends object, Values extends object | undefine
     body,
     params,
     defaultSize = 10,
+    refreshInterval = 0,
     extra,
     renderForm,
     afterSuccess,
@@ -81,7 +88,6 @@ const InternalQueryList = <Item extends object, Values extends object | undefine
   const { accessible, isLoading } = usePermission(code, isGlobalNS)
   const { payloadMap, keyMap, setPayload } = useQueryListStore()
   const payload = payloadMap.get(action)
-  const { refreshInterval } = useSWRConfig()
   const listAction = useRef<QueryListAction>(QueryListAction.Init)
   const createBoundAction = <T extends any[], R>(actionFn: (action: string, ...args: T) => R): ((...args: T) => R) => {
     return (...args: T) => actionFn(action, ...args)
@@ -89,6 +95,8 @@ const InternalQueryList = <Item extends object, Values extends object | undefine
 
   const _setPayload = createBoundAction(setPayload)
   const [swrKey, setSwrKey] = useState<string | null>(null)
+
+  const shouldPoll = useRef(false)
 
   const {
     data,
@@ -104,6 +112,7 @@ const InternalQueryList = <Item extends object, Values extends object | undefine
         body: typeof body === 'function' ? body({ page, size, arg }) : body,
         isGlobalNS,
       })
+
       return {
         dataSource: getDataSource(response.data),
         total: getTotal(response.data) ?? 0,
@@ -116,75 +125,85 @@ const InternalQueryList = <Item extends object, Values extends object | undefine
       },
       shouldRetryOnError: false,
       revalidateOnFocus: false,
+      refreshInterval: shouldPoll.current ? refreshInterval : 0,
       onSuccess(listData) {
+        shouldPoll.current = true
         afterSuccess?.(listAction.current, listData)
+      },
+      onError() {
+        shouldPoll.current = false
       },
     },
   )
 
-  const fetchData = async () => {
+  const fetchFirstPage = async () => {
     const values = form.getFieldsValue()
-
-    try {
-      await form.validateFields({ validateOnly: true })
-      // 当前值与上次值相同时，swr 不会触发请求，需要使用 mutate 手动触发。
-      if (isEqual(payload, { ...payload, page: 1, arg: values })) {
-        await mutate(undefined, { revalidate: true })
-      } else {
-        _setPayload({ page: 1, arg: values })
-      }
-    } catch (_) {
-      await mutate(undefined, { revalidate: false })
+    // 当前值与上次值相同时，swr 不会触发请求，需要使用 mutate 手动触发。
+    if (isEqual(payload, { ...payload, page: 1, arg: values })) {
+      await mutate(undefined, { revalidate: true })
+    } else {
       _setPayload({ page: 1, arg: values })
     }
   }
 
-  const onConfirm = () => {
-    listAction.current = QueryListAction.Confirm
-    fetchData()
+  const clearPageContent = async () => {
+    await mutate(undefined, { revalidate: false })
+    _setPayload({ page: 1, arg: form.getFieldsValue() })
   }
 
-  const onReset = () => {
+  const onConfirm = async () => {
+    listAction.current = QueryListAction.Confirm
+
+    try {
+      await form.validateFields()
+      await fetchFirstPage()
+    } catch (_) {
+      await clearPageContent()
+    }
+  }
+
+  const onReset = async () => {
     listAction.current = QueryListAction.Reset
     form.resetFields()
-    fetchData()
+
+    try {
+      await form.validateFields({ validateOnly: true })
+      await fetchFirstPage()
+    } catch (_) {
+      await clearPageContent()
+    }
   }
 
   useEffect(() => {
     if (accessible) {
-      listAction.current = QueryListAction.Init
-      fetchData()
+      form
+        .validateFields({ validateOnly: true })
+        .then(() => {
+          const { url, query } = qs.parseUrl(action)
+          const { page = 1, size = defaultSize, arg = {} } = payload ?? {}
+          const queryParams = Object.assign(
+            query,
+            typeof params === 'function'
+              ? params?.({ page, size, arg })
+              : onePage
+                ? params
+                : {
+                    ...arg,
+                    page,
+                    size,
+                  },
+          )
+          const queryString = qs.stringify(queryParams)
+          const key = queryString ? `${url}?${queryString}` : url
+          setSwrKey(key)
+          keyMap.set(action, key)
+        })
+        .catch(() => {
+          setSwrKey(null)
+          keyMap.set(action, null)
+        })
     }
-  }, [accessible])
-
-  useEffect(() => {
-    form
-      .validateFields({ validateOnly: true })
-      .then(() => {
-        const { url, query } = qs.parseUrl(action)
-        const { page = 1, size = defaultSize, arg = {} } = payload ?? {}
-        const queryParams = Object.assign(
-          query,
-          typeof params === 'function'
-            ? params?.({ page, size, arg })
-            : onePage
-              ? params
-              : {
-                  ...arg,
-                  page,
-                  size,
-                },
-        )
-        const queryString = qs.stringify(queryParams)
-        const key = queryString ? `${url}?${queryString}` : url
-        setSwrKey(key)
-        keyMap.set(action, key)
-      })
-      .catch(() => {
-        setSwrKey(null)
-        keyMap.set(action, null)
-      })
-  }, [payloadMap])
+  }, [accessible, payloadMap])
 
   useImperativeHandle(ref, () => ({
     data,
@@ -215,13 +234,14 @@ const InternalQueryList = <Item extends object, Values extends object | undefine
           {renderForm(form)}
         </FilterFormWrapper>
       ) : (
+        // 消除 Antd 的警告
         <Form form={form} />
       )}
       {extra && <div className="mt-2 mb-4">{extra(form)}</div>}
       <Table
         {...tableProps}
         dataSource={data.dataSource}
-        loading={refreshInterval === 0 && isDataLoading}
+        loading={isDataLoading}
         pagination={
           onePage
             ? false
@@ -250,8 +270,9 @@ const QueryList = forwardRef(InternalQueryList) as <
   Item extends object,
   Values extends object | undefined,
   Response = ListResponse<Item>,
+  Arg extends Values = Values,
 >(
-  props: QueryListProps<Item, Values, Response> & { ref?: Ref<QueryListRef<Item, Values>> },
+  props: QueryListProps<Item, Values, Response, Arg> & { ref?: Ref<QueryListRef<Item, Values>> },
 ) => ReactElement
 
 export default QueryList
