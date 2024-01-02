@@ -40,7 +40,10 @@ export function usePermissions(codes: string[], isGlobalNS?: boolean, config?: S
           {} as Record<string, boolean>,
         )
       }),
-    config,
+    {
+      revalidateOnFocus: false,
+      ...config,
+    },
   )
 
   return { data, isValidating, isLoading }
