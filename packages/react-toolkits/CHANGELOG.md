@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.7.4
+
+### Patch Changes
+
+- 88cfd8d: feat: include code in RequestError
+
 ## 0.7.3
 
 ### Patch Changes
