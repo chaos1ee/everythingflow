@@ -7,11 +7,13 @@ import { useGameStore } from '../components/GameSelect'
 import { useTokenStore } from '../stores/token'
 
 export class RequestError extends Error {
-  status?: number
+  status!: number
+  code?: number
 
-  constructor(opts?: { message?: string; status?: number }) {
+  constructor(opts: { message?: string; status: number; code?: number }) {
     super(opts?.message)
-    this.status = opts?.status
+    this.status = opts.status
+    this.code = opts.code
   }
 }
 
@@ -111,5 +113,9 @@ export async function request<T = any>(url: string, opts?: RequestOptions): Prom
     return { ...commonResponse, data: json.data }
   }
 
-  throw new RequestError({ status: response.status, message: json.msg })
+  throw new RequestError({
+    code: json.code,
+    status: response.status,
+    message: json.msg,
+  })
 }
