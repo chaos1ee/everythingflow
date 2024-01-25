@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.8.0
+
+### Minor Changes
+
+- 9593459: feat: add DiffTable
+
 ## 0.7.4
 
 ### Patch Changes
