@@ -13,6 +13,7 @@ type RecursivePartial<T> = NonNullable<T> extends object
     }
   : T
 
+// TODO: 重构 API。添加 form 属性，可以传入表单实例。
 export interface UseFormModalProps<Values>
   extends Omit<ModalFuncProps, 'icon' | 'className' | 'content' | 'type' | 'onOk' | 'onCancel'> {
   content?: (form: FormInstance<Values>) => ReactNode

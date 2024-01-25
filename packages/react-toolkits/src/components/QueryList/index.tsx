@@ -35,24 +35,24 @@ export interface QueryListRef<Item = any, Values = any> {
 
 export interface QueryListProps<Item = any, Values = any, Response = any, Arg extends Values = Values>
   extends Pick<TableProps<Item>, 'columns' | 'rowKey' | 'tableLayout' | 'expandable' | 'rowSelection' | 'bordered'> {
-  renderForm?: (form: FormInstance<Values>) => ReactNode
   code?: string
   isGlobalNS?: boolean
-  extra?: (form: FormInstance<Values>) => ReactNode
-  onTableChange?: TableProps<Item>['onChange']
   action: string
   method?: string
-  headers?: RequestOptions['headers'] | ((payload: QueryListPayload<Arg>) => RequestOptions['headers'])
-  body?: RequestOptions['body'] | ((payload: QueryListPayload<Arg>) => RequestOptions['body'])
-  params?: RequestOptions['params'] | ((payload: QueryListPayload<Arg>) => RequestOptions['params'])
-  afterSuccess?: (action: QueryListAction, data: QueryListDataType<Item>) => void
+  refreshInterval?: number
   // 无分页
   onePage?: boolean
   defaultSize?: number
+  headers?: RequestOptions['headers'] | ((payload: QueryListPayload<Arg>) => RequestOptions['headers'])
+  body?: RequestOptions['body'] | ((payload: QueryListPayload<Arg>) => RequestOptions['body'])
+  params?: RequestOptions['params'] | ((payload: QueryListPayload<Arg>) => RequestOptions['params'])
+  renderForm?: (form: FormInstance<Values>) => ReactNode
+  extra?: (form: FormInstance<Values>) => ReactNode
+  onTableChange?: TableProps<Item>['onChange']
+  afterSuccess?: (action: QueryListAction, data: QueryListDataType<Item>) => void
   // 默认的接口返回类型为 ListResponse<Item>，当符合时无需设置 getTotal、getDataSource 就可以让组件正确获取 total 与 dataSource。
   getTotal?: (response: Response) => number
   getDataSource?: (response: Response) => Item[]
-  refreshInterval?: number
 }
 
 const InternalQueryList = <
