@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.8.1
+
+### Patch Changes
+
+- 73c9ecf: chore: split handsontable component to individual package
+
 ## 0.8.0
 
 ### Minor Changes
