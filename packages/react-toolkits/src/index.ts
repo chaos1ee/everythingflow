@@ -1,6 +1,5 @@
 import type { ContextState } from './components/ContextProvider'
 import ContextProvider, { contextStore, useToolkitsContext } from './components/ContextProvider'
-import DiffTable from './components/DiffTable'
 import type { DynamicTagsProps } from './components/DynamicTags'
 import DynamicTags from './components/DynamicTags'
 import type { FilterFormWrapperProps } from './components/FilterFormWrapper'
@@ -38,7 +37,6 @@ import { mixedStorage } from './utils/storage'
 
 export {
   ContextProvider,
-  DiffTable,
   DynamicTags,
   FilterFormWrapper,
   GameSelect,
