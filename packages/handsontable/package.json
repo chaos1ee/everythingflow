@@ -1,0 +1,49 @@
+{
+  "name": "@love1t/handsontable",
+  "version": "0.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "vite build"
+  },
+  "sideEffects": [
+    "**/*.css"
+  ],
+  "module": "./lib/index.js",
+  "types": "./lib/index.d.ts",
+  "exports": {
+    "./style.css": "./lib/style.css",
+    ".": {
+      "import": "./lib/index.js",
+      "types": "./lib/index.d.ts"
+    }
+  },
+  "files": [
+    "README.md",
+    "lib/"
+  ],
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/lodash-es": "^4.17.12",
+    "@types/react": "^18.2.45",
+    "@vitejs/plugin-react": "^4.2.1",
+    "react": "^18.2.0",
+    "tsconfig": "workspace:*",
+    "typescript": "^5.3.3",
+    "vite": "^5.0.10",
+    "vite-plugin-dts": "^3.6.4"
+  },
+  "peerDependencies": {
+    "react": "^18.2.0"
+  },
+  "dependencies": {
+    "@ant-design/icons": "^5.2.6",
+    "@handsontable/react": "^14.1.0",
+    "@uidotdev/usehooks": "^2.4.1",
+    "antd": "^5.13.2",
+    "handsontable": "^14.1.0",
+    "lodash-es": "^4.17.21"
+  }
+}
