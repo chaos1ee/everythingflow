@@ -44,7 +44,9 @@ export interface TableProps
   toHTML?: (instance: Handsontable) => string
 }
 
-const Table = forwardRef<HotTableClass, TableProps>(function FunTable(props, ref) {
+export type TableRef = HotTableClass
+
+const Table = forwardRef<TableRef, TableProps>(function FunTable(props, ref) {
   const {
     data,
     contextMenu,
