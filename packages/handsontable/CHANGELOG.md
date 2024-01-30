@@ -1,5 +1,11 @@
 # @love1t/handsontable
 
+## 0.1.5
+
+### Patch Changes
+
+- 430fbe4: fix: forgot to register language before using it
+
 ## 0.1.4
 
 ### Patch Changes
