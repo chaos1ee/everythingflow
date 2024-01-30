@@ -116,7 +116,7 @@ const Table = forwardRef<TableRef, TableProps>(function FunTable(props, ref) {
       let _activeIndex = queryResult.current.slice(0, resultIndex.current).reduce((acc, cur) => acc + cur.count, 0)
       td.innerHTML = originalValue.replace(new RegExp(escapedString, 'gi'), match => {
         const isActive = _resultIndex === resultIndex.current && _activeIndex === activeIndex.current
-        const replacement = `<span style="background:${isActive ? '#faad14' : '#ffff00'}">${match}</span>`
+        const replacement = `<span style="background:${isActive ? '#faad14' : '#ffff00'};color: #000;">${match}</span>`
         _activeIndex++
         return replacement
       })
