@@ -1,6 +1,6 @@
 import { useWindowSize } from '@uidotdev/usehooks'
-import { useMemo } from 'react'
 import type { GridSettings } from 'handsontable/settings'
+import { useMemo } from 'react'
 
 const BorderWidth = 1
 const LineHeight = 21
@@ -31,8 +31,8 @@ function useHeaderHeight(colHeaders: GridSettings['colHeaders']) {
 
 export function useFixedHeight(
   data: GridSettings['data'],
-  fixedRowsTop: number,
   colHeaders: GridSettings['colHeaders'],
+  fixedRowsTop: number,
 ) {
   const rowHeights = useRowHeights(data)
   const headerHeight = useHeaderHeight(colHeaders)
@@ -46,13 +46,13 @@ export function useFixedHeight(
 
 export function useHeight(
   data: GridSettings['data'],
-  fixedRowsTop: number,
   colHeaders: GridSettings['colHeaders'],
+  fixedRowsTop = 0,
   leftHeight = 200,
 ) {
   const size = useWindowSize()
   const rowHeights = useRowHeights(data)
-  const fixedHeight = useFixedHeight(data, fixedRowsTop, colHeaders)
+  const fixedHeight = useFixedHeight(data, colHeaders, fixedRowsTop)
   const headerHeight = useHeaderHeight(colHeaders)
   const maxHeight = (size?.height ?? window.innerHeight) - leftHeight
   const height = rowHeights.reduce((acc, curr) => acc + curr, headerHeight) + BorderWidth

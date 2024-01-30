@@ -17,7 +17,7 @@ export default defineConfig({
     target: 'esnext',
     sourcemap: false,
     lib: {
-      entry: 'src/index.tsx',
+      entry: 'src/index.ts',
       formats: ['es'],
       fileName: () => '[name].js',
     },

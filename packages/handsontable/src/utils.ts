@@ -1,5 +1,4 @@
 import type Handsontable from 'handsontable'
-import { AddedFlag, DeletedFlag, ModifiedFlag } from './constants'
 
 export async function copyHtmlToClipboard(htmlString: string) {
   try {
@@ -9,6 +8,11 @@ export async function copyHtmlToClipboard(htmlString: string) {
   } catch (err) {
     console.error('Failed to copy: ', err)
   }
+}
+
+// 转义所有特殊字符
+export function escapeRegExp(string: string) {
+  return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 }
 
 // 计算字符串出现次数
@@ -23,7 +27,7 @@ export function isEmpty(variable: any) {
 
 // 改写 Handsontable 中的 instanceToHTML 函数
 // 源代码可以参照 https://github.com/handsontable/handsontable/blob/d092d4aba25f85bbfdd161d50d40ada2f7e20dc5/handsontable/src/utils/parseTable.js#L27
-export function toHTML(instance: Handsontable, isFirstRowFlag = false) {
+export function instanceToHTML(instance: Handsontable) {
   const coords = [0, 0, instance.countRows() - 1, instance.countCols() - 1]
   const data = instance.getData(...coords)
   const countRows = data.length
@@ -48,30 +52,6 @@ export function toHTML(instance: Handsontable, isFirstRowFlag = false) {
         }
         if (colspan) {
           attrs.push(`colspan="${colspan}"`)
-        }
-
-        let styles = ''
-
-        if (column === 0) {
-          styles += 'text-align: center;'
-        }
-
-        if (cellData.includes(ModifiedFlag)) {
-          styles += 'background-color: #ddf4ff;'
-        } else if (
-          data[row][0].toString()?.includes(AddedFlag) ||
-          (isFirstRowFlag && data[0][column].toString().includes(AddedFlag))
-        ) {
-          styles += 'background-color: #e6ffec;'
-        } else if (
-          data[row][0].toString().includes(DeletedFlag) ||
-          (isFirstRowFlag && data[0][column].toString().includes(DeletedFlag))
-        ) {
-          styles += 'background-color: #ffebe9;'
-        }
-
-        if (styles !== '') {
-          attrs.push(`style="${styles}"`)
         }
 
         if (isEmpty(cellData)) {

@@ -1,6 +1,11 @@
-import { LeftOutlined, RightOutlined, SearchOutlined } from '@ant-design/icons'
+import LeftOutlined from '@ant-design/icons/LeftOutlined'
+import RightOutlined from '@ant-design/icons/RightOutlined'
+import SearchOutlined from '@ant-design/icons/SearchOutlined'
 import { useDebounce } from '@uidotdev/usehooks'
-import { Button, Input, Typography, theme } from 'antd'
+import Button from 'antd/es/Button'
+import Input from 'antd/es/Input'
+import Typography from 'antd/es/Typography'
+import useToken from 'antd/es/theme/useToken'
 import type { ChangeEvent, FC } from 'react'
 import { useEffect, useState } from 'react'
 
@@ -13,7 +18,7 @@ export interface SearchInputProps {
 
 const SearchInput: FC<SearchInputProps> = props => {
   const { total = 0, onSearch, prev, next } = props
-  const { token } = theme.useToken()
+  const [_theme, token] = useToken()
   const [activeIndex, setActiveIndex] = useState(0)
   const [query, setQuery] = useState<string>('')
   const debouncedQuery = useDebounce(query, 200)
@@ -45,6 +50,7 @@ const SearchInput: FC<SearchInputProps> = props => {
 
   return (
     <Input
+      allowClear
       style={{ width: 300 }}
       prefix={<SearchOutlined style={iconStyles} />}
       suffix={
