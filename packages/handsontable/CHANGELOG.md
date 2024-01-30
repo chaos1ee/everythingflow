@@ -1,5 +1,11 @@
 # @love1t/handsontable
 
+## 0.1.4
+
+### Patch Changes
+
+- 60e0da0: feat: set query result color
+
 ## 0.1.3
 
 ### Patch Changes
