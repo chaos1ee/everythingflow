@@ -1,5 +1,11 @@
 # @love1t/handsontable
 
+## 0.1.3
+
+### Patch Changes
+
+- 2facc84: feat: export types
+
 ## 0.1.2
 
 ### Patch Changes
