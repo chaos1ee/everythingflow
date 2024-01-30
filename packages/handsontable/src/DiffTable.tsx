@@ -7,6 +7,7 @@ import Table from './Table'
 import { AddedFlag, DeletedFlag, ModifiedFlag } from './constants'
 import { isEmpty } from './utils'
 
+
 interface DiffTableProps extends Pick<TableProps, 'loading'> {
   header?: string[][]
   body?: string[][]

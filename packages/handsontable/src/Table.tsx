@@ -6,7 +6,7 @@ import Skeleton from 'antd/es/skeleton'
 import Space from 'antd/es/space'
 import type Handsontable from 'handsontable'
 import 'handsontable/dist/handsontable.full.min.css'
-import { zhCN } from 'handsontable/i18n/languages'
+import { registerLanguageDictionary, zhCN } from 'handsontable/i18n'
 import { AutoColumnSize, Search, registerPlugin } from 'handsontable/plugins'
 import { forwardRef, useImperativeHandle, useRef, useState } from 'react'
 import CopyButton from './CopyButton'
@@ -15,6 +15,7 @@ import { useHeight, useRowHeights } from './hooks'
 import './style.css'
 import { copyHtmlToClipboard, countString, escapeRegExp, instanceToHTML, isEmpty } from './utils'
 
+registerLanguageDictionary(zhCN)
 registerPlugin(AutoColumnSize)
 registerPlugin(Search)
 
