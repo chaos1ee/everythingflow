@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.8.2
+
+### Patch Changes
+
+- 443676b: refactor: remove skip aurgument for useTokenValidation hook
+
 ## 0.8.1
 
 ### Patch Changes
