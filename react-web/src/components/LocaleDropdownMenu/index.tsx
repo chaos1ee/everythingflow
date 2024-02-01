@@ -1,8 +1,8 @@
-import { languages, useLocaleStore } from '@/stores/locale'
 import { TranslationOutlined } from '@ant-design/icons'
 import { Dropdown, Typography } from 'antd'
 import type { FC } from 'react'
 import { useTranslation } from 'react-i18next'
+import { languages, useLocaleStore } from '../../stores/locale'
 
 const LocaleDropdownMenu: FC = () => {
   const { i18n } = useTranslation()
@@ -25,7 +25,7 @@ const LocaleDropdownMenu: FC = () => {
       placement="bottomRight"
     >
       <Typography.Link>
-        <TranslationOutlined style={{ fontSize: '20px' }} />
+        <TranslationOutlined style={{ fontSize: '16px' }} />
       </Typography.Link>
     </Dropdown>
   )

@@ -1,21 +1,33 @@
-import { ConsoleSqlOutlined, SafetyOutlined, TableOutlined } from '@ant-design/icons'
+import { ConsoleSqlOutlined, OrderedListOutlined, SafetyOutlined, TableOutlined } from '@ant-design/icons'
 import type { NavMenuItem } from 'react-toolkits'
 
 const menuItems: NavMenuItem[] = [
   {
     key: 'list',
     label: 'List',
-    icon: <TableOutlined />,
+    icon: <OrderedListOutlined />,
     children: [
       {
         key: 'pagination_list',
         label: 'Pagination List',
-        route: '/list',
+        route: '/list/pagination',
       },
       {
         key: 'infinite_list',
         label: 'Infinite List',
         route: '/list/infinite',
+      },
+    ],
+  },
+  {
+    key: 'handsontable',
+    label: 'Handsontable',
+    icon: <TableOutlined />,
+    children: [
+      {
+        key: 'diff_table',
+        label: 'DiffTable',
+        route: '/handsontable/diff',
       },
     ],
   },

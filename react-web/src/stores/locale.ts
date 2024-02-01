@@ -1,4 +1,3 @@
-import i18n from '@/libs/i18n'
 import type { Locale as AntdLocale } from 'antd/es/locale'
 import antdEn from 'antd/locale/en_GB'
 import antdZh from 'antd/locale/zh_CN'
@@ -6,6 +5,7 @@ import type { Locale as ToolkitsLocale } from 'react-toolkits'
 import toolkitsEn from 'react-toolkits/locales/en_GB'
 import toolkitsZh from 'react-toolkits/locales/zh_CN'
 import { create } from 'zustand'
+import i18n from '../libs/i18n'
 
 export const languages = {
   zh_CN: '简体中文',

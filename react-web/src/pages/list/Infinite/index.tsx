@@ -1,9 +1,9 @@
-import type { InfiniteListItem } from '@/features/list'
-import type { InfiniteListResponse } from '@/types'
 import { Card } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
 import { last } from 'lodash-es'
 import { InfiniteList } from 'react-toolkits'
+import type { InfiniteListItem } from '../../../features/list'
+import type { InfiniteListResponse } from '../../../types'
 
 const action = '/api/infinite'
 

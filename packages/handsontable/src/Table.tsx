@@ -27,41 +27,16 @@ export interface SearchResult {
   count: number
 }
 
-export interface TableProps
-  extends Pick<
-    HotTableProps,
-    | 'data'
-    | 'contextMenu'
-    | 'height'
-    | 'fixedRowsTop'
-    | 'fixedColumnsLeft'
-    | 'readOnly'
-    | 'afterOnCellMouseOver'
-    | 'afterChange'
-    | 'afterDestroy'
-    | 'afterRenderer'
-  > {
+export interface TableProps extends HotTableProps {
   loading?: boolean
+  // 自定义生成的 HTML，复制到剪贴板时调用。一般不需要自定义，但在某些情况下按照特定方式构造的 DOM string 可以在粘贴时保留样式。比如从 DiffTable 复制的内容可以在粘贴到 Google Sheets 或飞书等在线表格工具时保留样式。
   toHTML?: (instance: Handsontable) => string
 }
 
 export type TableRef = HotTableClass
 
 const Table = forwardRef<TableRef, TableProps>(function FunTable(props, ref) {
-  const {
-    data,
-    contextMenu,
-    loading,
-    fixedRowsTop,
-    fixedColumnsLeft,
-    readOnly,
-    height,
-    toHTML,
-    afterRenderer,
-    afterOnCellMouseOver,
-    afterChange,
-    afterDestroy,
-  } = props
+  const { toHTML, loading, data, fixedRowsTop, height, afterRenderer, ...restProps } = props
   const rowHeights = useRowHeights(data)
   const dynamicHeight = useHeight(data, true, fixedRowsTop)
   const hotRef = useRef<HotTableClass>(null)
@@ -112,7 +87,7 @@ const Table = forwardRef<TableRef, TableProps>(function FunTable(props, ref) {
       item => item.row === visualRowIndex && item.column === visualColIndex,
     )
 
-    // FIXME: 会与 DiffTable 的 afterRenderer 内的逻辑冲突
+    // FIXME: 会与 DiffTable 的 afterRenderer 内的逻辑冲突，导致单元格原本的 diff 样式被清除（当单元格的内容类似“xxx->12312”时）
     if (_resultIndex !== -1) {
       let _activeIndex = queryResult.current.slice(0, resultIndex.current).reduce((acc, cur) => acc + cur.count, 0)
       td.innerHTML = originalValue.replace(new RegExp(escapedString, 'gi'), match => {
@@ -193,23 +168,17 @@ const Table = forwardRef<TableRef, TableProps>(function FunTable(props, ref) {
         <CopyButton onCopy={onCopy} />
       </Space>
       <HotTable
+        {...restProps}
+        width="100%"
         copyable
         rowHeaders
         colHeaders
         ref={hotRef}
-        contextMenu={contextMenu}
-        readOnly={readOnly}
-        width="100%"
         data={data}
         height={height || dynamicHeight}
         rowHeights={rowHeights}
-        fixedRowsTop={fixedRowsTop}
-        fixedColumnsLeft={fixedColumnsLeft}
         language={zhCN.languageCode}
-        afterChange={afterChange}
         afterRenderer={afterRendererHandler}
-        afterOnCellMouseOver={afterOnCellMouseOver}
-        afterDestroy={afterDestroy}
         licenseKey="non-commercial-and-evaluation"
       />
     </>

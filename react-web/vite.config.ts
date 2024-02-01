@@ -5,13 +5,11 @@ import { defineConfig } from 'vite'
 export default defineConfig(({ mode }) => {
   return {
     plugins: [react()],
-    resolve: {
-      alias: {
-        '@': '/src',
-      },
-    },
     server: {
       port: 8000,
+    },
+    build: {
+      sourcemap: true,
     },
   }
 })

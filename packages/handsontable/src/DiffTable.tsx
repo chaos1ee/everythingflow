@@ -1,17 +1,12 @@
 import type HotTableClass from '@handsontable/react/hotTableClass'
 import type Handsontable from 'handsontable'
-import type { CellProperties } from 'handsontable/settings'
+import { BaseRenderer } from 'handsontable/renderers'
+import { CellProperties } from 'handsontable/settings'
 import { useRef, type FC } from 'react'
 import type { TableProps } from './Table'
 import Table from './Table'
 import { AddedFlag, DeletedFlag, ModifiedFlag } from './constants'
 import { isEmpty } from './utils'
-
-
-interface DiffTableProps extends Pick<TableProps, 'loading'> {
-  header?: string[][]
-  body?: string[][]
-}
 
 // 改写 Handsontable 中的 instanceToHTML 函数
 // 源代码可以参照 https://github.com/handsontable/handsontable/blob/d092d4aba25f85bbfdd161d50d40ada2f7e20dc5/handsontable/src/utils/parseTable.js#L27
@@ -94,67 +89,73 @@ function toHTML(instance: Handsontable, isFirstRowFlag = false) {
   return TABLE.join('')
 }
 
+const modifiedCellRenderer: BaseRenderer = (_instance, td, _row, _column, _prop, value, _cellProperties) => {
+  td.innerHTML = (value.toString() as string).replace(new RegExp(`(.*)(${ModifiedFlag})(.*)`), (_, p1, p2, p3) => {
+    return `<span style="background: rgba(255, 129, 130, 0.4);">${p1}</span>${p2}<span style="background: rgb(171, 242, 188)">${p3}</span>`
+  })
+}
+
+export interface DiffTableProps
+  extends Omit<TableProps, 'data' | 'cells' | 'fixedRowsTop' | 'fixedColumnsLeft' | 'toHTML'> {
+  header?: string[][]
+  body?: string[][]
+}
+
 const DiffTable: FC<DiffTableProps> = props => {
-  const { header, body, loading } = props
+  const { header, body, ...restProps } = props
   const hotRef = useRef<HotTableClass>(null)
   // 第一行为标记行
   const isFirstRowFlag = header?.[0]?.[0] === '!'
   const data = (header ?? []).concat(body ?? [])
   const fixedRowsTop = header?.length ?? 0
 
-  const afterRenderer = (
-    td: HTMLTableCellElement,
-    row: number,
-    column: number,
-    _prop: string | number,
-    value: string,
-    cellProperties: CellProperties,
-  ) => {
-    cellProperties.className = cellProperties.className || ''
+  const cells = (row: number, column: number) => {
+    const cellProperties: Partial<CellProperties> = {}
 
     const hot = hotRef.current?.hotInstance
-
-    if (!hot) return
+    if (!hot) return cellProperties
 
     const visualRowIndex = hot.toVisualRow(row)
     const visualColIndex = hot.toVisualColumn(column)
-    const originalValue = value.toString() as string
+    const originalValue = hot.getDataAtCell(visualRowIndex, visualColIndex)
+    const value = originalValue.toString() as string
+
+    const classNames = []
 
     if (visualColIndex === 0) {
-      cellProperties.className += ' htCenter'
+      classNames.push('htCenter')
     }
 
-    if (visualColIndex === 0 && originalValue.includes(ModifiedFlag)) {
-      cellProperties.className += ' modified'
+    if (visualColIndex === 0 && value.includes(ModifiedFlag)) {
+      classNames.push('modified')
     } else if (
       hot.getDataAtCell(visualRowIndex, 0).includes(DeletedFlag) ||
       (isFirstRowFlag && hot.getDataAtCell(0, visualColIndex).includes(DeletedFlag))
     ) {
-      cellProperties.className += ' deleted'
+      classNames.push('deleted')
     } else if (
       hot.getDataAtCell(visualRowIndex, 0).includes(AddedFlag) ||
       (isFirstRowFlag && hot.getDataAtCell(0, visualColIndex).includes(AddedFlag))
     ) {
-      cellProperties.className += ' added'
-    } else if (visualColIndex !== 0 && originalValue.includes(ModifiedFlag)) {
-      td.innerHTML = originalValue.replace(new RegExp(`(.*)(${ModifiedFlag})(.*)`), (_, p1, p2, p3) => {
-        return `<span style="background: rgba(255, 129, 130, 0.4);">${p1}</span>${p2}<span style="background: rgb(171, 242, 188)">${p3}</span>`
-      })
-    } else {
-      td.innerHTML = originalValue
+      classNames.push('added')
+    } else if (visualColIndex !== 0 && value.includes(ModifiedFlag)) {
+      cellProperties.renderer = modifiedCellRenderer
     }
+
+    cellProperties.className = classNames.join(' ')
+
+    return cellProperties
   }
 
   return (
     <Table
-      readOnly
+      {...restProps}
       ref={hotRef}
       fixedRowsTop={fixedRowsTop}
       fixedColumnsLeft={1}
-      loading={loading}
       data={data}
-      afterRenderer={afterRenderer}
       toHTML={instance => toHTML(instance, isFirstRowFlag)}
+      cells={cells}
     />
   )
 }

@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { SECRET } from '@/constants'
-import type { ListResponse } from '@/types'
 import { randPastDate, toCollection } from '@ngneat/falso'
 import dayjs from 'dayjs'
 import { jwtVerify } from 'jose'
 import type { ResponseResolver } from 'msw'
 import { HttpResponse, passthrough } from 'msw'
+import { SECRET } from '../constants'
+import type { ListResponse } from '../types'
 
 export function datetime() {
   return dayjs(randPastDate()).format('YYYY-MM-DD HH:mm:ss')

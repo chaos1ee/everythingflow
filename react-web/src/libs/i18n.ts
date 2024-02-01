@@ -1,9 +1,9 @@
 /* eslint-disable camelcase */
-import en_GB from '@/locales/en_GB'
-import zh_CN from '@/locales/zh_CN'
 import * as i18n from 'i18next'
 import LanguageDetector from 'i18next-browser-languagedetector'
 import { initReactI18next } from 'react-i18next'
+import en_GB from '../locales/en_GB'
+import zh_CN from '../locales/zh_CN'
 
 export const defaultNS = 'default'
 
