@@ -1,8 +1,8 @@
-import type { ListItem } from '@/features/list'
-import type { ListResponse } from '@/types'
 import { Card, Col, Form, Input, Row } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
 import { QueryList } from 'react-toolkits'
+import type { ListItem } from '../../../features/list'
+import type { ListResponse } from '../../../types'
 
 const action = '/api/list'
 

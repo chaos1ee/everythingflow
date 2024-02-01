@@ -1,6 +1,6 @@
-import { datetime, listResolver } from '@/utils/mock'
 import { rand, randJSON, randNumber, randText } from '@ngneat/falso'
 import { http } from 'msw'
+import { datetime, listResolver } from '../../utils/mock'
 
 const handlers = [
   http.get(

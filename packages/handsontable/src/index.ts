@@ -1,7 +1,5 @@
-import DiffTable from './DiffTable'
-import Table from './Table'
-import { useHeight } from './hooks'
-
+export { default as DiffTable } from './DiffTable'
+export type { DiffTableProps } from './DiffTable'
+export { default as Table } from './Table'
 export type { TableProps, TableRef } from './Table'
-export { DiffTable, useHeight }
-export default Table
+export { useHeight } from './hooks'

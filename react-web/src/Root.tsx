@@ -1,12 +1,13 @@
 import { App } from 'antd'
 import type { ComponentType } from 'react'
 import { lazy } from 'react'
-import { Navigate, Route, Routes, useLocation, useNavigate } from 'react-router-dom'
+import { Navigate, Route, useNavigate } from 'react-router-dom'
 import { Layout, RequestError, useTokenStore, useValidateToken, withBaseRoutes } from 'react-toolkits'
 import { SWRConfig } from 'swr'
 
-const PaginationList = lazy(() => import('@/pages/list/Pagination'))
-const InfiniteList = lazy(() => import('@/pages/list/Infinite'))
+const PaginationList = lazy(() => import('./pages/list/Pagination'))
+const InfiniteList = lazy(() => import('./pages/list/Infinite'))
+const DiffTable = lazy(() => import('./pages//handsontable/DiffTable'))
 
 export const withLayout = (WrappedComponent: ComponentType) => {
   const ComponentWithLayout = () => {
@@ -20,25 +21,22 @@ export const withLayout = (WrappedComponent: ComponentType) => {
   return ComponentWithLayout
 }
 
-const List = () => {
-  return (
-    <Routes>
-      <Route index element={<PaginationList />} />
-      <Route path="infinite" element={<InfiniteList />} />
-    </Routes>
-  )
-}
-
 const AllRoutes = withBaseRoutes(
   <>
     <Route index element={<Navigate to="/list" />} />
-    <Route path="/list/*" Component={withLayout(List)} />
+    <Route path="/list">
+      <Route index element={<Navigate to="pagination" />} />
+      <Route path="pagination" Component={withLayout(PaginationList)} />
+      <Route path="infinite" Component={withLayout(InfiniteList)} />
+    </Route>
+    <Route path="/handsontable">
+      <Route path="diff" Component={withLayout(DiffTable)} />
+    </Route>
   </>,
 )
 
 const Root = () => {
-  const location = useLocation()
-  useValidateToken(location.pathname === '/sign_in')
+  useValidateToken()
   const { notification } = App.useApp()
   const clearToken = useTokenStore(state => state.clearToken)
   const navigate = useNavigate()

@@ -1,14 +1,14 @@
-import { SECRET } from '@/constants'
-import { datetime, jsonResolver, listResolver } from '@/utils/mock'
 import { randFullName, randNumber, randText, toCollection } from '@ngneat/falso'
-import * as jose from 'jose'
+import { SignJWT } from 'jose'
 import { http } from 'msw'
+import { SECRET } from '../../constants'
+import { datetime, jsonResolver, listResolver } from '../../utils/mock'
 
 const handlers = [
   http.get(
     '/api/usystem/user/login',
     jsonResolver(async () => {
-      const token = await new jose.SignJWT({
+      const token = await new SignJWT({
         authorityId: 'hao.li',
       })
         .setProtectedHeader({ alg: 'HS256' })
@@ -19,7 +19,12 @@ const handlers = [
     }),
   ),
   http.post('/api/usystem/user/check', jsonResolver({ has_all: true })),
-  http.post('/api/usystem/user/checkV2', jsonResolver({ has_all: true })),
+  http.post(
+    '/api/usystem/user/checkV2',
+    jsonResolver({
+      has_all: true,
+    }),
+  ),
   http.get(
     '/api/usystem/game/all',
     jsonResolver([

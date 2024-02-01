@@ -1,3 +1,1 @@
-import LocaleDropdownMenu from './LocaleDropdownMenu'
-
-export { LocaleDropdownMenu }
+export { default as LocaleDropdownMenu } from './LocaleDropdownMenu'

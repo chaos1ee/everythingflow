@@ -1,7 +1,7 @@
-import Root from '@/Root'
 import { App } from 'antd'
 import { createBrowserRouter, Navigate, useRouteError } from 'react-router-dom'
 import { RequestError, useTokenStore } from 'react-toolkits'
+import Root from '../Root'
 
 // 捕获 Suspense 组件中的错误
 const RootErrorBoundary = () => {
@@ -43,15 +43,12 @@ const RootErrorBoundary = () => {
   return <h1>Unknown Error</h1>
 }
 
-const router = createBrowserRouter(
-  [
-    {
-      path: '*',
-      element: <Root />,
-      errorElement: <RootErrorBoundary />,
-    },
-  ],
-  { basename: import.meta.env.BASE_URL },
-)
+const router = createBrowserRouter([
+  {
+    path: '*',
+    element: <Root />,
+    errorElement: <RootErrorBoundary />,
+  },
+])
 
 export default router

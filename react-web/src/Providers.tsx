@@ -1,14 +1,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { LocaleDropdownMenu } from '@/components'
-import menuItems from '@/menu-items'
-import { useLocaleStore } from '@/stores/locale'
 import { App, ConfigProvider, Spin } from 'antd'
 import antdLocale from 'antd/locale/zh_CN'
 import type { FC, PropsWithChildren } from 'react'
 import { Suspense } from 'react'
 import { ContextProvider, request } from 'react-toolkits'
-import type { BareFetcher, Key as SWRKey, SWRConfiguration, SWRHook, SWRResponse } from 'swr'
+import type { BareFetcher, SWRConfiguration, SWRHook, Key as SWRKey, SWRResponse } from 'swr'
 import { SWRConfig } from 'swr'
+import { LocaleDropdownMenu } from './components'
+import menuItems from './menu-items'
+import { useLocaleStore } from './stores/locale'
 
 const logger =
   (useSWRNext: SWRHook) =>

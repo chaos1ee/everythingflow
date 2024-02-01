@@ -1,6 +1,6 @@
-import { tokenResolver } from '@/utils/mock'
 import { http, HttpResponse } from 'msw'
 import { setupWorker } from 'msw/browser'
+import { tokenResolver } from '../utils/mock'
 
 const modules = import.meta.glob('./handlers/*.ts')
 
