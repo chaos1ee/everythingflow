@@ -1,4 +1,5 @@
 import { jwtDecode } from 'jwt-decode'
+import { useLocation } from 'react-router-dom'
 import useSWR from 'swr'
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
@@ -41,7 +42,9 @@ export const useTokenStore = create<TokenState>()(
   ),
 )
 
-export function useValidateToken(skip: boolean) {
+export function useTokenValidation() {
+  const location = useLocation()
+  const skip = location.pathname === '/sign_in'
   const { usePermissionApiV2 } = useToolkitsContext()
 
   useSWR(

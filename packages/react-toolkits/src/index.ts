@@ -28,7 +28,7 @@ import { useTranslation } from './hooks/i18n'
 import { usePermission, usePermissions } from './hooks/permission'
 import { useQueryListStore } from './stores/queryList'
 import type { TokenState } from './stores/token'
-import { useTokenStore, useValidateToken } from './stores/token'
+import { useTokenStore, useTokenValidation } from './stores/token'
 import './styles/index.css'
 import type { Locale } from './types'
 import { RequestError, request } from './utils/request'
@@ -60,9 +60,9 @@ export {
   usePermissions,
   useQueryListStore,
   useTokenStore,
+  useTokenValidation,
   useToolkitsContext,
   useTranslation,
-  useValidateToken,
   withBaseRoutes,
   type ContextState,
   type DynamicTagsProps,
