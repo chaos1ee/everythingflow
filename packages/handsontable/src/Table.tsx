@@ -178,6 +178,7 @@ const Table = forwardRef<TableRef, TableProps>(function FunTable(props, ref) {
         height={height || dynamicHeight}
         rowHeights={rowHeights}
         language={zhCN.languageCode}
+        fixedRowsTop={fixedRowsTop}
         afterRenderer={afterRendererHandler}
         licenseKey="non-commercial-and-evaluation"
       />
