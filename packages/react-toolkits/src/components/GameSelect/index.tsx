@@ -42,22 +42,16 @@ function useGames() {
   const { usePermissionApiV2 } = useToolkitsContext()
   const user = useTokenStore(state => state.getUser())
 
-  const { data, isLoading } = useSWRImmutable(
-    usePermissionApiV2 && user ? `/api/usystem/game/all?user=${user.authorityId}` : null,
-    url => request<Game[]>(url, { isGlobalNS: true }).then(response => response.data),
+  return useSWRImmutable(usePermissionApiV2 && user ? `/api/usystem/game/all?user=${user.authorityId}` : null, url =>
+    request<Game[]>(url, { isGlobalNS: true }).then(response => response.data),
   )
-
-  return {
-    games: data,
-    isLoading,
-  }
 }
 
 const GameSelect = () => {
   const t = useTranslation()
   const { gameFilter } = useToolkitsContext()
   const { game, setGame } = useGameStore()
-  const { games, isLoading } = useGames()
+  const { data: games, isLoading } = useGames()
   const { mutate } = useSWRConfig()
 
   const options = useMemo(
@@ -85,14 +79,14 @@ const GameSelect = () => {
         clearCache()
       }
     },
-    [games, setGame, clearCache],
+    [games, clearCache],
   )
 
   useEffect(() => {
     if (!isLoading && (options.length === 0 || !options.some(item => item.value === game?.id))) {
       setGame(null)
     }
-  }, [isLoading, game, options, setGame])
+  }, [isLoading, game, options])
 
   return (
     <Space>
