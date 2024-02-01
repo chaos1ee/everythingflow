@@ -1,5 +1,11 @@
 # @love1t/handsontable
 
+## 0.1.6
+
+### Patch Changes
+
+- 4a9e371: refactor: inject cell classes in cells option
+
 ## 0.1.5
 
 ### Patch Changes
