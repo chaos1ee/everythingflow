@@ -2,7 +2,7 @@ import { App } from 'antd'
 import type { ComponentType } from 'react'
 import { lazy } from 'react'
 import { Navigate, Route, useNavigate } from 'react-router-dom'
-import { Layout, RequestError, useTokenStore, useValidateToken, withBaseRoutes } from 'react-toolkits'
+import { Layout, RequestError, useTokenStore, useTokenValidation, withBaseRoutes } from 'react-toolkits'
 import { SWRConfig } from 'swr'
 
 const PaginationList = lazy(() => import('./pages/list/Pagination'))
@@ -36,7 +36,7 @@ const AllRoutes = withBaseRoutes(
 )
 
 const Root = () => {
-  useValidateToken()
+  useTokenValidation()
   const { notification } = App.useApp()
   const clearToken = useTokenStore(state => state.clearToken)
   const navigate = useNavigate()
