@@ -1,5 +1,11 @@
 # @love1t/handsontable
 
+## 0.1.7
+
+### Patch Changes
+
+- a0f715f: refactor: new cell renderer
+
 ## 0.1.6
 
 ### Patch Changes
