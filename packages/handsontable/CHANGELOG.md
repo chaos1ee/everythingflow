@@ -1,5 +1,11 @@
 # @love1t/handsontable
 
+## 0.1.8
+
+### Patch Changes
+
+- 290780c: refactor: optimize handsontable rendering performance
+
 ## 0.1.7
 
 ### Patch Changes
