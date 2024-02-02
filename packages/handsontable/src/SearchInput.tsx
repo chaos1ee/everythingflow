@@ -18,7 +18,7 @@ export interface SearchInputProps {
 
 const SearchInput: FC<SearchInputProps> = props => {
   const { total = 0, onSearch, prev, next } = props
-  const [_theme, token] = useToken()
+  const [_, token] = useToken()
   const [activeIndex, setActiveIndex] = useState(0)
   const [query, setQuery] = useState<string>('')
   const debouncedQuery = useDebounce(query, 200)
