@@ -27,7 +27,7 @@ export interface SearchResult {
   count: number
 }
 
-export interface TableProps extends HotTableProps {
+export interface TableProps extends Omit<HotTableProps, 'width'> {
   loading?: boolean
   // 自定义生成的 HTML，复制到剪贴板时调用。一般不需要自定义，但在某些情况下按照特定方式构造的 DOM string 可以在粘贴时保留样式。比如从 DiffTable 复制的内容可以在粘贴到 Google Sheets 或飞书等在线表格工具时保留样式。
   toHTML?: (instance: Handsontable) => string
@@ -79,13 +79,9 @@ const Table = forwardRef<TableRef, TableProps>(function FunTable(props, ref) {
     const hot = hotRef.current?.hotInstance
     if (!hot) return
 
-    const visualRowIndex = hot.toVisualRow(row)
-    const visualColIndex = hot.toVisualColumn(column)
     const originalValue = value.toString() as string
     const escapedString = escapeRegExp(query.current)
-    const _resultIndex = queryResult.current.findIndex(
-      item => item.row === visualRowIndex && item.column === visualColIndex,
-    )
+    const _resultIndex = queryResult.current.findIndex(item => item.row === row && item.column === column)
 
     // FIXME: 会与 DiffTable 的 afterRenderer 内的逻辑冲突，导致单元格原本的 diff 样式被清除（当单元格的内容类似“xxx->12312”时）
     if (_resultIndex !== -1) {
@@ -170,9 +166,6 @@ const Table = forwardRef<TableRef, TableProps>(function FunTable(props, ref) {
       <HotTable
         {...restProps}
         width="100%"
-        copyable
-        rowHeaders
-        colHeaders
         ref={hotRef}
         data={data}
         height={height || dynamicHeight}

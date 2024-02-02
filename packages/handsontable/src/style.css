@@ -10,6 +10,18 @@ table.htCore tr.selected td {
   background: #edf3fd;
 }
 
+table.htCore tr td.addition {
+  background: #e6ffec;
+}
+
+table.htCore tr td.removal {
+  background: #ffebe9;
+}
+
+table.htCore tr td.editing {
+  background: #ddf4ff;
+}
+
 /*
   A stylesheet customizing Handsontable style
 */

@@ -8,6 +8,7 @@ import { SWRConfig } from 'swr'
 const PaginationList = lazy(() => import('./pages/list/Pagination'))
 const InfiniteList = lazy(() => import('./pages/list/Infinite'))
 const DiffTable = lazy(() => import('./pages//handsontable/DiffTable'))
+const DiffCollapse = lazy(() => import('./pages//handsontable/DiffCollapse'))
 
 export const withLayout = (WrappedComponent: ComponentType) => {
   const ComponentWithLayout = () => {
@@ -31,6 +32,7 @@ const AllRoutes = withBaseRoutes(
     </Route>
     <Route path="/handsontable">
       <Route path="diff" Component={withLayout(DiffTable)} />
+      <Route path="collapse" Component={withLayout(DiffCollapse)} />
     </Route>
   </>,
 )

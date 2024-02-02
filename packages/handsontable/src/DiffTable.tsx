@@ -3,42 +3,8 @@ import { BaseRenderer, textRenderer } from 'handsontable/renderers'
 import { useRef, type FC } from 'react'
 import type { TableProps } from './Table'
 import Table from './Table'
-import {
-  AdditionBackgroundColor,
-  AdditionMark,
-  EditingBackgroundColor,
-  EditingMark,
-  RemovalBackgroundColor,
-  RemovalMark,
-} from './constants'
+import { AdditionMark, EditingMark, RemovalMark } from './constants'
 import { toDiffHTML } from './utils'
-
-const getCellRenderer = (isFirstRowSpecial: boolean) => {
-  const renderer: BaseRenderer = (instance, td, row, column, prop, value: string, cellProperties) => {
-    textRenderer(instance, td, row, column, prop, value, cellProperties)
-
-    const data = instance.getData()
-    const visualColIndex = instance.toVisualColumn(column)
-
-    if (visualColIndex === 0) {
-      td.style.textAlign = 'center'
-    }
-
-    if (column === 0 && value.includes(EditingMark)) {
-      td.style.backgroundColor = EditingBackgroundColor
-    } else if (data[row][0].includes(RemovalMark) || (isFirstRowSpecial && data[0][column].includes(RemovalMark))) {
-      td.style.backgroundColor = RemovalBackgroundColor
-    } else if (data[row][0].includes(AdditionMark) || (isFirstRowSpecial && data[0][column].includes(AdditionMark))) {
-      td.style.backgroundColor = AdditionBackgroundColor
-    } else if (column !== 0 && value.includes(EditingMark)) {
-      td.innerHTML = (value.toString() as string).replace(new RegExp(`(.*)(${EditingMark})(.*)`), (_, p1, p2, p3) => {
-        return `<span style="background: rgba(255, 129, 130, 0.4);">${p1}</span>${p2}<span style="background: rgb(171, 242, 188)">${p3}</span>`
-      })
-    }
-  }
-
-  return renderer
-}
 
 export interface DiffTableProps
   extends Omit<TableProps, 'data' | 'cells' | 'fixedRowsTop' | 'fixedColumnsLeft' | 'toHTML'> {
@@ -54,9 +20,29 @@ const DiffTable: FC<DiffTableProps> = props => {
   const data = (header ?? []).concat(body ?? [])
   const fixedRowsTop = header?.length ?? 0
 
+  const cellRenderer: BaseRenderer = (instance, td, row, column, prop, value: string, cellProperties) => {
+    textRenderer(instance, td, row, column, prop, value, cellProperties)
+
+    if (column === 0) {
+      td.classList.add('htCenter')
+    }
+
+    if (column === 0 && value.includes(EditingMark)) {
+      td.classList.add('editing')
+    } else if (data[row][0].includes(RemovalMark) || (isFirstRowSpecial && data[0][column].includes(RemovalMark))) {
+      td.classList.add('removal')
+    } else if (data[row][0].includes(AdditionMark) || (isFirstRowSpecial && data[0][column].includes(AdditionMark))) {
+      td.classList.add('addition')
+    } else if (column !== 0 && value.includes(EditingMark)) {
+      td.innerHTML = (value.toString() as string).replace(new RegExp(`(.*)(${EditingMark})(.*)`), (_, p1, p2, p3) => {
+        return `<span style="background: rgba(255, 129, 130, 0.4);">${p1}</span>${p2}<span style="background: rgb(171, 242, 188)">${p3}</span>`
+      })
+    }
+  }
+
   const cells = () => {
     return {
-      renderer: getCellRenderer(isFirstRowSpecial),
+      renderer: cellRenderer,
     }
   }
 

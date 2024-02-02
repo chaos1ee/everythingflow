@@ -26,8 +26,13 @@ const menuItems: NavMenuItem[] = [
     children: [
       {
         key: 'diff_table',
-        label: 'DiffTable',
+        label: 'Diff Table',
         route: '/handsontable/diff',
+      },
+      {
+        key: 'diff_collapse',
+        label: 'Diff Collapse',
+        route: '/handsontable/collapse',
       },
     ],
   },
