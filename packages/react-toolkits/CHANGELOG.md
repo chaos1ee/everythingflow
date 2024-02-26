@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.8.5
+
+### Patch Changes
+
+- 31541d6: fix: change every to some
+
 ## 0.8.4
 
 ### Patch Changes
