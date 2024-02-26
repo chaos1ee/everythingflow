@@ -46,7 +46,7 @@ const withLink = (label?: ReactNode, route?: string): ReactNode => {
 }
 
 function checkChildren(children: NavMenuItem[], permissions?: Record<string, boolean>): boolean {
-  return (children ?? []).every(child => {
+  return (children ?? []).some(child => {
     if (child === null) {
       return false
     } else if ((child as MenuDividerType).type === 'divider') {
