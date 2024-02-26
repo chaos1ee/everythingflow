@@ -45,6 +45,22 @@ const withLink = (label?: ReactNode, route?: string): ReactNode => {
   return label
 }
 
+function checkChildren(children: NavMenuItem[], permissions?: Record<string, boolean>): boolean {
+  return (children ?? []).every(child => {
+    if (child === null) {
+      return false
+    } else if ((child as MenuDividerType).type === 'divider') {
+      return true
+    } else {
+      if ((child as SubMenuType2 | MenuItemGroupType2).children) {
+        return checkChildren((child as SubMenuType2 | MenuItemGroupType2).children ?? [], permissions)
+      } else {
+        return !permissions || !(child as MenuItemType2).code || permissions[(child as MenuItemType2).code as string]
+      }
+    }
+  })
+}
+
 function transformItems(items: NavMenuItem[], permissions?: Record<string, boolean>) {
   const result: ItemType[] = []
 
@@ -56,10 +72,13 @@ function transformItems(items: NavMenuItem[], permissions?: Record<string, boole
     } else {
       if ((items[i] as SubMenuType2 | MenuItemGroupType2).children) {
         const { children, ...restProps } = items[i] as SubMenuType2 | MenuItemGroupType2
-        result[i] = {
-          ...restProps,
-          children: transformItems(children ?? [], permissions),
-        } as SubMenuType | MenuItemGroupType
+
+        result[i] = checkChildren(children ?? [], permissions)
+          ? ({
+              ...restProps,
+              children: transformItems(children ?? [], permissions),
+            } as SubMenuType | MenuItemGroupType)
+          : null
       } else {
         const { route, label, code, ...restProps } = items[i] as MenuItemType2
         const isPass = !code || !permissions || permissions[code]
