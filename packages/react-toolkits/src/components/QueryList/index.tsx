@@ -23,7 +23,7 @@ export enum QueryListAction {
   Init = 'init',
 }
 
-interface QueryListDataType<Item> {
+export interface QueryListDataType<Item> {
   dataSource: Item[]
   total: number
 }

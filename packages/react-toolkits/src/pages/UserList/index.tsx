@@ -61,9 +61,6 @@ function useUpdatingUserModal() {
     title: t('UserList.updateTitle'),
     content: form => (
       <Form form={form} labelCol={{ flex: '80px' }}>
-        <Form.Item hidden name="id">
-          <Input />
-        </Form.Item>
         <Form.Item label={t('global.name')} name="name" rules={[{ required: true }]}>
           <Input readOnly />
         </Form.Item>
@@ -82,18 +79,20 @@ function useUpdatingUserModal() {
         </Form.Item>
       </Form>
     ),
-    async onConfirm(values) {
+    async onConfirm(values, _form, extraValues: { id: string }) {
       await update.trigger(values)
-      mutate(
+      mutate<UserListItem>(
         action,
-        prev =>
-          produce(prev, draft => {
-            const match = draft?.list?.find(item => item.id === values.id)
-
-            if (match) {
-              match.roles = values.roles
+        prev => {
+          return produce(prev, draft => {
+            if (draft?.dataSource) {
+              const index = draft.dataSource?.findIndex(item => item.id === extraValues.id)
+              if (index !== -1) {
+                draft.dataSource[index].roles = values.roles
+              }
             }
-          }),
+          })
+        },
         { revalidate: false },
       )
       message.success(t('UserList.updateSuccessfully'))
@@ -162,9 +161,11 @@ const UserList: FC = () => {
             onClick={() => {
               showUpdatingModal({
                 initialValues: {
-                  id: value.id,
                   name: value.name,
                   roles: value.roles,
+                },
+                extraValues: {
+                  id: value.id,
                 },
               })
             }}
@@ -190,9 +191,9 @@ const UserList: FC = () => {
                   })
                   mutate(action, prev => {
                     return produce(prev, draft => {
-                      const index = draft?.list?.findIndex(item => item.id === value.id)
+                      const index = draft?.dataSource?.findIndex(item => item.id === value.id)
                       if (index) {
-                        draft?.list?.splice(index, 1)
+                        draft?.dataSource?.splice(index, 1)
                       }
                     })
                   })

@@ -2,12 +2,12 @@
 import { mutate } from 'swr'
 import type { MutatorCallback, MutatorOptions } from 'swr/_internal'
 import { create } from 'zustand'
-import type { ListResponse } from '../types'
+import type { QueryListDataType } from '../components/QueryList'
 
 type QueryListMutator = <T = any>(
   key: string,
-  data?: ListResponse<T> | Promise<ListResponse<T>> | MutatorCallback<ListResponse<T>>,
-  opts?: MutatorOptions<ListResponse<T>>,
+  data?: QueryListDataType<T> | Promise<QueryListDataType<T>> | MutatorCallback<QueryListDataType<T>>,
+  opts?: MutatorOptions<QueryListDataType<T>>,
 ) => void
 
 export interface QueryListPayload<Arg = any> {
