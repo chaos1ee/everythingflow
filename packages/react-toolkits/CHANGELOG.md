@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.8.4
+
+### Patch Changes
+
+- f20dadd: fix: mutate QueryList store failed
+
 ## 0.8.3
 
 ### Patch Changes
