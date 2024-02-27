@@ -109,7 +109,7 @@ function flatItems(
       const keys =
         (item as MenuItemGroupType2)!.type !== 'group' && item!.key ? [...keypath, item!.key as string] : keypath
       flatItems(children, result, keys)
-    } else {
+    } else if (item) {
       result.push(Object.assign(item as MenuItemType2, { keypath }))
     }
   }
