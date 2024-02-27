@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.8.9
+
+### Patch Changes
+
+- 3f3face: fix: type error
+
 ## 0.8.8
 
 ### Patch Changes
