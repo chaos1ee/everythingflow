@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.8.7
+
+### Patch Changes
+
+- edf9c98: fix: change PermissionButton every to some
+
 ## 0.8.6
 
 ### Patch Changes
