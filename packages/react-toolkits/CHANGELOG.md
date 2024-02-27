@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.8.8
+
+### Patch Changes
+
+- 535e2db: fix: type error
+
 ## 0.8.7
 
 ### Patch Changes
