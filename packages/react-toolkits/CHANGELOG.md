@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.8.6
+
+### Patch Changes
+
+- 0888097: feat: PermissionButton code prop support array
+
 ## 0.8.5
 
 ### Patch Changes
