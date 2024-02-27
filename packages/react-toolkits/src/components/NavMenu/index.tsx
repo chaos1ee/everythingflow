@@ -103,7 +103,7 @@ function flatItems(
   keypath: string[] = [],
 ) {
   for (const item of items) {
-    const children = (item as SubMenuType2 | MenuItemGroupType2)!.children as NavMenuItem[]
+    const children = (item as SubMenuType2 | MenuItemGroupType2)?.children as NavMenuItem[]
 
     if (Array.isArray(children)) {
       const keys =
