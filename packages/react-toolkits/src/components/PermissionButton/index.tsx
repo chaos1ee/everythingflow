@@ -23,7 +23,7 @@ const PermissionButton: FC<PropsWithChildren<PermissionButtonProps>> = props => 
     )
   }
 
-  if (!Object.values(data ?? {})?.every(Boolean)) {
+  if (!Object.values(data ?? {})?.some(Boolean)) {
     return (
       <Tooltip defaultOpen={false} title={t('global.noEntitlement')}>
         <Button disabled {...restProps}>
