@@ -2,7 +2,6 @@ import * as Antd from 'antd'
 import { Divider, Space } from 'antd'
 import type { FC, Key, PropsWithChildren, ReactNode } from 'react'
 import { Suspense } from 'react'
-import { Link } from 'react-router-dom'
 import logo from '../../assets/logo.png'
 import { useToolkitsContext } from '../ContextProvider'
 import GameSelect from '../GameSelect'
@@ -46,9 +45,7 @@ const Layout: FC<LayoutProps> = (props: LayoutProps) => {
       >
         <div className="flex items-center px-6 py-4">
           <img src={logo} alt="logo" className="w-8 h-8" />
-          <Link className="font-bold text-lg ml-2" to="/">
-            {appTitle}
-          </Link>
+          <div className="ml-2">{appTitle}</div>
         </div>
         <NavMenu />
       </Sider>
