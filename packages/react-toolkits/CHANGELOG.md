@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.8.13
+
+### Patch Changes
+
+- f849f09: feat: force update when swr key not changed in QueryList
+
 ## 0.8.12
 
 ### Patch Changes
