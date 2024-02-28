@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.8.10
+
+### Patch Changes
+
+- 7180387: chore: change Layout title styles
+
 ## 0.8.9
 
 ### Patch Changes
