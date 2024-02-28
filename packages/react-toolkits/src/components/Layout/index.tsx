@@ -44,7 +44,7 @@ const Layout: FC<LayoutProps> = (props: LayoutProps) => {
         }}
         theme="light"
       >
-        <div className="flex items-end px-6 py-4">
+        <div className="flex items-center px-6 py-4">
           <img src={logo} alt="logo" className="w-8 h-8" />
           <Link className="font-bold text-lg ml-2" to="/">
             {appTitle}
