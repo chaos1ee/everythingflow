@@ -3,6 +3,7 @@ import { App, ConfigProvider, Spin } from 'antd'
 import antdLocale from 'antd/locale/zh_CN'
 import type { FC, PropsWithChildren } from 'react'
 import { Suspense } from 'react'
+import { Link } from 'react-router-dom'
 import { ContextProvider, request } from 'react-toolkits'
 import type { BareFetcher, SWRConfiguration, SWRHook, Key as SWRKey, SWRResponse } from 'swr'
 import { SWRConfig } from 'swr'
@@ -45,7 +46,12 @@ const Providers: FC<PropsWithChildren> = ({ children }) => {
       <App>
         <ContextProvider
           usePermissionApiV2
-          appTitle={import.meta.env.VITE_APP_TITLE}
+          appTitle={
+            <Link to="/">
+              <span className="font-bold text-xl ">{import.meta.env.VITE_APP_TITLE}</span>
+            </Link>
+          }
+          signInPageTitle={<span className="text-2xl font-bold">{import.meta.env.VITE_APP_TITLE}</span>}
           locale={locale?.toolkits}
           localeDropdownMenu={<LocaleDropdownMenu />}
           menuItems={menuItems}

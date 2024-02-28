@@ -15,7 +15,7 @@ const SignIn: FC = () => {
   const location = useLocation()
   const { token, setToken } = useTokenStore()
   const t = useTranslation()
-  const { appTitle, localeDropdownMenu } = useToolkitsContext()
+  const { signInPageTitle, localeDropdownMenu } = useToolkitsContext()
 
   useSWRImmutable(
     searchParams.has('ticket') ? `/api/usystem/user/login?ticket=${searchParams.get('ticket')}` : null,
@@ -36,12 +36,10 @@ const SignIn: FC = () => {
     <div className="w-screen h-screen relative flex">
       {localeDropdownMenu && <div className="absolute top-16 right-16 z-10">{localeDropdownMenu}</div>}
       <div className="absolute left-14 top-6">
-        <Typography.Title level={3}>
-          <Space align="center">
-            <img src={logoUrl} className="w-8" alt="logo" />
-            {appTitle}
-          </Space>
-        </Typography.Title>
+        <Space align="center">
+          <img src={logoUrl} className="w-12" alt="logo" />
+          {signInPageTitle}
+        </Space>
       </div>
       <div className="flex-1 flex justify-center items-center bg-slate-50">
         <img src={backgroundUrl} alt="background" className="w-10/12" />

@@ -8,6 +8,7 @@ import type { NavMenuItem } from '../NavMenu'
 
 export interface ContextState {
   appTitle: ReactNode
+  signInPageTitle?: ReactNode
   menuItems: NavMenuItem[]
   hideGameSelect: boolean
   usePermissionApiV2: boolean // 使用 V2 版本的权限接口
