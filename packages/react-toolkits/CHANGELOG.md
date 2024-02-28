@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.8.11
+
+### Patch Changes
+
+- 935c265: feat: change the type of Provider appTitle prop
+
 ## 0.8.10
 
 ### Patch Changes
