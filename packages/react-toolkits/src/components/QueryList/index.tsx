@@ -33,6 +33,31 @@ export interface QueryListRef<Item = any, Values = any> {
   form: FormInstance<Values>
 }
 
+// 生成 SWR 的 key，用于缓存请求结果。
+export function getSwrKey(
+  action: string,
+  payload?: QueryListPayload,
+  params?: RequestOptions['params'] | ((payload: QueryListPayload) => RequestOptions['params']),
+  onePage?: boolean,
+) {
+  const { url, query } = qs.parseUrl(action)
+  const { page, size, arg = {} } = payload ?? {}
+  const queryParams = Object.assign(
+    query,
+    typeof params === 'function'
+      ? params?.({ page, size, arg })
+      : onePage
+        ? params
+        : {
+            ...arg,
+            page,
+            size,
+          },
+  )
+  const queryString = qs.stringify(queryParams)
+  return queryString ? `${url}?${queryString}` : url
+}
+
 export interface QueryListProps<Item = any, Values = any, Response = any, Arg extends Values = Values>
   extends Pick<TableProps<Item>, 'columns' | 'rowKey' | 'tableLayout' | 'expandable' | 'rowSelection' | 'bordered'> {
   code?: string
@@ -86,7 +111,8 @@ const InternalQueryList = <
   const t = useTranslation()
   const [form] = Form.useForm<Values>()
   const { accessible, isLoading } = usePermission(code, isGlobalNS)
-  const { payloadMap, keyMap, setPayload } = useQueryListStore()
+  const { payloadMap, keyMap, propsMap, setPayload } = useQueryListStore()
+  propsMap.set(action, props)
   const payload = payloadMap.get(action)
   const listAction = useRef<QueryListAction>(QueryListAction.Init)
   const createBoundAction = <T extends any[], R>(actionFn: (action: string, ...args: T) => R): ((...args: T) => R) => {
@@ -179,22 +205,7 @@ const InternalQueryList = <
       form
         .validateFields({ validateOnly: true })
         .then(() => {
-          const { url, query } = qs.parseUrl(action)
-          const { page = 1, size = defaultSize, arg = {} } = payload ?? {}
-          const queryParams = Object.assign(
-            query,
-            typeof params === 'function'
-              ? params?.({ page, size, arg })
-              : onePage
-                ? params
-                : {
-                    ...arg,
-                    page,
-                    size,
-                  },
-          )
-          const queryString = qs.stringify(queryParams)
-          const key = queryString ? `${url}?${queryString}` : url
+          const key = getSwrKey(action, payload, params, onePage)
           setSwrKey(key)
           keyMap.set(action, key)
         })
