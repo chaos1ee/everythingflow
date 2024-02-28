@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.8.12
+
+### Patch Changes
+
+- f6472cf: feat: add signInPageTitle prop
+
 ## 0.8.11
 
 ### Patch Changes
