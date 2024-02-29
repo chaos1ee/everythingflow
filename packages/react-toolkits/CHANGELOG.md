@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.8.15
+
+### Patch Changes
+
+- 12f2666: feat: export pages
+
 ## 0.8.14
 
 ### Patch Changes
