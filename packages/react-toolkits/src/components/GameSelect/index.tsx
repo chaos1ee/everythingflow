@@ -24,6 +24,7 @@ export interface GameState {
   setGame: (id: string) => void
   setGames: (games: Game[]) => void
   clearGame: () => void
+  setIsLoading: (isLoading: boolean) => void
 }
 
 export const useGameStore = create<GameState>()(
@@ -40,6 +41,9 @@ export const useGameStore = create<GameState>()(
       clearGame: () => {
         set({ game: null })
       },
+      setIsLoading: (isLoading: boolean) => {
+        set({ isLoading })
+      },
     }),
     {
       name: 'game',
@@ -53,7 +57,7 @@ export const useGameStore = create<GameState>()(
             setTimeout(() => {
               request<Game[]>(`/api/usystem/game/all`, { isGlobalNS: true }).then(response => {
                 state.setGames(response.data)
-                state.isLoading = false
+                state.setIsLoading(false)
               })
             }, 800)
           }
