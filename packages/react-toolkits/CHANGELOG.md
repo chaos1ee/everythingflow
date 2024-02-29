@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.8.14
+
+### Patch Changes
+
+- 532a4da: feat: add 'signInSuccessRedirect' prop
+
 ## 0.8.13
 
 ### Patch Changes
