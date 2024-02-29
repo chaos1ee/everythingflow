@@ -36,7 +36,7 @@ import { useTokenStore, useTokenValidation } from './stores/token'
 import './styles/index.css'
 import type { Locale } from './types'
 import { RequestError, request } from './utils/request'
-import { withBaseRoutes } from './utils/router'
+import { withBaseRoutes, withLayout } from './utils/router'
 import { mixedStorage } from './utils/storage'
 
 export {
@@ -72,6 +72,7 @@ export {
   useToolkitsContext,
   useTranslation,
   withBaseRoutes,
+  withLayout,
   type ContextState,
   type DynamicTagsProps,
   type FilterFormWrapperProps,

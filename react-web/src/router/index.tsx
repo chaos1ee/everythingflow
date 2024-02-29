@@ -46,7 +46,7 @@ const RootErrorBoundary = () => {
 const router = createBrowserRouter([
   {
     path: '*',
-    element: <Root />,
+    element: Root,
     errorElement: <RootErrorBoundary />,
   },
 ])

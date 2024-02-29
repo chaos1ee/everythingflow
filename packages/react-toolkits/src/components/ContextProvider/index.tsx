@@ -15,8 +15,10 @@ export interface ContextState {
   gameFilter?: (game: Game) => boolean
   locale?: Locale
   localeDropdownMenu?: ReactNode
-  signInSuccessRedirect?: string // 登录成功后的重定向地址
-  notFoundRedirect?: string // 404 重定向地址
+  signInSuccessRedirectUrl?: string // 登录成功后的重定向地址
+  notFoundRedirectUrl?: string // 404 重定向地址
+  logoutRedirectUrl?: string // 退出登录后的重定向地址
+  idaasRedirectUrl: string // IDAAS 重定向地址
 }
 
 const defaultState: ContextState = {
@@ -24,6 +26,7 @@ const defaultState: ContextState = {
   menuItems: [],
   hideGameSelect: false,
   usePermissionApiV2: false,
+  idaasRedirectUrl: '',
 }
 
 // 全局的上下文。因为 ContextProvider 支持嵌套，所以 toolkitContextStore 的值等同于最内层的 ContextProvider 包含的上下文。

@@ -15,7 +15,7 @@ const SignIn: FC = () => {
   const location = useLocation()
   const { token, setToken } = useTokenStore()
   const t = useTranslation()
-  const { signInPageTitle, localeDropdownMenu, signInSuccessRedirect } = useToolkitsContext()
+  const { signInPageTitle, localeDropdownMenu, signInSuccessRedirectUrl, idaasRedirectUrl } = useToolkitsContext()
 
   useSWRImmutable(
     searchParams.has('ticket') ? `/api/usystem/user/login?ticket=${searchParams.get('ticket')}` : null,
@@ -29,8 +29,8 @@ const SignIn: FC = () => {
   )
 
   if (token) {
-    if (signInSuccessRedirect) {
-      return <Navigate replace to={signInSuccessRedirect} />
+    if (signInSuccessRedirectUrl) {
+      return <Navigate replace to={signInSuccessRedirectUrl} />
     }
 
     return <Navigate replace to="/" />
@@ -75,12 +75,7 @@ const SignIn: FC = () => {
                 {t('SignIn.thirdParty')}
               </Divider>
               <div className="flex justify-center items-center">
-                <Button
-                  block
-                  shape="round"
-                  href={`${SSO_URL}/login?service=${encodeURIComponent(window.location.origin + '/sign_in')}`}
-                  target="_self"
-                >
+                <Button block shape="round" href={`${SSO_URL}/login?service=${idaasRedirectUrl}`} target="_self">
                   <img src={logoUrl} className="w-[18px] mr-2 -mb-0.5" alt="logo" />
                   {t('SignIn.signInWithIDass')}
                 </Button>
