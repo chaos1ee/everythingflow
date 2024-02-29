@@ -21,14 +21,25 @@ export interface Game {
 
 export interface GameState {
   game: Game | null
-  setGame: (game: Game | null) => void
+  games: Game[]
+  setGame: (id: string) => void
+  setGames: (games: Game[]) => void
+  clearGame: () => void
 }
 
 export const useGameStore = create<GameState>()(
   persist(
-    set => ({
+    (set, get) => ({
       game: null,
-      setGame: game => set({ game }),
+      games: [],
+      setGame: id => {
+        const matchGame = (get().games ?? []).find(item => item.id === id)
+        set({ game: matchGame ?? null })
+      },
+      setGames: games => set({ games }),
+      clearGame: () => {
+        set({ game: null })
+      },
     }),
     {
       name: 'game',
@@ -41,16 +52,23 @@ export const useGameStore = create<GameState>()(
 function useGames() {
   const { usePermissionApiV2 } = useToolkitsContext()
   const user = useTokenStore(state => state.getUser())
+  const { setGames } = useGameStore()
 
-  return useSWRImmutable(usePermissionApiV2 && user ? `/api/usystem/game/all?user=${user.authorityId}` : null, url =>
-    request<Game[]>(url, { isGlobalNS: true }).then(response => response.data),
+  return useSWRImmutable(
+    usePermissionApiV2 && user ? `/api/usystem/game/all?user=${user.authorityId}` : null,
+    url => request<Game[]>(url, { isGlobalNS: true }).then(response => response.data),
+    {
+      onSuccess: data => {
+        setGames(data)
+      },
+    },
   )
 }
 
 const GameSelect = () => {
   const t = useTranslation()
   const { gameFilter } = useToolkitsContext()
-  const { game, setGame } = useGameStore()
+  const { game, setGame, clearGame } = useGameStore()
   const { data: games, isLoading } = useGames()
   const { mutate } = useSWRConfig()
 
@@ -73,18 +91,15 @@ const GameSelect = () => {
 
   const onGameChange = useCallback(
     async (id: string) => {
-      const matchGame = (games ?? []).find(item => item.id === id)
-      if (matchGame) {
-        setGame(matchGame)
-        clearCache()
-      }
+      setGame(id)
+      clearCache()
     },
     [games, clearCache],
   )
 
   useEffect(() => {
     if (!isLoading && (options.length === 0 || !options.some(item => item.value === game?.id))) {
-      setGame(null)
+      clearGame()
     }
   }, [isLoading, game, options])
 
