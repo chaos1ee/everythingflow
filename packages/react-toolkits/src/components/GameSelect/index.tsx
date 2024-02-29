@@ -1,11 +1,9 @@
 import { Select, Space, Typography } from 'antd'
 import { useCallback, useEffect, useMemo } from 'react'
 import { useSWRConfig } from 'swr'
-import useSWRImmutable from 'swr/immutable'
 import { create } from 'zustand'
 import { createJSONStorage, persist } from 'zustand/middleware'
 import { useTranslation } from '../../hooks/i18n'
-import { useTokenStore } from '../../stores/token'
 import { request } from '../../utils/request'
 import { mixedStorage } from '../../utils/storage'
 import { useToolkitsContext } from '../ContextProvider'
@@ -20,6 +18,7 @@ export interface Game {
 }
 
 export interface GameState {
+  isLoading: boolean
   game: Game | null
   games: Game[]
   setGame: (id: string) => void
@@ -30,6 +29,7 @@ export interface GameState {
 export const useGameStore = create<GameState>()(
   persist(
     (set, get) => ({
+      isLoading: true,
       game: null,
       games: [],
       setGame: id => {
@@ -45,31 +45,28 @@ export const useGameStore = create<GameState>()(
       name: 'game',
       storage: createJSONStorage(() => mixedStorage),
       partialize: state => ({ game: state.game }),
+      onRehydrateStorage: () => {
+        console.log('Game store hydration starts')
+        return (state, error) => {
+          if (state && !error) {
+            // 因为 Mock Service Worker 需要时间启动，所以这里需要延迟一下
+            setTimeout(() => {
+              request<Game[]>(`/api/usystem/game/all`, { isGlobalNS: true }).then(response => {
+                state.setGames(response.data)
+                state.isLoading = false
+              })
+            }, 800)
+          }
+        }
+      },
     },
   ),
 )
 
-function useGames() {
-  const { usePermissionApiV2 } = useToolkitsContext()
-  const user = useTokenStore(state => state.getUser())
-  const { setGames } = useGameStore()
-
-  return useSWRImmutable(
-    usePermissionApiV2 && user ? `/api/usystem/game/all?user=${user.authorityId}` : null,
-    url => request<Game[]>(url, { isGlobalNS: true }).then(response => response.data),
-    {
-      onSuccess: data => {
-        setGames(data)
-      },
-    },
-  )
-}
-
 const GameSelect = () => {
   const t = useTranslation()
   const { gameFilter } = useToolkitsContext()
-  const { game, setGame, clearGame } = useGameStore()
-  const { data: games, isLoading } = useGames()
+  const { game, games, isLoading, setGame, clearGame } = useGameStore()
   const { mutate } = useSWRConfig()
 
   const options = useMemo(
