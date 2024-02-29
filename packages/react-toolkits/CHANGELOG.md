@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.8.20
+
+### Patch Changes
+
+- 36ba90c: chore: print log for debug
+
 ## 0.8.19
 
 ### Patch Changes
