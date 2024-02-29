@@ -5,12 +5,14 @@ import type { FC } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from '../../hooks/i18n'
 import { useTokenStore } from '../../stores/token'
+import { useToolkitsContext } from '../ContextProvider'
 
 const UserWidget: FC = () => {
   const navigate = useNavigate()
   const { clearToken, getUser } = useTokenStore()
   const user = getUser()
   const t = useTranslation()
+  const { logoutRedirectUrl } = useToolkitsContext()
 
   const items: MenuProps['items'] = [
     {
@@ -21,7 +23,9 @@ const UserWidget: FC = () => {
           data-cy="user-widget-logout"
           onClick={() => {
             clearToken()
-            navigate('/sign_in')
+            if (logoutRedirectUrl) {
+              navigate(logoutRedirectUrl)
+            }
           }}
         >
           {t('UserWidget.signOutText')}

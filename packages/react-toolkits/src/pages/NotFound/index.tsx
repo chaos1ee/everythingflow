@@ -6,7 +6,7 @@ import { useTranslation } from '../../hooks/i18n'
 const NotFound = () => {
   const navigate = useNavigate()
   const t = useTranslation()
-  const { notFoundRedirect } = useToolkitsContext()
+  const { notFoundRedirectUrl } = useToolkitsContext()
 
   return (
     <div className="h-screen flex justify-center items-center">
@@ -15,14 +15,16 @@ const NotFound = () => {
         title="404"
         subTitle={t('NotFound.subTitle')}
         extra={
-          <Button
-            type="primary"
-            onClick={() => {
-              navigate(notFoundRedirect ?? '/')
-            }}
-          >
-            {t('NotFound.buttonText')}
-          </Button>
+          notFoundRedirectUrl && (
+            <Button
+              type="primary"
+              onClick={() => {
+                navigate(notFoundRedirectUrl)
+              }}
+            >
+              {t('NotFound.buttonText')}
+            </Button>
+          )
         }
       />
     </div>
