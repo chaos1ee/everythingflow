@@ -36,6 +36,7 @@ export const useGameStore = create<GameState>()(
       setGame: id => {
         const matchGame = (get().games ?? []).find(item => item.id === id)
         set({ game: matchGame ?? null })
+        console.log('SET GAME', id, matchGame, get().games)
       },
       setGames: games => set({ games }),
       clearGame: () => {
