@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.8.18
+
+### Patch Changes
+
+- 1e8f78c: refactor: move games initilization logic to onRehydrateStorage hook
+
 ## 0.8.17
 
 ### Patch Changes
