@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.8.16
+
+### Patch Changes
+
+- 71192c8: feat: custom routes
+
 ## 0.8.15
 
 ### Patch Changes
