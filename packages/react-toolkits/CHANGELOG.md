@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.8.19
+
+### Patch Changes
+
+- 02639fc: fix: set isLoading failed
+
 ## 0.8.18
 
 ### Patch Changes
