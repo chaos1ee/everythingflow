@@ -15,7 +15,7 @@ const SignIn: FC = () => {
   const location = useLocation()
   const { token, setToken } = useTokenStore()
   const t = useTranslation()
-  const { signInPageTitle, localeDropdownMenu } = useToolkitsContext()
+  const { signInPageTitle, localeDropdownMenu, signInSuccessRedirect } = useToolkitsContext()
 
   useSWRImmutable(
     searchParams.has('ticket') ? `/api/usystem/user/login?ticket=${searchParams.get('ticket')}` : null,
@@ -29,6 +29,10 @@ const SignIn: FC = () => {
   )
 
   if (token) {
+    if (signInSuccessRedirect) {
+      return <Navigate replace to={signInSuccessRedirect} />
+    }
+
     return <Navigate replace to="/" />
   }
 

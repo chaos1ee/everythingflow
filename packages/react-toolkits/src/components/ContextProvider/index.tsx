@@ -15,6 +15,7 @@ export interface ContextState {
   gameFilter?: (game: Game) => boolean
   locale?: Locale
   localeDropdownMenu?: ReactNode
+  signInSuccessRedirect?: string // 登录成功后的重定向地址
 }
 
 const defaultState: ContextState = {
