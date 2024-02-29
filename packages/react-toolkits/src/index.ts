@@ -26,6 +26,7 @@ import type { UseFormModalProps } from './hooks/formModal'
 import { useFormModal } from './hooks/formModal'
 import { useTranslation } from './hooks/i18n'
 import { usePermission, usePermissions } from './hooks/permission'
+import NotFound from './pages/NotFound'
 import { useQueryListStore } from './stores/queryList'
 import type { TokenState } from './stores/token'
 import { useTokenStore, useTokenValidation } from './stores/token'
@@ -44,6 +45,7 @@ export {
   InfiniteList,
   Layout,
   NavMenu,
+  NotFound,
   PermissionButton,
   PermissionGuard,
   QueryList,

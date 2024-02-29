@@ -30,6 +30,14 @@ const logger =
 const Providers: FC<PropsWithChildren> = ({ children }) => {
   const { locale } = useLocaleStore()
 
+  const appTitle = (
+    <Link to="/">
+      <span className="font-bold text-xl ">{import.meta.env.VITE_APP_TITLE}</span>
+    </Link>
+  )
+
+  const signInPageTitle = <span className="text-2xl font-bold">{import.meta.env.VITE_APP_TITLE}</span>
+
   return (
     <ConfigProvider
       locale={antdLocale}
@@ -46,15 +54,12 @@ const Providers: FC<PropsWithChildren> = ({ children }) => {
       <App>
         <ContextProvider
           usePermissionApiV2
-          appTitle={
-            <Link to="/">
-              <span className="font-bold text-xl ">{import.meta.env.VITE_APP_TITLE}</span>
-            </Link>
-          }
-          signInPageTitle={<span className="text-2xl font-bold">{import.meta.env.VITE_APP_TITLE}</span>}
           locale={locale?.toolkits}
           localeDropdownMenu={<LocaleDropdownMenu />}
           menuItems={menuItems}
+          appTitle={appTitle}
+          signInPageTitle={signInPageTitle}
+          signInSuccessRedirect="/"
         >
           <SWRConfig
             value={{
