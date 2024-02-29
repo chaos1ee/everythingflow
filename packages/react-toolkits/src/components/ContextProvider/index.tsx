@@ -16,6 +16,7 @@ export interface ContextState {
   locale?: Locale
   localeDropdownMenu?: ReactNode
   signInSuccessRedirect?: string // 登录成功后的重定向地址
+  notFoundRedirect?: string // 404 重定向地址
 }
 
 const defaultState: ContextState = {

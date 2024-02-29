@@ -3,17 +3,17 @@ import type { TableColumnsType } from 'antd'
 import { App, Card, Form, Input, Space } from 'antd'
 import { produce } from 'immer'
 import { Link } from 'react-router-dom'
-import { useToolkitsContext } from '../../components/ContextProvider'
-import Highlight from '../../components/Highlight'
-import PermissionButton from '../../components/PermissionButton'
-import QueryList from '../../components/QueryList'
-import type { RoleListItem, RoleV1, RoleV2 } from '../../features/permission'
-import { PermissionList, useCreateRole, useRemoveRole, useUpdateRole } from '../../features/permission'
-import { useFormModal } from '../../hooks/formModal'
-import { useTranslation } from '../../hooks/i18n'
-import { usePermission } from '../../hooks/permission'
-import { useQueryListStore } from '../../stores/queryList'
-import { request } from '../../utils/request'
+import { useToolkitsContext } from '../../../components/ContextProvider'
+import Highlight from '../../../components/Highlight'
+import PermissionButton from '../../../components/PermissionButton'
+import QueryList from '../../../components/QueryList'
+import type { RoleListItem, RoleV1, RoleV2 } from '../../../features/permission'
+import { PermissionList, useCreateRole, useRemoveRole, useUpdateRole } from '../../../features/permission'
+import { useFormModal } from '../../../hooks/formModal'
+import { useTranslation } from '../../../hooks/i18n'
+import { usePermission } from '../../../hooks/permission'
+import { useQueryListStore } from '../../../stores/queryList'
+import { request } from '../../../utils/request'
 
 const action = '/api/usystem/role/list'
 
@@ -113,7 +113,11 @@ const RoleList = () => {
       key: 'name',
       render(value: RoleListItem) {
         if (viewable) {
-          return <Link to={`${value.name}`}>{value.name}</Link>
+          return (
+            <Link to={`${value.name}`} relative="path">
+              {value.name}
+            </Link>
+          )
         } else {
           return <>{value.name}</>
         }

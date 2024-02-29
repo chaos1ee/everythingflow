@@ -1,7 +1,7 @@
 import { Breadcrumb, Card, Descriptions, Skeleton } from 'antd'
 import { Link, useParams } from 'react-router-dom'
-import { PermissionList, useRole } from '../../features/permission'
-import { useTranslation } from '../../hooks/i18n'
+import { PermissionList, useRole } from '../../../features/permission'
+import { useTranslation } from '../../../hooks/i18n'
 
 const RoleDetail = () => {
   const params = useParams()
@@ -15,7 +15,7 @@ const RoleDetail = () => {
         items={[
           {
             key: '1',
-            title: <Link to="/permission/role">{t('global.role')}</Link>,
+            title: <Link to="..">{t('global.role')}</Link>,
           },
           {
             key: '2',

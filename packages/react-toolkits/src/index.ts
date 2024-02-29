@@ -27,6 +27,9 @@ import { useFormModal } from './hooks/formModal'
 import { useTranslation } from './hooks/i18n'
 import { usePermission, usePermissions } from './hooks/permission'
 import NotFound from './pages/NotFound'
+import OperationLogList from './pages/OperationLogList'
+import SignIn from './pages/SignIn'
+import Permission from './pages/permission'
 import { useQueryListStore } from './stores/queryList'
 import type { TokenState } from './stores/token'
 import { useTokenStore, useTokenValidation } from './stores/token'
@@ -46,12 +49,15 @@ export {
   Layout,
   NavMenu,
   NotFound,
+  OperationLogList,
+  Permission,
   PermissionButton,
   PermissionGuard,
   QueryList,
   QueryListAction,
   RequestError,
   RequireGame,
+  SignIn,
   UserWidget,
   contextStore,
   mixedStorage,
