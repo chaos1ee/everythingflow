@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.8.21
+
+### Patch Changes
+
+- 5fd2486: feat: add refreshGames function
+
 ## 0.8.20
 
 ### Patch Changes
