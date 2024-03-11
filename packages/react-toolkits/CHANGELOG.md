@@ -1,5 +1,12 @@
 # react-toolkits
 
+## 0.8.24
+
+### Patch Changes
+
+- 2095f42: refactor: update modal hooks props
+- 87c2d79: feat: add loading for modal
+
 ## 0.8.23
 
 ### Patch Changes
