@@ -38,15 +38,16 @@ const useCreatingUserModal = () => {
   }>({
     title: t('RoleList.createTitle'),
     width: '50vw',
-    content: form => (
-      <Form form={form} layout="vertical">
+    layout: 'vertical',
+    content: (
+      <>
         <Form.Item label={t('global.name')} name="name" rules={[{ required: true }]}>
           <Input addonBefore="role_" />
         </Form.Item>
         <Form.Item name="permissions">
           <PermissionList />
         </Form.Item>
-      </Form>
+      </>
     ),
     onConfirm,
   })
@@ -64,17 +65,17 @@ const useUpdatingRoleModal = () => {
   }>({
     title: t('RoleList.updateTitle'),
     width: '50vw',
-    content: form => (
-      <Form form={form}>
+    content: (
+      <>
         <Form.Item label={t('global.name')} name="name" rules={[{ required: true }]}>
           <Input readOnly addonBefore="role_" />
         </Form.Item>
         <Form.Item name="permissions">
           <PermissionList />
         </Form.Item>
-      </Form>
+      </>
     ),
-    onConfirm: async (values, _form, extraValues: { id: number }) => {
+    onConfirm: async (values, extraValues: { id: number }) => {
       await update.trigger({
         id: extraValues.id as number,
         name: `role_${values.name}`,
@@ -103,8 +104,8 @@ const RoleList = () => {
   const { usePermissionApiV2 } = useToolkitsContext()
   const remove = useRemoveRole()
   const { mutate } = useQueryListStore()
-  const { show: showCreatingModal, contextHolder: creatingContextHolder } = useCreatingUserModal()
-  const { show: showUpdatingModal, contextHolder: updatingContextHolder } = useUpdatingRoleModal()
+  const { show: showCreatingModal, modal: creatingModal } = useCreatingUserModal()
+  const { show: showUpdatingModal, modal: updatingModal } = useUpdatingRoleModal()
   const t = useTranslation()
 
   const columns: TableColumnsType<RoleListItem> = [
@@ -202,34 +203,36 @@ const RoleList = () => {
   ]
 
   return (
-    <Card
-      title={t('global.role')}
-      extra={
-        <PermissionButton
+    <>
+      <Card
+        title={t('global.role')}
+        extra={
+          <PermissionButton
+            isGlobalNS
+            type="primary"
+            code="200002"
+            icon={<UsergroupAddOutlined />}
+            onClick={() => {
+              showCreatingModal()
+            }}
+          >
+            {t('RoleList.createTitle')}
+          </PermissionButton>
+        }
+      >
+        <QueryList<RoleListItem, undefined, { List: RoleListItem[]; Total: number }>
           isGlobalNS
-          type="primary"
-          code="200002"
-          icon={<UsergroupAddOutlined />}
-          onClick={() => {
-            showCreatingModal()
-          }}
-        >
-          {t('RoleList.createTitle')}
-        </PermissionButton>
-      }
-    >
-      <QueryList<RoleListItem, undefined, { List: RoleListItem[]; Total: number }>
-        isGlobalNS
-        rowKey="name"
-        columns={columns}
-        code="200001"
-        action={action}
-        getTotal={response => response.Total}
-        getDataSource={response => response.List}
-      />
-      {creatingContextHolder}
-      {updatingContextHolder}
-    </Card>
+          rowKey="name"
+          columns={columns}
+          code="200001"
+          action={action}
+          getTotal={response => response.Total}
+          getDataSource={response => response.List}
+        />
+      </Card>
+      {creatingModal}
+      {updatingModal}
+    </>
   )
 }
 
