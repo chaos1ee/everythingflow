@@ -1,22 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type { FormProps, ModalProps } from 'antd'
-import { Form, Modal } from 'antd'
-import { useId, useRef, type ReactNode } from 'react'
-import { create } from 'zustand'
-
-interface ModalState {
-  open: Map<string, boolean>
-  getOpen: (id: string) => boolean
-  setOpen: (id: string, open: boolean) => void
-}
-
-export const useModalStore = create<ModalState>((set, get) => ({
-  open: new Map(),
-  getOpen: id => get().open.get(id) ?? false,
-  setOpen: (id, open) => {
-    set({ open: new Map(get().open).set(id, open) })
-  },
-}))
+import { Form } from 'antd'
+import { useRef, type ReactNode } from 'react'
+import { useModal } from './modal'
 
 type RecursivePartial<T> = NonNullable<T> extends object
   ? {
@@ -37,30 +23,8 @@ export interface UseFormModalProps<Values>
 
 export function useFormModal<Values>(props: UseFormModalProps<Values>) {
   const { title, width, labelCol, content, initialValues, maskClosable, onConfirm } = props
-  const id = useId()
   const [form] = Form.useForm<Values>()
-  const { getOpen, setOpen } = useModalStore()
-  const open = getOpen(id)
   const internalExtraValues = useRef()
-
-  const show = (
-    config: {
-      initialValues?: RecursivePartial<Values>
-      extraValues?: any
-    } = {},
-  ) => {
-    internalExtraValues.current = config.extraValues
-
-    if (config.initialValues) {
-      form.setFieldsValue(config.initialValues)
-    }
-
-    setOpen(id, true)
-  }
-
-  const hide = () => {
-    setOpen(id, false)
-  }
 
   const onOk = async () => {
     const values = await form.validateFields()
@@ -68,34 +32,39 @@ export function useFormModal<Values>(props: UseFormModalProps<Values>) {
     hide()
   }
 
-  const onCancel: ModalProps['onCancel'] = () => {
-    hide()
-  }
-
   const afterClose = () => {
     form.resetFields()
   }
 
-  const internalModal = (
-    <Modal
-      destroyOnClose
-      width={width}
-      title={title}
-      open={open}
-      afterClose={afterClose}
-      maskClosable={maskClosable}
-      onCancel={onCancel}
-      onOk={onOk}
-    >
+  const { show, hide, modal } = useModal({
+    title,
+    width,
+    maskClosable,
+    content: (
       <Form form={form} initialValues={initialValues} labelCol={labelCol} preserve={false}>
         {content}
       </Form>
-    </Modal>
-  )
+    ),
+    onOk,
+    afterClose,
+  })
 
   return {
-    show,
+    show: (
+      config: {
+        initialValues?: RecursivePartial<Values>
+        extraValues?: any
+      } = {},
+    ) => {
+      internalExtraValues.current = config.extraValues
+
+      if (config.initialValues) {
+        form.setFieldsValue(config.initialValues)
+      }
+
+      show()
+    },
     hide,
-    modal: internalModal,
+    modal,
   }
 }
