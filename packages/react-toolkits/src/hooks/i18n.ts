@@ -1,4 +1,3 @@
-// eslint-disable-next-line camelcase
 import { get, has, template } from 'lodash-es'
 import { useToolkitsContext } from '../components/ContextProvider'
 import zh_CN from '../locales/zh_CN'

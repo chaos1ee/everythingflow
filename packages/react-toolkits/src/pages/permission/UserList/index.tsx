@@ -26,7 +26,9 @@ function useCreatingUserModal() {
 
   return useFormModal<{ id: string; name: string; roles: string[] }>({
     title: t('UserList.createTitle'),
-    labelCol: { flex: '80px' },
+    formProps: {
+      labelCol: { flex: '80px' },
+    },
     content: (
       <>
         <Form.Item label={t('global.name')} name="name" rules={[{ required: true }]}>
@@ -58,9 +60,11 @@ function useUpdatingUserModal() {
   const { mutate } = useQueryListStore()
   const t = useTranslation()
 
-  return useFormModal<{ id: string; name: string; roles: string[] }>({
+  return useFormModal<{ id: string; name: string; roles: string[] }, { id: string }>({
     title: t('UserList.updateTitle'),
-    labelCol: { flex: '80px' },
+    formProps: {
+      labelCol: { flex: '80px' },
+    },
     content: (
       <>
         <Form.Item label={t('global.name')} name="name" rules={[{ required: true }]}>
@@ -75,20 +79,18 @@ function useUpdatingUserModal() {
               label: role.name,
               value: role.name,
             }))}
-            // FIXME: 在项目中引入时弹出框会被 Modal 遮盖，暂时不知道原因。
-            dropdownStyle={{ zIndex: 9999 }}
           />
         </Form.Item>
       </>
     ),
-    async onConfirm(values, extraValues: { id: string }) {
+    async onConfirm(values, extraValues) {
       await update.trigger(values)
       mutate<UserListItem>(
         action,
         prev => {
           return produce(prev, draft => {
             if (draft?.dataSource) {
-              const index = draft.dataSource?.findIndex(item => item.id === extraValues.id)
+              const index = draft.dataSource?.findIndex(item => item.id === extraValues?.id)
               if (index !== -1) {
                 draft.dataSource[index].roles = values.roles
               }

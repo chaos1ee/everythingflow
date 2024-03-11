@@ -38,7 +38,9 @@ const useCreatingUserModal = () => {
   }>({
     title: t('RoleList.createTitle'),
     width: '50vw',
-    layout: 'vertical',
+    formProps: {
+      layout: 'vertical',
+    },
     content: (
       <>
         <Form.Item label={t('global.name')} name="name" rules={[{ required: true }]}>
@@ -59,10 +61,15 @@ const useUpdatingRoleModal = () => {
   const update = useUpdateRole()
   const t = useTranslation()
 
-  return useFormModal<{
-    name: string
-    permissions: RoleV1['permissions'] | RoleV2['permissions']
-  }>({
+  return useFormModal<
+    {
+      name: string
+      permissions: RoleV1['permissions'] | RoleV2['permissions']
+    },
+    {
+      id: number
+    }
+  >({
     title: t('RoleList.updateTitle'),
     width: '50vw',
     content: (
@@ -75,9 +82,9 @@ const useUpdatingRoleModal = () => {
         </Form.Item>
       </>
     ),
-    onConfirm: async (values, extraValues: { id: number }) => {
+    onConfirm: async (values, extraValues) => {
       await update.trigger({
-        id: extraValues.id as number,
+        id: extraValues?.id as number,
         name: `role_${values.name}`,
         permissions: values.permissions,
       })
@@ -85,7 +92,7 @@ const useUpdatingRoleModal = () => {
         action,
         prev =>
           produce(prev, draft => {
-            const match = draft?.dataSource?.find(item => item.id === extraValues.id)
+            const match = draft?.dataSource?.find(item => item.id === extraValues?.id)
 
             if (match) {
               match.permissions = values.permissions

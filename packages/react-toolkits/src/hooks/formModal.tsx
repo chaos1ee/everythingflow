@@ -1,7 +1,7 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import type { FormProps, ModalProps } from 'antd'
+import type { FormProps } from 'antd'
 import { Form } from 'antd'
-import { useRef, type ReactNode } from 'react'
+import { useRef } from 'react'
+import type { UseModalProps } from './modal'
 import { useModal } from './modal'
 
 type RecursivePartial<T> = NonNullable<T> extends object
@@ -14,46 +14,39 @@ type RecursivePartial<T> = NonNullable<T> extends object
     }
   : T
 
-export interface UseFormModalProps<Values>
-  extends Pick<ModalProps, 'title' | 'width' | 'maskClosable'>,
-    Pick<FormProps, 'labelCol' | 'layout' | 'initialValues'> {
-  content?: ReactNode
-  onConfirm?: (values: Values, extraValues: any) => Promise<void>
+export interface UseFormModalProps<Values, ExtraValues> extends Omit<UseModalProps, 'afterClose' | 'onConfirm'> {
+  formProps?: Omit<FormProps, 'form'>
+  onConfirm?: (values: Values, extraValues?: ExtraValues) => void | Promise<void>
 }
 
-export function useFormModal<Values>(props: UseFormModalProps<Values>) {
-  const { title, width, labelCol, content, initialValues, maskClosable, onConfirm } = props
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function useFormModal<Values, ExtraValues = any>(props: UseFormModalProps<Values, ExtraValues>) {
+  const { content, formProps, onConfirm, ...modalProps } = props
   const [form] = Form.useForm<Values>()
-  const internalExtraValues = useRef()
-
-  const onOk = async () => {
-    const values = await form.validateFields()
-    await onConfirm?.(values, internalExtraValues.current)
-    hide()
-  }
-
-  const afterClose = () => {
-    form.resetFields()
-  }
+  const internalExtraValues = useRef<ExtraValues>()
 
   const { show, hide, modal } = useModal({
-    title,
-    width,
-    maskClosable,
+    ...modalProps,
     content: (
-      <Form form={form} initialValues={initialValues} labelCol={labelCol} preserve={false}>
+      <Form {...formProps} form={form}>
         {content}
       </Form>
     ),
-    onOk,
-    afterClose,
+    async onConfirm() {
+      const values = await form.validateFields()
+      await onConfirm?.(values, internalExtraValues.current)
+      hide()
+    },
+    afterClose() {
+      form.resetFields()
+    },
   })
 
   return {
     show: (
       config: {
         initialValues?: RecursivePartial<Values>
-        extraValues?: any
+        extraValues?: ExtraValues
       } = {},
     ) => {
       internalExtraValues.current = config.extraValues
