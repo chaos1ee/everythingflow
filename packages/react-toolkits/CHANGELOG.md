@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.8.25
+
+### Patch Changes
+
+- 4699f38: chore: update Highlight styles
+
 ## 0.8.24
 
 ### Patch Changes
