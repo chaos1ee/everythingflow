@@ -1,6 +1,6 @@
 import type { ModalProps } from 'antd'
 import { Modal } from 'antd'
-import { useId, type ReactNode } from 'react'
+import { useId, useState, type ReactNode } from 'react'
 import { create } from 'zustand'
 
 interface ModalState {
@@ -17,15 +17,17 @@ export const useModalStore = create<ModalState>((set, get) => ({
   },
 }))
 
-export interface UseModalProps extends Pick<ModalProps, 'title' | 'width' | 'maskClosable' | 'onOk' | 'afterClose'> {
+export interface UseModalProps extends Pick<ModalProps, 'title' | 'width' | 'maskClosable' | 'afterClose'> {
   content?: ReactNode
+  onConfirm?: () => void | Promise<void>
 }
 
 export function useModal(props: UseModalProps) {
-  const { title, width, content, maskClosable, onOk, afterClose } = props
+  const { title, width, content, maskClosable, onConfirm, afterClose } = props
   const id = useId()
   const { getOpen, setOpen } = useModalStore()
   const open = getOpen(id)
+  const [confirmLoading, setConfirmLoading] = useState(false)
 
   const show = () => {
     setOpen(id, true)
@@ -39,6 +41,12 @@ export function useModal(props: UseModalProps) {
     hide()
   }
 
+  const onOk = async () => {
+    setConfirmLoading(true)
+    await onConfirm?.()
+    setConfirmLoading(false)
+  }
+
   const internalModal = (
     <Modal
       destroyOnClose
@@ -47,6 +55,7 @@ export function useModal(props: UseModalProps) {
       open={open}
       afterClose={afterClose}
       maskClosable={maskClosable}
+      confirmLoading={confirmLoading}
       onCancel={onCancel}
       onOk={onOk}
     >

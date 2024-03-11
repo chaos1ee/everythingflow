@@ -23,14 +23,8 @@ export interface UseFormModalProps<Values>
 
 export function useFormModal<Values>(props: UseFormModalProps<Values>) {
   const { title, width, labelCol, content, initialValues, maskClosable, onConfirm } = props
-  const [form] = Form.useForm<Values>()
   const internalExtraValues = useRef()
-
-  const onOk = async () => {
-    const values = await form.validateFields()
-    await onConfirm?.(values, internalExtraValues.current)
-    hide()
-  }
+  const [form] = Form.useForm<Values>()
 
   const afterClose = () => {
     form.resetFields()
@@ -45,7 +39,11 @@ export function useFormModal<Values>(props: UseFormModalProps<Values>) {
         {content}
       </Form>
     ),
-    onOk,
+    async onConfirm() {
+      const values = await form.validateFields()
+      await onConfirm?.(values, internalExtraValues.current)
+      hide()
+    },
     afterClose,
   })
 
