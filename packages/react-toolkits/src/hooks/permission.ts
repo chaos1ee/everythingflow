@@ -3,15 +3,10 @@ import useSWR from 'swr'
 import { useToolkitsContext } from '../components/ContextProvider'
 import { request } from '../utils/request'
 
-type PermissionCheckResult =
-  | { has_all: true }
-  | {
-      [k: string]: boolean
-    }
+type PermissionCheckResult = { has_all: true } | { [k: string]: boolean }
 
 export function usePermissions(codes: string[], isGlobalNS?: boolean, config?: SWRConfiguration) {
   const { usePermissionApiV2 } = useToolkitsContext()
-
   const { data, isValidating, isLoading } = useSWR(
     codes.length > 0 ? [usePermissionApiV2 ? '/api/usystem/user/checkV2' : '/api/usystem/user/check', codes] : null,
     ([url]) =>
