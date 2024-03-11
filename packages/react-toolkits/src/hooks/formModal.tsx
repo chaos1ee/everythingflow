@@ -1,7 +1,22 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import type { FormInstance, ModalFuncProps } from 'antd'
+import type { FormProps, ModalProps } from 'antd'
 import { Form, Modal } from 'antd'
-import type { ReactNode } from 'react'
+import { useId, useRef, type ReactNode } from 'react'
+import { create } from 'zustand'
+
+interface ModalState {
+  open: Map<string, boolean>
+  getOpen: (id: string) => boolean
+  setOpen: (id: string, open: boolean) => void
+}
+
+export const useModalStore = create<ModalState>((set, get) => ({
+  open: new Map(),
+  getOpen: id => get().open.get(id) ?? false,
+  setOpen: (id, open) => {
+    set({ open: new Map(get().open).set(id, open) })
+  },
+}))
 
 type RecursivePartial<T> = NonNullable<T> extends object
   ? {
@@ -13,60 +28,74 @@ type RecursivePartial<T> = NonNullable<T> extends object
     }
   : T
 
-// TODO: 重构 API。添加 form 属性，可以传入表单实例。
 export interface UseFormModalProps<Values>
-  extends Omit<ModalFuncProps, 'icon' | 'className' | 'content' | 'type' | 'onOk' | 'onCancel'> {
-  content?: (form: FormInstance<Values>) => ReactNode
-  onConfirm?: (values: Values, form: FormInstance<Values>, extraValues: any) => Promise<void>
-  onCancel?: (form: FormInstance<Values>) => void
+  extends Pick<ModalProps, 'title' | 'width' | 'maskClosable'>,
+    Pick<FormProps, 'labelCol' | 'layout' | 'initialValues'> {
+  content?: ReactNode
+  onConfirm?: (values: Values, extraValues: any) => Promise<void>
 }
 
 export function useFormModal<Values>(props: UseFormModalProps<Values>) {
-  const { onConfirm, content, onCancel, ...restProps } = props
-  const [modal, contextHolder] = Modal.useModal()
+  const { title, width, labelCol, content, initialValues, maskClosable, onConfirm } = props
+  const id = useId()
   const [form] = Form.useForm<Values>()
-
-  const defaultProps: ModalFuncProps = {
-    ...restProps,
-    icon: null,
-    className: 'toolkits-modal',
-    content: content?.(form),
-  }
+  const { getOpen, setOpen } = useModalStore()
+  const open = getOpen(id)
+  const internalExtraValues = useRef()
 
   const show = (
-    scopedProps?: Partial<
-      Pick<UseFormModalProps<Values>, 'title'> & {
-        initialValues?: RecursivePartial<Values>
-        extraValues?: any
-      }
-    >,
+    config: {
+      initialValues?: RecursivePartial<Values>
+      extraValues?: any
+    } = {},
   ) => {
-    const { initialValues, extraValues, ...restScopedProps } = scopedProps ?? {}
+    internalExtraValues.current = config.extraValues
 
-    if (initialValues) {
-      form.setFieldsValue(initialValues)
+    if (config.initialValues) {
+      form.setFieldsValue(config.initialValues)
     }
 
-    const onOk = async () => {
-      const values = await form.validateFields()
-      await onConfirm?.(values, form, extraValues)
-    }
-
-    return modal.confirm({
-      ...defaultProps,
-      ...restScopedProps,
-      className: 'toolkits-modal',
-      onOk,
-      onCancel() {
-        form.resetFields()
-        onCancel?.(form)
-      },
-    })
+    setOpen(id, true)
   }
+
+  const hide = () => {
+    setOpen(id, false)
+  }
+
+  const onOk = async () => {
+    const values = await form.validateFields()
+    await onConfirm?.(values, internalExtraValues.current)
+    hide()
+  }
+
+  const onCancel: ModalProps['onCancel'] = () => {
+    hide()
+  }
+
+  const afterClose = () => {
+    form.resetFields()
+  }
+
+  const internalModal = (
+    <Modal
+      destroyOnClose
+      width={width}
+      title={title}
+      open={open}
+      afterClose={afterClose}
+      maskClosable={maskClosable}
+      onCancel={onCancel}
+      onOk={onOk}
+    >
+      <Form form={form} initialValues={initialValues} labelCol={labelCol} preserve={false}>
+        {content}
+      </Form>
+    </Modal>
+  )
 
   return {
     show,
-    form,
-    contextHolder: <div>{contextHolder}</div>,
+    hide,
+    modal: internalModal,
   }
 }

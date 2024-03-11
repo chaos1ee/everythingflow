@@ -26,8 +26,9 @@ function useCreatingUserModal() {
 
   return useFormModal<{ id: string; name: string; roles: string[] }>({
     title: t('UserList.createTitle'),
-    content: form => (
-      <Form form={form} labelCol={{ flex: '80px' }}>
+    labelCol: { flex: '80px' },
+    content: (
+      <>
         <Form.Item label={t('global.name')} name="name" rules={[{ required: true }]}>
           <Input />
         </Form.Item>
@@ -40,7 +41,7 @@ function useCreatingUserModal() {
             ))}
           </Select>
         </Form.Item>
-      </Form>
+      </>
     ),
     async onConfirm(values) {
       await create.trigger(values)
@@ -59,8 +60,9 @@ function useUpdatingUserModal() {
 
   return useFormModal<{ id: string; name: string; roles: string[] }>({
     title: t('UserList.updateTitle'),
-    content: form => (
-      <Form form={form} labelCol={{ flex: '80px' }}>
+    labelCol: { flex: '80px' },
+    content: (
+      <>
         <Form.Item label={t('global.name')} name="name" rules={[{ required: true }]}>
           <Input readOnly />
         </Form.Item>
@@ -77,9 +79,9 @@ function useUpdatingUserModal() {
             dropdownStyle={{ zIndex: 9999 }}
           />
         </Form.Item>
-      </Form>
+      </>
     ),
-    async onConfirm(values, _form, extraValues: { id: string }) {
+    async onConfirm(values, extraValues: { id: string }) {
       await update.trigger(values)
       mutate<UserListItem>(
         action,
@@ -104,8 +106,8 @@ const UserList: FC = () => {
   const { modal, message } = App.useApp()
   const remove = useRemoveUser()
   const { mutate } = useQueryListStore()
-  const { show: showCreatingModal, contextHolder: creatingContextHolder } = useCreatingUserModal()
-  const { show: showUpdatingModal, contextHolder: updatingContextHolder } = useUpdatingUserModal()
+  const { show: showCreatingModal, modal: creatingModal } = useCreatingUserModal()
+  const { show: showUpdatingModal, modal: updatingModal } = useUpdatingUserModal()
   const t = useTranslation()
 
   const columns: TableColumnsType<UserListItem> = [
@@ -210,34 +212,36 @@ const UserList: FC = () => {
   ]
 
   return (
-    <Card
-      title={t('global.user')}
-      extra={
-        <PermissionButton
+    <>
+      <Card
+        title={t('global.user')}
+        extra={
+          <PermissionButton
+            isGlobalNS
+            type="primary"
+            icon={<UserAddOutlined />}
+            code="100002"
+            onClick={() => {
+              showCreatingModal()
+            }}
+          >
+            {t('UserList.createTitle')}
+          </PermissionButton>
+        }
+      >
+        <QueryList<UserListItem, undefined, { List: UserListItem[]; Total: number }>
           isGlobalNS
-          type="primary"
-          icon={<UserAddOutlined />}
-          code="100002"
-          onClick={() => {
-            showCreatingModal()
-          }}
-        >
-          {t('UserList.createTitle')}
-        </PermissionButton>
-      }
-    >
-      <QueryList<UserListItem, undefined, { List: UserListItem[]; Total: number }>
-        isGlobalNS
-        code="100001"
-        action={action}
-        rowKey="id"
-        columns={columns}
-        getTotal={response => response.Total}
-        getDataSource={response => response.List}
-      />
-      {creatingContextHolder}
-      {updatingContextHolder}
-    </Card>
+          code="100001"
+          action={action}
+          rowKey="id"
+          columns={columns}
+          getTotal={response => response.Total}
+          getDataSource={response => response.List}
+        />
+      </Card>
+      {creatingModal}
+      {updatingModal}
+    </>
   )
 }
 

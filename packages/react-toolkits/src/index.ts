@@ -23,7 +23,7 @@ import QueryList, { QueryListAction } from './components/QueryList'
 import RequireGame from './components/RequireGame'
 import UserWidget from './components/UserWidget'
 import type { UseFormModalProps } from './hooks/formModal'
-import { useFormModal } from './hooks/formModal'
+import { useFormModal, useModalStore } from './hooks/formModal'
 import { useTranslation } from './hooks/i18n'
 import { usePermission, usePermissions } from './hooks/permission'
 import NotFound from './pages/NotFound'
@@ -64,6 +64,7 @@ export {
   request,
   useFormModal,
   useGameStore,
+  useModalStore,
   usePermission,
   usePermissions,
   useQueryListStore,
