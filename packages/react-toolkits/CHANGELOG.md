@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.8.22
+
+### Patch Changes
+
+- 9cffb64: refactor: store modal state in zustand
+
 ## 0.8.21
 
 ### Patch Changes
