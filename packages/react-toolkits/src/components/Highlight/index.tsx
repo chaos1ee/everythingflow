@@ -45,7 +45,7 @@ const Highlight = (props: HighlightTextsProps) => {
     })
   }, [children, texts])
 
-  return <p dangerouslySetInnerHTML={{ __html: htmlString }}></p>
+  return <div dangerouslySetInnerHTML={{ __html: htmlString }}></div>
 }
 
 export default Highlight
