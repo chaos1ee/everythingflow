@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.8.27
+
+### Patch Changes
+
+- a0b1ead: feat: add layoutHeaderExtras prop
+
 ## 0.8.26
 
 ### Patch Changes
