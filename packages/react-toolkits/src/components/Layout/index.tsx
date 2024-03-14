@@ -1,6 +1,6 @@
 import * as Antd from 'antd'
 import { Divider, Space } from 'antd'
-import type { FC, Key, PropsWithChildren, ReactNode } from 'react'
+import type { FC, PropsWithChildren } from 'react'
 import { Suspense } from 'react'
 import logo from '../../assets/logo.png'
 import { useToolkitsContext } from '../ContextProvider'
@@ -12,19 +12,12 @@ import UserWidget from '../UserWidget'
 const { Spin, theme } = Antd
 const { Header, Sider, Content } = Antd.Layout
 
-export interface LayoutProps extends PropsWithChildren {
-  extras?: {
-    key: Key
-    children: ReactNode
-  }[]
-}
-
-const Layout: FC<LayoutProps> = (props: LayoutProps) => {
-  const { children, extras } = props
+const Layout: FC<PropsWithChildren> = props => {
+  const { children } = props
   const {
     token: { colorBgContainer, colorBorder },
   } = theme.useToken()
-  const { appTitle, usePermissionApiV2, hideGameSelect, localeDropdownMenu } = useToolkitsContext()
+  const { appTitle, usePermissionApiV2, hideGameSelect, localeDropdownMenu, layoutHeaderExtras } = useToolkitsContext()
 
   return (
     <Antd.Layout hasSider className="h-screen">
@@ -62,7 +55,7 @@ const Layout: FC<LayoutProps> = (props: LayoutProps) => {
           <div className="flex justify-between items-center h-full">
             <div>{usePermissionApiV2 && !hideGameSelect && <GameSelect />}</div>
             <Space size="small" split={<Divider type="vertical" />}>
-              {extras?.map(extra => <span key={extra.key}>{extra.children}</span>)}
+              {layoutHeaderExtras?.map(extra => <span key={extra.key}>{extra.children}</span>)}
               {localeDropdownMenu}
               <UserWidget />
             </Space>
