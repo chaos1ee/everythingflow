@@ -52,6 +52,7 @@ export function useTokenValidation(skip = false) {
         body: {
           permissions: ['100001'],
         },
+        isGlobalNS: true,
       }),
     {
       suspense: true,
