@@ -10,7 +10,6 @@ import type { HighlightTextsProps } from './components/Highlight'
 import Highlight from './components/Highlight'
 import type { InfiniteListProps } from './components/InfiniteList'
 import InfiniteList from './components/InfiniteList'
-import type { LayoutProps } from './components/Layout'
 import Layout from './components/Layout'
 import type { NavMenuItem } from './components/NavMenu'
 import NavMenu from './components/NavMenu'
@@ -83,7 +82,6 @@ export {
   type GameState,
   type HighlightTextsProps,
   type InfiniteListProps,
-  type LayoutProps,
   type Locale,
   type NavMenuItem,
   type PermissionButtonProps,

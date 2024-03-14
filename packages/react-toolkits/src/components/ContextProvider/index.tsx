@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import type { FC, PropsWithChildren, ReactNode } from 'react'
+import type { FC, Key, PropsWithChildren, ReactNode } from 'react'
 import { createContext, useContext } from 'react'
 import { createStore } from 'zustand'
 import type { Locale } from '../../types'
@@ -19,6 +19,7 @@ export interface ContextState {
   notFoundRedirectUrl?: string // 404 重定向地址
   logoutRedirectUrl?: string // 退出登录后的重定向地址
   idaasRedirectUrl: string // IDAAS 重定向地址
+  layoutHeaderExtras?: { key: Key; children: ReactNode }[]
 }
 
 const defaultState: ContextState = {
