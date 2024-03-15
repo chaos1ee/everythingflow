@@ -39,9 +39,10 @@ export function getSwrKey(
   payload?: QueryListPayload,
   params?: RequestOptions['params'] | ((payload: QueryListPayload) => RequestOptions['params']),
   onePage?: boolean,
+  defaultSize = 10,
 ) {
   const { url, query } = qs.parseUrl(action)
-  const { page, size, arg = {} } = payload ?? {}
+  const { page = 1, size = defaultSize, arg = {} } = payload ?? {}
   const queryParams = Object.assign(
     query,
     typeof params === 'function'
@@ -205,7 +206,7 @@ const InternalQueryList = <
       form
         .validateFields({ validateOnly: true })
         .then(() => {
-          const key = getSwrKey(action, payload, params, onePage)
+          const key = getSwrKey(action, payload, params, onePage, defaultSize)
           setSwrKey(key)
           keyMap.set(action, key)
         })
