@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.8.28
+
+### Patch Changes
+
+- 6512e7b: fix: missing default page and size in QueryList
+
 ## 0.8.27
 
 ### Patch Changes
