@@ -6,14 +6,18 @@ import { create } from 'zustand'
 interface ModalState {
   open: Map<string, boolean>
   getOpen: (uuid: string) => boolean
-  setOpen: (uuid: string, open: boolean) => void
+  show: (uuid: string) => void
+  hide: (uuid: string) => void
 }
 
-export const useModalStore = create<ModalState>((set, get) => ({
+const useModalStore = create<ModalState>((set, get) => ({
   open: new Map(),
   getOpen: uuid => get().open.get(uuid) ?? false,
-  setOpen: (uuid, open) => {
-    set({ open: new Map(get().open).set(uuid, open) })
+  show(uuid) {
+    set({ open: new Map(get().open).set(uuid, true) })
+  },
+  hide(uuid) {
+    set({ open: new Map(get().open).set(uuid, false) })
   },
 }))
 
@@ -25,16 +29,16 @@ export interface UseModalProps extends Omit<ModalProps, 'open' | 'confirmLoading
 export function useModal(props: UseModalProps) {
   const { content, onConfirm, ...modalProps } = props
   const uuid = useId()
-  const { getOpen, setOpen } = useModalStore()
-  const open = getOpen(uuid)
+  const modalStore = useModalStore()
+  const open = modalStore.getOpen(uuid)
   const [confirmLoading, setConfirmLoading] = useState(false)
 
   const show = () => {
-    setOpen(uuid, true)
+    modalStore.show(uuid)
   }
 
   const hide = () => {
-    setOpen(uuid, false)
+    modalStore.hide(uuid)
   }
 
   const onCancel: ModalProps['onCancel'] = () => {
@@ -50,13 +54,15 @@ export function useModal(props: UseModalProps) {
     }
   }
 
+  const internalModal = (
+    <Modal {...modalProps} open={open} confirmLoading={confirmLoading} onOk={onOk} onCancel={onCancel}>
+      {content}
+    </Modal>
+  )
+
   return {
     show,
     hide,
-    modal: (
-      <Modal {...modalProps} open={open} confirmLoading={confirmLoading} onOk={onOk} onCancel={onCancel}>
-        {content}
-      </Modal>
-    ),
+    modal: internalModal,
   }
 }
