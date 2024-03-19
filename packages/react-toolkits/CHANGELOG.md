@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.8.29
+
+### Patch Changes
+
+- 9a94283: feat: allow pass formInstance from outside of useFormModal hook
+
 ## 0.8.28
 
 ### Patch Changes
