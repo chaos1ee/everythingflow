@@ -1,4 +1,4 @@
-import type { FormProps } from 'antd'
+import type { FormInstance, FormProps } from 'antd'
 import { Form } from 'antd'
 import { useRef } from 'react'
 import type { UseModalProps } from './modal'
@@ -16,47 +16,46 @@ type RecursivePartial<T> = NonNullable<T> extends object
 
 export interface UseFormModalProps<Values, ExtraValues> extends Omit<UseModalProps, 'afterClose' | 'onConfirm'> {
   formProps?: Omit<FormProps, 'form'>
+  form?: FormInstance<Values>
   onConfirm?: (values: Values, extraValues?: ExtraValues) => void | Promise<void>
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function useFormModal<Values, ExtraValues = any>(props: UseFormModalProps<Values, ExtraValues>) {
-  const { content, formProps, onConfirm, ...modalProps } = props
-  const [form] = Form.useForm<Values>()
+  const { content, form, formProps, onConfirm, ...modalProps } = props
   const internalExtraValues = useRef<ExtraValues>()
+  let [internalForm] = Form.useForm<Values>()
+  internalForm = form || internalForm
 
   const { show, hide, modal } = useModal({
     ...modalProps,
     content: (
-      <Form {...formProps} form={form}>
+      <Form {...formProps} form={internalForm}>
         {content}
       </Form>
     ),
     async onConfirm() {
-      const values = await form.validateFields()
+      const values = await internalForm.validateFields()
       await onConfirm?.(values, internalExtraValues.current)
       hide()
     },
     afterClose() {
-      form.resetFields()
+      internalForm.resetFields()
     },
   })
 
+  const onShow = (config: { initialValues?: RecursivePartial<Values>; extraValues?: ExtraValues } = {}) => {
+    internalExtraValues.current = config.extraValues
+
+    if (config.initialValues) {
+      internalForm.setFieldsValue(config.initialValues)
+    }
+
+    show()
+  }
+
   return {
-    show: (
-      config: {
-        initialValues?: RecursivePartial<Values>
-        extraValues?: ExtraValues
-      } = {},
-    ) => {
-      internalExtraValues.current = config.extraValues
-
-      if (config.initialValues) {
-        form.setFieldsValue(config.initialValues)
-      }
-
-      show()
-    },
+    show: onShow,
     hide,
     modal,
   }
