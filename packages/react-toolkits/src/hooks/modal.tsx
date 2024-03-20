@@ -8,6 +8,7 @@ interface ModalState {
   getOpen: (uuid: number) => boolean
   show: (uuid: number) => void
   hide: (uuid: number) => void
+  hideAll: () => void
 }
 
 export const useModalStore = create<ModalState>((set, get) => ({
@@ -18,6 +19,9 @@ export const useModalStore = create<ModalState>((set, get) => ({
   },
   hide(uuid) {
     set({ open: new Map(get().open).set(uuid, false) })
+  },
+  hideAll() {
+    set({ open: new Map() })
   },
 }))
 
