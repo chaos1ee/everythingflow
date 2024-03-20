@@ -1,13 +1,13 @@
 import type { ModalProps } from 'antd'
 import { Modal } from 'antd'
-import { useId, useState, type ReactNode } from 'react'
+import { useMemo, useState, type ReactNode } from 'react'
 import { create } from 'zustand'
 
 interface ModalState {
-  open: Map<string, boolean>
-  getOpen: (uuid: string) => boolean
-  show: (uuid: string) => void
-  hide: (uuid: string) => void
+  open: Map<number, boolean>
+  getOpen: (uuid: number) => boolean
+  show: (uuid: number) => void
+  hide: (uuid: number) => void
 }
 
 export const useModalStore = create<ModalState>((set, get) => ({
@@ -26,9 +26,11 @@ export interface UseModalProps extends Omit<ModalProps, 'open' | 'confirmLoading
   onConfirm?: () => void | Promise<void>
 }
 
+let id = 0
+
 export function useModal(props: UseModalProps) {
   const { content, onConfirm, ...modalProps } = props
-  const uuid = useId()
+  const uuid = useMemo(() => ++id, [])
   const modalStore = useModalStore()
   const open = modalStore.getOpen(uuid)
   const [confirmLoading, setConfirmLoading] = useState(false)

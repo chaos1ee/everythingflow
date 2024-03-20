@@ -17,7 +17,7 @@ import { request } from '../../../utils/request'
 
 const action = '/api/usystem/role/list'
 
-const useCreatingUserModal = () => {
+const useCreateModal = () => {
   const { message } = App.useApp()
   const { setPayload } = useQueryListStore()
   const create = useCreateRole()
@@ -55,7 +55,7 @@ const useCreatingUserModal = () => {
   })
 }
 
-const useUpdatingRoleModal = () => {
+const useUpdateModal = () => {
   const { message } = App.useApp()
   const { mutate } = useQueryListStore()
   const update = useUpdateRole()
@@ -111,8 +111,8 @@ const RoleList = () => {
   const { usePermissionApiV2 } = useToolkitsContext()
   const remove = useRemoveRole()
   const { mutate } = useQueryListStore()
-  const { show: showCreatingModal, modal: creatingModal } = useCreatingUserModal()
-  const { show: showUpdatingModal, modal: updatingModal } = useUpdatingRoleModal()
+  const { show: showCreateModal, modal: createModal } = useCreateModal()
+  const { show: showUpdateModal, modal: updateModal } = useUpdateModal()
   const t = useTranslation()
 
   const columns: TableColumnsType<RoleListItem> = [
@@ -158,7 +158,7 @@ const RoleList = () => {
                   `/api/usystem/role/info${usePermissionApiV2 ? 'V2' : ''}?name=${value.name}`,
                   { isGlobalNS: true },
                 )
-                showUpdatingModal({
+                showUpdateModal({
                   initialValues: {
                     permissions: role?.permissions,
                     name: role?.name.replace(/^role_/, ''),
@@ -220,7 +220,7 @@ const RoleList = () => {
             code="200002"
             icon={<UsergroupAddOutlined />}
             onClick={() => {
-              showCreatingModal()
+              showCreateModal()
             }}
           >
             {t('RoleList.createTitle')}
@@ -237,8 +237,8 @@ const RoleList = () => {
           getDataSource={response => response.List}
         />
       </Card>
-      {creatingModal}
-      {updatingModal}
+      {createModal}
+      {updateModal}
     </>
   )
 }

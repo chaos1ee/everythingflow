@@ -17,7 +17,7 @@ const { Option } = Select
 
 export const action = '/api/usystem/user/list'
 
-function useCreatingUserModal() {
+function useCreateModal() {
   const { message } = App.useApp()
   const create = useCreateUser()
   const { data: roles, isLoading } = useAllRoles()
@@ -53,7 +53,7 @@ function useCreatingUserModal() {
   })
 }
 
-function useUpdatingUserModal() {
+function useUpdateUserModal() {
   const { message } = App.useApp()
   const update = useUpdateUser()
   const { data: roles, isLoading } = useAllRoles()
@@ -108,8 +108,8 @@ const UserList: FC = () => {
   const { modal, message } = App.useApp()
   const remove = useRemoveUser()
   const { mutate } = useQueryListStore()
-  const { show: showCreatingModal, modal: creatingModal } = useCreatingUserModal()
-  const { show: showUpdatingModal, modal: updatingModal } = useUpdatingUserModal()
+  const { show: showCreateModal, modal: createModal } = useCreateModal()
+  const { show: showUpdateModal, modal: updateModal } = useUpdateUserModal()
   const t = useTranslation()
 
   const columns: TableColumnsType<UserListItem> = [
@@ -163,7 +163,7 @@ const UserList: FC = () => {
             type="link"
             code="100003"
             onClick={() => {
-              showUpdatingModal({
+              showUpdateModal({
                 initialValues: {
                   name: value.name,
                   roles: value.roles,
@@ -224,7 +224,7 @@ const UserList: FC = () => {
             icon={<UserAddOutlined />}
             code="100002"
             onClick={() => {
-              showCreatingModal()
+              showCreateModal()
             }}
           >
             {t('UserList.createTitle')}
@@ -241,8 +241,8 @@ const UserList: FC = () => {
           getDataSource={response => response.List}
         />
       </Card>
-      {creatingModal}
-      {updatingModal}
+      {createModal}
+      {updateModal}
     </>
   )
 }
