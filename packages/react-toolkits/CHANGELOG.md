@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.8.30
+
+### Patch Changes
+
+- 9dd0737: feat: access extraValues in content render
+
 ## 0.8.29
 
 ### Patch Changes
