@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.8.31
+
+### Patch Changes
+
+- 491415d: fix: type declaration error
+
 ## 0.8.30
 
 ### Patch Changes
