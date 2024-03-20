@@ -1,7 +1,7 @@
 import type { FormInstance, FormProps } from 'antd'
 import { Form } from 'antd'
 import type { ReactNode } from 'react'
-import { useRef } from 'react'
+import { useState } from 'react'
 import type { UseModalProps } from './modal'
 import { useModal } from './modal'
 
@@ -23,42 +23,52 @@ export interface UseFormModalProps<Values, ExtraValues>
   onConfirm?: (values: Values, extraValues: ExtraValues) => void | Promise<void>
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function useFormModal<Values, ExtraValues = any>(props: UseFormModalProps<Values, ExtraValues>) {
+export function useFormModal<Values, ExtraValues extends NonNullable<unknown> = NonNullable<unknown>>(
+  props: UseFormModalProps<Values, ExtraValues>,
+) {
   const { content, form, formProps, onConfirm, ...modalProps } = props
-  const internalExtraValues = useRef<ExtraValues>()
+  const [internalExtraValues, setInternalExtraValues] = useState<ExtraValues>({} as ExtraValues)
   let [internalForm] = Form.useForm<Values>()
   internalForm = form || internalForm
 
   const isRenderFunction = typeof content === 'function'
 
+  const hanldeConfirm = async () => {
+    const values = await internalForm.validateFields()
+    await onConfirm?.(values, internalExtraValues as ExtraValues)
+    hide()
+  }
+
+  const renderContent = (
+    <Form {...formProps} form={internalForm}>
+      {isRenderFunction ? content(internalExtraValues as ExtraValues) : content}
+    </Form>
+  )
+
+  const afterClose = () => {
+    internalForm.resetFields()
+  }
+
   const { show, hide, modal } = useModal({
     ...modalProps,
-    content: (
-      <Form {...formProps} form={internalForm}>
-        {isRenderFunction ? content(internalExtraValues.current as ExtraValues) : content}
-      </Form>
-    ),
-    async onConfirm() {
-      const values = await internalForm.validateFields()
-      await onConfirm?.(values, internalExtraValues.current as ExtraValues)
-      hide()
-    },
-    afterClose() {
-      internalForm.resetFields()
-    },
+    content: renderContent,
+    onConfirm: hanldeConfirm,
+    afterClose,
   })
 
-  const onShow = (
-    config: {
-      initialValues?: RecursivePartial<Values>
-      extraValues?: ExtraValues
-    } = {},
-  ) => {
-    internalExtraValues.current = config.extraValues
+  const onShow = ({
+    initialValues,
+    extraValues,
+  }: {
+    initialValues?: RecursivePartial<Values>
+    extraValues?: ExtraValues
+  } = {}) => {
+    if (extraValues) {
+      setInternalExtraValues(extraValues)
+    }
 
-    if (config.initialValues) {
-      internalForm.setFieldsValue(config.initialValues)
+    if (initialValues) {
+      internalForm.setFieldsValue(initialValues)
     }
 
     show()
