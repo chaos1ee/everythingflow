@@ -20,7 +20,7 @@ export interface UseFormModalProps<Values, ExtraValues>
   formProps?: Omit<FormProps, 'form'>
   form?: FormInstance<Values>
   content?: ReactNode | ((extraValues: ExtraValues) => ReactNode)
-  onConfirm?: (values: Values, extraValues?: ExtraValues) => void | Promise<void>
+  onConfirm?: (values: Values, extraValues: ExtraValues) => void | Promise<void>
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
