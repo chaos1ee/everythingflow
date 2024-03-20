@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.8.35
+
+### Patch Changes
+
+- 29ee84e: feat: add hideAll function
+
 ## 0.8.34
 
 ### Patch Changes
