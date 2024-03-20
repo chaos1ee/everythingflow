@@ -49,7 +49,7 @@ export function useFormModal<Values, ExtraValues extends NonNullable<unknown> = 
     internalForm.resetFields()
   }
 
-  const { show, hide, modal } = useModal({
+  const { uuid, show, hide, modal } = useModal({
     ...modalProps,
     content: renderContent,
     onConfirm: hanldeConfirm,
@@ -75,6 +75,7 @@ export function useFormModal<Values, ExtraValues extends NonNullable<unknown> = 
   }
 
   return {
+    uuid,
     show: onShow,
     hide,
     modal,
