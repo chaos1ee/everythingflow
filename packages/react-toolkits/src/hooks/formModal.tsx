@@ -2,7 +2,7 @@ import type { FormInstance, FormProps } from 'antd'
 import { Form } from 'antd'
 import type { ReactNode } from 'react'
 import { useState } from 'react'
-import type { UseModalProps } from './modal'
+import type { UseModalOperation, UseModalProps } from './modal'
 import { useModal } from './modal'
 
 type RecursivePartial<T> = NonNullable<T> extends object
@@ -19,7 +19,7 @@ export interface UseFormModalProps<Values, ExtraValues>
   extends Omit<UseModalProps, 'afterClose' | 'onConfirm' | 'content'> {
   formProps?: Omit<FormProps, 'form'>
   form?: FormInstance<Values>
-  content?: ReactNode | ((extraValues: ExtraValues) => ReactNode)
+  content?: ReactNode | ((extraValues: ExtraValues, operation: UseModalOperation) => ReactNode)
   onConfirm?: (values: Values, extraValues: ExtraValues) => void | Promise<void>
 }
 
@@ -39,19 +39,17 @@ export function useFormModal<Values, ExtraValues extends NonNullable<unknown> = 
     hide()
   }
 
-  const renderContent = (
-    <Form {...formProps} form={internalForm}>
-      {isRenderFunction ? content(internalExtraValues as ExtraValues) : content}
-    </Form>
-  )
-
   const afterClose = () => {
     internalForm.resetFields()
   }
 
   const { uuid, show, hide, modal } = useModal({
     ...modalProps,
-    content: renderContent,
+    content: operation => (
+      <Form {...formProps} form={internalForm}>
+        {isRenderFunction ? content(internalExtraValues as ExtraValues, operation) : content}
+      </Form>
+    ),
     onConfirm: hanldeConfirm,
     afterClose,
   })

@@ -25,8 +25,12 @@ export const useModalStore = create<ModalState>((set, get) => ({
   },
 }))
 
+export interface UseModalOperation {
+  hide: () => void
+}
+
 export interface UseModalProps extends Omit<ModalProps, 'open' | 'confirmLoading' | 'onOk' | 'onCancel'> {
-  content?: ReactNode
+  content?: ReactNode | ((operation: UseModalOperation) => ReactNode)
   onConfirm?: () => void | Promise<void>
 }
 
@@ -38,6 +42,8 @@ export function useModal(props: UseModalProps) {
   const modalStore = useModalStore()
   const open = modalStore.getOpen(uuid)
   const [confirmLoading, setConfirmLoading] = useState(false)
+
+  const isRenderFunction = typeof content === 'function'
 
   const show = () => {
     modalStore.show(uuid)
@@ -62,7 +68,7 @@ export function useModal(props: UseModalProps) {
 
   const internalModal = (
     <Modal {...modalProps} open={open} confirmLoading={confirmLoading} onOk={onOk} onCancel={onCancel}>
-      {content}
+      {isRenderFunction ? content({ hide }) : content}
     </Modal>
   )
 
