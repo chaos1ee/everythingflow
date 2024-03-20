@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.8.34
+
+### Patch Changes
+
+- ff6e149: feat: cache modal uuid
+
 ## 0.8.33
 
 ### Patch Changes
