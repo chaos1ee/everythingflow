@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.8.32
+
+### Patch Changes
+
+- eb89ae6: fix: type error
+
 ## 0.8.31
 
 ### Patch Changes
