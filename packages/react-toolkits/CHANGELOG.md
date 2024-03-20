@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.8.36
+
+### Patch Changes
+
+- 5b45609: feat: export operation to content render function
+
 ## 0.8.35
 
 ### Patch Changes
