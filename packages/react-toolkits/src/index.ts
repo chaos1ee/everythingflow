@@ -24,7 +24,7 @@ import UserWidget from './components/UserWidget'
 import type { UseFormModalProps } from './hooks/formModal'
 import { useFormModal } from './hooks/formModal'
 import { useTranslation } from './hooks/i18n'
-import { useModal } from './hooks/modal'
+import { useModal, useModalStore } from './hooks/modal'
 import { usePermission, usePermissions } from './hooks/permission'
 import NotFound from './pages/NotFound'
 import OperationLogList from './pages/OperationLogList'
@@ -65,6 +65,7 @@ export {
   useFormModal,
   useGameStore,
   useModal,
+  useModalStore,
   usePermission,
   usePermissions,
   useQueryListStore,
