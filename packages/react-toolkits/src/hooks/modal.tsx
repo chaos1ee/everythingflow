@@ -10,7 +10,7 @@ interface ModalState {
   hide: (uuid: string) => void
 }
 
-const useModalStore = create<ModalState>((set, get) => ({
+export const useModalStore = create<ModalState>((set, get) => ({
   open: new Map(),
   getOpen: uuid => get().open.get(uuid) ?? false,
   show(uuid) {
@@ -61,6 +61,7 @@ export function useModal(props: UseModalProps) {
   )
 
   return {
+    uuid,
     show,
     hide,
     modal: internalModal,
