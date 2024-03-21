@@ -158,7 +158,7 @@ const UserList: FC = () => {
       render: (value: UserListItem) => (
         <Space>
           <PermissionButton
-            isGlobalNS
+            isGlobal
             size="small"
             type="link"
             code="100003"
@@ -177,7 +177,7 @@ const UserList: FC = () => {
             {t('global.update')}
           </PermissionButton>
           <PermissionButton
-            isGlobalNS
+            isGlobal
             danger
             size="small"
             code="100004"
@@ -219,7 +219,7 @@ const UserList: FC = () => {
         title={t('global.user')}
         extra={
           <PermissionButton
-            isGlobalNS
+            isGlobal
             type="primary"
             icon={<UserAddOutlined />}
             code="100002"
@@ -232,7 +232,7 @@ const UserList: FC = () => {
         }
       >
         <QueryList<UserListItem, undefined, { List: UserListItem[]; Total: number }>
-          isGlobalNS
+          isGlobal
           code="100001"
           action={action}
           rowKey="id"

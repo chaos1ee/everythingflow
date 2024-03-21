@@ -64,7 +64,7 @@
 
 ### Patch Changes
 
-- 7046d58: fix: missing isGlobalNS config in useTokenValidation hook
+- 7046d58: fix: missing isGlobal config in useTokenValidation hook
 
 ## 0.8.25
 
@@ -322,7 +322,7 @@
 
 ### Patch Changes
 
-- 46ca83c: fix: missing app-id while isGlobalNS is true
+- 46ca83c: fix: missing app-id while isGlobal is true
 
 ## 0.4.1
 
@@ -576,13 +576,13 @@
 
 ### Patch Changes
 
-- ec2fb3c: feat: set isGlobalNS to true
+- ec2fb3c: feat: set isGlobal to true
 
 ## 0.3.11
 
 ### Patch Changes
 
-- b9b1ce0: feat: remove isGlobalNS prop
+- b9b1ce0: feat: remove isGlobal prop
 
 ## 0.3.10
 
@@ -710,7 +710,7 @@
 
 ### Patch Changes
 
-- fceb92e: fix: missing isGlobalNS prop in ContextProvider
+- fceb92e: fix: missing isGlobal prop in ContextProvider
 
 ## 0.2.19
 

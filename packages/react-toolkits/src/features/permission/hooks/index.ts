@@ -8,7 +8,7 @@ import type { PermissionEnumItem, RoleEnumItem, RoleV1, RoleV2 } from '../types'
 
 export function useAllPermissions() {
   return useSWR('/api/usystem/user/allPermssions', url =>
-    request<PermissionEnumItem[]>(url, { isGlobalNS: true }).then(response => response.data),
+    request<PermissionEnumItem[]>(url, { isGlobal: true }).then(response => response.data),
   )
 }
 
@@ -17,21 +17,21 @@ export function useAllPermissionsV2() {
     request<{
       game: Game[]
       permission: PermissionEnumItem[]
-    }>(url, { isGlobalNS: true }).then(response => response.data),
+    }>(url, { isGlobal: true }).then(response => response.data),
   )
 }
 
 export function useAllRoles() {
   const { accessible } = usePermission('200005', true)
   return useSWR(accessible ? '/api/usystem/role/all' : null, url =>
-    request<RoleEnumItem[]>(url, { isGlobalNS: true }).then(response => response.data),
+    request<RoleEnumItem[]>(url, { isGlobal: true }).then(response => response.data),
   )
 }
 
 export function useRole(name: string) {
   const { usePermissionApiV2 } = useToolkitsContext()
   return useSWR(`/api/usystem/role/${usePermissionApiV2 ? 'infoV2' : 'info'}?name=${name}`, (url: string) =>
-    request<RoleV1 | RoleV2>(url, { isGlobalNS: true }).then(response => response.data),
+    request<RoleV1 | RoleV2>(url, { isGlobal: true }).then(response => response.data),
   )
 }
 
@@ -51,7 +51,7 @@ export function useCreateRole() {
       request(url, {
         method: 'post',
         body: arg,
-        isGlobalNS: true,
+        isGlobal: true,
       }),
   )
 }
@@ -72,7 +72,7 @@ export function useUpdateRole() {
       request(url, {
         method: 'post',
         body: arg,
-        isGlobalNS: true,
+        isGlobal: true,
       }),
   )
 }
@@ -91,7 +91,7 @@ export function useRemoveRole() {
       request(url, {
         method: 'post',
         body: arg,
-        isGlobalNS: true,
+        isGlobal: true,
       }),
   )
 }
@@ -110,7 +110,7 @@ export function useCreateUser() {
       request(url, {
         method: 'post',
         body: arg,
-        isGlobalNS: true,
+        isGlobal: true,
       }),
   )
 }
@@ -129,7 +129,7 @@ export function useUpdateUser() {
       request(url, {
         method: 'post',
         body: arg,
-        isGlobalNS: true,
+        isGlobal: true,
       }),
   )
 }
@@ -148,7 +148,7 @@ export function useRemoveUser() {
       request(url, {
         method: 'post',
         body: arg,
-        isGlobalNS: true,
+        isGlobal: true,
       }),
   )
 }

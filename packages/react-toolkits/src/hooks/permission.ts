@@ -5,7 +5,7 @@ import { request } from '../utils/request'
 
 type PermissionCheckResult = { has_all: true } | { [k: string]: boolean }
 
-export function usePermissions(codes: string[], isGlobalNS?: boolean, config?: SWRConfiguration) {
+export function usePermissions(codes: string[], isGlobal?: boolean, config?: SWRConfiguration) {
   const { usePermissionApiV2 } = useToolkitsContext()
   const { data, isValidating, isLoading } = useSWR(
     codes.length > 0 ? [usePermissionApiV2 ? '/api/usystem/user/checkV2' : '/api/usystem/user/check', codes] : null,
@@ -15,7 +15,7 @@ export function usePermissions(codes: string[], isGlobalNS?: boolean, config?: S
         body: {
           permissions: codes,
         },
-        isGlobalNS,
+        isGlobal,
       }).then(response => {
         if (response.data?.has_all) {
           return codes.reduce(
@@ -44,8 +44,8 @@ export function usePermissions(codes: string[], isGlobalNS?: boolean, config?: S
   return { data, isValidating, isLoading }
 }
 
-export function usePermission(code: string | undefined, isGlobalNS?: boolean, config?: SWRConfiguration) {
-  const { data, isValidating, isLoading } = usePermissions(code ? [code] : [], isGlobalNS, config)
+export function usePermission(code: string | undefined, isGlobal?: boolean, config?: SWRConfiguration) {
+  const { data, isValidating, isLoading } = usePermissions(code ? [code] : [], isGlobal, config)
 
   if (code === undefined) {
     return {
