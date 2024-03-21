@@ -46,7 +46,7 @@ export const useGameStore = create<GameState>()(
         set({ isLoading })
       },
       refreshGames() {
-        request<Game[]>(`/api/usystem/game/all`, { isGlobalNS: true }).then(response => {
+        request<Game[]>(`/api/usystem/game/all`, { isGlobal: true }).then(response => {
           get().setGames(response.data)
           get().setIsLoading(false)
         })
@@ -62,7 +62,7 @@ export const useGameStore = create<GameState>()(
           if (state && !error) {
             // 因为 Mock Service Worker 需要时间启动，所以这里需要延迟一下
             setTimeout(() => {
-              request<Game[]>(`/api/usystem/game/all`, { isGlobalNS: true }).then(response => {
+              request<Game[]>(`/api/usystem/game/all`, { isGlobal: true }).then(response => {
                 state.setGames(response.data)
                 state.setIsLoading(false)
               })

@@ -35,13 +35,13 @@ export interface RequestOptions extends Omit<RequestInit, 'body'> {
   body?: Record<string | number, any> | FormData | null
   params?: Record<string | number, any> | URLSearchParams | null
   responseType?: 'json' | 'blob'
-  isGlobalNS?: boolean
+  isGlobal?: boolean
 }
 
 type RequestResponse<T> = Pick<Response, 'headers' | 'status' | 'statusText' | 'url'> & { data: T }
 
 export async function request<T = any>(url: string, opts?: RequestOptions): Promise<RequestResponse<T>> {
-  let { body, params, headers, responseType = 'json', isGlobalNS, ...rest } = opts ?? {}
+  let { body, params, headers, responseType = 'json', isGlobal, ...rest } = opts ?? {}
 
   const parsed = qs.parseUrl(url)
   const queryParams = Object.assign({}, parsed.query, params)
@@ -63,9 +63,9 @@ export async function request<T = any>(url: string, opts?: RequestOptions): Prom
   }
 
   if (contextStore.getState().usePermissionApiV2) {
-    if (isGlobalNS) {
+    if (isGlobal || contextStore.getState().isGlobal) {
       headers.set('App-ID', 'global')
-    } else if (!contextStore.getState().hideGameSelect) {
+    } else {
       const game = useGameStore.getState().game
       if (game) {
         headers.set('App-ID', game.id)

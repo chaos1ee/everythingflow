@@ -26,7 +26,7 @@ export interface InfiniteListProps<Item, Values, Response>
   renderForm?: (form: FormInstance<Values>) => ReactNode
   transformArg: (values: Values | undefined, rowKey?: string) => Record<any, any>
   hasMore?: (data: Response[] | undefined) => boolean
-  isGlobalNS?: boolean
+  isGlobal?: boolean
   extras?: InfiniteListExtra<Values>[]
 }
 
@@ -38,7 +38,7 @@ const InfiniteList = <Item extends object, Values extends object | undefined = u
     action,
     extras,
     headers,
-    isGlobalNS,
+    isGlobal,
     getRowKey,
     getDataSource,
     hasMore,
@@ -71,7 +71,7 @@ const InfiniteList = <Item extends object, Values extends object | undefined = u
     arg =>
       request<Response>(arg, {
         headers: typeof headers === 'function' ? headers(form) : headers,
-        isGlobalNS,
+        isGlobal,
       }).then(response => response.data),
     {
       shouldRetryOnError: false,

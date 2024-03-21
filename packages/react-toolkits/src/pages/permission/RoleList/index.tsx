@@ -149,14 +149,14 @@ const RoleList = () => {
         return (
           <Space size="small">
             <PermissionButton
-              isGlobalNS
+              isGlobal
               code="200003"
               size="small"
               type="link"
               onClick={async () => {
                 const { data: role } = await request<RoleV1 | RoleV2>(
                   `/api/usystem/role/info${usePermissionApiV2 ? 'V2' : ''}?name=${value.name}`,
-                  { isGlobalNS: true },
+                  { isGlobal: true },
                 )
                 showUpdateModal({
                   initialValues: {
@@ -172,7 +172,7 @@ const RoleList = () => {
               {t('global.edit')}
             </PermissionButton>
             <PermissionButton
-              isGlobalNS
+              isGlobal
               danger
               code="200004"
               size="small"
@@ -215,7 +215,7 @@ const RoleList = () => {
         title={t('global.role')}
         extra={
           <PermissionButton
-            isGlobalNS
+            isGlobal
             type="primary"
             code="200002"
             icon={<UsergroupAddOutlined />}
@@ -228,7 +228,7 @@ const RoleList = () => {
         }
       >
         <QueryList<RoleListItem, undefined, { List: RoleListItem[]; Total: number }>
-          isGlobalNS
+          isGlobal
           rowKey="name"
           columns={columns}
           code="200001"

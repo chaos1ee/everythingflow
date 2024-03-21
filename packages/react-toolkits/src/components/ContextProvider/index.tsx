@@ -20,6 +20,7 @@ export interface ContextState {
   logoutRedirectUrl?: string // 退出登录后的重定向地址
   idaasRedirectUrl: string // IDAAS 重定向地址
   layoutHeaderExtras?: { key: Key; children: ReactNode }[]
+  isGlobal?: boolean // HTPP 请求内的 APP-ID header 是否为 ‘global’，默认为当前游戏的 APP-ID。
 }
 
 const defaultState: ContextState = {

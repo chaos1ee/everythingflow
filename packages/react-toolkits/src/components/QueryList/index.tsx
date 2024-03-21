@@ -62,7 +62,7 @@ export function getSwrKey(
 export interface QueryListProps<Item = any, Values = any, Response = any, Arg extends Values = Values>
   extends Pick<TableProps<Item>, 'columns' | 'rowKey' | 'tableLayout' | 'expandable' | 'rowSelection' | 'bordered'> {
   code?: string
-  isGlobalNS?: boolean
+  isGlobal?: boolean
   action: string
   method?: string
   refreshInterval?: number
@@ -94,7 +94,7 @@ const InternalQueryList = <
     action,
     code,
     headers,
-    isGlobalNS,
+    isGlobal,
     onePage,
     method = 'GET',
     body,
@@ -111,7 +111,7 @@ const InternalQueryList = <
   } = props
   const t = useTranslation()
   const [form] = Form.useForm<Values>()
-  const { accessible, isLoading } = usePermission(code, isGlobalNS)
+  const { accessible, isLoading } = usePermission(code, isGlobal)
   const { payloadMap, keyMap, propsMap, setPayload } = useQueryListStore()
   propsMap.set(action, props)
   const payload = payloadMap.get(action)
@@ -137,7 +137,7 @@ const InternalQueryList = <
         method,
         headers: typeof headers === 'function' ? headers({ page, size, arg }) : headers,
         body: typeof body === 'function' ? body({ page, size, arg }) : body,
-        isGlobalNS,
+        isGlobal,
       })
 
       return {
