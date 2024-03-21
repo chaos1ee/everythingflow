@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.8.37
+
+### Patch Changes
+
+- cbffc19: feat: add isGlobal context
+
 ## 0.8.36
 
 ### Patch Changes
