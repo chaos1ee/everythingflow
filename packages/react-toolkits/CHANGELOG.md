@@ -1,5 +1,12 @@
 # react-toolkits
 
+## 0.8.37
+
+### Patch Changes
+
+- 4b6de2e: feat: add isGlobal context
+- 4b6de2e: fix: isGlobal missing default value
+
 ## 0.8.36
 
 ### Patch Changes
