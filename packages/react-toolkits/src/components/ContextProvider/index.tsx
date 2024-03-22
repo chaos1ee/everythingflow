@@ -47,6 +47,7 @@ const ContextProvider: FC<PropsWithChildren<Partial<ContextState>>> = ({ childre
   const config = {
     ...parentConfig,
     ...props,
+    isGlobal: props.isGlobal ?? false,
   }
 
   contextStore.setState(config)
