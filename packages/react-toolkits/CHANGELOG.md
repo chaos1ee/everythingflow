@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.8.39
+
+### Patch Changes
+
+- b44ef9c: feat: add some dependencies of useEffect hook
+
 ## 0.8.38
 
 ### Patch Changes
