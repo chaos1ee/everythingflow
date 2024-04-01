@@ -215,7 +215,7 @@ const InternalQueryList = <
           keyMap.set(action, null)
         })
     }
-  }, [accessible, payloadMap])
+  }, [accessible, payloadMap, params, action, onePage, defaultSize])
 
   useImperativeHandle(ref, () => ({
     data,

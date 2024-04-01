@@ -20,7 +20,7 @@ export interface ContextState {
   logoutRedirectUrl?: string // 退出登录后的重定向地址
   idaasRedirectUrl: string // IDAAS 重定向地址
   layoutHeaderExtras?: { key: Key; children: ReactNode }[]
-  isGlobal?: boolean // HTPP 请求内的 APP-ID header 是否为 ‘global’，默认为当前游戏的 APP-ID。
+  isGlobal?: boolean // 用于设置 HTPP 请求内的 APP-ID header 的值，为 true 时的值为 “global”，为 false 时值为当前游戏的 ID。
 }
 
 const defaultState: ContextState = {
@@ -29,13 +29,13 @@ const defaultState: ContextState = {
   hideGameSelect: false,
   usePermissionApiV2: false,
   idaasRedirectUrl: '',
+  isGlobal: false,
 }
 
 // 全局的上下文。因为 ContextProvider 支持嵌套，所以 toolkitContextStore 的值等同于最内层的 ContextProvider 包含的上下文。
 export const contextStore = createStore<ContextState>(() => defaultState)
 
 const ToolkitsContext = createContext<ContextState>(defaultState)
-
 
 // 最接近的祖先 ContextProvider 内包含的上下文。
 export function useToolkitsContext() {
