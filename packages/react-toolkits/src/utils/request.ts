@@ -38,7 +38,7 @@ export interface RequestOptions extends Omit<RequestInit, 'body'> {
   isGlobal?: boolean
 }
 
-type RequestResponse<T> = Pick<Response, 'headers' | 'status' | 'statusText' | 'url'> & { data: T }
+export type RequestResponse<T> = Pick<Response, 'headers' | 'status' | 'statusText' | 'url'> & { data: T }
 
 export async function request<T = any>(url: string, opts?: RequestOptions): Promise<RequestResponse<T>> {
   let { body, params, headers, responseType = 'json', isGlobal, ...rest } = opts ?? {}
