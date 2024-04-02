@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.8.40
+
+### Patch Changes
+
+- c7c3fd6: feat: export RequestResponse type
+
 ## 0.8.39
 
 ### Patch Changes
