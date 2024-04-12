@@ -60,7 +60,10 @@ export function getSwrKey(
 }
 
 export interface QueryListProps<Item = any, Values = any, Response = any, Arg extends Values = Values>
-  extends Pick<TableProps<Item>, 'columns' | 'rowKey' | 'tableLayout' | 'expandable' | 'rowSelection' | 'bordered'> {
+  extends Pick<
+    TableProps<Item>,
+    'columns' | 'rowKey' | 'tableLayout' | 'expandable' | 'rowSelection' | 'bordered' | 'components'
+  > {
   code?: string
   isGlobal?: boolean
   action: string
