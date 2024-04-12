@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.8.41
+
+### Patch Changes
+
+- 1b9e1b2: feat: add 'components' prop
+
 ## 0.8.40
 
 ### Patch Changes
