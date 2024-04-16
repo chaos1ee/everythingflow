@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.8.44
+
+### Patch Changes
+
+- e6e7956: refactor: custom swr key serialize and deserialize
+
 ## 0.8.43
 
 ### Patch Changes
