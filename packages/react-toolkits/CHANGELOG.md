@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.8.47
+
+### Patch Changes
+
+- 90108b5: refactor: new QueryList serialize function
+
 ## 0.8.46
 
 ### Patch Changes
