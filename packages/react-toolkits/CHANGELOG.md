@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.8.45
+
+### Patch Changes
+
+- c5d1b38: fix: missing formValues in body
+
 ## 0.8.44
 
 ### Patch Changes
