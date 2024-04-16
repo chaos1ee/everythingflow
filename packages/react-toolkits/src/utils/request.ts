@@ -34,14 +34,15 @@ type JsonResponse<T> = (
 export interface RequestOptions extends Omit<RequestInit, 'body'> {
   body?: Record<string | number, any> | FormData | null
   params?: Record<string | number, any> | URLSearchParams | null
-  responseType?: 'json' | 'blob'
+  responseType?: 'json' | 'blob' | 'text'
   isGlobal?: boolean
 }
 
 export type RequestResponse<T> = Pick<Response, 'headers' | 'status' | 'statusText' | 'url'> & { data: T }
 
-export async function request<T = any>(url: string, opts?: RequestOptions): Promise<RequestResponse<T>> {
-  let { body, params, headers, responseType = 'json', isGlobal, ...rest } = opts ?? {}
+export async function request<T = any>(url: string, opts: RequestOptions = {}): Promise<RequestResponse<T>> {
+  opts = Object.assign(opts, { responseType: 'json' })
+  let { body, params, headers, responseType, isGlobal, ...rest } = opts
 
   const parsed = qs.parseUrl(url)
   const queryParams = Object.assign({}, parsed.query, params)
@@ -75,7 +76,7 @@ export async function request<T = any>(url: string, opts?: RequestOptions): Prom
 
   if (responseType === 'blob') {
     headers.append('Accept', 'application/octet-stream')
-  } else {
+  } else if (responseType === 'json') {
     headers.append('Accept', 'application/json')
   }
 
@@ -85,13 +86,12 @@ export async function request<T = any>(url: string, opts?: RequestOptions): Prom
     headers.set('Content-Type', 'application/json')
   }
 
-  const response = await fetch(
-    url,
-    Object.assign(rest, {
-      headers,
-      body: isJsonBody ? JSON.stringify(body) : body,
-    }) as RequestInit,
-  )
+  const requestOpts = Object.assign(rest, {
+    headers,
+    body: isJsonBody ? JSON.stringify(body) : body,
+  }) as RequestInit
+
+  const response = await fetch(url, requestOpts)
 
   if (!response.ok) {
     throw new RequestError({ status: response.status })
@@ -100,28 +100,30 @@ export async function request<T = any>(url: string, opts?: RequestOptions): Prom
   const responseInterceptor = contextStore.getState().responseInterceptor
 
   if (typeof responseInterceptor === 'function') {
-    return responseInterceptor(response)
+    return await responseInterceptor(response, opts)
   } else {
-    const commonResponse = pick(response, ['headers', 'status', 'statusText', 'url'])
+    let data: T
 
     if (responseType === 'blob') {
-      const data = (await response.blob()) as T
-      return {
-        ...commonResponse,
-        data,
+      data = (await response.blob()) as T
+    } else if (responseType === 'json') {
+      const json = (await response.json()) as JsonResponse<T>
+      if (json.code === 0 || json.status === 0) {
+        data = json.data
+      } else {
+        throw new RequestError({
+          code: json.code,
+          status: response.status,
+          message: json.msg,
+        })
       }
+    } else {
+      data = (await response.text()) as T
     }
 
-    const json = (await response.json()) as JsonResponse<T>
-
-    if (json.code === 0 || json.status === 0) {
-      return { ...commonResponse, data: json.data }
+    return {
+      ...pick(response, ['headers', 'status', 'statusText', 'url']),
+      data,
     }
-
-    throw new RequestError({
-      code: json.code,
-      status: response.status,
-      message: json.msg,
-    })
   }
 }

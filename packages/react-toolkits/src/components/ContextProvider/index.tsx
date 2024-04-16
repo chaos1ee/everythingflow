@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type { FC, Key, PropsWithChildren, ReactNode } from 'react'
 import { createContext, useContext } from 'react'
+import type { RequestOptions } from 'src/utils/request'
 import { createStore } from 'zustand'
 import type { Locale } from '../../types'
 import type { Game } from '../GameSelect'
@@ -21,7 +22,7 @@ export interface ContextState {
   idaasRedirectUrl: string // IDAAS 重定向地址
   layoutHeaderExtras?: { key: Key; children: ReactNode }[]
   isGlobal?: boolean // 用于设置 HTPP 请求内的 APP-ID header 的值，为 true 时的值为 “global”，为 false 时值为当前游戏的 ID。
-  responseInterceptor?: (response: Response) => Promise<any>
+  responseInterceptor?: (response: Response, opts: RequestOptions) => Promise<any>
 }
 
 const defaultState: ContextState = {

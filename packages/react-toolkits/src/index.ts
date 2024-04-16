@@ -35,7 +35,7 @@ import type { TokenState } from './stores/token'
 import { useTokenStore, useTokenValidation } from './stores/token'
 import './styles/index.css'
 import type { Locale } from './types'
-import type { RequestResponse } from './utils/request'
+import type { RequestOptions, RequestResponse } from './utils/request'
 import { RequestError, request } from './utils/request'
 import { withBaseRoutes, withLayout } from './utils/router'
 import { mixedStorage } from './utils/storage'
@@ -89,6 +89,7 @@ export {
   type PermissionGuardProps,
   type QueryListProps,
   type QueryListRef,
+  type RequestOptions,
   type RequestResponse,
   type TokenState,
   type UseFormModalProps,
