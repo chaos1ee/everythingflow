@@ -1,21 +1,18 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { flatMapDeep, isArray, isObject } from 'lodash-es'
 import qs from 'query-string'
-import type { QueryListProps, QueryListSwrKeyObject } from '../components/QueryList'
+import type { QueryListProps } from '../components/QueryList'
 import type { QueryListPayload } from '../stores/queryList'
 
-const deepKeys = (object: Record<string, any>) => {
-  return flatMapDeep(object, (value, key): string[] => {
-    if (isObject(value) && !isArray(value)) {
-      return [key, ...deepKeys(value)]
-    }
-    return [key]
-  })
+export interface QueryListSwrKeyObject {
+  url: string
+  params?: Record<string, any>
+  body?: Record<string, any>
 }
 
 // 因为键的顺序会影响序列化结果，所以需要先排序。
+// 暂时不处理嵌套的情况。
 export const serialize = (object: QueryListSwrKeyObject) => {
-  return JSON.stringify(object, deepKeys(object).sort())
+  return JSON.stringify(object, Object.keys(object).sort())
 }
 
 export const deserialize = (key: string) => JSON.parse(key) as QueryListSwrKeyObject

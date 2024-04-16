@@ -32,12 +32,6 @@ export interface QueryListRef<Item = any, Values = any> {
   form: FormInstance<Values>
 }
 
-export interface QueryListSwrKeyObject {
-  url: string
-  params?: Record<string, any>
-  body?: Record<string, any>
-}
-
 export interface QueryListProps<Item = any, Values = any, Response = any, Arg extends Values = Values>
   extends Pick<
     TableProps<Item>,
