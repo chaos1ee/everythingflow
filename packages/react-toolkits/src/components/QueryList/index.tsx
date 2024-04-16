@@ -3,7 +3,6 @@ import type { FormInstance } from 'antd'
 import { Form, Result, Spin, Table } from 'antd'
 import type { TableProps } from 'antd/es/table'
 import { isEqual } from 'lodash-es'
-import qs from 'query-string'
 import type { ReactElement, ReactNode, Ref } from 'react'
 import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react'
 import useSWR from 'swr'
@@ -12,6 +11,7 @@ import { usePermission } from '../../hooks/permission'
 import type { QueryListPayload } from '../../stores/queryList'
 import { useQueryListStore } from '../../stores/queryList'
 import type { ListResponse } from '../../types'
+import { deserialize, genSwrKey } from '../../utils/queryList'
 import type { RequestOptions } from '../../utils/request'
 import { request } from '../../utils/request'
 import FilterFormWrapper from '../FilterFormWrapper'
@@ -33,30 +33,10 @@ export interface QueryListRef<Item = any, Values = any> {
   form: FormInstance<Values>
 }
 
-// 生成 SWR 的 key，用于缓存请求结果。
-export function getSwrKey(
-  action: string,
-  payload?: QueryListPayload,
-  params?: RequestOptions['params'] | ((payload: QueryListPayload) => RequestOptions['params']),
-  onePage?: boolean,
-  defaultSize = 10,
-) {
-  const { url, query } = qs.parseUrl(action)
-  const { page = 1, size = defaultSize, arg = {} } = payload ?? {}
-  const queryParams = Object.assign(
-    query,
-    typeof params === 'function'
-      ? params?.({ page, size, arg })
-      : onePage
-        ? params
-        : {
-            ...arg,
-            page,
-            size,
-          },
-  )
-  const queryString = qs.stringify(queryParams)
-  return queryString ? `${url}?${queryString}` : url
+export interface QueryListSwrKeyObject {
+  url: string
+  params?: Record<string, any>
+  body?: Record<string, any>
 }
 
 export interface QueryListProps<Item = any, Values = any, Response = any, Arg extends Values = Values>
@@ -72,9 +52,9 @@ export interface QueryListProps<Item = any, Values = any, Response = any, Arg ex
   // 无分页
   onePage?: boolean
   defaultSize?: number
-  headers?: RequestOptions['headers'] | ((payload: QueryListPayload<Arg>) => RequestOptions['headers'])
-  body?: RequestOptions['body'] | ((payload: QueryListPayload<Arg>) => RequestOptions['body'])
-  params?: RequestOptions['params'] | ((payload: QueryListPayload<Arg>) => RequestOptions['params'])
+  headers?: RequestOptions['headers'] | ((payload: QueryListPayload<Arg> | undefined) => RequestOptions['headers'])
+  getBody?: (payload: QueryListPayload<Arg>) => RequestOptions['body']
+  getParams?: (payload: QueryListPayload<Arg>) => RequestOptions['params']
   renderForm?: (form: FormInstance<Values>) => ReactNode
   extra?: (form: FormInstance<Values>) => ReactNode
   onTableChange?: TableProps<Item>['onChange']
@@ -82,6 +62,14 @@ export interface QueryListProps<Item = any, Values = any, Response = any, Arg ex
   // 默认的接口返回类型为 ListResponse<Item>，当符合时无需设置 getTotal、getDataSource 就可以让组件正确获取 total 与 dataSource。
   getTotal?: (response: Response) => number
   getDataSource?: (response: Response) => Item[]
+}
+
+const defaultProps = {
+  method: 'GET',
+  defaultSize: 10,
+  refreshInterval: 0,
+  getTotal: (response: any) => response.total,
+  getDataSource: (response: any) => response.list,
 }
 
 const InternalQueryList = <
@@ -93,30 +81,34 @@ const InternalQueryList = <
   props: QueryListProps<Item, Values, Response, Arg>,
   ref: Ref<QueryListRef<Item, Values>>,
 ) => {
+  const internalProps = { ...defaultProps, ...props }
+
   const {
     action,
     code,
     headers,
     isGlobal,
     onePage,
-    method = 'GET',
-    body,
-    params,
-    defaultSize = 10,
-    refreshInterval = 0,
+    method,
+    getBody,
+    getParams,
+    defaultSize,
+    refreshInterval,
     extra,
     renderForm,
     afterSuccess,
-    getTotal = response => (response as ListResponse<Item>).total,
-    getDataSource = response => (response as ListResponse<Item>).list,
+    getTotal,
+    getDataSource,
     onTableChange,
     ...tableProps
-  } = props
+  } = internalProps
+
+  const { payloadMap, swrKeyMap, propsMap, setPayload } = useQueryListStore()
+  propsMap.set(action, internalProps)
+
   const t = useTranslation()
   const [form] = Form.useForm<Values>()
   const { accessible, isLoading } = usePermission(code, isGlobal)
-  const { payloadMap, keyMap, propsMap, setPayload } = useQueryListStore()
-  propsMap.set(action, props)
   const payload = payloadMap.get(action)
   const listAction = useRef<QueryListAction>(QueryListAction.Init)
   const createBoundAction = <T extends any[], R>(actionFn: (action: string, ...args: T) => R): ((...args: T) => R) => {
@@ -135,12 +127,13 @@ const InternalQueryList = <
   } = useSWR(
     swrKey,
     async key => {
-      const { page = 1, size = defaultSize, arg = {} } = payload ?? {}
-      const response = await request<Response>(key, {
+      const { url, params, body } = deserialize(key)
+      const response = await request<Response>(url, {
         method,
-        headers: typeof headers === 'function' ? headers({ page, size, arg }) : headers,
-        body: typeof body === 'function' ? body({ page, size, arg }) : body,
+        body,
+        params,
         isGlobal,
+        headers: typeof headers === 'function' ? headers(payload) : headers,
       })
 
       return {
@@ -172,13 +165,13 @@ const InternalQueryList = <
     if (isEqual(payload, { ...payload, page: 1, arg: values })) {
       await mutate(undefined, { revalidate: true })
     } else {
-      _setPayload({ page: 1, arg: values })
+      _setPayload({ page: 1, formValues: values })
     }
   }
 
   const clearPageContent = async () => {
     await mutate(undefined, { revalidate: false })
-    _setPayload({ page: 1, arg: form.getFieldsValue() })
+    _setPayload({ page: 1, formValues: form.getFieldsValue() })
   }
 
   const onConfirm = async () => {
@@ -209,16 +202,17 @@ const InternalQueryList = <
       form
         .validateFields({ validateOnly: true })
         .then(() => {
-          const key = getSwrKey(action, payload, params, onePage, defaultSize)
+          const key = genSwrKey(internalProps, payload)
+          console.log(key)
           setSwrKey(key)
-          keyMap.set(action, key)
+          swrKeyMap.set(action, key)
         })
         .catch(() => {
           setSwrKey(null)
-          keyMap.set(action, null)
+          swrKeyMap.set(action, null)
         })
     }
-  }, [accessible, payloadMap, params, action, onePage, defaultSize])
+  }, [accessible, internalProps, payloadMap])
 
   useImperativeHandle(ref, () => ({
     data,
