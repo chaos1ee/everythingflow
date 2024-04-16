@@ -22,7 +22,8 @@ export interface QueryListState {
   payloadMap: Map<string, QueryListPayload>
   propsMap: Map<string, QueryListProps>
   mutate: QueryListMutator
-  setPayload(key: string, payload: QueryListPayload, forceUpdate?: boolean): void
+  setPayload(action: string, payload: QueryListPayload, forceUpdate?: boolean): void
+  remove(action: string): void
 }
 
 export const useQueryListStore = create<QueryListState>((set, get) => ({
@@ -66,5 +67,11 @@ export const useQueryListStore = create<QueryListState>((set, get) => ({
     const { swrKeyMap } = get()
     const swrKey = swrKeyMap.get(action)
     mutate(swrKey, data, opts)
+  },
+  remove(action) {
+    const { swrKeyMap, payloadMap, propsMap } = get()
+    swrKeyMap.delete(action)
+    payloadMap.delete(action)
+    propsMap.delete(action)
   },
 }))

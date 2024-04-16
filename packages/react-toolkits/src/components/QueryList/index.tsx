@@ -102,7 +102,7 @@ const InternalQueryList = <
     ...tableProps
   } = internalProps
 
-  const { payloadMap, swrKeyMap, propsMap, setPayload } = useQueryListStore()
+  const { payloadMap, swrKeyMap, propsMap, setPayload, remove } = useQueryListStore()
   propsMap.set(action, internalProps)
 
   const t = useTranslation()
@@ -110,13 +110,14 @@ const InternalQueryList = <
   const { accessible, isLoading } = usePermission(code, isGlobal)
   const payload = payloadMap.get(action)
   const listAction = useRef<QueryListAction>(QueryListAction.Init)
-  const createBoundAction = <T extends any[], R>(actionFn: (action: string, ...args: T) => R): ((...args: T) => R) => {
-    return (...args: T) => actionFn(action, ...args)
+
+  const createBoundFn = <T extends any[], R>(fn: (fn: string, ...args: T) => R): ((...args: T) => R) => {
+    return (...args: T) => fn(action, ...args)
   }
 
-  const _setPayload = createBoundAction(setPayload)
-  const [swrKey, setSwrKey] = useState<string | null>(null)
+  const _setPayload = createBoundFn(setPayload)
 
+  const [swrKey, setSwrKey] = useState<string | null>(null)
   const shouldPoll = useRef(false)
 
   const {
@@ -192,10 +193,6 @@ const InternalQueryList = <
   }
 
   useEffect(() => {
-    console.log('payload', payload)
-  }, [payload])
-
-  useEffect(() => {
     if (accessible) {
       form
         .validateFields({ validateOnly: true })
@@ -210,6 +207,12 @@ const InternalQueryList = <
         })
     }
   }, [accessible, internalProps, payloadMap])
+
+  useEffect(() => {
+    return () => {
+      remove(action)
+    }
+  }, [])
 
   useImperativeHandle(ref, () => ({
     data,
