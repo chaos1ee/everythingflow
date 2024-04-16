@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.8.42
+
+### Patch Changes
+
+- 61daed3: feat: add responseInterceptor
+
 ## 0.8.41
 
 ### Patch Changes
