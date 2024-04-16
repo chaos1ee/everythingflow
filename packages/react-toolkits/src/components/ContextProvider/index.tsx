@@ -21,6 +21,7 @@ export interface ContextState {
   idaasRedirectUrl: string // IDAAS 重定向地址
   layoutHeaderExtras?: { key: Key; children: ReactNode }[]
   isGlobal?: boolean // 用于设置 HTPP 请求内的 APP-ID header 的值，为 true 时的值为 “global”，为 false 时值为当前游戏的 ID。
+  responseInterceptor?: (response: Response) => Promise<any>
 }
 
 const defaultState: ContextState = {
