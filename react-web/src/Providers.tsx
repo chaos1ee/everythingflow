@@ -1,10 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { App, ConfigProvider, Spin } from 'antd'
 import antdLocale from 'antd/locale/zh_CN'
+import { pick } from 'lodash-es'
 import type { FC, PropsWithChildren } from 'react'
 import { Suspense } from 'react'
 import { Link } from 'react-router-dom'
-import { ContextProvider, request } from 'react-toolkits'
+import type { RequestOptions } from 'react-toolkits'
+import { ContextProvider, request, RequestError } from 'react-toolkits'
 import type { BareFetcher, SWRConfiguration, SWRHook, Key as SWRKey, SWRResponse } from 'swr'
 import { SWRConfig } from 'swr'
 import { LocaleDropdownMenu } from './components'
@@ -26,6 +28,34 @@ const logger =
 
     return useSWRNext(key, import.meta.env.DEV ? extendedFetcher : fetcher, config)
   }
+
+const responseInterceptor = async (response: Response, opts: RequestOptions) => {
+  const responseType = opts.responseType
+
+  let data
+
+  if (responseType === 'blob') {
+    data = await response.blob()
+  } else if (responseType === 'json') {
+    const json = await response.json()
+    if (json.code === 0 || json.status === 0) {
+      data = json.data
+    } else {
+      throw new RequestError({
+        code: json.code,
+        status: response.status,
+        message: json.msg,
+      })
+    }
+  } else {
+    data = await response.text()
+  }
+
+  return {
+    ...pick(response, ['headers', 'status', 'statusText', 'url']),
+    data,
+  }
+}
 
 const Providers: FC<PropsWithChildren> = ({ children }) => {
   const { locale } = useLocaleStore()
@@ -62,6 +92,7 @@ const Providers: FC<PropsWithChildren> = ({ children }) => {
           signInSuccessRedirectUrl="/"
           logoutRedirectUrl="/sign_in"
           idaasRedirectUrl={encodeURIComponent(window.location.origin + '/sign_in')}
+          responseInterceptor={responseInterceptor}
         >
           <SWRConfig
             value={{
