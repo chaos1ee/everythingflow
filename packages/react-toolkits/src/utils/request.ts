@@ -97,25 +97,31 @@ export async function request<T = any>(url: string, opts?: RequestOptions): Prom
     throw new RequestError({ status: response.status })
   }
 
-  const commonResponse = pick(response, ['headers', 'status', 'statusText', 'url'])
+  const responseInterceptor = contextStore.getState().responseInterceptor
 
-  if (responseType === 'blob') {
-    const data = (await response.blob()) as T
-    return {
-      ...commonResponse,
-      data,
+  if (typeof responseInterceptor === 'function') {
+    return responseInterceptor(response)
+  } else {
+    const commonResponse = pick(response, ['headers', 'status', 'statusText', 'url'])
+
+    if (responseType === 'blob') {
+      const data = (await response.blob()) as T
+      return {
+        ...commonResponse,
+        data,
+      }
     }
+
+    const json = (await response.json()) as JsonResponse<T>
+
+    if (json.code === 0 || json.status === 0) {
+      return { ...commonResponse, data: json.data }
+    }
+
+    throw new RequestError({
+      code: json.code,
+      status: response.status,
+      message: json.msg,
+    })
   }
-
-  const json = (await response.json()) as JsonResponse<T>
-
-  if (json.code === 0 || json.status === 0) {
-    return { ...commonResponse, data: json.data }
-  }
-
-  throw new RequestError({
-    code: json.code,
-    status: response.status,
-    message: json.msg,
-  })
 }
