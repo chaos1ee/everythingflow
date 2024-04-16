@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.8.46
+
+### Patch Changes
+
+- 5064050: feat: add remove function
+
 ## 0.8.45
 
 ### Patch Changes
