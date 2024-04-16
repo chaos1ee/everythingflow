@@ -96,7 +96,7 @@ const OperationLogList: FC = () => {
         rowKey="id"
         columns={columns}
         action="/api/usystem/log/list"
-        params={({ page, size, arg }) => ({ ...arg, page, size })}
+        getParams={({ page, size, formValues }) => ({ ...formValues, page, size })}
         getTotal={response => response.Total}
         getDataSource={response => response.List}
         renderForm={form => (

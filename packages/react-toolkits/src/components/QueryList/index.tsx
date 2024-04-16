@@ -2,7 +2,6 @@
 import type { FormInstance } from 'antd'
 import { Form, Result, Spin, Table } from 'antd'
 import type { TableProps } from 'antd/es/table'
-import { isEqual } from 'lodash-es'
 import type { ReactElement, ReactNode, Ref } from 'react'
 import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react'
 import useSWR from 'swr'
@@ -161,12 +160,7 @@ const InternalQueryList = <
 
   const fetchFirstPage = async () => {
     const values = form.getFieldsValue()
-    // 当前值与上次值相同时，swr 不会触发请求，需要使用 mutate 手动触发。
-    if (isEqual(payload, { ...payload, page: 1, arg: values })) {
-      await mutate(undefined, { revalidate: true })
-    } else {
-      _setPayload({ page: 1, formValues: values })
-    }
+    _setPayload({ page: 1, formValues: values }, true)
   }
 
   const clearPageContent = async () => {
@@ -198,12 +192,15 @@ const InternalQueryList = <
   }
 
   useEffect(() => {
+    console.log('payload', payload)
+  }, [payload])
+
+  useEffect(() => {
     if (accessible) {
       form
         .validateFields({ validateOnly: true })
         .then(() => {
           const key = genSwrKey(internalProps, payload)
-          console.log(key)
           setSwrKey(key)
           swrKeyMap.set(action, key)
         })

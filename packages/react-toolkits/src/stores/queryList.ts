@@ -37,7 +37,7 @@ export const useQueryListStore = create<QueryListState>((set, get) => ({
     const newPayload = {
       page: payload.page ?? payloadMap.get(action)?.page,
       size: payload.size ?? payloadMap.get(action)?.size,
-      arg: {
+      formValues: {
         ...payloadMap.get(action)?.formValues,
         ...payload.formValues,
       },
