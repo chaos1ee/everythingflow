@@ -28,7 +28,8 @@ const Pagination = () => {
         columns={columns}
         getTotal={response => response.Total}
         getDataSource={response => response.List}
-        params={({ page, size, arg }) => ({ page, size, ...arg })}
+        method="POST"
+        getBody={({ formValues, page, size }) => ({ ...formValues, page, size })}
         renderForm={form => (
           <Form form={form}>
             <Row>
