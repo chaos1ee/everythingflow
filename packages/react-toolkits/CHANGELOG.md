@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.8.43
+
+### Patch Changes
+
+- 0a7f5cf: feat: add opts parameter in reponseInterceptor
+
 ## 0.8.42
 
 ### Patch Changes
