@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.8.48
+
+### Patch Changes
+
+- f4e56f1: refactor: fix QueryList serialize bugs
+
 ## 0.8.47
 
 ### Patch Changes
