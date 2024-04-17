@@ -3,14 +3,14 @@ import type { FormInstance } from 'antd'
 import { Form, Result, Spin, Table } from 'antd'
 import type { TableProps } from 'antd/es/table'
 import type { ReactElement, ReactNode, Ref } from 'react'
-import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react'
+import { forwardRef, useEffect, useImperativeHandle, useRef } from 'react'
 import useSWR from 'swr'
 import { useTranslation } from '../../hooks/i18n'
 import { usePermission } from '../../hooks/permission'
 import type { QueryListPayload } from '../../stores/queryList'
 import { useQueryListStore } from '../../stores/queryList'
 import type { ListResponse } from '../../types'
-import { deserialize, genSwrKey } from '../../utils/queryList'
+import { deserialize } from '../../utils/queryList'
 import type { RequestOptions } from '../../utils/request'
 import { request } from '../../utils/request'
 import FilterFormWrapper from '../FilterFormWrapper'
@@ -32,13 +32,7 @@ export interface QueryListRef<Item = any, Values = any> {
   form: FormInstance<Values>
 }
 
-export interface QueryListSwrKeyObject {
-  url: string
-  params?: Record<string, any>
-  body?: Record<string, any>
-}
-
-export interface QueryListProps<Item = any, Values = any, Response = any, Arg extends Values = Values>
+export interface QueryListProps<Item = any, Values = any, Response = any>
   extends Pick<
     TableProps<Item>,
     'columns' | 'rowKey' | 'tableLayout' | 'expandable' | 'rowSelection' | 'bordered' | 'components'
@@ -51,9 +45,9 @@ export interface QueryListProps<Item = any, Values = any, Response = any, Arg ex
   // 无分页
   onePage?: boolean
   defaultSize?: number
-  headers?: RequestOptions['headers'] | ((payload: QueryListPayload<Arg> | undefined) => RequestOptions['headers'])
-  getBody?: (payload: QueryListPayload<Arg>) => RequestOptions['body']
-  getParams?: (payload: QueryListPayload<Arg>) => RequestOptions['params']
+  headers?: RequestOptions['headers'] | ((payload: QueryListPayload<Values> | undefined) => RequestOptions['headers'])
+  getBody?: (payload: QueryListPayload<Values>) => RequestOptions['body']
+  getParams?: (payload: QueryListPayload<Values>) => RequestOptions['params']
   renderForm?: (form: FormInstance<Values>) => ReactNode
   extra?: (form: FormInstance<Values>) => ReactNode
   onTableChange?: TableProps<Item>['onChange']
@@ -71,13 +65,8 @@ const defaultProps = {
   getDataSource: (response: any) => response.list,
 }
 
-const InternalQueryList = <
-  Item extends object,
-  Values extends object | undefined,
-  Response = ListResponse<Item>,
-  Arg extends Values = Values,
->(
-  props: QueryListProps<Item, Values, Response, Arg>,
+const InternalQueryList = <Item extends object, Values extends object | undefined, Response = ListResponse<Item>>(
+  props: QueryListProps<Item, Values, Response>,
   ref: Ref<QueryListRef<Item, Values>>,
 ) => {
   const internalProps = { ...defaultProps, ...props }
@@ -102,22 +91,16 @@ const InternalQueryList = <
     ...tableProps
   } = internalProps
 
-  const { payloadMap, swrKeyMap, propsMap, setPayload, remove } = useQueryListStore()
-  propsMap.set(action, internalProps)
-
   const t = useTranslation()
   const [form] = Form.useForm<Values>()
   const { accessible, isLoading } = usePermission(code, isGlobal)
-  const payload = payloadMap.get(action)
   const listAction = useRef<QueryListAction>(QueryListAction.Init)
 
-  const createBoundFn = <T extends any[], R>(fn: (fn: string, ...args: T) => R): ((...args: T) => R) => {
-    return (...args: T) => fn(action, ...args)
-  }
+  const { payloadMap, swrKeyMap, propsMap, setPayload, setSwrKey, remove } = useQueryListStore()
+  propsMap.set(action, internalProps)
+  const payload = payloadMap.get(action)
+  const swrKey = swrKeyMap.get(action)
 
-  const _setPayload = createBoundFn(setPayload)
-
-  const [swrKey, setSwrKey] = useState<string | null>(null)
   const shouldPoll = useRef(false)
 
   const {
@@ -159,56 +142,49 @@ const InternalQueryList = <
     },
   )
 
-  const fetchFirstPage = async () => {
-    const values = form.getFieldsValue()
-    _setPayload({ page: 1, formValues: values }, true)
-  }
-
-  const clearPageContent = async () => {
-    await mutate(undefined, { revalidate: false })
-    _setPayload({ page: 1, formValues: form.getFieldsValue() })
-  }
-
   const onConfirm = async () => {
     listAction.current = QueryListAction.Confirm
+    const values = form.getFieldsValue()
+    const newPayload = { ...payload, page: 1, formValues: values }
+    setPayload(action, newPayload)
 
     try {
       await form.validateFields()
-      await fetchFirstPage()
+      setSwrKey(action)
     } catch (_) {
-      await clearPageContent()
+      await mutate(undefined, { revalidate: false })
+      setSwrKey(action, null)
     }
   }
 
   const onReset = async () => {
     listAction.current = QueryListAction.Reset
     form.resetFields()
+    const values = form.getFieldsValue()
+    const newPayload = { ...payload, page: 1, formValues: values }
+    setPayload(action, newPayload)
 
     try {
       await form.validateFields({ validateOnly: true })
-      await fetchFirstPage()
+      setSwrKey(action)
     } catch (_) {
-      await clearPageContent()
+      await mutate(undefined, { revalidate: false })
+      setSwrKey(action, null)
     }
   }
 
   useEffect(() => {
-    if (accessible) {
-      form
-        .validateFields({ validateOnly: true })
-        .then(() => {
-          const key = genSwrKey(internalProps, payload)
-          setSwrKey(key)
-          swrKeyMap.set(action, key)
-        })
-        .catch(() => {
-          setSwrKey(null)
-          swrKeyMap.set(action, null)
-        })
+    const initKey = async () => {
+      try {
+        await form.validateFields({ validateOnly: true })
+        setSwrKey(action)
+      } catch (err) {
+        setSwrKey(action, null)
+      }
     }
-  }, [accessible, internalProps, payloadMap])
 
-  useEffect(() => {
+    initKey()
+
     return () => {
       remove(action)
     }
@@ -262,10 +238,9 @@ const InternalQueryList = <
                 total: data.total,
                 onChange: async (currentPage: number, currentSize: number) => {
                   listAction.current = QueryListAction.Jump
-                  _setPayload({
-                    page: currentPage,
-                    size: currentSize,
-                  })
+                  const newPayload = { ...payload, page: currentPage, size: currentSize }
+                  setPayload(action, newPayload)
+                  setSwrKey(action)
                 },
               }
         }
@@ -279,9 +254,8 @@ const QueryList = forwardRef(InternalQueryList) as <
   Item extends object,
   Values extends object | undefined,
   Response = ListResponse<Item>,
-  Arg extends Values = Values,
 >(
-  props: QueryListProps<Item, Values, Response, Arg> & { ref?: Ref<QueryListRef<Item, Values>> },
+  props: QueryListProps<Item, Values, Response> & { ref?: Ref<QueryListRef<Item, Values>> },
 ) => ReactElement
 
 export default QueryList
