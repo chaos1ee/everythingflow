@@ -21,46 +21,35 @@ export interface QueryListState {
   swrKeyMap: Map<string, string | null>
   payloadMap: Map<string, QueryListPayload>
   propsMap: Map<string, QueryListProps>
+  setPayload(action: string, payload: QueryListPayload): void
+  setSwrKey(action: string, key?: string | null): void
   mutate: QueryListMutator
-  setPayload(action: string, payload: QueryListPayload, forceUpdate?: boolean): void
   remove(action: string): void
 }
 
 export const useQueryListStore = create<QueryListState>((set, get) => ({
   swrKeyMap: new Map(),
-  paginationMap: new Map(),
-  valueMap: new Map(),
   payloadMap: new Map(),
   propsMap: new Map(),
-  setPayload(action, payload, forceUpdate = true) {
-    const payloadMap = get().payloadMap
+  setPayload(action, payload) {
+    const { payloadMap } = get()
+    set({ payloadMap: new Map(payloadMap).set(action, payload) })
 
-    const newPayload = {
-      page: payload.page ?? payloadMap.get(action)?.page,
-      size: payload.size ?? payloadMap.get(action)?.size,
-      formValues: {
-        ...payloadMap.get(action)?.formValues,
-        ...payload.formValues,
-      },
+    const prevSwrKey = get().swrKeyMap.get(action)
+    const nextSwrKey = genSwrKey(get().propsMap.get(action) as QueryListProps, payload)
+
+    if (prevSwrKey === nextSwrKey) {
+      // 因为 SWR key 没有变化时会使用缓存数据，所以需要调用 mutate 强行更新缓存。
+      mutate(prevSwrKey, undefined, true)
     }
-
-    if (forceUpdate) {
-      if (get().swrKeyMap.get(action)) {
-        const prevSwrKey = get().swrKeyMap.get(action) as string
-        const nextSwrKey = genSwrKey(get().propsMap.get(action) as QueryListProps, newPayload)
-
-        if (prevSwrKey === nextSwrKey) {
-          payloadMap.set(action, newPayload)
-          // 因为 SWR key 没有变化时会使用缓存数据，所以需要调用 mutate 强行更新缓存。
-          mutate(prevSwrKey, undefined, true)
-        } else {
-          set({ payloadMap: new Map(payloadMap).set(action, newPayload) })
-        }
-      } else {
-        set({ payloadMap: new Map(payloadMap).set(action, newPayload) })
-      }
+  },
+  setSwrKey(action, key) {
+    const { swrKeyMap, propsMap, payloadMap } = get()
+    if (key === undefined) {
+      const newKey = genSwrKey(propsMap.get(action) as QueryListProps, payloadMap.get(action) as QueryListPayload)
+      set({ swrKeyMap: new Map(swrKeyMap).set(action, newKey) })
     } else {
-      payloadMap.set(action, newPayload)
+      set({ swrKeyMap: new Map(swrKeyMap).set(action, key) })
     }
   },
   mutate: (action, data, opts) => {
