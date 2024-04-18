@@ -10,7 +10,7 @@ import { usePermission } from '../../hooks/permission'
 import type { QueryListPayload } from '../../stores/queryList'
 import { useQueryListStore } from '../../stores/queryList'
 import type { ListResponse } from '../../types'
-import { deserialize } from '../../utils/queryList'
+import { deserialize, genSwrKey } from '../../utils/queryList'
 import type { RequestOptions } from '../../utils/request'
 import { request } from '../../utils/request'
 import FilterFormWrapper from '../FilterFormWrapper'
@@ -96,9 +96,7 @@ const InternalQueryList = <Item extends object, Values extends object | undefine
   const [form] = Form.useForm<Values>()
   const { accessible, isLoading } = usePermission(code, isGlobal)
   const listAction = useRef<QueryListAction>(QueryListAction.Init)
-
-  const { payloadMap, swrKeyMap, propsMap, setPayload, setSwrKey, remove } = useQueryListStore()
-  propsMap.set(action, internalProps)
+  const { payloadMap, swrKeyMap, setPayload, setSwrKey, remove } = useQueryListStore()
   const payload = payloadMap.get(action)
   const swrKey = swrKeyMap.get(action)
   const shouldPoll = useRef(false)
@@ -146,10 +144,6 @@ const InternalQueryList = <Item extends object, Values extends object | undefine
     },
   )
 
-  useEffect(() => {
-    console.log('Querylist data changed', data)
-  }, [data])
-
   const onConfirm = async () => {
     listAction.current = QueryListAction.Confirm
     const values = form.getFieldsValue()
@@ -158,7 +152,7 @@ const InternalQueryList = <Item extends object, Values extends object | undefine
 
     try {
       await form.validateFields()
-      setSwrKey(action)
+      setSwrKey(action, genSwrKey(internalProps, newPayload))
     } catch (_) {
       await mutate(undefined, { revalidate: false })
       setSwrKey(action, null)
@@ -174,7 +168,7 @@ const InternalQueryList = <Item extends object, Values extends object | undefine
 
     try {
       await form.validateFields({ validateOnly: true })
-      setSwrKey(action)
+      setSwrKey(action, genSwrKey(internalProps, newPayload))
     } catch (_) {
       await mutate(undefined, { revalidate: false })
       setSwrKey(action, null)
@@ -184,9 +178,11 @@ const InternalQueryList = <Item extends object, Values extends object | undefine
   useEffect(() => {
     const initKey = async () => {
       try {
-        await form.validateFields({ validateOnly: true })
-        setSwrKey(action)
+        const values = await form.validateFields({ validateOnly: true })
+        const newPayload = { ...payload, page: 1, formValues: values }
+        setSwrKey(action, genSwrKey(internalProps, newPayload))
       } catch (err) {
+        console.error(err)
         setSwrKey(action, null)
       }
     }
@@ -195,7 +191,6 @@ const InternalQueryList = <Item extends object, Values extends object | undefine
 
     return () => {
       remove(action)
-      mutate(undefined, { revalidate: false })
     }
   }, [])
 
@@ -250,7 +245,7 @@ const InternalQueryList = <Item extends object, Values extends object | undefine
                   listAction.current = QueryListAction.Jump
                   const newPayload = { ...payload, page: currentPage, size: currentSize }
                   setPayload(action, newPayload)
-                  setSwrKey(action)
+                  setSwrKey(action, genSwrKey(internalProps, newPayload))
                 },
               }
         }
