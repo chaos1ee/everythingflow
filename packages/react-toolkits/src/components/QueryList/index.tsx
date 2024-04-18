@@ -22,13 +22,14 @@ export enum QueryListAction {
   Init = 'init',
 }
 
-export interface QueryListDataType<Item> {
+export interface QueryListDataType<Item, Response> {
   dataSource: Item[]
   total: number
+  originalData: Response
 }
 
-export interface QueryListRef<Item = any, Values = any> {
-  data: QueryListDataType<Item>
+export interface QueryListRef<Item = any, Values = any, Response = any> {
+  data: QueryListDataType<Item, Response>
   form: FormInstance<Values>
 }
 
@@ -51,7 +52,7 @@ export interface QueryListProps<Item = any, Values = any, Response = any>
   renderForm?: (form: FormInstance<Values>) => ReactNode
   extra?: (form: FormInstance<Values>) => ReactNode
   onTableChange?: TableProps<Item>['onChange']
-  afterSuccess?: (action: QueryListAction, data: QueryListDataType<Item>) => void
+  afterSuccess?: (action: QueryListAction, data: QueryListDataType<Item, Response>) => void
   // 默认的接口返回类型为 ListResponse<Item>，当符合时无需设置 getTotal、getDataSource 就可以让组件正确获取 total 与 dataSource。
   getTotal?: (response: Response) => number
   getDataSource?: (response: Response) => Item[]
@@ -67,7 +68,7 @@ const defaultProps = {
 
 const InternalQueryList = <Item extends object, Values extends object | undefined, Response = ListResponse<Item>>(
   props: QueryListProps<Item, Values, Response>,
-  ref: Ref<QueryListRef<Item, Values>>,
+  ref: Ref<QueryListRef<Item, Values, Response>>,
 ) => {
   const internalProps = { ...defaultProps, ...props }
 
@@ -121,6 +122,7 @@ const InternalQueryList = <Item extends object, Values extends object | undefine
 
       return {
         dataSource: getDataSource(response.data),
+        originalData: response.data,
         total: getTotal(response.data) ?? 0,
       }
     },
@@ -128,6 +130,7 @@ const InternalQueryList = <Item extends object, Values extends object | undefine
       fallbackData: {
         dataSource: [],
         total: 0,
+        originalData: {} as Response,
       },
       shouldRetryOnError: false,
       revalidateOnFocus: false,
@@ -192,6 +195,7 @@ const InternalQueryList = <Item extends object, Values extends object | undefine
 
   useImperativeHandle(ref, () => ({
     data,
+    originalData: data,
     form,
   }))
 
@@ -255,7 +259,7 @@ const QueryList = forwardRef(InternalQueryList) as <
   Values extends object | undefined,
   Response = ListResponse<Item>,
 >(
-  props: QueryListProps<Item, Values, Response> & { ref?: Ref<QueryListRef<Item, Values>> },
+  props: QueryListProps<Item, Values, Response> & { ref?: Ref<QueryListRef<Item, Values, Response>> },
 ) => ReactElement
 
 export default QueryList
