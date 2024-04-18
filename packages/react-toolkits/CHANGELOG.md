@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.8.53
+
+### Patch Changes
+
+- f9bad37: fix: swr cache does not been cleared
+
 ## 0.8.52
 
 ### Patch Changes
