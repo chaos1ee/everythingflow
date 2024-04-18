@@ -91,16 +91,16 @@ const GameSelect = () => {
     [games, gameFilter],
   )
 
-  const clearCache = useCallback(() => {
-    mutate(key => {
+  const clearCache = useCallback(async () => {
+    await mutate(key => {
       return !(typeof key === 'string' && key.startsWith('/api/usystem/game/all'))
     })
   }, [mutate])
 
   const onGameChange = useCallback(
     async (id: string) => {
+      await clearCache()
       setGame(id)
-      clearCache()
     },
     [games, clearCache],
   )
