@@ -5,10 +5,13 @@ import type { MutatorCallback, MutatorOptions } from 'swr/_internal'
 import { create } from 'zustand'
 import { genSwrKey } from '../utils/queryList'
 
-type QueryListMutator = <T = any>(
+type QueryListMutator = <Item = any, Response = any>(
   action: string,
-  data?: QueryListDataType<T> | Promise<QueryListDataType<T>> | MutatorCallback<QueryListDataType<T>>,
-  opts?: MutatorOptions<QueryListDataType<T>>,
+  data?:
+    | QueryListDataType<Item, Response>
+    | Promise<QueryListDataType<Item, Response>>
+    | MutatorCallback<QueryListDataType<Item, Response>>,
+  opts?: MutatorOptions<QueryListDataType<Item, Response>>,
 ) => void
 
 export interface QueryListPayload<FormValues = any> {
