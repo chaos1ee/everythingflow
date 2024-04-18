@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.8.52
+
+### Patch Changes
+
+- 96062ca: Revert "refactor: change mutate params in useQueryListStore hook"
+
 ## 0.8.51
 
 ### Patch Changes
