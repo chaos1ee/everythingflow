@@ -22,15 +22,15 @@ export enum QueryListAction {
   Init = 'init',
 }
 
-export interface QueryListDataType<Item, Response> {
+export interface QueryListDataType<Item = any> {
   dataSource: Item[]
   total: number
-  originalData: Response
 }
 
 export interface QueryListRef<Item = any, Values = any, Response = any> {
-  data: QueryListDataType<Item, Response>
+  data: QueryListDataType<Item>
   form: FormInstance<Values>
+  originalData: Response | undefined
 }
 
 export interface QueryListProps<Item = any, Values = any, Response = any>
@@ -52,7 +52,7 @@ export interface QueryListProps<Item = any, Values = any, Response = any>
   renderForm?: (form: FormInstance<Values>) => ReactNode
   extra?: (form: FormInstance<Values>) => ReactNode
   onTableChange?: TableProps<Item>['onChange']
-  afterSuccess?: (action: QueryListAction, data: QueryListDataType<Item, Response>) => void
+  afterSuccess?: (action: QueryListAction, data: QueryListDataType<Item>) => void
   // 默认的接口返回类型为 ListResponse<Item>，当符合时无需设置 getTotal、getDataSource 就可以让组件正确获取 total 与 dataSource。
   getTotal?: (response: Response) => number
   getDataSource?: (response: Response) => Item[]
@@ -103,6 +103,7 @@ const InternalQueryList = <Item extends object, Values extends object | undefine
   const swrKey = swrKeyMap.get(action)
 
   const shouldPoll = useRef(false)
+  const originalData = useRef<Response>()
 
   const {
     data,
@@ -112,7 +113,7 @@ const InternalQueryList = <Item extends object, Values extends object | undefine
     swrKey,
     async key => {
       const { url, params, body } = deserialize(key)
-      const response = await request<Response>(url, {
+      const { data: responseData } = await request<Response>(url, {
         method,
         body,
         params,
@@ -120,17 +121,17 @@ const InternalQueryList = <Item extends object, Values extends object | undefine
         headers: typeof headers === 'function' ? headers(payload) : headers,
       })
 
+      originalData.current = responseData
+
       return {
-        dataSource: getDataSource(response.data),
-        originalData: response.data,
-        total: getTotal(response.data) ?? 0,
+        dataSource: getDataSource(responseData),
+        total: getTotal(responseData) ?? 0,
       }
     },
     {
       fallbackData: {
         dataSource: [],
         total: 0,
-        originalData: {} as Response,
       },
       shouldRetryOnError: false,
       revalidateOnFocus: false,
@@ -195,8 +196,8 @@ const InternalQueryList = <Item extends object, Values extends object | undefine
 
   useImperativeHandle(ref, () => ({
     data,
-    originalData: data,
     form,
+    originalData: originalData.current,
   }))
 
   if (isLoading) {
