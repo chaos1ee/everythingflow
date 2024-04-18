@@ -191,6 +191,7 @@ const InternalQueryList = <Item extends object, Values extends object | undefine
 
     return () => {
       remove(action)
+      mutate(undefined, { revalidate: false })
     }
   }, [])
 
