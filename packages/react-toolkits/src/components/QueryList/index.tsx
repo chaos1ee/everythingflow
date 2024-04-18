@@ -181,6 +181,7 @@ const InternalQueryList = <Item extends object, Values extends object | undefine
         const values = await form.validateFields({ validateOnly: true })
         const newPayload = { ...payload, page: 1, formValues: values }
         setSwrKey(action, genSwrKey(internalProps, newPayload))
+        mutate(undefined, { revalidate: true })
       } catch (err) {
         console.error(err)
         setSwrKey(action, null)
