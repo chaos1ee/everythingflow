@@ -37,7 +37,7 @@ export const serialize = (obj: SwrKeyObject) => {
 export const deserialize = (key: string) => JSON.parse(key) as SwrKeyObject
 
 // 生成 SWR 的 key，用于缓存请求结果。
-export function genSwrKey(props: QueryListProps, payload: QueryListPayload | undefined) {
+export function genSwrKey(props: QueryListProps, payload?: QueryListPayload) {
   const { action, defaultSize, getParams, getBody, method, onePage } = props
   const { url, query } = qs.parseUrl(action)
   const { page = 1, size = defaultSize, formValues = {} } = payload ?? {}

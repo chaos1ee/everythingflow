@@ -17,7 +17,8 @@ const configs: UserConfig[] = [
       }),
     ],
     build: {
-      sourcemap: process.env.NODE_ENV === 'development',
+      // sourcemap: process.env.NODE_ENV === 'development',
+      sourcemap: true,
       lib: {
         entry: 'src/index.ts',
         formats: ['es'],
