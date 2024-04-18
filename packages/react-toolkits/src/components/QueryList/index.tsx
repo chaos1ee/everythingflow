@@ -146,6 +146,10 @@ const InternalQueryList = <Item extends object, Values extends object | undefine
     },
   )
 
+  useEffect(() => {
+    console.log('Querylist data changed', data)
+  }, [data])
+
   const onConfirm = async () => {
     listAction.current = QueryListAction.Confirm
     const values = form.getFieldsValue()
