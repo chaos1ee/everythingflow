@@ -35,8 +35,9 @@ export const useQueryListStore = create<QueryListState>((set, get) => ({
   setSwrKey(action, key) {
     const { swrKeyMap } = get()
     set({ swrKeyMap: new Map(swrKeyMap).set(action, key) })
-    if (key !== swrKeyMap.get(action)) {
-      mutate(key)
+
+    if (key === null) {
+      mutate(key, undefined, false)
     }
   },
   mutate: (action, data, opts) => {
