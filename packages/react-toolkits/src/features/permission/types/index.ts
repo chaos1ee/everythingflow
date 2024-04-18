@@ -13,11 +13,7 @@ export interface RoleEnumItem {
   name: string
 }
 
-export interface RoleListItem {
-  id: number
-  name: string
-  ctime: string
-}
+export type RoleListItem = RoleV1 | RoleV2
 
 export interface RoleV1 {
   id: number

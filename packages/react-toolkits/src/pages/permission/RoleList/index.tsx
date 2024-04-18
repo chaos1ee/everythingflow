@@ -88,11 +88,11 @@ const useUpdateModal = () => {
         name: `role_${values.name}`,
         permissions: values.permissions,
       })
-      mutate(
+      mutate<RoleListItem>(
         action,
         prev =>
           produce(prev, draft => {
-            const match = draft?.dataSource?.find(item => item.id === extraValues?.id)
+            const match = draft?.find(item => item.id === extraValues?.id)
 
             if (match) {
               match.permissions = values.permissions
@@ -188,11 +188,11 @@ const RoleList = () => {
                       id: value.id,
                       name: value.name,
                     })
-                    mutate(action, prev => {
+                    mutate<RoleListItem>(action, prev => {
                       return produce(prev, draft => {
-                        const index = draft?.dataSource?.findIndex(item => item.id === value.id)
+                        const index = draft?.findIndex(item => item.id === value.id)
                         if (index) {
-                          draft?.dataSource?.splice(index, 1)
+                          draft?.splice(index, 1)
                         }
                       })
                     })

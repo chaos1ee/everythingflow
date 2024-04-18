@@ -89,10 +89,10 @@ function useUpdateUserModal() {
         action,
         prev => {
           return produce(prev, draft => {
-            if (draft?.dataSource) {
-              const index = draft.dataSource?.findIndex(item => item.id === extraValues?.id)
+            if (draft) {
+              const index = draft.findIndex(item => item.id === extraValues?.id)
               if (index !== -1) {
-                draft.dataSource[index].roles = values.roles
+                draft[index].roles = values.roles
               }
             }
           })
@@ -195,9 +195,9 @@ const UserList: FC = () => {
                   })
                   mutate(action, prev => {
                     return produce(prev, draft => {
-                      const index = draft?.dataSource?.findIndex(item => item.id === value.id)
+                      const index = draft?.findIndex(item => item.id === value.id)
                       if (index) {
-                        draft?.dataSource?.splice(index, 1)
+                        draft?.splice(index, 1)
                       }
                     })
                   })
