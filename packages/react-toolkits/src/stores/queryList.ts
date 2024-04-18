@@ -1,9 +1,15 @@
+import type { QueryListDataType, QueryListProps } from '../components/QueryList'
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { mutate } from 'swr'
 import type { MutatorCallback, MutatorOptions } from 'swr/_internal'
 import { create } from 'zustand'
-import type { QueryListProps } from '../components/QueryList'
 import { genSwrKey } from '../utils/queryList'
+
+type QueryListMutator = <Item = any>(
+  action: string,
+  data?: QueryListDataType<Item> | Promise<QueryListDataType<Item>> | MutatorCallback<QueryListDataType<Item>>,
+  opts?: MutatorOptions<QueryListDataType<Item>>,
+) => void
 
 export interface QueryListPayload<FormValues = any> {
   page?: number
@@ -17,11 +23,7 @@ export interface QueryListState {
   propsMap: Map<string, QueryListProps>
   setPayload(action: string, payload: QueryListPayload): void
   setSwrKey(action: string, key?: string | null): void
-  mutate: <Item = any>(
-    action: string,
-    data?: Item[] | Promise<Item[]> | MutatorCallback<Item[]>,
-    opts?: MutatorOptions<Item[]>,
-  ) => void
+  mutate: QueryListMutator
   remove(action: string): void
 }
 
@@ -53,15 +55,7 @@ export const useQueryListStore = create<QueryListState>((set, get) => ({
   mutate: (action, data, opts) => {
     const { swrKeyMap } = get()
     const swrKey = swrKeyMap.get(action)
-
-    mutate(
-      swrKey,
-      (prev: any) => ({
-        ...prev,
-        dataSource: data,
-      }),
-      opts,
-    )
+    mutate(swrKey, data, opts)
   },
   remove(action) {
     const { swrKeyMap, payloadMap, propsMap } = get()

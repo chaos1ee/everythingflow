@@ -22,7 +22,7 @@ export enum QueryListAction {
   Init = 'init',
 }
 
-export interface QueryListDataType<Item = any> {
+export interface QueryListDataType<Item> {
   dataSource: Item[]
   total: number
 }
@@ -101,8 +101,8 @@ const InternalQueryList = <Item extends object, Values extends object | undefine
   propsMap.set(action, internalProps)
   const payload = payloadMap.get(action)
   const swrKey = swrKeyMap.get(action)
-
   const shouldPoll = useRef(false)
+
   const originalData = useRef<Response>()
 
   const {
@@ -113,7 +113,7 @@ const InternalQueryList = <Item extends object, Values extends object | undefine
     swrKey,
     async key => {
       const { url, params, body } = deserialize(key)
-      const { data: responseData } = await request<Response>(url, {
+      const response = await request<Response>(url, {
         method,
         body,
         params,
@@ -121,11 +121,11 @@ const InternalQueryList = <Item extends object, Values extends object | undefine
         headers: typeof headers === 'function' ? headers(payload) : headers,
       })
 
-      originalData.current = responseData
+      originalData.current = response.data
 
       return {
-        dataSource: getDataSource(responseData),
-        total: getTotal(responseData) ?? 0,
+        dataSource: getDataSource(response.data),
+        total: getTotal(response.data) ?? 0,
       }
     },
     {
@@ -196,8 +196,8 @@ const InternalQueryList = <Item extends object, Values extends object | undefine
 
   useImperativeHandle(ref, () => ({
     data,
-    form,
     originalData: originalData.current,
+    form,
   }))
 
   if (isLoading) {
