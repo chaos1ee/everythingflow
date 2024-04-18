@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.8.57
+
+### Patch Changes
+
+- 26d7905: fix: clear swr cache when key is null in QueryList
+
 ## 0.8.56
 
 ### Patch Changes
