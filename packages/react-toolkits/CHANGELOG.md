@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.8.58
+
+### Patch Changes
+
+- 6683157: fix: swr should revalidate when Querylist mount
+
 ## 0.8.57
 
 ### Patch Changes
