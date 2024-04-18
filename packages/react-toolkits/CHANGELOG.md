@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.8.50
+
+### Patch Changes
+
+- 5d662f0: fix: ts types error
+
 ## 0.8.49
 
 ### Patch Changes
