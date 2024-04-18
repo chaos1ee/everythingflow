@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.8.56
+
+### Patch Changes
+
+- 225ac9c: fix: swr data not updated when game change in QueryList
+
 ## 0.8.55
 
 ### Patch Changes
