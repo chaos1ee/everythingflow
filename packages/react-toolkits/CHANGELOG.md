@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.8.54
+
+### Patch Changes
+
+- 6436653: feat: remove swr cache before QueryList be destroyed
+
 ## 0.8.53
 
 ### Patch Changes
