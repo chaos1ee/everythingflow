@@ -10,10 +10,11 @@ import { usePermission } from '../../hooks/permission'
 import type { QueryListPayload } from '../../stores/queryList'
 import { useQueryListStore } from '../../stores/queryList'
 import type { ListResponse } from '../../types'
-import { deserialize, genSwrKey } from '../../utils/queryList'
 import type { RequestOptions } from '../../utils/request'
 import { request } from '../../utils/request'
 import FilterFormWrapper from '../FilterFormWrapper'
+import { defaultProps } from './constants'
+import { deserialize, genSwrKey } from './utils'
 
 export enum QueryListAction {
   Confirm = 'confirm',
@@ -58,14 +59,6 @@ export interface QueryListProps<Item = any, Values = any, Response = any>
   getDataSource?: (response: Response) => Item[]
 }
 
-const defaultProps = {
-  method: 'GET',
-  defaultSize: 10,
-  refreshInterval: 0,
-  getTotal: (response: any) => response.total,
-  getDataSource: (response: any) => response.list,
-}
-
 const InternalQueryList = <Item extends object, Values extends object | undefined, Response = ListResponse<Item>>(
   props: QueryListProps<Item, Values, Response>,
   ref: Ref<QueryListRef<Item, Values, Response>>,
@@ -96,11 +89,8 @@ const InternalQueryList = <Item extends object, Values extends object | undefine
   const [form] = Form.useForm<Values>()
   const { accessible, isLoading } = usePermission(code, isGlobal)
   const listAction = useRef<QueryListAction>(QueryListAction.Init)
-  const { payloadMap, swrKeyMap, setPayload, setSwrKey, remove } = useQueryListStore()
-  const payload = payloadMap.get(action)
-  const swrKey = swrKeyMap.get(action)
+  const { getPayload, setPayload, getSwrkKey, setSwrKey, remove } = useQueryListStore()
   const shouldPoll = useRef(false)
-
   const originalData = useRef<Response>()
 
   const {
@@ -108,9 +98,10 @@ const InternalQueryList = <Item extends object, Values extends object | undefine
     isLoading: isDataLoading,
     mutate,
   } = useSWR(
-    swrKey,
+    getSwrkKey(action),
     async key => {
       const { url, params, body } = deserialize(key)
+      const payload = getPayload(action)
       const response = await request<Response>(url, {
         method,
         body,
@@ -144,51 +135,52 @@ const InternalQueryList = <Item extends object, Values extends object | undefine
     },
   )
 
-  const onConfirm = async () => {
-    listAction.current = QueryListAction.Confirm
-    const values = form.getFieldsValue()
-    const newPayload = { ...payload, page: 1, formValues: values }
-    setPayload(action, newPayload)
+  const updateSwrKey = async (validateOnly?: boolean) => {
+    const payload = getPayload(action)
+    const prevKey = getSwrkKey(action)
+    const nextKey = genSwrKey(internalProps, payload)
 
     try {
-      await form.validateFields()
-      setSwrKey(action, genSwrKey(internalProps, newPayload))
-    } catch (_) {
-      await mutate(undefined, { revalidate: false })
+      await form.validateFields({ validateOnly })
+
+      if (prevKey !== nextKey) {
+        setSwrKey(action, nextKey)
+      } else {
+        mutate(undefined, true)
+      }
+    } catch (error) {
+      console.error(error)
       setSwrKey(action, null)
+      mutate(undefined, false)
     }
+  }
+
+  const onConfirm = async () => {
+    listAction.current = QueryListAction.Confirm
+    const payload = getPayload(action)
+    setPayload(action, { ...payload, page: 1, formValues: form.getFieldsValue() })
+    updateSwrKey()
   }
 
   const onReset = async () => {
     listAction.current = QueryListAction.Reset
     form.resetFields()
-    const values = form.getFieldsValue()
-    const newPayload = { ...payload, page: 1, formValues: values }
-    setPayload(action, newPayload)
-
-    try {
-      await form.validateFields({ validateOnly: true })
-      setSwrKey(action, genSwrKey(internalProps, newPayload))
-    } catch (_) {
-      await mutate(undefined, { revalidate: false })
-      setSwrKey(action, null)
-    }
+    const payload = getPayload(action)
+    setPayload(action, { ...payload, page: 1, formValues: form.getFieldsValue() })
+    updateSwrKey(true)
   }
 
   useEffect(() => {
-    const initKey = async () => {
-      try {
-        const values = await form.validateFields({ validateOnly: true })
-        const newPayload = { ...payload, page: 1, formValues: values }
-        setSwrKey(action, genSwrKey(internalProps, newPayload))
-        mutate(undefined, { revalidate: true })
-      } catch (err) {
-        console.error(err)
-        setSwrKey(action, null)
-      }
+    const init = async () => {
+      setPayload(action, {
+        page: 1,
+        size: defaultSize,
+        formValues: form.getFieldsValue(),
+      })
+      updateSwrKey(true)
     }
 
-    initKey()
+    init()
 
     return () => {
       remove(action)
@@ -239,14 +231,14 @@ const InternalQueryList = <Item extends object, Values extends object | undefine
             : {
                 showSizeChanger: true,
                 showQuickJumper: true,
-                current: payload?.page,
-                pageSize: payload?.size ?? defaultSize,
+                current: getPayload(action)?.page,
+                pageSize: getPayload(action)?.size ?? defaultSize,
                 total: data.total,
                 onChange: async (currentPage: number, currentSize: number) => {
                   listAction.current = QueryListAction.Jump
-                  const newPayload = { ...payload, page: currentPage, size: currentSize }
-                  setPayload(action, newPayload)
-                  setSwrKey(action, genSwrKey(internalProps, newPayload))
+                  const payload = getPayload(action)
+                  setPayload(action, { ...payload, page: currentPage, size: currentSize })
+                  updateSwrKey(true)
                 },
               }
         }
