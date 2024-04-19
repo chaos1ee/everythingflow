@@ -19,7 +19,9 @@ export interface QueryListPayload<FormValues = any> {
 export interface QueryListState {
   swrKeyMap: Map<string, string | null>
   payloadMap: Map<string, QueryListPayload>
+  getPayload: (action: string) => QueryListPayload | undefined
   setPayload(action: string, payload: QueryListPayload): void
+  getSwrkKey(action: string): string | null
   setSwrKey(action: string, key: string | null): void
   mutate: QueryListMutator
   remove(action: string): void
@@ -28,17 +30,21 @@ export interface QueryListState {
 export const useQueryListStore = create<QueryListState>((set, get) => ({
   swrKeyMap: new Map(),
   payloadMap: new Map(),
+  getPayload(action) {
+    const { payloadMap } = get()
+    return payloadMap.get(action)
+  },
   setPayload(action, payload) {
     const { payloadMap } = get()
     set({ payloadMap: new Map(payloadMap).set(action, payload) })
   },
+  getSwrkKey(action) {
+    const { swrKeyMap } = get()
+    return swrKeyMap.get(action) ?? null
+  },
   setSwrKey(action, key) {
     const { swrKeyMap } = get()
     set({ swrKeyMap: new Map(swrKeyMap).set(action, key) })
-
-    if (key === null) {
-      mutate(key, undefined, false)
-    }
   },
   mutate: (action, data, opts) => {
     const { swrKeyMap } = get()

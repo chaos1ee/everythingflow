@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import qs from 'query-string'
-import type { QueryListProps } from '../components/QueryList'
-import type { QueryListPayload } from '../stores/queryList'
+import type { QueryListProps } from '.'
+import type { QueryListPayload } from '../../stores/queryList'
 
 interface SwrKeyObject {
   url: string
@@ -38,9 +38,9 @@ export const deserialize = (key: string) => JSON.parse(key) as SwrKeyObject
 
 // 生成 SWR 的 key，用于缓存请求结果。
 export function genSwrKey(props: QueryListProps, payload?: QueryListPayload) {
-  const { action, defaultSize, getParams, getBody, method, onePage } = props
+  const { action, getParams, getBody, method, onePage } = props
   const { url, query } = qs.parseUrl(action)
-  const { page = 1, size = defaultSize, formValues = {} } = payload ?? {}
+  const { page, size, formValues } = payload ?? {}
 
   const params = Object.assign(
     query,
