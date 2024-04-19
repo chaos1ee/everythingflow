@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.8.60
+
+### Patch Changes
+
+- c3f1c27: fix: data does not updated while game has changed
+
 ## 0.8.59
 
 ### Patch Changes
