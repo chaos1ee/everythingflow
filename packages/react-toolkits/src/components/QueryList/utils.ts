@@ -7,6 +7,7 @@ interface SwrKeyObject {
   url: string
   params?: Record<string, any>
   body?: Record<string, any>
+  game?: string
 }
 
 const deepSortObject = (obj: unknown): unknown => {
@@ -40,7 +41,7 @@ export const deserialize = (key: string) => JSON.parse(key) as SwrKeyObject
 export function genSwrKey(props: QueryListProps, payload?: QueryListPayload) {
   const { action, getParams, getBody, method, onePage } = props
   const { url, query } = qs.parseUrl(action)
-  const { page, size, formValues } = payload ?? {}
+  const { page, size, formValues, game } = payload ?? {}
 
   const params = Object.assign(
     query,
@@ -78,5 +79,6 @@ export function genSwrKey(props: QueryListProps, payload?: QueryListPayload) {
     url,
     body,
     params,
+    game,
   })
 }

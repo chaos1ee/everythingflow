@@ -13,6 +13,7 @@ import type { ListResponse } from '../../types'
 import type { RequestOptions } from '../../utils/request'
 import { request } from '../../utils/request'
 import FilterFormWrapper from '../FilterFormWrapper'
+import { useGameStore } from '../GameSelect'
 import { defaultProps } from './constants'
 import { deserialize, genSwrKey } from './utils'
 
@@ -92,6 +93,7 @@ const InternalQueryList = <Item extends object, Values extends object | undefine
   const { getPayload, setPayload, getSwrkKey, setSwrKey, remove } = useQueryListStore()
   const shouldPoll = useRef(false)
   const originalData = useRef<Response>()
+  const { game } = useGameStore()
 
   const {
     data,
@@ -158,7 +160,7 @@ const InternalQueryList = <Item extends object, Values extends object | undefine
   const onConfirm = async () => {
     listAction.current = QueryListAction.Confirm
     const payload = getPayload(action)
-    setPayload(action, { ...payload, page: 1, formValues: form.getFieldsValue() })
+    setPayload(action, { ...payload, game: game?.id, page: 1, formValues: form.getFieldsValue() })
     updateSwrKey()
   }
 
@@ -166,13 +168,14 @@ const InternalQueryList = <Item extends object, Values extends object | undefine
     listAction.current = QueryListAction.Reset
     form.resetFields()
     const payload = getPayload(action)
-    setPayload(action, { ...payload, page: 1, formValues: form.getFieldsValue() })
+    setPayload(action, { ...payload, game: game?.id, page: 1, formValues: form.getFieldsValue() })
     updateSwrKey(true)
   }
 
   useEffect(() => {
     const init = async () => {
       setPayload(action, {
+        game: game?.id,
         page: 1,
         size: defaultSize,
         formValues: form.getFieldsValue(),
@@ -237,7 +240,7 @@ const InternalQueryList = <Item extends object, Values extends object | undefine
                 onChange: async (currentPage: number, currentSize: number) => {
                   listAction.current = QueryListAction.Jump
                   const payload = getPayload(action)
-                  setPayload(action, { ...payload, page: currentPage, size: currentSize })
+                  setPayload(action, { ...payload, game: game?.id, page: currentPage, size: currentSize })
                   updateSwrKey(true)
                 },
               }
