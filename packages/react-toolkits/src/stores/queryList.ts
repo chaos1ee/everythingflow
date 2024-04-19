@@ -13,6 +13,7 @@ type QueryListMutator = <Item = any>(
 export interface QueryListPayload<FormValues = any> {
   page?: number
   size?: number
+  game?: string
   formValues?: FormValues
 }
 
