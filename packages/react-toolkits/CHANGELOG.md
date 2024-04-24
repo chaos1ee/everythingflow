@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.8.61
+
+### Patch Changes
+
+- a2c318a: chore: remove onRehydrateStorage
+
 ## 0.8.60
 
 ### Patch Changes
