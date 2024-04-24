@@ -51,8 +51,6 @@ export const useQueryListStore = create<QueryListState>((set, get) => ({
     } else if (key === undefined) {
       const nextKey = genSwrKey(propsMap.get(action) as QueryListProps, payloadMap.get(action))
 
-      console.log(prevKey, nextKey)
-
       if (prevKey !== nextKey) {
         set({ swrKeyMap: new Map(swrKeyMap).set(action, nextKey) })
       } else {

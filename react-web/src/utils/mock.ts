@@ -61,7 +61,12 @@ export function listResolver2<T>(generateCollection: () => T) {
 export const tokenResolver: ResponseResolver = async ({ request }) => {
   const url = new URL(request.url)
 
-  const ignoredPaths = ['/api/usystem/user/login', '/api/server/game/develop/token', '/api/server/game/develop/signup']
+  const ignoredPaths = [
+    '/api/usystem/user/login',
+    '/api/server/game/develop/token',
+    '/api/server/game/develop/signup',
+    '/api/usystem/game/all',
+  ]
 
   if (ignoredPaths.some(item => item.startsWith(url.pathname))) {
     passthrough()
