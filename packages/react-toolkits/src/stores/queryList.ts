@@ -47,17 +47,19 @@ export const useQueryListStore = create<QueryListState>((set, get) => ({
 
     if (key === null) {
       swrKeyMap.set(action, null)
-      mutate(undefined, false)
+      mutate(prevKey, undefined, false)
     } else if (key === undefined) {
       const nextKey = genSwrKey(propsMap.get(action) as QueryListProps, payloadMap.get(action))
 
+      console.log(prevKey, nextKey)
+
       if (prevKey !== nextKey) {
-        swrKeyMap.set(action, nextKey)
+        set({ swrKeyMap: new Map(swrKeyMap).set(action, nextKey) })
       } else {
-        mutate(undefined, true)
+        mutate(prevKey, undefined, true)
       }
     } else {
-      swrKeyMap.set(action, key)
+      set({ swrKeyMap: new Map(swrKeyMap).set(action, key) })
     }
   },
   getPayload(action) {
@@ -65,8 +67,16 @@ export const useQueryListStore = create<QueryListState>((set, get) => ({
     return payloadMap.get(action)
   },
   setPayload(action, payload) {
-    const { payloadMap, getPayload } = get()
-    set({ payloadMap: new Map(payloadMap).set(action, { ...getPayload(action), ...payload }) })
+    const { payloadMap, getPayload, propsMap } = get()
+    const { defaultSize } = propsMap.get(action) ?? {}
+    set({
+      payloadMap: new Map(payloadMap).set(action, {
+        page: 1,
+        size: defaultSize,
+        ...(getPayload(action) ?? {}),
+        ...payload,
+      }),
+    })
   },
   mutate: (action, data, opts) => {
     const { swrKeyMap } = get()
@@ -74,7 +84,8 @@ export const useQueryListStore = create<QueryListState>((set, get) => ({
     mutate(swrKey, data, opts)
   },
   refresh(action, page = 1) {
-    const { getPayload, setPayload } = get()
-    setPayload(action, { ...getPayload(action), page })
+    const { setPayload, updateSwrKey } = get()
+    setPayload(action, { page })
+    updateSwrKey(action)
   },
 }))

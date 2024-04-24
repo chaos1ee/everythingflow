@@ -45,7 +45,7 @@ export function useRequest() {
   const toolkitsContext = useToolkitsContext()
   const { game } = useGameStore()
 
-  const request = async <T = any>(url: string, opts: RequestOptions = {}): Promise<RequestResponse<T>> => {
+  return async <T = any>(url: string, opts: RequestOptions = {}): Promise<RequestResponse<T>> => {
     opts = Object.assign(opts, { responseType: 'json' })
     let { body, params, headers, responseType, isGlobal, ...rest } = opts
 
@@ -127,6 +127,4 @@ export function useRequest() {
       }
     }
   }
-
-  return request
 }
