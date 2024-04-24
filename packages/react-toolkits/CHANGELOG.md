@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.8.63
+
+### Patch Changes
+
+- 9812dba: Refactor useGameStore hook
+
 ## 0.8.62
 
 ### Patch Changes
