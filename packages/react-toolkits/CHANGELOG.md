@@ -1,5 +1,12 @@
 # react-toolkits
 
+## 0.8.60
+
+### Patch Changes
+
+- 2060653: fix: data does not updated while game has changed
+- 2060653: refactor: add useRequest hook
+
 ## 0.8.59
 
 ### Patch Changes
