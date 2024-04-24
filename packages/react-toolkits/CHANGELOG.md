@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.8.62
+
+### Patch Changes
+
+- b49f737: fix: http request not be triggered sometimes
+
 ## 0.8.61
 
 ### Patch Changes
