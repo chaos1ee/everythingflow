@@ -34,7 +34,7 @@ const Pagination = () => {
           <Form form={form}>
             <Row>
               <Col>
-                <Form.Item label="名称" name="name" rules={[{ required: true }]}>
+                <Form.Item label="名称" name="name">
                   <Input />
                 </Form.Item>
               </Col>

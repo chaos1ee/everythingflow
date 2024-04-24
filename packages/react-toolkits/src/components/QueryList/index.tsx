@@ -7,15 +7,14 @@ import { forwardRef, useEffect, useImperativeHandle, useRef } from 'react'
 import useSWR from 'swr'
 import { useTranslation } from '../../hooks/i18n'
 import { usePermission } from '../../hooks/permission'
+import type { RequestOptions } from '../../hooks/request'
+import { useRequest } from '../../hooks/request'
 import type { QueryListPayload } from '../../stores/queryList'
 import { useQueryListStore } from '../../stores/queryList'
 import type { ListResponse } from '../../types'
-import type { RequestOptions } from '../../utils/request'
-import { request } from '../../utils/request'
 import FilterFormWrapper from '../FilterFormWrapper'
-import { useGameStore } from '../GameSelect'
 import { defaultProps } from './constants'
-import { deserialize, genSwrKey } from './utils'
+import { deserialize } from './utils'
 
 export enum QueryListAction {
   Confirm = 'confirm',
@@ -90,16 +89,13 @@ const InternalQueryList = <Item extends object, Values extends object | undefine
   const [form] = Form.useForm<Values>()
   const { accessible, isLoading } = usePermission(code, isGlobal)
   const listAction = useRef<QueryListAction>(QueryListAction.Init)
-  const { getPayload, setPayload, getSwrkKey, setSwrKey, remove } = useQueryListStore()
+  const { propsMap, getPayload, setPayload, getSwrkKey, updateSwrKey } = useQueryListStore()
+  propsMap.set(action, internalProps)
   const shouldPoll = useRef(false)
   const originalData = useRef<Response>()
-  const { game } = useGameStore()
+  const request = useRequest()
 
-  const {
-    data,
-    isLoading: isDataLoading,
-    mutate,
-  } = useSWR(
+  const { data, isLoading: isDataLoading } = useSWR(
     getSwrkKey(action),
     async key => {
       const { url, params, body } = deserialize(key)
@@ -137,58 +133,47 @@ const InternalQueryList = <Item extends object, Values extends object | undefine
     },
   )
 
-  const updateSwrKey = async (validateOnly?: boolean) => {
-    const payload = getPayload(action)
-    const prevKey = getSwrkKey(action)
-    const nextKey = genSwrKey(internalProps, payload)
-
-    try {
-      await form.validateFields({ validateOnly })
-
-      if (prevKey !== nextKey) {
-        setSwrKey(action, nextKey)
-      } else {
-        mutate(undefined, true)
-      }
-    } catch (error) {
-      console.error(error)
-      setSwrKey(action, null)
-      mutate(undefined, false)
-    }
-  }
-
   const onConfirm = async () => {
     listAction.current = QueryListAction.Confirm
-    const payload = getPayload(action)
-    setPayload(action, { ...payload, game: game?.id, page: 1, formValues: form.getFieldsValue() })
-    updateSwrKey()
+    setPayload(action, { page: 1, formValues: form.getFieldsValue() })
+
+    try {
+      await form.validateFields()
+      updateSwrKey(action)
+    } catch (error) {
+      updateSwrKey(action, null)
+    }
   }
 
   const onReset = async () => {
     listAction.current = QueryListAction.Reset
     form.resetFields()
-    const payload = getPayload(action)
-    setPayload(action, { ...payload, game: game?.id, page: 1, formValues: form.getFieldsValue() })
-    updateSwrKey(true)
+    setPayload(action, { page: 1, formValues: form.getFieldsValue() })
+
+    try {
+      await form.validateFields({ validateOnly: true })
+      updateSwrKey(action)
+    } catch (error) {
+      updateSwrKey(action, null)
+    }
   }
 
   useEffect(() => {
     const init = async () => {
-      setPayload(action, {
-        game: game?.id,
-        page: 1,
-        size: defaultSize,
-        formValues: form.getFieldsValue(),
-      })
-      updateSwrKey(true)
+      if (accessible) {
+        setPayload(action, { page: 1, size: defaultSize, formValues: form.getFieldsValue() })
+
+        try {
+          await form.validateFields({ validateOnly: true })
+          updateSwrKey(action)
+        } catch (error) {
+          updateSwrKey(action, null)
+        }
+      }
     }
 
     init()
-
-    return () => {
-      remove(action)
-    }
-  }, [])
+  }, [accessible, action, defaultSize, form, updateSwrKey])
 
   useImperativeHandle(ref, () => ({
     data,
@@ -239,9 +224,8 @@ const InternalQueryList = <Item extends object, Values extends object | undefine
                 total: data.total,
                 onChange: async (currentPage: number, currentSize: number) => {
                   listAction.current = QueryListAction.Jump
-                  const payload = getPayload(action)
-                  setPayload(action, { ...payload, game: game?.id, page: currentPage, size: currentSize })
-                  updateSwrKey(true)
+                  setPayload(action, { page: currentPage, size: currentSize })
+                  updateSwrKey(action)
                 },
               }
         }
