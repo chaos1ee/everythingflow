@@ -43,26 +43,6 @@ export const useGameStore = create<GameState>()(
       name: 'game',
       storage: createJSONStorage(() => mixedStorage),
       partialize: state => ({ game: state.game }),
-      onRehydrateStorage: () => {
-        console.log('Game store hydration starts')
-        return (state, error) => {
-          if (state && !error) {
-            // 因为 Mock Service Worker 需要时间启动，所以这里需要延迟一段时间
-            setTimeout(() => {
-              // TODO:
-
-              fetch('/api/usystem/game/all', {
-                method: 'GET',
-              })
-
-              // request<Game[]>(`/api/usystem/game/all`, { isGlobal: true }).then(response => {
-              //   state.setGames(response.data)
-              //   state.setIsLoading(false)
-              // })
-            }, 800)
-          }
-        }
-      },
     },
   ),
 )
