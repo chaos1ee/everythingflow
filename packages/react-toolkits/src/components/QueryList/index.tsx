@@ -162,18 +162,13 @@ const InternalQueryList = <Item extends object, Values extends object | undefine
     const init = async () => {
       if (accessible) {
         setPayload(action, { page: 1, size: defaultSize, formValues: form.getFieldsValue() })
-
-        try {
-          await form.validateFields({ validateOnly: true })
-          updateSwrKey(action)
-        } catch (error) {
-          updateSwrKey(action, null)
-        }
+        await form.validateFields({ validateOnly: true })
+        updateSwrKey(action)
       }
     }
 
     init()
-  }, [accessible, action, defaultSize, form, updateSwrKey])
+  }, [accessible])
 
   useImperativeHandle(ref, () => ({
     data,
