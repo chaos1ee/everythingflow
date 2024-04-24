@@ -3,7 +3,7 @@ import useSWR from 'swr'
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import { useToolkitsContext } from '../components/ContextProvider'
-import { request } from '../utils/request'
+import { useRequest } from '../hooks/request'
 
 interface UserInfo {
   authorityId: string
@@ -43,6 +43,7 @@ export const useTokenStore = create<TokenState>()(
 
 export function useTokenValidation(skip = false) {
   const { usePermissionApiV2 } = useToolkitsContext()
+  const request = useRequest()
 
   useSWR(
     !skip ? (usePermissionApiV2 ? '/api/usystem/user/checkV2' : '/api/usystem/user/check') : null,

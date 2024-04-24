@@ -21,7 +21,7 @@ function useCreateModal() {
   const { message } = App.useApp()
   const create = useCreateUser()
   const { data: roles, isLoading } = useAllRoles()
-  const { setPayload } = useQueryListStore()
+  const { refresh } = useQueryListStore()
   const t = useTranslation()
 
   return useFormModal<{ id: string; name: string; roles: string[] }>({
@@ -47,7 +47,7 @@ function useCreateModal() {
     ),
     async onConfirm(values) {
       await create.trigger(values)
-      setPayload(action, { page: 1 })
+      refresh(action, 1)
       message.success(t('UserList.createSuccessfully'))
     },
   })

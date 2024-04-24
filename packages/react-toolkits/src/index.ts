@@ -26,6 +26,8 @@ import { useFormModal } from './hooks/formModal'
 import { useTranslation } from './hooks/i18n'
 import { useModal, useModalStore } from './hooks/modal'
 import { usePermission, usePermissions } from './hooks/permission'
+import type { RequestOptions, RequestResponse } from './hooks/request'
+import { RequestError, useRequest } from './hooks/request'
 import NotFound from './pages/NotFound'
 import OperationLogList from './pages/OperationLogList'
 import SignIn from './pages/SignIn'
@@ -35,19 +37,19 @@ import type { TokenState } from './stores/token'
 import { useTokenStore, useTokenValidation } from './stores/token'
 import './styles/index.css'
 import type { Locale } from './types'
-import type { RequestOptions, RequestResponse } from './utils/request'
-import { RequestError, request } from './utils/request'
 import { withBaseRoutes, withLayout } from './utils/router'
 import { mixedStorage } from './utils/storage'
 
 export {
   ContextProvider,
+  contextStore,
   DynamicTags,
   FilterFormWrapper,
   GameSelect,
   Highlight,
   InfiniteList,
   Layout,
+  mixedStorage,
   NavMenu,
   NotFound,
   OperationLogList,
@@ -59,10 +61,6 @@ export {
   RequestError,
   RequireGame,
   SignIn,
-  UserWidget,
-  contextStore,
-  mixedStorage,
-  request,
   useFormModal,
   useGameStore,
   useModal,
@@ -70,6 +68,8 @@ export {
   usePermission,
   usePermissions,
   useQueryListStore,
+  useRequest,
+  UserWidget,
   useTokenStore,
   useTokenValidation,
   useToolkitsContext,
