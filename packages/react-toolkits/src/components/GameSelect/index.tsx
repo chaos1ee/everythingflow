@@ -1,10 +1,8 @@
 import { Select, Space, Typography } from 'antd'
-import { useCallback, useEffect, useMemo } from 'react'
-import useSWR, { useSWRConfig } from 'swr'
+import { useSWRConfig } from 'swr'
 import { create } from 'zustand'
 import { createJSONStorage, persist } from 'zustand/middleware'
 import { useTranslation } from '../../hooks/i18n'
-import { useRequest } from '../../hooks/request'
 import { mixedStorage } from '../../utils/storage'
 import { useToolkitsContext } from '../ContextProvider'
 
@@ -20,9 +18,9 @@ export interface Game {
 export interface GameState {
   game: Game | null
   games: Game[]
+  isLoading: boolean
   setGame: (id: string) => void
-  setGames: (games: Game[]) => void
-  clearGame: () => void
+  fetchGames: () => void
 }
 
 export const useGameStore = create<GameState>()(
@@ -30,19 +28,48 @@ export const useGameStore = create<GameState>()(
     (set, get) => ({
       game: null,
       games: [],
+      isLoading: false,
       setGame: id => {
         const matchGame = (get().games ?? []).find(item => item.id === id)
         set({ game: matchGame ?? null })
       },
-      setGames: games => set({ games }),
-      clearGame: () => {
-        set({ game: null })
+      fetchGames: () => {
+        set({ isLoading: true })
+
+        fetch('/api/usystem/game/all', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        })
+          .then(response => {
+            if (response.ok) {
+              return response.json()
+            }
+          })
+          .then((json: { code: number; data: Game[]; msg: string }) => {
+            set({ games: json.data })
+          })
+          .finally(() => {
+            set({ isLoading: false })
+          })
       },
     }),
     {
       name: 'game',
       storage: createJSONStorage(() => mixedStorage),
       partialize: state => ({ game: state.game }),
+      onRehydrateStorage: () => {
+        console.log('Game store hydration starts')
+        return (state, error) => {
+          if (state && !error) {
+            // 因为 Mock Service Worker 需要时间启动，所以这里需要延迟一段时间
+            setTimeout(() => {
+              state.fetchGames()
+            }, 800)
+          }
+        }
+      },
     },
   ),
 )
@@ -50,54 +77,26 @@ export const useGameStore = create<GameState>()(
 const GameSelect = () => {
   const t = useTranslation()
   const { gameFilter } = useToolkitsContext()
-  const { game, setGame, setGames, clearGame } = useGameStore()
+  const { game, games, isLoading, setGame } = useGameStore()
   const { mutate } = useSWRConfig()
-  const request = useRequest()
 
-  const { data, isLoading } = useSWR(
-    '/api/usystem/game/all',
-    url =>
-      request<Game[]>(url, {
-        method: 'GET',
-        isGlobal: true,
-      }).then(response => response.data),
-    {
-      onSuccess: games => {
-        setGames(games)
-      },
-    },
-  )
+  const options = (games ?? [])
+    ?.filter(item => gameFilter?.(item) ?? true)
+    ?.map(item => ({
+      label: item.name,
+      value: item.id,
+    }))
 
-  const options = useMemo(
-    () =>
-      (data ?? [])
-        ?.filter(item => !gameFilter || gameFilter(item))
-        ?.map(item => ({
-          label: item.name,
-          value: item.id,
-        })),
-    [data, gameFilter],
-  )
-
-  const clearCache = useCallback(async () => {
+  const clearCache = async () => {
     await mutate(key => {
       return !(typeof key === 'string' && key.startsWith('/api/usystem/game/all'))
     })
-  }, [mutate])
+  }
 
-  const onGameChange = useCallback(
-    async (id: string) => {
-      await clearCache()
-      setGame(id)
-    },
-    [data, clearCache],
-  )
-
-  useEffect(() => {
-    if (!isLoading && (options.length === 0 || !options.some(item => item.value === game?.id))) {
-      clearGame()
-    }
-  }, [isLoading, game, options])
+  const onGameChange = async (id: string) => {
+    await clearCache()
+    setGame(id)
+  }
 
   return (
     <Space>
