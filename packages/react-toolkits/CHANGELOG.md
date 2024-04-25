@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.8.64
+
+### Patch Changes
+
+- 17999b6: fix: originalData not updated when refetching in QueryList
+
 ## 0.8.63
 
 ### Patch Changes
