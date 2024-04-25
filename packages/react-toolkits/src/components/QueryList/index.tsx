@@ -3,7 +3,7 @@ import type { FormInstance } from 'antd'
 import { Form, Result, Spin, Table } from 'antd'
 import type { TableProps } from 'antd/es/table'
 import type { ReactElement, ReactNode, Ref } from 'react'
-import { forwardRef, useEffect, useImperativeHandle, useRef } from 'react'
+import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react'
 import useSWR from 'swr'
 import { useTranslation } from '../../hooks/i18n'
 import { usePermission } from '../../hooks/permission'
@@ -92,7 +92,7 @@ const InternalQueryList = <Item extends object, Values extends object | undefine
   const { propsMap, getPayload, setPayload, getSwrkKey, updateSwrKey } = useQueryListStore()
   propsMap.set(action, internalProps)
   const shouldPoll = useRef(false)
-  const originalData = useRef<Response>()
+  const [originalData, setOriginalData] = useState<Response>()
   const request = useRequest()
 
   const { data, isLoading: isDataLoading } = useSWR(
@@ -108,7 +108,7 @@ const InternalQueryList = <Item extends object, Values extends object | undefine
         headers: typeof headers === 'function' ? headers(payload) : headers,
       })
 
-      originalData.current = response.data
+      setOriginalData(response.data)
 
       return {
         dataSource: getDataSource(response.data),
@@ -172,7 +172,7 @@ const InternalQueryList = <Item extends object, Values extends object | undefine
 
   useImperativeHandle(ref, () => ({
     data,
-    originalData: originalData.current,
+    originalData,
     form,
   }))
 
