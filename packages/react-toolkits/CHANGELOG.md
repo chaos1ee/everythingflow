@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.8.67
+
+### Patch Changes
+
+- a664b5d: fix: typescript types declaration issue
+
 ## 0.8.66
 
 ### Patch Changes
