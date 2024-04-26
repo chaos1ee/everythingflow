@@ -1,6 +1,6 @@
 {
   "name": "react-toolkits",
-  "version": "0.8.64",
+  "version": "0.8.65",
   "packageManager": "^pnpm@8.7.5",
   "sideEffects": [
     "**/*.css"
