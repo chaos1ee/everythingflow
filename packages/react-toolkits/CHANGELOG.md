@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.8.65
+
+### Patch Changes
+
+- cb8fd98: feat: add Authorization header
+
 ## 0.8.64
 
 ### Patch Changes
