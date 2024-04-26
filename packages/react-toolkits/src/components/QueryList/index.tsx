@@ -95,7 +95,7 @@ const InternalQueryList = <Item extends object, Values extends object | undefine
   const [originalData, setOriginalData] = useState<Response>()
   const request = useRequest()
 
-  const { data, isLoading: isDataLoading } = useSWR(
+  const { data, isValidating } = useSWR(
     getSwrkKey(action),
     async key => {
       const { url, params, body } = deserialize(key)
@@ -193,21 +193,23 @@ const InternalQueryList = <Item extends object, Values extends object | undefine
     return <Result status={403} subTitle={t('global.noEntitlement')} />
   }
 
+  const formRender = renderForm ? (
+    <FilterFormWrapper isConfirming={isValidating} onReset={onReset} onConfirm={onConfirm}>
+      {renderForm(form)}
+    </FilterFormWrapper>
+  ) : (
+    // 消除 Antd 的警告
+    <Form form={form} />
+  )
+
   return (
     <div>
-      {renderForm ? (
-        <FilterFormWrapper isConfirming={isDataLoading} onReset={onReset} onConfirm={onConfirm}>
-          {renderForm(form)}
-        </FilterFormWrapper>
-      ) : (
-        // 消除 Antd 的警告
-        <Form form={form} />
-      )}
+      {formRender}
       {extra && <div className="mt-2 mb-4">{extra(form)}</div>}
       <Table
         {...tableProps}
         dataSource={data.dataSource}
-        loading={isDataLoading}
+        loading={isValidating}
         pagination={
           onePage
             ? false
