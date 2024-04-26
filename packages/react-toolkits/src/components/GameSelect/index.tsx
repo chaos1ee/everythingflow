@@ -36,10 +36,19 @@ export const useGameStore = create<GameState>()(
       fetchGames: () => {
         set({ isLoading: true })
 
+        let token = ''
+        const tokenState = localStorage.getItem('token')
+
+        if (tokenState) {
+          const parsedState = JSON.parse(tokenState)
+          token = parsedState.state.token
+        }
+
         fetch('/api/usystem/game/all', {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
           },
         })
           .then(response => {
