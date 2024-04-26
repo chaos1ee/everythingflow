@@ -149,7 +149,14 @@ const InfiniteList = <Item extends object, Values extends object | undefined = u
   return (
     <>
       {renderForm ? (
-        <FilterFormWrapper onReset={onReset} onConfirm={onConfirm}>
+        <FilterFormWrapper
+          extras={extras?.map(extra => ({
+            key: extra.key,
+            children: typeof extra.children === 'function' ? extra.children(form) : extra.children,
+          }))}
+          onReset={onReset}
+          onConfirm={onConfirm}
+        >
           {renderForm(form)}
         </FilterFormWrapper>
       ) : (
