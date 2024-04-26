@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.8.66
+
+### Patch Changes
+
+- ececcbc: feat: render extras of InfiniteList
+
 ## 0.8.65
 
 ### Patch Changes
