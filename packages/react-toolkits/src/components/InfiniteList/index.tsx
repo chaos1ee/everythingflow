@@ -24,7 +24,7 @@ export interface InfiniteListProps<Item, Values, Response>
   code?: string
   headers?: Record<string, string> | ((form: FormInstance<Values>) => Record<string, string>)
   renderForm?: (form: FormInstance<Values>) => ReactNode
-  transformArg: (values: Values | undefined, rowKey?: string) => Record<any, any>
+  transformArg: (values: Values, rowKey?: string) => Record<any, any>
   hasMore?: (data: Response[] | undefined) => boolean
   isGlobal?: boolean
   extras?: InfiniteListExtra<Values>[]
@@ -55,7 +55,8 @@ const InfiniteList = <Item extends object, Values extends object | undefined = u
   const getKey = (pageIndex: number, previousPageData: Response) => {
     if (!isValid) return null
 
-    const args = transformArg(formValues, pageIndex !== 0 ? getRowKey(previousPageData) : undefined)
+    const rowKey = pageIndex !== 0 ? getRowKey(previousPageData) : undefined
+    const args = transformArg(formValues as Values, rowKey)
     const queryString = qs.stringify(args)
 
     return queryString ? `${action}?${qs.stringify(args)}` : action
