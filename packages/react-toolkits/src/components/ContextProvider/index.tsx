@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type { FC, Key, PropsWithChildren, ReactNode } from 'react'
 import { createContext, useContext } from 'react'
-import type { RequestOptions } from 'src/utils/request'
 import { createStore } from 'zustand'
+import type { RequestOptions } from '../../hooks/request'
 import type { Locale } from '../../types'
 import type { Game } from '../GameSelect'
 import type { NavMenuItem } from '../NavMenu'

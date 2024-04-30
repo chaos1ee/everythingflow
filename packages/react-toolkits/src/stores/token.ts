@@ -37,6 +37,7 @@ export const useTokenStore = create<TokenState>()(
     {
       name: 'token',
       partialize: state => ({ token: state.token }),
+      skipHydration: true,
     },
   ),
 )
