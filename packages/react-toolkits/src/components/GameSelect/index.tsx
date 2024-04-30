@@ -3,6 +3,7 @@ import { useSWRConfig } from 'swr'
 import { create } from 'zustand'
 import { createJSONStorage, persist } from 'zustand/middleware'
 import { useTranslation } from '../../hooks/i18n'
+import { useTokenStore } from '../../stores/token'
 import { mixedStorage } from '../../utils/storage'
 import { useToolkitsContext } from '../ContextProvider'
 
@@ -34,54 +35,50 @@ export const useGameStore = create<GameState>()(
         set({ game: matchGame ?? null })
       },
       fetchGames: () => {
-        set({ isLoading: true })
+        const token = useTokenStore.getState().token
 
-        let token = ''
-        const tokenState = localStorage.getItem('token')
+        if (token) {
+          set({ isLoading: true })
 
-        if (tokenState) {
-          const parsedState = JSON.parse(tokenState)
-          token = parsedState.state.token
+          fetch('/api/usystem/game/all', {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${token}`,
+            },
+          })
+            .then(response => {
+              if (response.ok) {
+                return response.json()
+              }
+              throw new Error('Network response was not ok.')
+            })
+            .then((json: { code: number; data: Game[]; msg: string }) => {
+              set({ games: json.data })
+            })
+            .finally(() => {
+              set({ isLoading: false })
+            })
         }
-
-        fetch('/api/usystem/game/all', {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`,
-          },
-        })
-          .then(response => {
-            if (response.ok) {
-              return response.json()
-            }
-          })
-          .then((json: { code: number; data: Game[]; msg: string }) => {
-            set({ games: json.data })
-          })
-          .finally(() => {
-            set({ isLoading: false })
-          })
       },
     }),
     {
       name: 'game',
       storage: createJSONStorage(() => mixedStorage),
       partialize: state => ({ game: state.game }),
-      onRehydrateStorage: () => {
-        console.log('Game store hydration starts')
-        return (state, error) => {
-          if (state && !error) {
-            // 因为 Mock Service Worker 需要时间启动，所以这里需要延迟一段时间
-            setTimeout(() => {
-              state.fetchGames()
-            }, 800)
-          }
-        }
-      },
     },
   ),
 )
+
+useTokenStore.subscribe((state, prevState) => {
+  if (state.token === prevState.token) return
+  // 因为 Mock Service Worker 需要时间启动，所以这里需要延迟一段时间
+  setTimeout(() => {
+    useGameStore.getState().fetchGames()
+  }, 400)
+})
+
+useTokenStore.persist.rehydrate()
 
 const GameSelect = () => {
   const t = useTranslation()
