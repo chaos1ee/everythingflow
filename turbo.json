@@ -19,12 +19,6 @@
     },
     "clean": {
       "cache": false
-    },
-    "test": {
-      "cache": false,
-      "dependsOn": [
-        "lint"
-      ]
     }
   }
 }

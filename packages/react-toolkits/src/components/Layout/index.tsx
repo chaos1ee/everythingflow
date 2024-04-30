@@ -2,7 +2,7 @@ import * as Antd from 'antd'
 import { Divider, Space } from 'antd'
 import type { FC, PropsWithChildren } from 'react'
 import { Suspense } from 'react'
-import logo from '../../assets/logo.png'
+import logoUrl from '../../assets/logo.png'
 import { useToolkitsContext } from '../ContextProvider'
 import GameSelect from '../GameSelect'
 import NavMenu from '../NavMenu'
@@ -37,7 +37,7 @@ const Layout: FC<PropsWithChildren> = props => {
         theme="light"
       >
         <div className="flex items-center px-6 py-4">
-          <img src={logo} alt="logo" className="w-8 h-8" />
+          <img src={logoUrl} alt="logo" className="w-8 h-8" />
           <div className="ml-2">{appTitle}</div>
         </div>
         <NavMenu />
