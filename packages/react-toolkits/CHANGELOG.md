@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.8.68
+
+### Patch Changes
+
+- 724e129: refactor: subscribe useTokenStore change
+
 ## 0.8.67
 
 ### Patch Changes
