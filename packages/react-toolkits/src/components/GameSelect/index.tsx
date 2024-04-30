@@ -71,11 +71,12 @@ export const useGameStore = create<GameState>()(
 )
 
 useTokenStore.subscribe((state, prevState) => {
-  if (state.token === prevState.token) return
-  // 因为 Mock Service Worker 需要时间启动，所以这里需要延迟一段时间
-  setTimeout(() => {
-    useGameStore.getState().fetchGames()
-  }, 400)
+  if (state.token !== prevState.token) {
+    // FIXME: 因为请求会在 Mock Service Worker 启动前发出，所以这里需要延迟一段时间
+    setTimeout(() => {
+      useGameStore.getState().fetchGames()
+    }, 400)
+  }
 })
 
 useTokenStore.persist.rehydrate()

@@ -6,6 +6,7 @@ import { contextStore, useToolkitsContext } from '../components/ContextProvider'
 import { useGameStore } from '../components/GameSelect'
 import { useTokenStore } from '../stores/token'
 
+
 export class RequestError extends Error {
   status!: number
   code?: number
