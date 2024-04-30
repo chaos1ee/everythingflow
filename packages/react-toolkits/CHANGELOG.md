@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.8.69
+
+### Patch Changes
+
+- 19d5297: build: replace vite with tsup
+
 ## 0.8.68
 
 ### Patch Changes
