@@ -1,5 +1,11 @@
 # @love1t/handsontable
 
+## 0.1.9
+
+### Patch Changes
+
+- 4cbff0f: chore: use tsup for bunlding
+
 ## 0.1.8
 
 ### Patch Changes
