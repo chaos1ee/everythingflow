@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.8.70
+
+### Patch Changes
+
+- bc8f109: feat: rename typescript defination files from .d.mts to .d.ts
+
 ## 0.8.69
 
 ### Patch Changes
