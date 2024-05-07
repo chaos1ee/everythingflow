@@ -25,8 +25,7 @@
     "react-dom": "^18.2.0",
     "rimraf": "^5.0.5",
     "turbo": "^1.11.2",
-    "typescript": "^5.3.3",
-    "vite": "^5.0.10"
+    "typescript": "^5.3.3"
   },
   "prettier": "@flow97/prettier-config"
 }
