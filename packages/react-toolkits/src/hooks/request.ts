@@ -6,7 +6,6 @@ import { contextStore, useToolkitsContext } from '../components/ContextProvider'
 import { useGameStore } from '../components/GameSelect'
 import { useTokenStore } from '../stores/token'
 
-
 export class RequestError extends Error {
   status!: number
   code?: number
@@ -47,7 +46,7 @@ export function useRequest() {
   const { game } = useGameStore()
 
   return async <T = any>(url: string, opts: RequestOptions = {}): Promise<RequestResponse<T>> => {
-    opts = Object.assign(opts, { responseType: 'json' })
+    opts = Object.assign(opts, { responseType: opts.responseType ?? 'json' })
     let { body, params, headers, responseType, isGlobal, ...rest } = opts
 
     const parsed = qs.parseUrl(url)
