@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.8.71
+
+### Patch Changes
+
+- 5ee13f4: fix: request responseType option been overrided
+
 ## 0.8.70
 
 ### Patch Changes
