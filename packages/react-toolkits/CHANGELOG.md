@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.8.73
+
+### Patch Changes
+
+- 60786c8: feat: trigger data update in QueryList when props change
+
 ## 0.8.72
 
 ### Patch Changes
