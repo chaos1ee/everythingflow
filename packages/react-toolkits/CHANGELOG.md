@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.8.72
+
+### Patch Changes
+
+- 5d18b9a: feat: access formInstance from outside of QueryList
+
 ## 0.8.71
 
 ### Patch Changes
