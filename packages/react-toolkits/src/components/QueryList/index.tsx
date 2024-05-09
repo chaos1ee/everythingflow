@@ -171,7 +171,7 @@ const InternalQueryList = <Item extends object, Values extends object | undefine
     }
 
     init()
-  }, [accessible, getBody, getParams, headers, method, action])
+  }, [accessible])
 
   useImperativeHandle(ref, () => ({
     data,
