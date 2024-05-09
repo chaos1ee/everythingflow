@@ -30,7 +30,7 @@ export interface QueryListDataType<Item> {
 
 export interface QueryListRef<Item = any, Values = any, Response = any> {
   data: QueryListDataType<Item>
-  form: FormInstance<Values>
+  internalForm: FormInstance<Values>
   originalData: Response | undefined
 }
 
@@ -48,10 +48,11 @@ export interface QueryListProps<Item = any, Values = any, Response = any>
   onePage?: boolean
   defaultSize?: number
   headers?: RequestOptions['headers'] | ((payload: QueryListPayload<Values> | undefined) => RequestOptions['headers'])
+  form?: FormInstance<Values>
   getBody?: (payload: QueryListPayload<Values>) => RequestOptions['body']
   getParams?: (payload: QueryListPayload<Values>) => RequestOptions['params']
-  renderForm?: (form: FormInstance<Values>) => ReactNode
-  extra?: (form: FormInstance<Values>) => ReactNode
+  renderForm?: (internalForm: FormInstance<Values>) => ReactNode
+  extra?: (internalForm: FormInstance<Values>) => ReactNode
   onTableChange?: TableProps<Item>['onChange']
   afterSuccess?: (action: QueryListAction, data: QueryListDataType<Item>) => void
   // 默认的接口返回类型为 ListResponse<Item>，当符合时无需设置 getTotal、getDataSource 就可以让组件正确获取 total 与 dataSource。
@@ -72,6 +73,7 @@ const InternalQueryList = <Item extends object, Values extends object | undefine
     isGlobal,
     onePage,
     method,
+    form,
     getBody,
     getParams,
     defaultSize,
@@ -86,7 +88,8 @@ const InternalQueryList = <Item extends object, Values extends object | undefine
   } = internalProps
 
   const t = useTranslation()
-  const [form] = Form.useForm<Values>()
+  let [internalForm] = Form.useForm<Values>()
+  internalForm = form || internalForm
   const { accessible, isLoading } = usePermission(code, isGlobal)
   const listAction = useRef<QueryListAction>(QueryListAction.Init)
   const { propsMap, getPayload, setPayload, getSwrkKey, updateSwrKey } = useQueryListStore()
@@ -135,10 +138,10 @@ const InternalQueryList = <Item extends object, Values extends object | undefine
 
   const onConfirm = async () => {
     listAction.current = QueryListAction.Confirm
-    setPayload(action, { page: 1, formValues: form.getFieldsValue() })
+    setPayload(action, { page: 1, formValues: internalForm.getFieldsValue() })
 
     try {
-      await form.validateFields()
+      await internalForm.validateFields()
       updateSwrKey(action)
     } catch (error) {
       updateSwrKey(action, null)
@@ -147,11 +150,11 @@ const InternalQueryList = <Item extends object, Values extends object | undefine
 
   const onReset = async () => {
     listAction.current = QueryListAction.Reset
-    form.resetFields()
-    setPayload(action, { page: 1, formValues: form.getFieldsValue() })
+    internalForm.resetFields()
+    setPayload(action, { page: 1, formValues: internalForm.getFieldsValue() })
 
     try {
-      await form.validateFields({ validateOnly: true })
+      await internalForm.validateFields({ validateOnly: true })
       updateSwrKey(action)
     } catch (error) {
       updateSwrKey(action, null)
@@ -161,8 +164,8 @@ const InternalQueryList = <Item extends object, Values extends object | undefine
   useEffect(() => {
     const init = async () => {
       if (accessible) {
-        setPayload(action, { page: 1, size: defaultSize, formValues: form.getFieldsValue() })
-        await form.validateFields({ validateOnly: true })
+        setPayload(action, { page: 1, size: defaultSize, formValues: internalForm.getFieldsValue() })
+        await internalForm.validateFields({ validateOnly: true })
         updateSwrKey(action)
       }
     }
@@ -173,7 +176,7 @@ const InternalQueryList = <Item extends object, Values extends object | undefine
   useImperativeHandle(ref, () => ({
     data,
     originalData,
-    form,
+    internalForm,
   }))
 
   if (isLoading) {
@@ -195,17 +198,17 @@ const InternalQueryList = <Item extends object, Values extends object | undefine
 
   const formRender = renderForm ? (
     <FilterFormWrapper isConfirming={isValidating} onReset={onReset} onConfirm={onConfirm}>
-      {renderForm(form)}
+      {renderForm(internalForm)}
     </FilterFormWrapper>
   ) : (
     // 消除 Antd 的警告
-    <Form form={form} />
+    <Form form={internalForm} />
   )
 
   return (
     <div>
       {formRender}
-      {extra && <div className="mt-2 mb-4">{extra(form)}</div>}
+      {extra && <div className="mt-2 mb-4">{extra(internalForm)}</div>}
       <Table
         {...tableProps}
         dataSource={data.dataSource}
