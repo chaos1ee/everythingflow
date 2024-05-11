@@ -196,7 +196,7 @@ const InternalQueryList = <Item extends object, Values extends object | undefine
     return <Result status={403} subTitle={t('global.noEntitlement')} />
   }
 
-  const formRender = renderForm ? (
+  const formRenderer = renderForm ? (
     <FilterFormWrapper isConfirming={isValidating} onReset={onReset} onConfirm={onConfirm}>
       {renderForm(internalForm)}
     </FilterFormWrapper>
@@ -207,7 +207,7 @@ const InternalQueryList = <Item extends object, Values extends object | undefine
 
   return (
     <div>
-      {formRender}
+      {formRenderer}
       {extra && <div className="mt-2 mb-4">{extra(internalForm)}</div>}
       <Table
         {...tableProps}
