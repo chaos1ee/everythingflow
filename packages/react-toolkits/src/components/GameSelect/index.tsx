@@ -101,8 +101,8 @@ const GameSelect = () => {
   }
 
   const onGameChange = async (id: string) => {
-    setGame(id)
     await clearCache()
+    setGame(id)
   }
 
   return (
