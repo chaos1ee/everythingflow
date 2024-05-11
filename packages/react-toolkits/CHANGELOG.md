@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.8.74
+
+### Patch Changes
+
+- ea82f79: fix: setGame should been involked before clearCache
+
 ## 0.8.73
 
 ### Patch Changes
