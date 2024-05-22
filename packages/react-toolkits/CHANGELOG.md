@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.8.76
+
+### Patch Changes
+
+- c7c1667: fix: ignore game request when 'usePermissionApiV2' is true
+
 ## 0.8.75
 
 ### Patch Changes
