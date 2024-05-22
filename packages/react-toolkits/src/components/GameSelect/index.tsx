@@ -5,7 +5,7 @@ import { createJSONStorage, persist } from 'zustand/middleware'
 import { useTranslation } from '../../hooks/i18n'
 import { useTokenStore } from '../../stores/token'
 import { mixedStorage } from '../../utils/storage'
-import { useToolkitsContext } from '../ContextProvider'
+import { contextStore, useToolkitsContext } from '../ContextProvider'
 
 const { Text } = Typography
 
@@ -36,8 +36,9 @@ export const useGameStore = create<GameState>()(
       },
       fetchGames: () => {
         const token = useTokenStore.getState().token
+        const isPermissionApiV2 = contextStore.getState().usePermissionApiV2
 
-        if (token) {
+        if (token && isPermissionApiV2) {
           set({ isLoading: true })
 
           fetch('/api/usystem/game/all', {
