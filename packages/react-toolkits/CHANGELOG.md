@@ -1,5 +1,14 @@
 # react-toolkits
 
+## 0.8.81
+
+### Patch Changes
+
+- e6fb9c9: fix: build failed
+- eee6e98: fix: cache of QueryList been removed failed
+- d3c47f1: ci: trigger building
+- e35c158: fix: eslint error
+
 ## 0.8.80
 
 ### Patch Changes
