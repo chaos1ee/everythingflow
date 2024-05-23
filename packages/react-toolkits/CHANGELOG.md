@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.8.78
+
+### Patch Changes
+
+- cc4c1c4: feat: refresh default page insteading of 1
+
 ## 0.8.77
 
 ### Patch Changes
