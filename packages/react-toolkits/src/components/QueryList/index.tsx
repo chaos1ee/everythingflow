@@ -92,13 +92,13 @@ const InternalQueryList = <Item extends object, Values extends object | undefine
   internalForm = form || internalForm
   const { accessible, isLoading } = usePermission(code, isGlobal)
   const listAction = useRef<QueryListAction>(QueryListAction.Init)
-  const { propsMap, getPayload, setPayload, getSwrkKey, updateSwrKey } = useQueryListStore()
+  const { propsMap, getPayload, setPayload, getSwrkKey, updateSwrKey, mutate } = useQueryListStore()
   propsMap.set(action, internalProps)
   const shouldPoll = useRef(false)
   const [originalData, setOriginalData] = useState<Response>()
   const request = useRequest()
 
-  const { data, isValidating, mutate } = useSWR(
+  const { data, isValidating } = useSWR(
     getSwrkKey(action),
     async key => {
       const { url, params, body } = deserialize(key)
@@ -175,7 +175,7 @@ const InternalQueryList = <Item extends object, Values extends object | undefine
 
   useEffect(() => {
     return () => {
-      mutate({ dataSource: [], total: 0 }, false)
+      mutate(action, undefined, { revalidate: false })
     }
   }, [])
 
