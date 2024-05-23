@@ -33,7 +33,7 @@
     "@types/react-dom": "^18.2.18",
     "@vitejs/plugin-react": "^4.2.1",
     "autoprefixer": "^10.4.17",
-    "cypress": "^13.6.4",
+    "eslint": "^8.38.0",
     "jose": "^5.2.0",
     "msw": "^2.1.5",
     "postcss": "^8.4.33",

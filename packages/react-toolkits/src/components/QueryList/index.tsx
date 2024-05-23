@@ -98,7 +98,7 @@ const InternalQueryList = <Item extends object, Values extends object | undefine
   const [originalData, setOriginalData] = useState<Response>()
   const request = useRequest()
 
-  const { data, isValidating } = useSWR(
+  const { data, isValidating, mutate } = useSWR(
     getSwrkKey(action),
     async key => {
       const { url, params, body } = deserialize(key)
@@ -172,6 +172,12 @@ const InternalQueryList = <Item extends object, Values extends object | undefine
 
     init()
   }, [accessible])
+
+  useEffect(() => {
+    return () => {
+      mutate({ dataSource: [], total: 0 }, false)
+    }
+  }, [])
 
   useImperativeHandle(ref, () => ({
     data,
