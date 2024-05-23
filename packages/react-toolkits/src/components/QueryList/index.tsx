@@ -175,6 +175,7 @@ const InternalQueryList = <Item extends object, Values extends object | undefine
 
   useEffect(() => {
     return () => {
+      // 组件卸载时清除缓存
       removeFromStore(action)
     }
   }, [])
