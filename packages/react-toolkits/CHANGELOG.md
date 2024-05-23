@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.8.79
+
+### Patch Changes
+
+- c482eca: feat: mutate swr data in QueryList when it been unmounted
+
 ## 0.8.78
 
 ### Patch Changes
