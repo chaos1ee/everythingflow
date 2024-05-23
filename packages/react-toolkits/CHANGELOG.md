@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.8.77
+
+### Patch Changes
+
+- c8473f1: feat: access data in extra render function
+
 ## 0.8.76
 
 ### Patch Changes
