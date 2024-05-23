@@ -81,9 +81,9 @@ export const useQueryListStore = create<QueryListState>((set, get) => ({
     const swrKey = swrKeyMap.get(action)
     mutate(swrKey, data, opts)
   },
-  refresh(action, page = 1) {
-    const { setPayload, updateSwrKey } = get()
-    setPayload(action, { page })
+  refresh(action, page) {
+    const { setPayload, updateSwrKey, payloadMap } = get()
+    setPayload(action, { page: page ?? payloadMap.get(action)?.page })
     updateSwrKey(action)
   },
 }))
