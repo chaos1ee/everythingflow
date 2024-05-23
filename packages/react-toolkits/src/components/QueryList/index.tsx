@@ -92,7 +92,7 @@ const InternalQueryList = <Item extends object, Values extends object | undefine
   internalForm = form || internalForm
   const { accessible, isLoading } = usePermission(code, isGlobal)
   const listAction = useRef<QueryListAction>(QueryListAction.Init)
-  const { propsMap, getPayload, setPayload, getSwrkKey, updateSwrKey, mutate, removeFromStore } = useQueryListStore()
+  const { propsMap, getPayload, setPayload, getSwrkKey, updateSwrKey, removeFromStore } = useQueryListStore()
   propsMap.set(action, internalProps)
   const shouldPoll = useRef(false)
   const [originalData, setOriginalData] = useState<Response>()
