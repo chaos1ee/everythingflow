@@ -59,6 +59,7 @@
     "antd": "^5.12.4",
     "autoprefixer": "^10.4.16",
     "cross-env": "^7.0.3",
+    "eslint": "^8.38.0",
     "postcss": "^8.4.32",
     "prettier": "^3.1.1",
     "react": "^18.2.0",
@@ -67,7 +68,6 @@
     "tailwind-config": "workspace:*",
     "tailwindcss": "^3.4.0",
     "ts-essentials": "^9.4.1",
-    "ts-node": "^10.9.2",
     "tsconfig": "workspace:*",
     "tsup": "^8.0.2",
     "typescript": "^5.3.3"
