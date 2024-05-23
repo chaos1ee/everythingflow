@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.8.80
+
+### Patch Changes
+
+- e6660fd: fix: swr cache be cleared failed
+
 ## 0.8.79
 
 ### Patch Changes
