@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.8.82
+
+### Patch Changes
+
+- 974cb1d: fix: not mutate QueryList swr cache when it been unmounted
+
 ## 0.8.81
 
 ### Patch Changes
