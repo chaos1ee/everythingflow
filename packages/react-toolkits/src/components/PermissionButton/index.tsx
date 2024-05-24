@@ -4,14 +4,14 @@ import type { FC, PropsWithChildren } from 'react'
 import { useTranslation } from '../../hooks/i18n'
 import { usePermissions } from '../../hooks/permission'
 
-export interface PermissionButtonProps extends Omit<ButtonProps, 'disabled'> {
+export interface PermissionButtonProps extends ButtonProps {
   code: string | string[]
   showLoading?: boolean
   isGlobal?: boolean
 }
 
 const PermissionButton: FC<PropsWithChildren<PermissionButtonProps>> = props => {
-  const { children, code, showLoading, isGlobal, ...restProps } = props
+  const { children, code, showLoading, isGlobal, disabled, ...restProps } = props
   const { data, isLoading } = usePermissions(Array.isArray(code) ? code : [code], isGlobal)
   const t = useTranslation()
 
@@ -33,7 +33,11 @@ const PermissionButton: FC<PropsWithChildren<PermissionButtonProps>> = props => 
     )
   }
 
-  return <Button {...restProps}>{children}</Button>
+  return (
+    <Button disabled {...restProps}>
+      {children}
+    </Button>
+  )
 }
 
 export default PermissionButton
