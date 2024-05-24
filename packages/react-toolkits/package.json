@@ -1,7 +1,7 @@
 {
   "name": "react-toolkits",
   "type": "module",
-  "version": "0.8.82",
+  "version": "0.8.83",
   "sideEffects": [
     "**/*.css"
   ],
