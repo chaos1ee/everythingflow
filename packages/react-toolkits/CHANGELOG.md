@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.8.83
+
+### Patch Changes
+
+- be36a71: feat: add 'disabled' prop for PermissionButton
+
 ## 0.8.82
 
 ### Patch Changes
