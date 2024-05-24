@@ -34,7 +34,7 @@ const PermissionButton: FC<PropsWithChildren<PermissionButtonProps>> = props => 
   }
 
   return (
-    <Button disabled {...restProps}>
+    <Button disabled={disabled} {...restProps}>
       {children}
     </Button>
   )
