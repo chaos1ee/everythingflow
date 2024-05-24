@@ -1,9 +1,9 @@
-import type { QueryListDataType, QueryListProps } from '../components/QueryList'
-import { genSwrKey } from '../components/QueryList/utils'
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { mutate } from 'swr'
 import type { MutatorCallback, MutatorOptions } from 'swr/_internal'
 import { create } from 'zustand'
+import type { QueryListDataType, QueryListProps } from '../components/QueryList'
+import { genSwrKey } from '../components/QueryList/utils'
 
 type QueryListMutator = <Item = any>(
   action: string,
@@ -88,7 +88,6 @@ export const useQueryListStore = create<QueryListState>((set, get) => ({
     updateSwrKey(action)
   },
   removeFromStore(action) {
-    get().mutate(action, undefined, { revalidate: false })
     get().swrKeyMap.delete(action)
     get().payloadMap.delete(action)
     get().propsMap.delete(action)
