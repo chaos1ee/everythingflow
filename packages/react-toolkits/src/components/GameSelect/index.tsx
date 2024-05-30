@@ -95,14 +95,14 @@ const GameSelect = () => {
       value: item.id,
     }))
 
-  const clearCache = async () => {
-    await mutate(key => {
-      return !(typeof key === 'string' && key.startsWith('/api/usystem/game/all'))
-    })
-  }
-
   const onGameChange = async (id: string) => {
-    await clearCache()
+    // 清除 SWR 缓存
+    await mutate(
+      key => {
+        return !(typeof key === 'string' && key.startsWith('/api/usystem/game/all'))
+      },
+      { revalidateAll: false },
+    )
     setGame(id)
   }
 

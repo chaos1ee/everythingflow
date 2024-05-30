@@ -88,6 +88,7 @@ export const useQueryListStore = create<QueryListState>((set, get) => ({
     updateSwrKey(action)
   },
   removeFromStore(action) {
+    get().mutate(action, undefined, { revalidate: false })
     get().swrKeyMap.delete(action)
     get().payloadMap.delete(action)
     get().propsMap.delete(action)
