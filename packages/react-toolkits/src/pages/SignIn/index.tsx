@@ -7,8 +7,8 @@ import logoUrl from '../../assets/logo.png'
 import { useToolkitsContext } from '../../components/ContextProvider'
 import { SSO_URL } from '../../constants'
 import { useTranslation } from '../../hooks/i18n'
-import { useRequest } from '../../hooks/request'
 import { useTokenStore } from '../../stores/token'
+import { request } from '../../utils/request'
 
 const SignIn: FC = () => {
   const [searchParams] = useSearchParams()
@@ -16,7 +16,6 @@ const SignIn: FC = () => {
   const { token, setToken } = useTokenStore()
   const t = useTranslation()
   const { signInPageTitle, localeDropdownMenu, signInSuccessRedirectUrl, idaasRedirectUrl } = useToolkitsContext()
-  const request = useRequest()
 
   useSWRImmutable(
     searchParams.has('ticket') ? `/api/usystem/user/login?ticket=${searchParams.get('ticket')}` : null,

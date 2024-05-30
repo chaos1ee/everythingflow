@@ -8,7 +8,7 @@ import { useEffect, useState } from 'react'
 import useSWRInfinite from 'swr/infinite'
 import { useTranslation } from '../../hooks/i18n'
 import { usePermission } from '../../hooks/permission'
-import { useRequest } from '../../hooks/request'
+import { request } from '../../utils/request'
 import FilterFormWrapper from '../FilterFormWrapper'
 
 interface InfiniteListExtra<Values> {
@@ -61,8 +61,6 @@ const InfiniteList = <Item extends object, Values extends object | undefined = u
 
     return queryString ? `${action}?${qs.stringify(args)}` : action
   }
-
-  const request = useRequest()
 
   const {
     data,

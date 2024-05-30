@@ -6,7 +6,7 @@ import type { FC, PropsWithChildren } from 'react'
 import { Suspense } from 'react'
 import { Link } from 'react-router-dom'
 import type { RequestOptions } from 'react-toolkits'
-import { ContextProvider, RequestError, useRequest } from 'react-toolkits'
+import { ContextProvider, request, RequestError } from 'react-toolkits'
 import type { BareFetcher, SWRConfiguration, SWRHook, Key as SWRKey, SWRResponse } from 'swr'
 import { SWRConfig } from 'swr'
 import { LocaleDropdownMenu } from './components'
@@ -59,7 +59,6 @@ const responseInterceptor = async (response: Response, opts: RequestOptions) => 
 
 const Providers: FC<PropsWithChildren> = ({ children }) => {
   const { locale } = useLocaleStore()
-  const request = useRequest()
 
   const appTitle = (
     <Link to="/">

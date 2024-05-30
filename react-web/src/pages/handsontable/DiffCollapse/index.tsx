@@ -1,11 +1,10 @@
 import { CaretRightOutlined } from '@ant-design/icons'
 import { DiffTable } from '@love1t/handsontable'
 import { Card, Collapse } from 'antd'
-import { useRequest } from 'react-toolkits'
+import { request } from 'react-toolkits'
 import useSWR from 'swr'
 
 const DiffCollapse = () => {
-  const request = useRequest()
   const { data } = useSWR('/api/table/collapse', url =>
     request<{ name: string; title: string[][]; data: string[][] }[]>(url).then(response => response.data),
   )
