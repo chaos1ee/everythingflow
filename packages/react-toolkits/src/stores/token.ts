@@ -1,9 +1,9 @@
 import { jwtDecode } from 'jwt-decode'
-import useSWR from 'swr'
+import useSWRImmutable from 'swr/immutable'
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import { useToolkitsContext } from '../components/ContextProvider'
-import { useRequest } from '../hooks/request'
+import { request } from '../utils/request'
 
 interface UserInfo {
   authorityId: string
@@ -44,9 +44,8 @@ export const useTokenStore = create<TokenState>()(
 
 export function useTokenValidation(skip = false) {
   const { usePermissionApiV2 } = useToolkitsContext()
-  const request = useRequest()
 
-  useSWR(
+  useSWRImmutable(
     !skip ? (usePermissionApiV2 ? '/api/usystem/user/checkV2' : '/api/usystem/user/check') : null,
     (url: string) =>
       request(url, {
@@ -58,7 +57,6 @@ export function useTokenValidation(skip = false) {
       }),
     {
       suspense: true,
-      revalidateIfStale: false,
     },
   )
 }

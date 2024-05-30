@@ -3,18 +3,16 @@ import useSWRMutation from 'swr/mutation'
 import { useToolkitsContext } from '../../../components/ContextProvider'
 import type { Game } from '../../../components/GameSelect'
 import { usePermission } from '../../../hooks/permission'
-import { useRequest } from '../../../hooks/request'
+import { request } from '../../../utils/request'
 import type { PermissionEnumItem, RoleEnumItem, RoleV1, RoleV2 } from '../types'
 
 export function useAllPermissions() {
-  const request = useRequest()
   return useSWR('/api/usystem/user/allPermssions', url =>
     request<PermissionEnumItem[]>(url, { isGlobal: true }).then(response => response.data),
   )
 }
 
 export function useAllPermissionsV2() {
-  const request = useRequest()
   return useSWR('/api/usystem/user/allPermissionsV2', url =>
     request<{
       game: Game[]
@@ -24,7 +22,6 @@ export function useAllPermissionsV2() {
 }
 
 export function useAllRoles() {
-  const request = useRequest()
   const { accessible } = usePermission('200005', true)
   return useSWR(accessible ? '/api/usystem/role/all' : null, url =>
     request<RoleEnumItem[]>(url, { isGlobal: true }).then(response => response.data),
@@ -32,7 +29,6 @@ export function useAllRoles() {
 }
 
 export function useRole(name: string) {
-  const request = useRequest()
   const { usePermissionApiV2 } = useToolkitsContext()
   return useSWR(`/api/usystem/role/${usePermissionApiV2 ? 'infoV2' : 'info'}?name=${name}`, (url: string) =>
     request<RoleV1 | RoleV2>(url, { isGlobal: true }).then(response => response.data),
@@ -40,7 +36,6 @@ export function useRole(name: string) {
 }
 
 export function useCreateRole() {
-  const request = useRequest()
   const { usePermissionApiV2 } = useToolkitsContext()
 
   return useSWRMutation(
@@ -62,7 +57,6 @@ export function useCreateRole() {
 }
 
 export function useUpdateRole() {
-  const request = useRequest()
   const { usePermissionApiV2 } = useToolkitsContext()
 
   return useSWRMutation(
@@ -84,7 +78,6 @@ export function useUpdateRole() {
 }
 
 export function useRemoveRole() {
-  const request = useRequest()
   return useSWRMutation(
     '/api/usystem/role/delete',
     (
@@ -104,7 +97,6 @@ export function useRemoveRole() {
 }
 
 export function useCreateUser() {
-  const request = useRequest()
   return useSWRMutation(
     '/api/usystem/user/create',
     (
@@ -124,7 +116,6 @@ export function useCreateUser() {
 }
 
 export function useUpdateUser() {
-  const request = useRequest()
   return useSWRMutation(
     '/api/usystem/user/update',
     (
@@ -144,7 +135,6 @@ export function useUpdateUser() {
 }
 
 export function useRemoveUser() {
-  const request = useRequest()
   return useSWRMutation(
     '/api/usystem/user/delete',
     (

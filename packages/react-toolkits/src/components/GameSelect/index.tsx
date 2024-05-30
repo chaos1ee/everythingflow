@@ -22,6 +22,8 @@ export interface GameState {
   isLoading: boolean
   setGame: (id: string) => void
   fetchGames: () => void
+  switching: boolean // 切换游戏中
+  setSwitching: (switching: boolean) => void
 }
 
 export const useGameStore = create<GameState>()(
@@ -30,6 +32,10 @@ export const useGameStore = create<GameState>()(
       game: null,
       games: [],
       isLoading: false,
+      switching: false,
+      setSwitching: switching => {
+        set({ switching })
+      },
       setGame: id => {
         const matchGame = (get().games ?? []).find(item => item.id === id)
         set({ game: matchGame ?? null })
@@ -82,10 +88,12 @@ useTokenStore.subscribe((state, prevState) => {
 
 useTokenStore.persist.rehydrate()
 
+const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
+
 const GameSelect = () => {
   const t = useTranslation()
   const { gameFilter } = useToolkitsContext()
-  const { game, games, isLoading, setGame } = useGameStore()
+  const { game, games, isLoading, setGame, setSwitching } = useGameStore()
   const { mutate } = useSWRConfig()
 
   const options = (games ?? [])
@@ -96,6 +104,9 @@ const GameSelect = () => {
     }))
 
   const onGameChange = async (id: string) => {
+    setSwitching(true)
+    // FIXME: 切换游戏时，request 函数内的 useGameStore.getState().game 会获取到旧值，这里暂时延迟一段时间。后续优化。
+    await sleep(100)
     // 清除 SWR 缓存
     await mutate(
       key => {
@@ -104,6 +115,7 @@ const GameSelect = () => {
       { revalidateAll: false },
     )
     setGame(id)
+    setSwitching(false)
   }
 
   return (

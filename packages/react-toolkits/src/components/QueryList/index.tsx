@@ -7,11 +7,11 @@ import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 're
 import useSWR from 'swr'
 import { useTranslation } from '../../hooks/i18n'
 import { usePermission } from '../../hooks/permission'
-import type { RequestOptions } from '../../hooks/request'
-import { useRequest } from '../../hooks/request'
 import type { QueryListPayload } from '../../stores/queryList'
 import { useQueryListStore } from '../../stores/queryList'
 import type { ListResponse } from '../../types'
+import type { RequestOptions } from '../../utils/request'
+import { request } from '../../utils/request'
 import FilterFormWrapper from '../FilterFormWrapper'
 import { defaultProps } from './constants'
 import { deserialize } from './utils'
@@ -96,7 +96,6 @@ const InternalQueryList = <Item extends object, Values extends object | undefine
   propsMap.set(action, internalProps)
   const shouldPoll = useRef(false)
   const [originalData, setOriginalData] = useState<Response>()
-  const request = useRequest()
 
   const { data, isValidating } = useSWR(
     getSwrkKey(action),

@@ -12,8 +12,8 @@ import { PermissionList, useCreateRole, useRemoveRole, useUpdateRole } from '../
 import { useFormModal } from '../../../hooks/formModal'
 import { useTranslation } from '../../../hooks/i18n'
 import { usePermission } from '../../../hooks/permission'
-import { useRequest } from '../../../hooks/request'
 import { useQueryListStore } from '../../../stores/queryList'
+import { request } from '../../../utils/request'
 
 const action = '/api/usystem/role/list'
 
@@ -114,7 +114,6 @@ const RoleList = () => {
   const { show: showCreateModal, modal: createModal } = useCreateModal()
   const { show: showUpdateModal, modal: updateModal } = useUpdateModal()
   const t = useTranslation()
-  const request = useRequest()
 
   const columns: TableColumnsType<RoleListItem> = [
     {
