@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.8.87
+
+### Patch Changes
+
+- 806d2ad: fix: useRequest return a closure that caused state not updated
+
 ## 0.8.86
 
 ### Patch Changes
