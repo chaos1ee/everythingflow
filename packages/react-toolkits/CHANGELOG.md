@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.8.86
+
+### Patch Changes
+
+- 2faca9f: fix: should not call mutate in removeFromStore function
+
 ## 0.8.85
 
 ### Patch Changes
