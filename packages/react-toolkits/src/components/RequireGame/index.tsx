@@ -1,5 +1,5 @@
-import { Card, Empty } from 'antd'
-import type { FC, PropsWithChildren } from 'react'
+import { Card, Empty, Spin } from 'antd'
+import { type FC, type PropsWithChildren } from 'react'
 import { useTranslation } from '../../hooks/i18n'
 import { useToolkitsContext } from '../ContextProvider'
 import { useGameStore } from '../GameSelect'
@@ -7,8 +7,21 @@ import { useGameStore } from '../GameSelect'
 const RequireGame: FC<PropsWithChildren> = props => {
   const { children } = props
   const { usePermissionApiV2, hideGameSelect } = useToolkitsContext()
-  const { game } = useGameStore()
+  const { game, switching } = useGameStore()
   const t = useTranslation()
+
+  if (switching) {
+    return (
+      <Spin
+        style={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          height: 200,
+        }}
+      />
+    )
+  }
 
   if (usePermissionApiV2 && !hideGameSelect) {
     if (game) {
