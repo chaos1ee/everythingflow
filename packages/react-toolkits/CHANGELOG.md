@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.8.85
+
+### Patch Changes
+
+- 2489789: fix: cache of swr not cleared in QueryList
+
 ## 0.8.84
 
 ### Patch Changes
