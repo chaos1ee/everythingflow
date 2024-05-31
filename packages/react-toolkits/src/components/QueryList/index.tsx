@@ -92,8 +92,7 @@ const InternalQueryList = <Item extends object, Values extends object | undefine
   internalForm = form || internalForm
   const { accessible, isLoading } = usePermission(code, isGlobal)
   const listAction = useRef<QueryListAction>(QueryListAction.Init)
-  const { propsMap, getPayload, setPayload, getSwrkKey, updateSwrKey, removeFromStore } = useQueryListStore()
-  propsMap.set(action, internalProps)
+  const { setProps, getPayload, setPayload, getSwrkKey, updateSwrKey, removeFromStore } = useQueryListStore()
   const shouldPoll = useRef(false)
   const [originalData, setOriginalData] = useState<Response>()
 
@@ -161,6 +160,15 @@ const InternalQueryList = <Item extends object, Values extends object | undefine
   }
 
   useEffect(() => {
+    setProps(action, internalProps)
+
+    return () => {
+      // 组件卸载时清除缓存
+      removeFromStore(action)
+    }
+  }, [])
+
+  useEffect(() => {
     const init = async () => {
       if (accessible) {
         setPayload(action, { page: 1, size: defaultSize, formValues: internalForm.getFieldsValue() })
@@ -171,13 +179,6 @@ const InternalQueryList = <Item extends object, Values extends object | undefine
 
     init()
   }, [accessible])
-
-  useEffect(() => {
-    return () => {
-      // 组件卸载时清除缓存
-      removeFromStore(action)
-    }
-  }, [])
 
   useImperativeHandle(ref, () => ({
     data,

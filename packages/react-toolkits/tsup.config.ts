@@ -4,7 +4,7 @@ import packageJson from './package.json'
 
 const commonOpts: Options = {
   format: ['esm'],
-  sourcemap: false,
+  sourcemap: true,
   minify: true,
   treeshake: true,
   splitting: false,

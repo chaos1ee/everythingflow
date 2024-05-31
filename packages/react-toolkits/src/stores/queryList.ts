@@ -28,6 +28,7 @@ export interface QueryListState {
   mutate: QueryListMutator
   refresh(action: string, page?: number): void
   removeFromStore(action: string): void
+  setProps: (action: string, props: QueryListProps) => void
 }
 
 export const useQueryListStore = create<QueryListState>((set, get) => ({
@@ -91,5 +92,9 @@ export const useQueryListStore = create<QueryListState>((set, get) => ({
     get().swrKeyMap.delete(action)
     get().payloadMap.delete(action)
     get().propsMap.delete(action)
+  },
+  setProps(action, props) {
+    const { propsMap } = get()
+    set({ propsMap: new Map(propsMap).set(action, props) })
   },
 }))
