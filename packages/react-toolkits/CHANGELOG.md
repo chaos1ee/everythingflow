@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.8.88
+
+### Patch Changes
+
+- d3b3d59: fix: shoulde call setGame before involking mutate
+
 ## 0.8.87
 
 ### Patch Changes
