@@ -19,7 +19,6 @@ import type { PermissionGuardProps } from './components/PermissionGuard'
 import PermissionGuard from './components/PermissionGuard'
 import type { QueryListProps, QueryListRef } from './components/QueryList'
 import QueryList, { QueryListAction } from './components/QueryList'
-import RequireGame from './components/RequireGame'
 import UserWidget from './components/UserWidget'
 import type { UseFormModalProps } from './hooks/formModal'
 import { useFormModal } from './hooks/formModal'
@@ -57,7 +56,6 @@ export {
   QueryList,
   QueryListAction,
   RequestError,
-  RequireGame,
   SignIn,
   UserWidget,
   contextStore,

@@ -1,16 +1,46 @@
 import * as Antd from 'antd'
-import { Divider, Space } from 'antd'
+import { Card, Divider, Empty, Space } from 'antd'
 import type { FC, PropsWithChildren } from 'react'
 import { Suspense } from 'react'
 import logoUrl from '../../assets/logo.png'
+import { useTranslation } from '../../hooks/i18n'
 import { useToolkitsContext } from '../ContextProvider'
-import GameSelect from '../GameSelect'
+import GameSelect, { useGameStore } from '../GameSelect'
 import NavMenu from '../NavMenu'
-import RequireGame from '../RequireGame'
 import UserWidget from '../UserWidget'
 
 const { Spin, theme } = Antd
 const { Header, Sider, Content } = Antd.Layout
+
+const ContentGuard: FC<PropsWithChildren> = props => {
+  const { children } = props
+  const { usePermissionApiV2, hideGameSelect } = useToolkitsContext()
+  const { game, isLoading, switching } = useGameStore()
+  const t = useTranslation()
+
+  if (isLoading || switching) {
+    return (
+      <Spin
+        style={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          height: 200,
+        }}
+      />
+    )
+  }
+
+  if (usePermissionApiV2 && !hideGameSelect && !game) {
+    return (
+      <Card>
+        <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description={t('RequireGame.description')} />
+      </Card>
+    )
+  }
+
+  return children
+}
 
 const Layout: FC<PropsWithChildren> = props => {
   const { children } = props
@@ -61,7 +91,7 @@ const Layout: FC<PropsWithChildren> = props => {
             </Space>
           </div>
         </Header>
-        <Content className="p-6 bg-gray-50" style={{ overflow: 'overlay' }}>
+        <Content className="p-6 bg-gray-50 over">
           <Suspense
             fallback={
               <Spin
@@ -74,7 +104,7 @@ const Layout: FC<PropsWithChildren> = props => {
               />
             }
           >
-            {usePermissionApiV2 && !hideGameSelect ? <RequireGame>{children}</RequireGame> : children}
+            <ContentGuard>{children}</ContentGuard>
           </Suspense>
         </Content>
       </Antd.Layout>

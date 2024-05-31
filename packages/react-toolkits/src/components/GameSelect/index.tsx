@@ -88,8 +88,6 @@ useTokenStore.subscribe((state, prevState) => {
 
 useTokenStore.persist.rehydrate()
 
-const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
-
 const GameSelect = () => {
   const t = useTranslation()
   const { gameFilter } = useToolkitsContext()
@@ -105,16 +103,15 @@ const GameSelect = () => {
 
   const onGameChange = async (id: string) => {
     setSwitching(true)
-    // FIXME: 切换游戏时，request 函数内的 useGameStore.getState().game 会获取到旧值，这里暂时延迟一段时间。后续优化。
-    await sleep(100)
     // 清除 SWR 缓存
+    setGame(id)
     await mutate(
       key => {
         return !(typeof key === 'string' && key.startsWith('/api/usystem/game/all'))
       },
-      { revalidateAll: false },
+      undefined,
+      { revalidate: false },
     )
-    setGame(id)
     setSwitching(false)
   }
 

@@ -31,7 +31,7 @@ const Pagination = () => {
         method="POST"
         getBody={({ formValues, page, size }) => ({ ...formValues, page, size })}
         renderForm={form => (
-          <Form form={form}>
+          <Form form={form} autoComplete="off">
             <Row>
               <Col>
                 <Form.Item label="名称" name="name">
