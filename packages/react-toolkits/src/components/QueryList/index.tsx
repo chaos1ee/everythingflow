@@ -51,13 +51,13 @@ export interface QueryListProps<Item = any, Values = any, Response = any>
   form?: FormInstance<Values>
   getBody?: (payload: QueryListPayload<Values>) => RequestOptions['body']
   getParams?: (payload: QueryListPayload<Values>) => RequestOptions['params']
-  renderForm?: (internalForm: FormInstance<Values>) => ReactNode
+  renderForm?: (form: FormInstance<Values>) => ReactNode
   extra?: (opts: { form: FormInstance<Values>; data: Response | undefined }) => ReactNode
   onTableChange?: TableProps<Item>['onChange']
   afterSuccess?: (action: QueryListAction, data: QueryListDataType<Item>) => void
   // 默认的接口返回类型为 ListResponse<Item>，当符合时无需设置 getTotal、getDataSource 就可以让组件正确获取 total 与 dataSource。
   getTotal?: (response: Response) => number
-  getDataSource?: (response: Response) => Item[]
+  getDataSource?: (response: Response, form: FormInstance<Values>) => Item[]
 }
 
 const InternalQueryList = <Item extends object, Values extends object | undefined, Response = ListResponse<Item>>(
@@ -112,7 +112,7 @@ const InternalQueryList = <Item extends object, Values extends object | undefine
       setOriginalData(response.data)
 
       return {
-        dataSource: getDataSource(response.data),
+        dataSource: getDataSource(response.data, internalForm),
         total: getTotal(response.data) ?? 0,
       }
     },
