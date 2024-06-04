@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.8.89
+
+### Patch Changes
+
+- e5352c9: feat: access FormInstance throught QueryList getDataSource callback
+
 ## 0.8.88
 
 ### Patch Changes
