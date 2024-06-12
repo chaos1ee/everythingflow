@@ -1,5 +1,11 @@
 # @love1t/handsontable
 
+## 0.1.10
+
+### Patch Changes
+
+- bee0d60: Upgrade all depnedencies
+
 ## 0.1.9
 
 ### Patch Changes

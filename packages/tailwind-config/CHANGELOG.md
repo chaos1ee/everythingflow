@@ -1,5 +1,11 @@
 # tailwind-config
 
+## 0.1.2
+
+### Patch Changes
+
+- bee0d60: Upgrade all depnedencies
+
 ## 0.1.1
 
 ### Patch Changes
