@@ -37,7 +37,6 @@ const options: Options[] = [
     name: 'Build locales',
     entry: ['src/locales/*.ts', '!src/locales/index.ts'],
     outDir: 'locales',
-    dts: false,
   },
   {
     ...commonOpts,
