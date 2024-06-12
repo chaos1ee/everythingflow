@@ -1,5 +1,5 @@
 import sharedConfig from 'tailwind-config/config'
 
-module.exports = {
+export default {
   presets: [sharedConfig],
 }

@@ -4,7 +4,7 @@ import { Navigate, Outlet, Route, Routes, useNavigate } from 'react-router-dom'
 import {
   NotFound,
   OperationLogList,
-  Permission,
+  PermissionRoutes,
   RequestError,
   SignIn,
   useTokenStore,
@@ -77,7 +77,7 @@ const Root = (
         <Route path="collapse" Component={withLayout(DiffCollapse)} />
       </Route>
       <Route path="operation_log" Component={withLayout(OperationLogList, { hideGameSelect: true, isGlobal: true })} />
-      <Route path="permission/*" Component={withLayout(Permission, { hideGameSelect: true, isGlobal: true })} />
+      <Route path="permission/*" Component={withLayout(PermissionRoutes, { hideGameSelect: true, isGlobal: true })} />
       <Route path="*" element={<NotFound />} />
     </Route>
   </Routes>
