@@ -1,20 +1,25 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type { FormInstance } from 'antd'
 import { Form, Result, Spin, Table } from 'antd'
+import type { AnyObject } from 'antd/es/_util/type'
 import type { TableProps } from 'antd/es/table'
 import type { ReactElement, ReactNode, Ref } from 'react'
-import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react'
+import { forwardRef, useEffect, useImperativeHandle, useRef } from 'react'
 import useSWR from 'swr'
 import { useTranslation } from '../../hooks/i18n'
 import { usePermission } from '../../hooks/permission'
-import type { QueryListPayload } from '../../stores/queryList'
-import { useQueryListStore } from '../../stores/queryList'
-import type { ListResponse } from '../../types'
 import type { RequestOptions } from '../../utils/request'
 import { request } from '../../utils/request'
 import FilterFormWrapper from '../FilterFormWrapper'
 import { defaultProps } from './constants'
+import type { QueryListPayload } from './store'
+import { useQueryListStore } from './store'
 import { deserialize } from './utils'
+
+interface ListResponse<T = any> {
+  list: T[]
+  total: number
+}
 
 export enum QueryListAction {
   Confirm = 'confirm',
@@ -28,17 +33,14 @@ export interface QueryListDataType<Item> {
   total: number
 }
 
-export interface QueryListRef<Item = any, Values = any, Response = any> {
+export interface QueryListRef<Item, Values, Response> {
   data: QueryListDataType<Item>
   internalForm: FormInstance<Values>
   originalData: Response | undefined
 }
 
-export interface QueryListProps<Item = any, Values = any, Response = any>
-  extends Pick<
-    TableProps<Item>,
-    'columns' | 'rowKey' | 'tableLayout' | 'expandable' | 'rowSelection' | 'bordered' | 'components'
-  > {
+export interface QueryListProps<Item extends AnyObject = AnyObject, Values = any, Response = any>
+  extends Omit<TableProps<Item>, 'pagination' | 'dataSource' | 'loading'> {
   code?: string
   isGlobal?: boolean
   action: string
@@ -53,14 +55,17 @@ export interface QueryListProps<Item = any, Values = any, Response = any>
   getParams?: (payload: QueryListPayload<Values>) => RequestOptions['params']
   renderForm?: (form: FormInstance<Values>) => ReactNode
   extra?: (opts: { form: FormInstance<Values>; data: Response | undefined }) => ReactNode
-  onTableChange?: TableProps<Item>['onChange']
   afterSuccess?: (action: QueryListAction, data: QueryListDataType<Item>) => void
-  // 默认的接口返回类型为 ListResponse<Item>，当符合时无需设置 getTotal、getDataSource 就可以让组件正确获取 total 与 dataSource。
   getTotal?: (response: Response) => number
   getDataSource?: (response: Response, form: FormInstance<Values>) => Item[]
 }
 
-const InternalQueryList = <Item extends object, Values extends object | undefined, Response = ListResponse<Item>>(
+const InternalQueryList = <
+  Item extends AnyObject = AnyObject,
+  Values = any,
+  // 默认接口返回值类型为 ListResponse<Item>，当符合时无需设置 getTotal、getDataSource 就可以让组件正确获取 total 与 dataSource。
+  Response = ListResponse<Item>,
+>(
   props: QueryListProps<Item, Values, Response>,
   ref: Ref<QueryListRef<Item, Values, Response>>,
 ) => {
@@ -83,18 +88,18 @@ const InternalQueryList = <Item extends object, Values extends object | undefine
     afterSuccess,
     getTotal,
     getDataSource,
-    onTableChange,
     ...tableProps
   } = internalProps
 
   const t = useTranslation()
+  // 可以从外部传入 FormInstance，不传时会使用内部生成的实例
   let [internalForm] = Form.useForm<Values>()
   internalForm = form || internalForm
   const { accessible, isLoading } = usePermission(code, isGlobal)
   const listAction = useRef<QueryListAction>(QueryListAction.Init)
   const { setProps, getPayload, setPayload, getSwrkKey, updateSwrKey, removeFromStore } = useQueryListStore()
   const shouldPoll = useRef(false)
-  const [originalData, setOriginalData] = useState<Response>()
+  const originalData = useRef<Response>()
 
   const { data, isValidating } = useSWR(
     getSwrkKey(action),
@@ -109,7 +114,7 @@ const InternalQueryList = <Item extends object, Values extends object | undefine
         headers: typeof headers === 'function' ? headers(payload) : headers,
       })
 
-      setOriginalData(response.data)
+      originalData.current = response.data
 
       return {
         dataSource: getDataSource(response.data, internalForm),
@@ -182,7 +187,7 @@ const InternalQueryList = <Item extends object, Values extends object | undefine
 
   useImperativeHandle(ref, () => ({
     data,
-    originalData,
+    originalData: originalData.current,
     internalForm,
   }))
 
@@ -203,50 +208,39 @@ const InternalQueryList = <Item extends object, Values extends object | undefine
     return <Result status={403} subTitle={t('global.noEntitlement')} />
   }
 
-  const formRenderer = renderForm ? (
-    <FilterFormWrapper isConfirming={isValidating} onReset={onReset} onConfirm={onConfirm}>
-      {renderForm(internalForm)}
-    </FilterFormWrapper>
-  ) : (
-    // 消除 Antd 的警告
-    <Form form={internalForm} />
-  )
+  const formRenderer =
+    typeof renderForm !== 'undefined' ? (
+      <FilterFormWrapper isConfirming={isValidating} onReset={onReset} onConfirm={onConfirm}>
+        {renderForm(internalForm)}
+      </FilterFormWrapper>
+    ) : (
+      // 实例创建后不传给组件会触发 Antd Form 的警告。
+      <Form form={internalForm} />
+    )
+
+  const pagination = !onePage && {
+    showSizeChanger: true,
+    showQuickJumper: true,
+    current: getPayload(action)?.page,
+    pageSize: getPayload(action)?.size ?? defaultSize,
+    total: data.total,
+    onChange: async (currentPage: number, currentSize: number) => {
+      listAction.current = QueryListAction.Jump
+      setPayload(action, { page: currentPage, size: currentSize })
+      updateSwrKey(action)
+    },
+  }
 
   return (
     <div>
       {formRenderer}
-      {extra && <div className="mt-2 mb-4">{extra({ form: internalForm, data: originalData })}</div>}
-      <Table
-        {...tableProps}
-        dataSource={data.dataSource}
-        loading={isValidating}
-        pagination={
-          onePage
-            ? false
-            : {
-                showSizeChanger: true,
-                showQuickJumper: true,
-                current: getPayload(action)?.page,
-                pageSize: getPayload(action)?.size ?? defaultSize,
-                total: data.total,
-                onChange: async (currentPage: number, currentSize: number) => {
-                  listAction.current = QueryListAction.Jump
-                  setPayload(action, { page: currentPage, size: currentSize })
-                  updateSwrKey(action)
-                },
-              }
-        }
-        onChange={onTableChange}
-      />
+      {extra && <div className="mt-2 mb-4">{extra({ form: internalForm, data: originalData.current })}</div>}
+      <Table {...tableProps} dataSource={data.dataSource} loading={isValidating} pagination={pagination} />
     </div>
   )
 }
 
-const QueryList = forwardRef(InternalQueryList) as <
-  Item extends object,
-  Values extends object | undefined,
-  Response = ListResponse<Item>,
->(
+const QueryList = forwardRef(InternalQueryList) as <Item extends AnyObject, Values, Response>(
   props: QueryListProps<Item, Values, Response> & { ref?: Ref<QueryListRef<Item, Values, Response>> },
 ) => ReactElement
 

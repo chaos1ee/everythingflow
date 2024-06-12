@@ -1,12 +1,6 @@
 import type { MenuProps } from 'antd'
 import { Menu } from 'antd'
-import type {
-  ItemType,
-  MenuDividerType,
-  MenuItemGroupType,
-  MenuItemType,
-  SubMenuType,
-} from 'antd/es/menu/hooks/useItems'
+import type { ItemType, MenuDividerType, MenuItemGroupType, MenuItemType, SubMenuType } from 'antd/es/menu/interface'
 import type { ReactNode } from 'react'
 import { memo, useEffect, useMemo } from 'react'
 import { Link, useLocation } from 'react-router-dom'

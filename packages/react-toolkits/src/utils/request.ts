@@ -41,9 +41,10 @@ export interface RequestOptions extends Omit<RequestInit, 'body'> {
 export type RequestResponse<T> = Pick<Response, 'headers' | 'status' | 'statusText' | 'url'> & { data: T }
 
 export async function request<T = any>(url: string, opts: RequestOptions = {}): Promise<RequestResponse<T>> {
-  opts = Object.assign(opts, { responseType: opts.responseType ?? 'json' })
-  let { body, params, headers, responseType, isGlobal, ...rest } = opts
+  const _opts = Object.assign(opts, { responseType: opts.responseType ?? 'json' })
+  let { body, params, headers, responseType, isGlobal, ...rest } = _opts
 
+  // 处理查询参数，如果 url 中已经有查询参数，需要合并。
   const parsed = qs.parseUrl(url)
   const queryParams = Object.assign({}, parsed.query, params)
   const options: StringifyOptions = {
@@ -100,7 +101,7 @@ export async function request<T = any>(url: string, opts: RequestOptions = {}): 
   const responseInterceptor = contextStore.getState().responseInterceptor
 
   if (typeof responseInterceptor === 'function') {
-    return await responseInterceptor(response, opts)
+    return await responseInterceptor(response, _opts)
   } else {
     let data: T
 

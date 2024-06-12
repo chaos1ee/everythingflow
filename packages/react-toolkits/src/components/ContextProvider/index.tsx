@@ -2,7 +2,7 @@
 import type { FC, Key, PropsWithChildren, ReactNode } from 'react'
 import { createContext, useContext } from 'react'
 import { createStore } from 'zustand'
-import type { Locale } from '../../types'
+import type { Locale } from '../../locales'
 import type { RequestOptions } from '../../utils/request'
 import type { Game } from '../GameSelect'
 import type { NavMenuItem } from '../NavMenu'

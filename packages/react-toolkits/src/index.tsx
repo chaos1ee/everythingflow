@@ -1,3 +1,5 @@
+import { lazy } from 'react'
+import { Navigate, Route, Routes } from 'react-router-dom'
 import type { ContextState } from './components/ContextProvider'
 import ContextProvider, { contextStore, useToolkitsContext } from './components/ContextProvider'
 import type { DynamicTagsProps } from './components/DynamicTags'
@@ -19,25 +21,39 @@ import type { PermissionGuardProps } from './components/PermissionGuard'
 import PermissionGuard from './components/PermissionGuard'
 import type { QueryListProps, QueryListRef } from './components/QueryList'
 import QueryList, { QueryListAction } from './components/QueryList'
+import { useQueryListStore } from './components/QueryList/store'
 import UserWidget from './components/UserWidget'
 import type { UseFormModalProps } from './hooks/formModal'
 import { useFormModal } from './hooks/formModal'
 import { useTranslation } from './hooks/i18n'
 import { useModal, useModalStore } from './hooks/modal'
 import { usePermission, usePermissions } from './hooks/permission'
-import NotFound from './pages/NotFound'
-import OperationLogList from './pages/OperationLogList'
-import SignIn from './pages/SignIn'
-import Permission from './pages/permission'
-import { useQueryListStore } from './stores/queryList'
 import type { TokenState } from './stores/token'
 import { useTokenStore, useTokenValidation } from './stores/token'
 import './styles/index.css'
-import type { Locale } from './types'
 import type { RequestOptions, RequestResponse } from './utils/request'
 import { RequestError, request } from './utils/request'
-import { withBaseRoutes, withLayout } from './utils/router'
+import { withLayout } from './utils/router'
 import { mixedStorage } from './utils/storage'
+
+const SignIn = lazy(() => import('./pages/SignIn'))
+const NotFound = lazy(() => import('./pages/NotFound'))
+const OperationLogList = lazy(() => import('./pages/OperationLogList'))
+
+const PermissionRoutes = () => {
+  const UserList = lazy(() => import('./pages/permission/UserList'))
+  const RoleList = lazy(() => import('./pages/permission/RoleList'))
+  const RoleDetail = lazy(() => import('./pages/permission/RoleDetail'))
+
+  return (
+    <Routes>
+      <Route index element={<Navigate to="user" />} />
+      <Route path="user" element={<UserList />} />
+      <Route path="role" element={<RoleList />} />
+      <Route path="role/:name" element={<RoleDetail />} />
+    </Routes>
+  )
+}
 
 export {
   ContextProvider,
@@ -50,9 +66,9 @@ export {
   NavMenu,
   NotFound,
   OperationLogList,
-  Permission,
   PermissionButton,
   PermissionGuard,
+  PermissionRoutes,
   QueryList,
   QueryListAction,
   RequestError,
@@ -72,7 +88,6 @@ export {
   useTokenValidation,
   useToolkitsContext,
   useTranslation,
-  withBaseRoutes,
   withLayout,
   type ContextState,
   type DynamicTagsProps,
@@ -81,7 +96,6 @@ export {
   type GameState,
   type HighlightTextsProps,
   type InfiniteListProps,
-  type Locale,
   type NavMenuItem,
   type PermissionButtonProps,
   type PermissionGuardProps,

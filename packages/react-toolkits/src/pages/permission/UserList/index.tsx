@@ -7,83 +7,60 @@ import { Link } from 'react-router-dom'
 import Highlight from '../../../components/Highlight'
 import PermissionButton from '../../../components/PermissionButton'
 import QueryList from '../../../components/QueryList'
+import { useQueryListStore } from '../../../components/QueryList/store'
 import type { UserListItem } from '../../../features/permission'
 import { useAllRoles, useCreateUser, useRemoveUser, useUpdateUser } from '../../../features/permission'
+import type { UseFormModalProps } from '../../../hooks/formModal'
 import { useFormModal } from '../../../hooks/formModal'
 import { useTranslation } from '../../../hooks/i18n'
-import { useQueryListStore } from '../../../stores/queryList'
 
 const { Option } = Select
 
 export const action = '/api/usystem/user/list'
 
-function useCreateModal() {
-  const { message } = App.useApp()
-  const create = useCreateUser()
-  const { data: roles, isLoading } = useAllRoles()
-  const { refresh } = useQueryListStore()
-  const t = useTranslation()
+interface FormSchema {
+  id: string
+  name: string
+  roles: string[]
+}
 
-  return useFormModal<{ id: string; name: string; roles: string[] }>({
-    title: t('UserList.createTitle'),
-    formProps: {
-      labelCol: { flex: '80px' },
-    },
-    content: (
-      <>
-        <Form.Item label={t('global.name')} name="name" rules={[{ required: true }]}>
-          <Input />
-        </Form.Item>
-        <Form.Item label={t('global.role')} name="roles">
-          <Select allowClear mode="multiple" loading={isLoading}>
-            {(roles ?? []).map(role => (
-              <Option value={role.name} key={role.id}>
-                {role.name}
-              </Option>
-            ))}
-          </Select>
-        </Form.Item>
-      </>
-    ),
-    async onConfirm(values) {
+interface ExtraValues {
+  id: string
+}
+
+const useModal = (isCreate?: boolean) => {
+  const { message } = App.useApp()
+  const t = useTranslation()
+  const { refresh, mutate } = useQueryListStore()
+  const { data: roles, isLoading } = useAllRoles()
+  const create = useCreateUser()
+  const update = useUpdateUser()
+
+  const title = isCreate ? t('UserList.createTitle') : t('UserList.updateTitle')
+
+  const content = (
+    <>
+      <Form.Item label={t('global.name')} name="name" rules={[{ required: true }]}>
+        <Input disabled={!isCreate} />
+      </Form.Item>
+      <Form.Item label={t('global.role')} name="roles">
+        <Select allowClear mode="multiple" loading={isLoading}>
+          {(roles ?? []).map(role => (
+            <Option value={role.name} key={role.id}>
+              {role.name}
+            </Option>
+          ))}
+        </Select>
+      </Form.Item>
+    </>
+  )
+
+  const onConfirm: UseFormModalProps<FormSchema, ExtraValues>['onConfirm'] = async (values, extraValues) => {
+    if (isCreate) {
       await create.trigger(values)
       refresh(action, 1)
       message.success(t('UserList.createSuccessfully'))
-    },
-  })
-}
-
-function useUpdateUserModal() {
-  const { message } = App.useApp()
-  const update = useUpdateUser()
-  const { data: roles, isLoading } = useAllRoles()
-  const { mutate } = useQueryListStore()
-  const t = useTranslation()
-
-  return useFormModal<{ id: string; name: string; roles: string[] }, { id: string }>({
-    title: t('UserList.updateTitle'),
-    formProps: {
-      labelCol: { flex: '80px' },
-    },
-    content: (
-      <>
-        <Form.Item label={t('global.name')} name="name" rules={[{ required: true }]}>
-          <Input readOnly />
-        </Form.Item>
-        <Form.Item label={t('global.role')} name="roles">
-          <Select
-            allowClear
-            mode="multiple"
-            loading={isLoading}
-            options={roles?.map(role => ({
-              label: role.name,
-              value: role.name,
-            }))}
-          />
-        </Form.Item>
-      </>
-    ),
-    async onConfirm(values, extraValues) {
+    } else {
       await update.trigger(values)
       mutate<UserListItem>(
         action,
@@ -100,7 +77,16 @@ function useUpdateUserModal() {
         { revalidate: false },
       )
       message.success(t('UserList.updateSuccessfully'))
+    }
+  }
+
+  return useFormModal({
+    title,
+    formProps: {
+      labelCol: { flex: '80px' },
     },
+    content,
+    onConfirm,
   })
 }
 
@@ -108,8 +94,8 @@ const UserList: FC = () => {
   const { modal, message } = App.useApp()
   const remove = useRemoveUser()
   const { mutate } = useQueryListStore()
-  const { show: showCreateModal, modal: createModal } = useCreateModal()
-  const { show: showUpdateModal, modal: updateModal } = useUpdateUserModal()
+  const { show: showCreateModal, modal: createModal } = useModal(true)
+  const { show: showUpdateModal, modal: updateModal } = useModal()
   const t = useTranslation()
 
   const columns: TableColumnsType<UserListItem> = [

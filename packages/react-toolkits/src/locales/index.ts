@@ -1,9 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-export interface ListResponse<T = any> {
-  list: T[]
-  total: number
-}
-
 export type Locale = {
   global: {
     noEntitlement: string

@@ -1,7 +1,7 @@
 import { get, has, template } from 'lodash-es'
 import { useToolkitsContext } from '../components/ContextProvider'
+import type { Locale } from '../locales'
 import zh_CN from '../locales/zh_CN'
-import type { Locale } from '../types'
 
 type Join<K, P> = K extends string | number
   ? P extends string | number
