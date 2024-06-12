@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.8.91
+
+### Patch Changes
+
+- d5f13a6: fix: missing declaration files
+
 ## 0.8.90
 
 ### Patch Changes
