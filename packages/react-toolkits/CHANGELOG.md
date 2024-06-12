@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.8.90
+
+### Patch Changes
+
+- bee0d60: Upgrade all depnedencies
+
 ## 0.8.89
 
 ### Patch Changes

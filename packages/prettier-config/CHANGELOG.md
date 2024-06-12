@@ -1,5 +1,11 @@
 # @everythingflow/prettier-config
 
+## 0.0.5
+
+### Patch Changes
+
+- bee0d60: Upgrade all depnedencies
+
 ## 0.0.4
 
 ### Patch Changes
