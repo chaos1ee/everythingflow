@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.8.92
+
+### Patch Changes
+
+- c8ccee9: Rollback eslint version
+
 ## 0.8.91
 
 ### Patch Changes
