@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+ 
 import { Button, Space, theme } from 'antd'
 import type { Key, PropsWithChildren, ReactNode } from 'react'
 import { useTranslation } from '../../hooks/i18n'

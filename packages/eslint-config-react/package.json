@@ -1,12 +1,8 @@
 {
   "name": "@flow97/eslint-config-react",
   "version": "0.0.1",
-  "type": "module",
   "main": "index.js",
-  "files": [
-    "README.md",
-    "index.js"
-  ],
+  "keywords": [],
   "license": "MIT",
   "homepage": "https://github.com/chaos1ee/everythingflow/tree/main/packages/eslint-config-react#readme",
   "repository": {
@@ -19,19 +15,20 @@
     "registry": "https://registry.npmjs.org/"
   },
   "devDependencies": {
-    "eslint": "^9.4.0"
+    "eslint": "^8.38.0"
   },
   "peerDependencies": {
-    "eslint": "^9.4.0"
+    "eslint": "^8.35.0"
   },
   "dependencies": {
-    "@eslint/js": "^9.4.0",
-    "@typescript-eslint/eslint-plugin": "^7.13.0",
-    "@typescript-eslint/parser": "^7.13.0",
-    "eslint-config-prettier": "^9.1.0",
-    "eslint-config-standard": "^17.1.0",
-    "eslint-plugin-react": "^7.34.2",
-    "eslint-plugin-react-hooks": "^4.6.2",
-    "globals": "^15.4.0"
+    "@typescript-eslint/eslint-plugin": "^5.59.1",
+    "@typescript-eslint/parser": "^5.59.1",
+    "eslint-config-prettier": "^8.8.0",
+    "eslint-config-standard": "^17.0.0",
+    "eslint-import-resolver-typescript": "^3.5.5",
+    "eslint-plugin-import": "^2.27.5",
+    "eslint-plugin-jsx-a11y": "^6.7.1",
+    "eslint-plugin-react": "^7.32.2",
+    "eslint-plugin-react-hooks": "^4.6.0"
   }
 }

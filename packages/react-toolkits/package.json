@@ -27,7 +27,7 @@
   "license": "MIT",
   "scripts": {
     "build": "tsup",
-    "lint": "eslint --fix"
+    "lint": "eslint --fix ."
   },
   "author": "chaos1ee <chaos.maybeeee@gmail.com>",
   "homepage": "https://github.com/chaos1ee/everythingflow/tree/main/packages/react-toolkits#readme",
@@ -59,7 +59,7 @@
     "antd": "^5.18.0",
     "autoprefixer": "^10.4.19",
     "cross-env": "^7.0.3",
-    "eslint": "^9.4.0",
+    "eslint": "^8.38.0",
     "postcss": "^8.4.38",
     "prettier": "^3.3.2",
     "react": "^18.3.1",

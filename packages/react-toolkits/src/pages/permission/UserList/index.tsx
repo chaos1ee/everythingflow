@@ -31,7 +31,7 @@ interface ExtraValues {
 const useModal = (isCreate?: boolean) => {
   const { message } = App.useApp()
   const t = useTranslation()
-  const { refresh, mutate } = useQueryListStore()
+  const { refetch, mutate } = useQueryListStore()
   const { data: roles, isLoading } = useAllRoles()
   const create = useCreateUser()
   const update = useUpdateUser()
@@ -58,7 +58,7 @@ const useModal = (isCreate?: boolean) => {
   const onConfirm: UseFormModalProps<FormSchema, ExtraValues>['onConfirm'] = async (values, extraValues) => {
     if (isCreate) {
       await create.trigger(values)
-      refresh(action, 1)
+      refetch(action, 1)
       message.success(t('UserList.createSuccessfully'))
     } else {
       await update.trigger(values)

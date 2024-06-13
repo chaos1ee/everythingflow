@@ -1,5 +1,5 @@
 import { UsergroupAddOutlined } from '@ant-design/icons'
-import type { TableColumnsType } from 'antd'
+import type { FormProps, TableColumnsType } from 'antd'
 import { App, Card, Form, Input, Space } from 'antd'
 import { produce } from 'immer'
 import { Link } from 'react-router-dom'
@@ -10,6 +10,7 @@ import QueryList from '../../../components/QueryList'
 import { useQueryListStore } from '../../../components/QueryList/store'
 import type { RoleListItem, RoleV1, RoleV2 } from '../../../features/permission'
 import { PermissionList, useCreateRole, useRemoveRole, useUpdateRole } from '../../../features/permission'
+import type { UseFormModalProps} from '../../../hooks/formModal';
 import { useFormModal } from '../../../hooks/formModal'
 import { useTranslation } from '../../../hooks/i18n'
 import { usePermission } from '../../../hooks/permission'
@@ -17,72 +18,44 @@ import { request } from '../../../utils/request'
 
 const action = '/api/usystem/role/list'
 
-const useCreateModal = () => {
-  const { message } = App.useApp()
-  const { refresh } = useQueryListStore()
-  const create = useCreateRole()
-  const t = useTranslation()
-
-  const onConfirm = async (values: { name: string; permissions: RoleV1['permissions'] | RoleV2['permissions'] }) => {
-    await create.trigger({
-      name: `role_${values.name}`,
-      permissions: values.permissions,
-    })
-    refresh(action, 1)
-    message.success(t('RoleList.createSuccessfully'))
-  }
-
-  return useFormModal<{
-    name: string
-    permissions: RoleV1['permissions'] | RoleV2['permissions']
-  }>({
-    title: t('RoleList.createTitle'),
-    width: '50vw',
-    formProps: {
-      layout: 'vertical',
-    },
-    content: (
-      <>
-        <Form.Item label={t('global.name')} name="name" rules={[{ required: true }]}>
-          <Input addonBefore="role_" />
-        </Form.Item>
-        <Form.Item name="permissions">
-          <PermissionList />
-        </Form.Item>
-      </>
-    ),
-    onConfirm,
-  })
+interface FormSchema {
+  name: string
+  permissions: RoleV1['permissions'] | RoleV2['permissions']
 }
 
-const useUpdateModal = () => {
+const useModal = (isCreate?: boolean) => {
   const { message } = App.useApp()
-  const { mutate } = useQueryListStore()
-  const update = useUpdateRole()
   const t = useTranslation()
+  const { refetch, mutate } = useQueryListStore()
+  const create = useCreateRole()
+  const update = useUpdateRole()
 
-  return useFormModal<
-    {
-      name: string
-      permissions: RoleV1['permissions'] | RoleV2['permissions']
-    },
-    {
-      id: number
-    }
-  >({
-    title: t('RoleList.updateTitle'),
-    width: '50vw',
-    content: (
-      <>
-        <Form.Item label={t('global.name')} name="name" rules={[{ required: true }]}>
-          <Input readOnly addonBefore="role_" />
-        </Form.Item>
-        <Form.Item name="permissions">
-          <PermissionList />
-        </Form.Item>
-      </>
-    ),
-    onConfirm: async (values, extraValues) => {
+  const title = isCreate ? t('RoleList.createTitle') : t('RoleList.updateTitle')
+
+  const formProps: FormProps = {
+    layout: 'vertical',
+  }
+
+  const content = (
+    <>
+      <Form.Item label={t('global.name')} name="name" rules={[{ required: true }]}>
+        <Input disabled={!isCreate} addonBefore="role_" />
+      </Form.Item>
+      <Form.Item name="permissions">
+        <PermissionList />
+      </Form.Item>
+    </>
+  )
+
+  const onConfirm: UseFormModalProps<FormSchema, { id: number }>['onConfirm'] = async (values, extraValues) => {
+    if (isCreate) {
+      await create.trigger({
+        name: `role_${values.name}`,
+        permissions: values.permissions,
+      })
+      refetch(action, 1)
+      message.success(t('RoleList.createSuccessfully'))
+    } else {
       await update.trigger({
         id: extraValues?.id as number,
         name: `role_${values.name}`,
@@ -101,19 +74,46 @@ const useUpdateModal = () => {
         { revalidate: false },
       )
       message.success(t('RoleList.updateSuccessfully'))
-    },
+    }
+  }
+
+  return useFormModal<{
+    name: string
+    permissions: RoleV1['permissions'] | RoleV2['permissions']
+  }>({
+    title,
+    width: '50vw',
+    formProps,
+    content,
+    onConfirm,
   })
 }
 
 const RoleList = () => {
   const { accessible: viewable } = usePermission('200005', true)
   const { modal, message } = App.useApp()
-  const { usePermissionApiV2 } = useToolkitsContext()
-  const remove = useRemoveRole()
-  const { mutate } = useQueryListStore()
-  const { show: showCreateModal, modal: createModal } = useCreateModal()
-  const { show: showUpdateModal, modal: updateModal } = useUpdateModal()
   const t = useTranslation()
+  const { usePermissionApiV2 } = useToolkitsContext()
+  const { mutate } = useQueryListStore()
+  const { show: showCreateModal, modal: createModal } = useModal(true)
+  const { show: showUpdateModal, modal: updateModal } = useModal()
+  const remove = useRemoveRole()
+
+  const handleUpdateBtnClick = async (record: RoleListItem) => {
+    const { data: role } = await request<RoleV1 | RoleV2>(
+      `/api/usystem/role/info${usePermissionApiV2 ? 'V2' : ''}?name=${record.name}`,
+      { isGlobal: true },
+    )
+    showUpdateModal({
+      initialValues: {
+        permissions: role?.permissions,
+        name: role?.name.replace(/^role_/, ''),
+      },
+      extraValues: {
+        id: role?.id,
+      },
+    })
+  }
 
   const columns: TableColumnsType<RoleListItem> = [
     {
@@ -145,7 +145,7 @@ const RoleList = () => {
       title: t('global.operation'),
       width: 150,
       align: 'center',
-      render: (value: RoleListItem) => {
+      render: (_, record) => {
         return (
           <Space size="small">
             <PermissionButton
@@ -154,19 +154,7 @@ const RoleList = () => {
               size="small"
               type="link"
               onClick={async () => {
-                const { data: role } = await request<RoleV1 | RoleV2>(
-                  `/api/usystem/role/info${usePermissionApiV2 ? 'V2' : ''}?name=${value.name}`,
-                  { isGlobal: true },
-                )
-                showUpdateModal({
-                  initialValues: {
-                    permissions: role?.permissions,
-                    name: role?.name.replace(/^role_/, ''),
-                  },
-                  extraValues: {
-                    id: role?.id,
-                  },
-                })
+                handleUpdateBtnClick(record)
               }}
             >
               {t('global.edit')}
@@ -181,16 +169,16 @@ const RoleList = () => {
                 modal.confirm({
                   title: t('RoleList.deleteTitle'),
                   content: (
-                    <Highlight texts={[value.name]}>{t('RoleList.deleteContent', { role: value.name })}</Highlight>
+                    <Highlight texts={[record.name]}>{t('RoleList.deleteContent', { role: record.name })}</Highlight>
                   ),
                   async onOk() {
                     await remove.trigger({
-                      id: value.id,
-                      name: value.name,
+                      id: record.id,
+                      name: record.name,
                     })
                     mutate(action, prev => {
                       return produce(prev, draft => {
-                        const index = draft?.dataSource?.findIndex(item => item.id === value.id)
+                        const index = draft?.dataSource?.findIndex(item => item.id === record.id)
                         if (index) {
                           draft?.dataSource?.splice(index, 1)
                         }

@@ -3,6 +3,7 @@
   "tasks": {
     "build": {
       "dependsOn": [
+        "lint",
         "^build"
       ],
       "outputs": [

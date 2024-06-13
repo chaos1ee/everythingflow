@@ -1,21 +1,24 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import type { FormInstance, FormProps } from 'antd'
 import { Form } from 'antd'
+import type { AnyObject } from 'antd/es/_util/type'
 import type { ReactNode } from 'react'
 import { useState } from 'react'
 import type { UseModalOperation, UseModalProps } from './modal'
 import { useModal } from './modal'
 
-type RecursivePartial<T> = NonNullable<T> extends object
-  ? {
-      [P in keyof T]?: NonNullable<T[P]> extends (infer U)[]
-        ? RecursivePartial<U>[]
-        : NonNullable<T[P]> extends object
-          ? RecursivePartial<T[P]>
-          : T[P]
-    }
-  : T
+type RecursivePartial<T> =
+  NonNullable<T> extends object
+    ? {
+        [P in keyof T]?: NonNullable<T[P]> extends (infer U)[]
+          ? RecursivePartial<U>[]
+          : NonNullable<T[P]> extends object
+            ? RecursivePartial<T[P]>
+            : T[P]
+      }
+    : T
 
-export interface UseFormModalProps<Values, ExtraValues>
+export interface UseFormModalProps<Values extends AnyObject = AnyObject, ExtraValues = any>
   extends Omit<UseModalProps, 'afterClose' | 'onConfirm' | 'content'> {
   formProps?: Omit<FormProps, 'form'>
   form?: FormInstance<Values>
@@ -23,7 +26,7 @@ export interface UseFormModalProps<Values, ExtraValues>
   onConfirm?: (values: Values, extraValues: ExtraValues) => void | Promise<void>
 }
 
-export function useFormModal<Values, ExtraValues extends NonNullable<unknown> = NonNullable<unknown>>(
+export function useFormModal<Values extends AnyObject = AnyObject, ExtraValues = any>(
   props: UseFormModalProps<Values, ExtraValues>,
 ) {
   const { content, form, formProps, onConfirm, ...modalProps } = props
