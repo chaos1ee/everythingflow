@@ -1,7 +1,7 @@
 import { PlusOutlined } from '@ant-design/icons'
 import type { InputRef } from 'antd'
 import { Input, Space, Tag, theme } from 'antd'
-import type { ChangeEvent, CSSProperties, FC } from 'react'
+import type { CSSProperties, ChangeEvent, FC } from 'react'
 import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from '../../hooks/i18n'
 

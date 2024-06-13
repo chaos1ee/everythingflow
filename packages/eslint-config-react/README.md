@@ -8,15 +8,11 @@ pnpm add eslint @flow97/eslint-config-react -D
 
 ## Usage
 
-eslint.config.mjs
+.eslintrc.js
 
 ```javascript
-import config from '@flow97/eslint-config-react'
-
-export default [
-  config,
-  {
-    // your overrides
-  },
-]
+module.exports = {
+  root: true,
+  extends: [require.resolve('@flow97/eslint-config-react')],
+}
 ```

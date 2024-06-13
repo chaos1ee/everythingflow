@@ -42,7 +42,7 @@ export type RequestResponse<T> = Pick<Response, 'headers' | 'status' | 'statusTe
 
 export async function request<T = any>(url: string, opts: RequestOptions = {}): Promise<RequestResponse<T>> {
   const _opts = Object.assign(opts, { responseType: opts.responseType ?? 'json' })
-  let { body, params, headers, responseType, isGlobal, ...rest } = _opts
+  const { body, params, responseType, isGlobal, ...rest } = _opts
 
   // 处理查询参数，如果 url 中已经有查询参数，需要合并。
   const parsed = qs.parseUrl(url)
@@ -56,7 +56,7 @@ export async function request<T = any>(url: string, opts: RequestOptions = {}): 
   const queryString = qs.stringify(queryParams, options)
   url = queryString ? `${parsed.url}?${queryString}` : url
 
-  headers = new Headers(headers)
+  const headers = new Headers(_opts.headers)
 
   const token = useTokenStore?.getState()?.token
 
