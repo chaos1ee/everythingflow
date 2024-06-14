@@ -14,12 +14,6 @@ const OperationLogList: FC = () => {
 
   const columns: ColumnsType<OperationLogListItem> = [
     {
-      key: 'id',
-      title: 'ID',
-      dataIndex: 'id',
-      width: 100,
-    },
-    {
       key: 'username',
       title: t('global.username'),
       dataIndex: 'uname',
@@ -41,17 +35,14 @@ const OperationLogList: FC = () => {
       key: 'route',
       title: t('global.route'),
       dataIndex: 'route',
+      width: 200,
     },
     {
       key: 'request',
       title: t('global.request'),
       dataIndex: 'request',
       render(value: string) {
-        return (
-          <Paragraph>
-            <pre className="max-h-32 overflow-auto">{value}</pre>
-          </Paragraph>
-        )
+        return <Paragraph ellipsis={{ rows: 2, expandable: true }}>{value}</Paragraph>
       },
     },
     {
@@ -59,11 +50,7 @@ const OperationLogList: FC = () => {
       title: t('global.response'),
       dataIndex: 'response',
       render(value: string) {
-        return (
-          <Paragraph>
-            <pre className="max-h-32 overflow-auto">{value}</pre>
-          </Paragraph>
-        )
+        return <Paragraph ellipsis={{ rows: 2, expandable: true }}>{value}</Paragraph>
       },
     },
     {
