@@ -39,12 +39,11 @@ import { mixedStorage } from './utils/storage'
 const SignIn = lazy(() => import('./pages/SignIn'))
 const NotFound = lazy(() => import('./pages/NotFound'))
 const OperationLogList = lazy(() => import('./pages/OperationLogList'))
+const UserList = lazy(() => import('./pages/permission/UserList'))
+const RoleList = lazy(() => import('./pages/permission/RoleList'))
+const RoleDetail = lazy(() => import('./pages/permission/RoleDetail'))
 
 const PermissionRoutes = () => {
-  const UserList = lazy(() => import('./pages/permission/UserList'))
-  const RoleList = lazy(() => import('./pages/permission/RoleList'))
-  const RoleDetail = lazy(() => import('./pages/permission/RoleDetail'))
-
   return (
     <Routes>
       <Route index element={<Navigate to="user" />} />
