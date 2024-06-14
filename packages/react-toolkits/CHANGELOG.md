@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.8.93
+
+### Patch Changes
+
+- 89c082c: fix: impor permission pages failed
+
 ## 0.8.92
 
 ### Patch Changes
