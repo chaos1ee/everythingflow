@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.8.94
+
+### Patch Changes
+
+- c53b404: feat: add ExpandableParagraph component
+
 ## 0.8.93
 
 ### Patch Changes
