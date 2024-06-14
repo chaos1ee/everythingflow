@@ -11,8 +11,12 @@ const handlers = [
       route: randText(),
       method: rand(['GET', 'POST']),
       label: randText(),
-      request: JSON.stringify(randJSON()),
-      response: JSON.stringify(randJSON()),
+      request: JSON.stringify(randJSON({ maxKeys: 10 })),
+      response: JSON.stringify(
+        randJSON({
+          maxKeys: 10,
+        }),
+      ),
       ctime: datetime(),
     })),
   ),
