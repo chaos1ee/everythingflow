@@ -1,39 +1,13 @@
-import { Card, Col, Form, Input, Row, Select, Typography } from 'antd'
+import { Card, Col, Form, Input, Row, Select } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
 import dayjs from 'dayjs'
-import type { FC, ReactNode } from 'react'
-import { useState } from 'react'
+import type { FC } from 'react'
+import ExpandableParagraph from '../../components/ExpandableParagraph'
 import QueryList from '../../components/QueryList'
 import type { OperationLogListItem } from '../../features/log'
 import { useTranslation } from '../../hooks/i18n'
 
 const { Option } = Select
-const { Paragraph } = Typography
-
-interface ExpandableParagraphProps {
-  children?: ReactNode | undefined
-}
-
-const ExpandableParagraph: FC<ExpandableParagraphProps> = props => {
-  const { children } = props
-  const [expanded, setExpanded] = useState(false)
-
-  return (
-    <Paragraph
-      className="mb-0"
-      ellipsis={{
-        rows: 2,
-        expandable: 'collapsible',
-        expanded,
-        onExpand: (_, info) => {
-          setExpanded(info.expanded)
-        },
-      }}
-    >
-      {children}
-    </Paragraph>
-  )
-}
 
 const OperationLogList: FC = () => {
   const t = useTranslation()

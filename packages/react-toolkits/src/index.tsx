@@ -1,9 +1,8 @@
-import { lazy } from 'react'
-import { Navigate, Route, Routes } from 'react-router-dom'
 import type { ContextState } from './components/ContextProvider'
 import ContextProvider, { contextStore, useToolkitsContext } from './components/ContextProvider'
 import type { DynamicTagsProps } from './components/DynamicTags'
 import DynamicTags from './components/DynamicTags'
+import ExpandableParagraph from './components/ExpandableParagraph'
 import type { FilterFormWrapperProps } from './components/FilterFormWrapper'
 import FilterFormWrapper from './components/FilterFormWrapper'
 import type { Game, GameState } from './components/GameSelect'
@@ -28,6 +27,10 @@ import { useFormModal } from './hooks/formModal'
 import { useTranslation } from './hooks/i18n'
 import { useModal, useModalStore } from './hooks/modal'
 import { usePermission, usePermissions } from './hooks/permission'
+import NotFound from './pages/NotFound'
+import OperationLogList from './pages/OperationLogList'
+import PermissionRoutes from './pages/permission'
+import SignIn, { RedirectToSignIn, useRedirectToSignIn } from './pages/SignIn'
 import type { TokenState } from './stores/token'
 import { useTokenStore, useTokenValidation } from './stores/token'
 import './styles/index.css'
@@ -36,27 +39,10 @@ import { RequestError, request } from './utils/request'
 import { withLayout } from './utils/router'
 import { mixedStorage } from './utils/storage'
 
-const SignIn = lazy(() => import('./pages/SignIn'))
-const NotFound = lazy(() => import('./pages/NotFound'))
-const OperationLogList = lazy(() => import('./pages/OperationLogList'))
-const UserList = lazy(() => import('./pages/permission/UserList'))
-const RoleList = lazy(() => import('./pages/permission/RoleList'))
-const RoleDetail = lazy(() => import('./pages/permission/RoleDetail'))
-
-const PermissionRoutes = () => {
-  return (
-    <Routes>
-      <Route index element={<Navigate to="user" />} />
-      <Route path="user" element={<UserList />} />
-      <Route path="role" element={<RoleList />} />
-      <Route path="role/:name" element={<RoleDetail />} />
-    </Routes>
-  )
-}
-
 export {
   ContextProvider,
   DynamicTags,
+  ExpandableParagraph,
   FilterFormWrapper,
   GameSelect,
   Highlight,
@@ -70,6 +56,7 @@ export {
   PermissionRoutes,
   QueryList,
   QueryListAction,
+  RedirectToSignIn,
   RequestError,
   SignIn,
   UserWidget,
@@ -83,6 +70,7 @@ export {
   usePermission,
   usePermissions,
   useQueryListStore,
+  useRedirectToSignIn,
   useTokenStore,
   useTokenValidation,
   useToolkitsContext,

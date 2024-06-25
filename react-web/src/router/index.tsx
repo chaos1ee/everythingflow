@@ -1,13 +1,12 @@
 import { App } from 'antd'
-import { createBrowserRouter, Navigate, useRouteError } from 'react-router-dom'
-import { RequestError, useTokenStore } from 'react-toolkits'
+import { createBrowserRouter, useRouteError } from 'react-router-dom'
+import { RedirectToSignIn, RequestError } from 'react-toolkits'
 import Root from '../Root'
 
 // 捕获 Suspense 组件中的错误
 const RootErrorBoundary = () => {
   const error = useRouteError()
   const { notification } = App.useApp()
-  const clearToken = useTokenStore(state => state.clearToken)
 
   if (error instanceof RequestError) {
     switch (error.status) {
@@ -18,11 +17,9 @@ const RootErrorBoundary = () => {
         })
         return
       case 401:
-        clearToken()
-        return <Navigate relative="path" to="/sign_in" />
+        return <RedirectToSignIn />
       case 412:
-        clearToken()
-        return <Navigate relative="path" to="/sign_in" state={{ notUser: true }} />
+        return <RedirectToSignIn notRegistered />
       case 403:
         notification.error({
           message: '未授权',

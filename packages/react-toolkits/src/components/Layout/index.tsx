@@ -15,10 +15,10 @@ const { Header, Sider, Content } = Antd.Layout
 const ContentGuard: FC<PropsWithChildren> = props => {
   const { children } = props
   const { usePermissionApiV2, hideGameSelect } = useToolkitsContext()
-  const { game, isLoading, switching } = useGameStore()
+  const { game, isLoading } = useGameStore()
   const t = useTranslation()
 
-  if (isLoading || switching) {
+  if (isLoading) {
     return (
       <Spin
         style={{

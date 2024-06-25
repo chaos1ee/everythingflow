@@ -5,14 +5,16 @@ import App from './App'
 import './libs/i18n'
 import './styles/index.css'
 
-const { worker } = await import('./mocks/setup')
+async function enableMocking() {
+  const { worker } = await import('./mocks/setup')
+  return worker.start({
+    onUnhandledRequest: 'bypass',
+    waitUntilReady: true,
+  })
+}
 
-await worker.start({
-  onUnhandledRequest: 'bypass',
-  waitUntilReady: true,
+enableMocking().then(() => {
+  const container = document.getElementById('root') as HTMLElement
+  const root = createRoot(container)
+  root.render(<App />)
 })
-
-const container = document.getElementById('root') as HTMLElement
-const root = createRoot(container)
-
-root.render(<App />)

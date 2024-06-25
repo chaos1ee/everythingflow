@@ -12,7 +12,7 @@ const UserWidget: FC = () => {
   const { clearToken, getUser } = useTokenStore()
   const user = getUser()
   const t = useTranslation()
-  const { logoutRedirectUrl } = useToolkitsContext()
+  const { signInUrl } = useToolkitsContext()
 
   const items: MenuProps['items'] = [
     {
@@ -23,8 +23,8 @@ const UserWidget: FC = () => {
           data-cy="user-widget-logout"
           onClick={() => {
             clearToken()
-            if (logoutRedirectUrl) {
-              navigate(logoutRedirectUrl)
+            if (signInUrl) {
+              navigate(signInUrl)
             }
           }}
         >

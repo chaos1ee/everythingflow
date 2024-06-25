@@ -89,9 +89,8 @@ const Providers: FC<PropsWithChildren> = ({ children }) => {
           menuItems={menuItems}
           appTitle={appTitle}
           signInPageTitle={signInPageTitle}
+          signInUrl="/sign_in"
           signInSuccessRedirectUrl="/"
-          logoutRedirectUrl="/sign_in"
-          idaasRedirectUrl={encodeURIComponent(window.location.origin + '/sign_in')}
           responseInterceptor={responseInterceptor}
         >
           <SWRConfig

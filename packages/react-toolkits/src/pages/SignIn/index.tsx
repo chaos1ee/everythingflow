@@ -1,6 +1,6 @@
 import { Alert, Button, Divider, Form, Input, Space, Typography } from 'antd'
-import type { FC } from 'react'
-import { Navigate, useLocation, useSearchParams } from 'react-router-dom'
+import { useEffect, type FC } from 'react'
+import { Navigate, useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import useSWRImmutable from 'swr/immutable'
 import backgroundUrl from '../../assets/background.svg'
 import logoUrl from '../../assets/logo.png'
@@ -10,12 +10,45 @@ import { useTranslation } from '../../hooks/i18n'
 import { useTokenStore } from '../../stores/token'
 import { request } from '../../utils/request'
 
+const NotRegisteredFlag = 'notRegistered'
+
+export const useRedirectToSignIn = () => {
+  const clearToken = useTokenStore(state => state.clearToken)
+  const navigate = useNavigate()
+  const { signInUrl } = useToolkitsContext()
+
+  return (notRegistered?: boolean) => {
+    clearToken()
+    navigate(signInUrl, { state: { [NotRegisteredFlag]: notRegistered } })
+  }
+}
+
+interface RedirectToSignInProps {
+  notRegistered?: boolean
+}
+
+export const RedirectToSignIn: FC<RedirectToSignInProps> = props => {
+  const { notRegistered } = props
+  const clearToken = useTokenStore(state => state.clearToken)
+  const { signInUrl } = useToolkitsContext()
+
+  useEffect(() => {
+    return () => {
+      clearToken()
+    }
+  }, [])
+
+  return <Navigate relative="path" to={signInUrl} state={{ [NotRegisteredFlag]: notRegistered }} />
+}
+
 const SignIn: FC = () => {
   const [searchParams] = useSearchParams()
   const location = useLocation()
   const { token, setToken } = useTokenStore()
   const t = useTranslation()
-  const { signInPageTitle, localeDropdownMenu, signInSuccessRedirectUrl, idaasRedirectUrl } = useToolkitsContext()
+  const { signInPageTitle, localeDropdownMenu, signInSuccessRedirectUrl, signInUrl } = useToolkitsContext()
+
+  const idaasRedirectUrl = encodeURIComponent(window.location.origin + signInUrl)
 
   useSWRImmutable(
     searchParams.has('ticket') ? `/api/usystem/user/login?ticket=${searchParams.get('ticket')}` : null,
@@ -53,7 +86,9 @@ const SignIn: FC = () => {
           <div className="-translate-y-10 px-36">
             <div className="flex flex-col justify-center">
               <div className="h-10">
-                {location.state?.notUser && <Alert banner closable message={t('SignIn.notRegistered')} type="error" />}
+                {location.state?.[NotRegisteredFlag] && (
+                  <Alert banner closable message={t('SignIn.notRegistered')} type="error" />
+                )}
               </div>
               <Typography.Title level={2}>{t('SignIn.welcome')}</Typography.Title>
               <div className="mt-4">
