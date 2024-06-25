@@ -69,11 +69,13 @@ const InfiniteList = <Item extends object, Values extends object | undefined = u
     isValidating: isListValidating,
   } = useSWRInfinite(
     getKey,
-    arg =>
-      request<Response>(arg, {
+    arg => {
+      console.log('getKey', getKey)
+      return request<Response>(arg, {
         headers: typeof headers === 'function' ? headers(form) : headers,
         isGlobal,
-      }).then(response => response.data),
+      }).then(response => response.data)
+    },
     {
       shouldRetryOnError: false,
       revalidateOnFocus: false,

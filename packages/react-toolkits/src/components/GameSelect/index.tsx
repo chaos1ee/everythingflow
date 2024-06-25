@@ -1,11 +1,12 @@
 import { Select, Space, Typography } from 'antd'
+import { useEffect } from 'react'
 import { useSWRConfig } from 'swr'
 import { create } from 'zustand'
 import { createJSONStorage, persist } from 'zustand/middleware'
 import { useTranslation } from '../../hooks/i18n'
-import { useTokenStore } from '../../stores/token'
+import { request } from '../../utils/request'
 import { mixedStorage } from '../../utils/storage'
-import { contextStore, useToolkitsContext } from '../ContextProvider'
+import { useToolkitsContext } from '../ContextProvider'
 
 const { Text } = Typography
 
@@ -21,9 +22,7 @@ export interface GameState {
   games: Game[]
   isLoading: boolean
   setGame: (id: string) => void
-  fetchGames: () => void
-  switching: boolean // 切换游戏中
-  setSwitching: (switching: boolean) => void
+  refetchGames: () => void
 }
 
 export const useGameStore = create<GameState>()(
@@ -32,40 +31,17 @@ export const useGameStore = create<GameState>()(
       game: null,
       games: [],
       isLoading: false,
-      switching: false,
-      setSwitching: switching => {
-        set({ switching })
-      },
       setGame: id => {
         const matchGame = (get().games ?? []).find(item => item.id === id)
         set({ game: matchGame ?? null })
       },
-      fetchGames: () => {
-        const token = useTokenStore.getState().token
-        const isPermissionApiV2 = contextStore.getState().usePermissionApiV2
-
-        if (token && isPermissionApiV2) {
+      refetchGames: async () => {
+        try {
           set({ isLoading: true })
-
-          fetch('/api/usystem/game/all', {
-            method: 'GET',
-            headers: {
-              'Content-Type': 'application/json',
-              Authorization: `Bearer ${token}`,
-            },
-          })
-            .then(response => {
-              if (response.ok) {
-                return response.json()
-              }
-              throw new Error('Network response was not ok.')
-            })
-            .then((json: { code: number; data: Game[]; msg: string }) => {
-              set({ games: json.data })
-            })
-            .finally(() => {
-              set({ isLoading: false })
-            })
+          const response = await request<Game[]>('/api/usystem/game/all')
+          set({ games: response.data })
+        } finally {
+          set({ isLoading: false })
         }
       },
     }),
@@ -77,22 +53,15 @@ export const useGameStore = create<GameState>()(
   ),
 )
 
-useTokenStore.subscribe((state, prevState) => {
-  if (state.token !== prevState.token) {
-    // FIXME: 因为请求会在 Mock Service Worker 启动前发出，所以这里需要延迟一段时间
-    setTimeout(() => {
-      useGameStore.getState().fetchGames()
-    }, 400)
-  }
-})
-
-useTokenStore.persist.rehydrate()
-
 const GameSelect = () => {
   const t = useTranslation()
   const { gameFilter } = useToolkitsContext()
-  const { game, games, isLoading, setGame, setSwitching } = useGameStore()
+  const { game, games, isLoading, setGame, refetchGames } = useGameStore()
   const { mutate } = useSWRConfig()
+
+  useEffect(() => {
+    refetchGames()
+  }, [])
 
   const options = (games ?? [])
     ?.filter(item => gameFilter?.(item) ?? true)
@@ -102,7 +71,6 @@ const GameSelect = () => {
     }))
 
   const onGameChange = async (id: string) => {
-    setSwitching(true)
     // 清除 SWR 缓存
     setGame(id)
     await mutate(
@@ -110,9 +78,8 @@ const GameSelect = () => {
         return !(typeof key === 'string' && key.startsWith('/api/usystem/game/all'))
       },
       undefined,
-      { revalidate: false },
+      { revalidate: true },
     )
-    setSwitching(false)
   }
 
   return (

@@ -65,7 +65,7 @@ export async function request<T = any>(url: string, opts: RequestOptions = {}): 
   }
 
   if (contextStore.getState().usePermissionApiV2) {
-    if (isGlobal || contextStore.getState().isGlobal) {
+    if (isGlobal) {
       headers.set('App-ID', 'global')
     } else {
       const game = useGameStore.getState().game

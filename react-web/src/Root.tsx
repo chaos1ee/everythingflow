@@ -1,13 +1,13 @@
 import { App } from 'antd'
 import { lazy } from 'react'
-import { Navigate, Outlet, Route, Routes, useNavigate } from 'react-router-dom'
+import { Navigate, Outlet, Route, Routes } from 'react-router-dom'
 import {
   NotFound,
   OperationLogList,
   PermissionRoutes,
   RequestError,
   SignIn,
-  useTokenStore,
+  useRedirectToSignIn,
   useTokenValidation,
   withLayout,
 } from 'react-toolkits'
@@ -21,8 +21,7 @@ const DiffCollapse = lazy(() => import('./pages//handsontable/DiffCollapse'))
 const ConsoleRoot = () => {
   useTokenValidation()
   const { notification } = App.useApp()
-  const clearToken = useTokenStore(state => state.clearToken)
-  const navigate = useNavigate()
+  const redirectToSignIn = useRedirectToSignIn()
 
   return (
     <SWRConfig
@@ -37,12 +36,10 @@ const ConsoleRoot = () => {
                 })
                 return
               case 401:
-                clearToken()
-                navigate('/sign_in')
+                redirectToSignIn()
                 return
               case 412:
-                clearToken()
-                navigate('/sign_in', { state: { notUser: true } })
+                redirectToSignIn(true)
                 return
               case 403:
                 notification.error({
