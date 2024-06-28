@@ -73,8 +73,8 @@ const Root = (
         <Route path="diff" Component={withLayout(DiffTable)} />
         <Route path="collapse" Component={withLayout(DiffCollapse)} />
       </Route>
-      <Route path="operation_log" Component={withLayout(OperationLogList, { hideGameSelect: true, isGlobal: true })} />
-      <Route path="permission/*" Component={withLayout(PermissionRoutes, { hideGameSelect: true, isGlobal: true })} />
+      <Route path="operation_log" Component={withLayout(OperationLogList, { hideGameSelect: true })} />
+      <Route path="permission/*" Component={withLayout(PermissionRoutes, { hideGameSelect: true })} />
       <Route path="*" element={<NotFound />} />
     </Route>
   </Routes>

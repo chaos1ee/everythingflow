@@ -11,7 +11,7 @@ import { useToolkitsContext } from '../ContextProvider'
 const { Text } = Typography
 
 export interface Game {
-  id: string
+  id: string | number
   name: string
   area: 'cn' | 'global'
   Ctime: string
@@ -21,7 +21,7 @@ export interface GameState {
   game: Game | null
   games: Game[]
   isLoading: boolean
-  setGame: (id: string) => void
+  setGame: (id: string | number) => void
   refetchGames: () => void
 }
 
@@ -32,7 +32,9 @@ export const useGameStore = create<GameState>()(
       games: [],
       isLoading: false,
       setGame: id => {
-        const matchGame = (get().games ?? []).find(item => item.id === id)
+        const matchGame = (get().games ?? []).find(item => String(item.id) === String(id))
+
+        console.log(get().games, matchGame, id)
         set({ game: matchGame ?? null })
       },
       refetchGames: async () => {
@@ -67,7 +69,7 @@ const GameSelect = () => {
     ?.filter(item => gameFilter?.(item) ?? true)
     ?.map(item => ({
       label: item.name,
-      value: item.id,
+      value: String(item.id),
     }))
 
   const onGameChange = async (id: string) => {
@@ -88,7 +90,7 @@ const GameSelect = () => {
       <Select
         showSearch
         optionFilterProp="label"
-        value={game?.id}
+        value={String(game?.id ?? '')}
         placeholder={t('GameSelect.placeholder')}
         loading={isLoading}
         style={{ width: '200px' }}

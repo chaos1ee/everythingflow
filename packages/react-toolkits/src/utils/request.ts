@@ -70,7 +70,7 @@ export async function request<T = any>(url: string, opts: RequestOptions = {}): 
     } else {
       const game = useGameStore.getState().game
       if (game) {
-        headers.set('App-ID', game.id)
+        headers.set('App-ID', String(game.id))
       }
     }
   }
