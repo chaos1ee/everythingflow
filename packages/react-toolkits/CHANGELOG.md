@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.9.1
+
+### Patch Changes
+
+- 8b2935f: feat: transfer game id type
+
 ## 0.9.0
 
 ### Minor Changes
