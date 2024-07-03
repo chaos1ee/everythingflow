@@ -18,24 +18,30 @@ export interface Game {
 }
 
 export interface GameState {
+  initialized: boolean
   game: Game | null
   games: Game[]
   isLoading: boolean
-  setGame: (id: string | number) => void
-  refetchGames: () => void
+  setGame: (id: string | number) => Promise<void>
+  refetchGames: () => Promise<void>
 }
 
 export const useGameStore = create<GameState>()(
   persist(
     (set, get) => ({
+      initialized: false,
       game: null,
       games: [],
       isLoading: false,
-      setGame: id => {
-        const matchGame = (get().games ?? []).find(item => String(item.id) === String(id))
+      setGame: async id => {
+        const { initialized, refetchGames } = get()
 
-        console.log(get().games, matchGame, id)
-        set({ game: matchGame ?? null })
+        if (!initialized) {
+          await refetchGames()
+        }
+
+        const matchedGame = (get().games ?? []).find(item => String(item.id) === String(id))
+        set({ game: matchedGame ?? null })
       },
       refetchGames: async () => {
         try {
@@ -43,7 +49,10 @@ export const useGameStore = create<GameState>()(
           const response = await request<Game[]>('/api/usystem/game/all')
           set({ games: response.data })
         } finally {
-          set({ isLoading: false })
+          set({
+            initialized: true,
+            isLoading: false,
+          })
         }
       },
     }),
