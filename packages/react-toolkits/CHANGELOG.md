@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.9.2
+
+### Patch Changes
+
+- fdb77cc: feat: involke refetchGames when setting game
+
 ## 0.9.1
 
 ### Patch Changes
