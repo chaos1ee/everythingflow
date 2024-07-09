@@ -1,15 +1,12 @@
-import { Card, Col, Form, Input, Row } from 'antd'
+import { Card, Form, Input } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
-import { useEffect } from 'react'
-import { QueryList, useGameStore } from 'react-toolkits'
+import { QueryList } from 'react-toolkits'
 import type { ListItem } from '../../../features/list'
 import type { ListResponse } from '../../../types'
 
 const action = '/api/list'
 
 const Pagination = () => {
-  const { setGame } = useGameStore()
-
   const columns: ColumnsType<ListItem> = [
     {
       key: 'id',
@@ -23,19 +20,6 @@ const Pagination = () => {
     },
   ]
 
-  useEffect(() => {
-    let i = 0
-    const timerId = setInterval(() => {
-      console.log('InfiniteList is polling...')
-
-      setGame((i++ % 2) + 1)
-    }, 5000)
-
-    return () => {
-      clearInterval(timerId)
-    }
-  }, [])
-
   return (
     <Card title="List">
       <QueryList<ListItem, { name: string }, ListResponse<ListItem>>
@@ -48,13 +32,9 @@ const Pagination = () => {
         getBody={({ formValues, page, size }) => ({ ...formValues, page, size })}
         renderForm={form => (
           <Form form={form} autoComplete="off">
-            <Row>
-              <Col>
-                <Form.Item label="名称" name="name">
-                  <Input />
-                </Form.Item>
-              </Col>
-            </Row>
+            <Form.Item label="名称" name="name">
+              <Input />
+            </Form.Item>
           </Form>
         )}
       />

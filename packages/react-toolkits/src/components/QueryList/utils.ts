@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import qs from 'query-string'
-import type { QueryListProps } from '.'
-import type { QueryListPayload } from '../../stores/queryList'
+import type { QueryListPayload, QueryListProps } from './QueryList'
 
 interface SwrKeyObject {
   url: string

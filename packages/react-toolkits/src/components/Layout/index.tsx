@@ -5,8 +5,8 @@ import { Suspense } from 'react'
 import logoUrl from '../../assets/logo.png'
 import { useTranslation } from '../../hooks/i18n'
 import { useToolkitsContext } from '../ContextProvider'
-import GameSelect, { useGameStore } from '../GameSelect'
-import NavMenu from '../NavMenu'
+import { GameSelect, useGameStore } from '../GameSelect'
+import { NavMenu } from '../NavMenu'
 import UserWidget from '../UserWidget'
 
 const { Spin, theme } = Antd
