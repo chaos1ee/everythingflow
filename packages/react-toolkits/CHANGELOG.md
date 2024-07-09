@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.9.4
+
+### Patch Changes
+
+- ecfff90: fix: path is not right
+
 ## 0.9.3
 
 ### Patch Changes
