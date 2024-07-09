@@ -123,7 +123,7 @@ const UserList: FC = () => {
                   <Tag color="#f50">{item}</Tag>
                 ) : (
                   <Tag color="#ff5a00">
-                    <Link to={`/permission/role/${item}`}>{item}</Link>
+                    <Link to={`../role/${item}`}>{item}</Link>
                   </Tag>
                 )}
               </Col>
