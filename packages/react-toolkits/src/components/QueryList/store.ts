@@ -2,7 +2,7 @@
 import { mutate } from 'swr'
 import type { MutatorCallback, MutatorOptions } from 'swr/_internal'
 import { create } from 'zustand'
-import type { QueryListDataType, QueryListProps } from '.'
+import type { QueryListDataType, QueryListPayload, QueryListProps } from './QueryList'
 import { genSwrKey } from './utils'
 
 type QueryListMutator = <Item = any>(
@@ -11,13 +11,7 @@ type QueryListMutator = <Item = any>(
   opts?: MutatorOptions<QueryListDataType<Item>>,
 ) => void
 
-export interface QueryListPayload<FormValues = any> {
-  page?: number
-  size?: number
-  formValues?: FormValues
-}
-
-export interface QueryListState {
+interface QueryListState {
   swrKeyMap: Map<string, string | null>
   payloadMap: Map<string, QueryListPayload>
   propsMap: Map<string, QueryListProps>

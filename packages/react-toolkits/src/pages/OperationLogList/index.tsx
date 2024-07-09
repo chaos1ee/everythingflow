@@ -1,9 +1,9 @@
-import { Card, Col, Form, Input, Row, Select } from 'antd'
+import { Card, Form, Input, Select } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
 import dayjs from 'dayjs'
 import type { FC } from 'react'
 import ExpandableParagraph from '../../components/ExpandableParagraph'
-import QueryList from '../../components/QueryList'
+import { QueryList } from '../../components/QueryList'
 import type { OperationLogListItem } from '../../features/log'
 import { useTranslation } from '../../hooks/i18n'
 
@@ -87,32 +87,22 @@ const OperationLogList: FC = () => {
         getTotal={response => response.Total}
         getDataSource={response => response.List}
         renderForm={form => (
-          <Form form={form}>
-            <Row gutter={10}>
-              <Col span={4}>
-                <Form.Item label={t('global.username')} name="uname">
-                  <Input allowClear />
-                </Form.Item>
-              </Col>
-              <Col span={4}>
-                <Form.Item label={t('global.route')} name="route">
-                  <Input allowClear />
-                </Form.Item>
-              </Col>
-              <Col>
-                <Form.Item label={t('global.method')} name="method">
-                  <Select allowClear style={{ width: '100px' }}>
-                    <Option value="get">GET</Option>
-                    <Option value="post">POST</Option>
-                  </Select>
-                </Form.Item>
-              </Col>
-              <Col span={4}>
-                <Form.Item label={t('global.label')} name="label">
-                  <Input allowClear />
-                </Form.Item>
-              </Col>
-            </Row>
+          <Form form={form} layout="inline">
+            <Form.Item label={t('global.username')} name="uname">
+              <Input allowClear />
+            </Form.Item>
+            <Form.Item label={t('global.route')} name="route">
+              <Input allowClear />
+            </Form.Item>
+            <Form.Item label={t('global.method')} name="method">
+              <Select allowClear style={{ width: '100px' }}>
+                <Option value="get">GET</Option>
+                <Option value="post">POST</Option>
+              </Select>
+            </Form.Item>
+            <Form.Item label={t('global.label')} name="label">
+              <Input allowClear />
+            </Form.Item>
           </Form>
         )}
       />

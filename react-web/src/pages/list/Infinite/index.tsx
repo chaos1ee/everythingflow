@@ -1,4 +1,4 @@
-import { Card, Col, DatePicker, Form, Input, Row, Select } from 'antd'
+import { Card, DatePicker, Form, Input, Select } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
 import type { Dayjs } from 'dayjs'
 import { last } from 'lodash-es'
@@ -50,35 +50,27 @@ const Infinite = () => {
           }
         }}
         renderForm={form => (
-          <Form form={form}>
-            <Row gutter={15}>
-              <Col span={4}>
-                <Form.Item label="UID" name="uid" rules={[{ required: true }]}>
-                  <Input />
-                </Form.Item>
-              </Col>
-              <Col>
-                <Form.Item label="类型" name="type">
-                  <Select allowClear style={{ width: '120px' }}>
-                    <Option value="received">增加</Option>
-                    <Option value="spent">减少</Option>
-                  </Select>
-                </Form.Item>
-              </Col>
-              <Col>
-                <Form.Item
-                  label="时间（UTC+0）"
-                  name="date"
-                  rules={[
-                    {
-                      required: true,
-                    },
-                  ]}
-                >
-                  <DatePicker />
-                </Form.Item>
-              </Col>
-            </Row>
+          <Form form={form} layout="inline">
+            <Form.Item label="UID" name="uid" rules={[{ required: true }]}>
+              <Input />
+            </Form.Item>
+            <Form.Item label="类型" name="type">
+              <Select allowClear style={{ width: '120px' }}>
+                <Option value="received">增加</Option>
+                <Option value="spent">减少</Option>
+              </Select>
+            </Form.Item>
+            <Form.Item
+              label="时间（UTC+0）"
+              name="date"
+              rules={[
+                {
+                  required: true,
+                },
+              ]}
+            >
+              <DatePicker />
+            </Form.Item>
           </Form>
         )}
       />

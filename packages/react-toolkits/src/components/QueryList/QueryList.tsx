@@ -12,13 +12,18 @@ import type { RequestOptions } from '../../utils/request'
 import { request } from '../../utils/request'
 import FilterFormWrapper from '../FilterFormWrapper'
 import { defaultProps } from './constants'
-import type { QueryListPayload } from './store'
 import { useQueryListStore } from './store'
 import { deserialize } from './utils'
 
 interface ListResponse<T = any> {
   list: T[]
   total: number
+}
+
+export interface QueryListPayload<FormValues = any> {
+  page?: number
+  size?: number
+  formValues?: FormValues
 }
 
 export enum QueryListAction {
@@ -51,6 +56,7 @@ export interface QueryListProps<Item extends AnyObject = AnyObject, Values = any
   defaultSize?: number
   headers?: RequestOptions['headers'] | ((payload: QueryListPayload<Values> | undefined) => RequestOptions['headers'])
   form?: FormInstance<Values>
+  buttonsAlign?: 'left' | 'right'
   getBody?: (payload: QueryListPayload<Values>) => RequestOptions['body']
   getParams?: (payload: QueryListPayload<Values>) => RequestOptions['params']
   renderForm?: (form: FormInstance<Values>) => ReactNode
@@ -79,6 +85,7 @@ const InternalQueryList = <
     onePage,
     method,
     form,
+    buttonsAlign,
     getBody,
     getParams,
     defaultSize,
@@ -210,7 +217,12 @@ const InternalQueryList = <
 
   const formRenderer =
     typeof renderForm !== 'undefined' ? (
-      <FilterFormWrapper isConfirming={isValidating} onReset={onReset} onConfirm={onConfirm}>
+      <FilterFormWrapper
+        buttonsAlign={buttonsAlign}
+        isConfirming={isValidating}
+        onReset={onReset}
+        onConfirm={onConfirm}
+      >
         {renderForm(internalForm)}
       </FilterFormWrapper>
     ) : (
