@@ -1,3 +1,3 @@
-export { default as QueryList } from './QueryList'
-export type { QueryListAction, QueryListProps, QueryListRef } from './QueryList'
+export { default as QueryList, QueryListAction } from './QueryList'
+export type { QueryListProps, QueryListRef } from './QueryList'
 export { useQueryListStore } from './store'
