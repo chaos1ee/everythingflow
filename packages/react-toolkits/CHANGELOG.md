@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.9.5
+
+### Patch Changes
+
+- 9b8a9f5: fix: QueryListAction should be exported as const not a type
+
 ## 0.9.4
 
 ### Patch Changes
