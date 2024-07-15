@@ -22,15 +22,17 @@ export const useGameStore = create<GameState>()(
         set({ game: matchedGame ?? null })
       },
       async refetchGames() {
-        try {
-          set({ isLoading: true })
-          const response = await request<Game[]>('/api/usystem/game/all')
-          set({ games: response.data })
-        } finally {
-          set({
-            initialized: true,
-            isLoading: false,
-          })
+        if (!get().isLoading) {
+          try {
+            set({ isLoading: true })
+            const response = await request<Game[]>('/api/usystem/game/all')
+            set({ games: response.data })
+          } finally {
+            set({
+              initialized: true,
+              isLoading: false,
+            })
+          }
         }
       },
     }),
