@@ -1,5 +1,6 @@
 import { Button, Space, theme } from 'antd'
 import type { Key, PropsWithChildren, ReactNode } from 'react'
+import { Fragment } from 'react'
 import { useTranslation } from '../../hooks/i18n'
 
 export interface FilterFormWrapperProps extends PropsWithChildren {
@@ -37,8 +38,8 @@ const FilterFormWrapper = (props: FilterFormWrapperProps) => {
             <Button type="primary" loading={isConfirming} onClick={onConfirm}>
               {t('FilterFormWrapper.confirmText')}
             </Button>
+            {extras?.map(item => <Fragment key={item.key}>{item.children}</Fragment>)}
             <Button onClick={onReset}>{t('FilterFormWrapper.resetText')}</Button>
-            {extras?.map(item => <span key={item.key}>{item.children}</span>)}
           </Space>
         </div>
       </div>

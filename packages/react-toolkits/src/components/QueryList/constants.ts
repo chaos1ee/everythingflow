@@ -1,8 +1,9 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+import type { ListResponse } from './types'
+
 export const defaultProps = {
   method: 'GET',
   defaultSize: 10,
   refreshInterval: 0,
-  getTotal: (response: any) => response.total,
-  getDataSource: (response: any) => response.list,
+  getTotal: (response: ListResponse) => response.total,
+  getDataSource: (response: ListResponse) => response.list,
 }
