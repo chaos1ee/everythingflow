@@ -17,9 +17,9 @@ const NavMenu = memo(function NavMenu() {
   const { openKeys, selectedKeys, setOpenKeys, setSelectedKeys } = useNavStore()
 
   const onOpenChange: MenuProps['onOpenChange'] = keys => {
-    const latestOpenKey = keys?.find(key => openKeys?.indexOf(key) === -1)
-    const match = flattenItems.find(item => latestOpenKey === item.key)
-    setOpenKeys((match?.keypath ?? [latestOpenKey]) as string[])
+    const lastOpenKey = keys?.find(key => openKeys?.indexOf(key) === -1)
+    const match = flattenItems.find(item => lastOpenKey === item.key)
+    setOpenKeys((match?.keypath ?? [lastOpenKey]) as string[])
   }
 
   useEffect(() => {

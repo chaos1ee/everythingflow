@@ -13,12 +13,8 @@ import { request } from '../../utils/request'
 import FilterFormWrapper from '../FilterFormWrapper'
 import { defaultProps } from './constants'
 import { useQueryListStore } from './store'
+import type { ListResponse } from './types'
 import { deserialize } from './utils'
-
-interface ListResponse<T = any> {
-  list: T[]
-  total: number
-}
 
 export interface QueryListPayload<FormValues = any> {
   page?: number
@@ -86,13 +82,13 @@ const InternalQueryList = <
     method,
     form,
     buttonsAlign,
-    getBody,
-    getParams,
     defaultSize,
     refreshInterval,
     extra,
     renderForm,
     afterSuccess,
+    getBody,
+    getParams,
     getTotal,
     getDataSource,
     ...tableProps
@@ -102,14 +98,15 @@ const InternalQueryList = <
   // 可以从外部传入 FormInstance，不传时会使用内部生成的实例
   let [internalForm] = Form.useForm<Values>()
   internalForm = form || internalForm
+
   const { accessible, isLoading } = usePermission(code, isGlobal)
   const listAction = useRef<QueryListAction>(QueryListAction.Init)
-  const { setProps, getPayload, setPayload, getSwrkKey, updateSwrKey, removeFromStore } = useQueryListStore()
+  const { setProps, getPayload, setPayload, getSwrKey, updateSwrKey, removeFromStore } = useQueryListStore()
   const shouldPoll = useRef(false)
   const originalData = useRef<Response>()
 
   const { data, isValidating } = useSWR(
-    getSwrkKey(action),
+    getSwrKey(action),
     async key => {
       const { url, params, body } = deserialize(key)
       const payload = getPayload(action)
@@ -124,8 +121,8 @@ const InternalQueryList = <
       originalData.current = response.data
 
       return {
-        dataSource: getDataSource(response.data, internalForm),
-        total: getTotal(response.data) ?? 0,
+        dataSource: getDataSource(response.data as Response as any, internalForm),
+        total: getTotal(response.data as Response as any) ?? 0,
       }
     },
     {

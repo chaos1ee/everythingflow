@@ -15,7 +15,7 @@ interface QueryListState {
   swrKeyMap: Map<string, string | null>
   payloadMap: Map<string, QueryListPayload>
   propsMap: Map<string, QueryListProps>
-  getSwrkKey(action: string): string | null
+  getSwrKey(action: string): string | null
   updateSwrKey(action: string, key?: string | null): void
   getPayload: (action: string) => QueryListPayload | undefined
   setPayload(action: string, payload: Partial<QueryListPayload>): void
@@ -29,14 +29,15 @@ export const useQueryListStore = create<QueryListState>((set, get) => ({
   swrKeyMap: new Map(),
   payloadMap: new Map(),
   propsMap: new Map(),
-  getSwrkKey(action) {
+  getSwrKey(action) {
     const { swrKeyMap } = get()
     return swrKeyMap.get(action) ?? null
   },
   updateSwrKey(action, key) {
-    const { propsMap, payloadMap, swrKeyMap, getSwrkKey } = get()
-    const prevKey = getSwrkKey(action)
+    const { propsMap, payloadMap, swrKeyMap, getSwrKey } = get()
+    const prevKey = getSwrKey(action)
 
+    // FIXME: 有时会出现意料之外的 action 未注册的情况
     if (!propsMap.has(action)) {
       throw new Error(`The action "${action}" is not registered in QueryList`)
     }

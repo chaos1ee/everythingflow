@@ -70,7 +70,7 @@ const SignIn: FC = () => {
   }
 
   return (
-    <div className="w-screen h-screen relative flex">
+    <div className="w-screen h-screen relative flex overflow-hidden">
       {localeDropdownMenu && <div className="absolute top-16 right-16 z-10">{localeDropdownMenu}</div>}
       <div className="absolute left-14 top-6">
         <Space align="center">
@@ -111,7 +111,7 @@ const SignIn: FC = () => {
               </Divider>
               <div className="flex justify-center items-center">
                 <Button block shape="round" href={`${SSO_URL}/login?service=${idaasRedirectUrl}`} target="_self">
-                  <img src={logoUrl} className="w-[18px] mr-2 -mb-0.5" alt="logo" />
+                  <img src={logoUrl} className="w-[18px]" alt="logo" />
                   {t('SignIn.signInWithIDass')}
                 </Button>
               </div>
