@@ -249,7 +249,11 @@ const InternalQueryList = <
   )
 }
 
-const QueryList = forwardRef(InternalQueryList) as <Item extends AnyObject, Values, Response>(
+const QueryList = forwardRef(InternalQueryList) as <
+  Item extends AnyObject = AnyObject,
+  Values extends object | undefined = undefined,
+  Response = ListResponse<Item>,
+>(
   props: QueryListProps<Item, Values, Response> & { ref?: Ref<QueryListRef<Item, Values, Response>> },
 ) => ReactElement
 
