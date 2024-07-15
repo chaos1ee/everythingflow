@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.9.6
+
+### Patch Changes
+
+- 3358001: chore: some changes
+
 ## 0.9.5
 
 ### Patch Changes
