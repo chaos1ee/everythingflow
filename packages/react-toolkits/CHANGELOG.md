@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.9.7
+
+### Patch Changes
+
+- c22fc12: fix: avoid duplicate fetching games
+
 ## 0.9.6
 
 ### Patch Changes
