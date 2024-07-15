@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.10.0
+
+### Minor Changes
+
+- c3216f4: feat: set the default type of a generic of QueryList
+
 ## 0.9.7
 
 ### Patch Changes
