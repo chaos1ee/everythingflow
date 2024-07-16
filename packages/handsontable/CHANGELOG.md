@@ -1,5 +1,11 @@
 # @love1t/handsontable
 
+## 0.0.1
+
+### Patch Changes
+
+- 45b802b: chore: change group
+
 ## 0.1.10
 
 ### Patch Changes
