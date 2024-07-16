@@ -1,5 +1,5 @@
 {
-  "name": "everythingflow",
+  "name": "flow",
   "version": "0.0.0",
   "private": true,
   "packageManager": "pnpm@8.12.0",
@@ -12,7 +12,7 @@
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "clear": "rimraf -g '**/node_modules'"
   },
-  "repository": "git@github.com:chaos1ee/everythingflow.git",
+  "repository": "git@github.com:chaos1ee/flow.git",
   "author": "chaos1ee <chaos.maybeeee@gmail.com>",
   "license": "MIT",
   "devDependencies": {

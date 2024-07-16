@@ -4,10 +4,10 @@
   "main": "index.js",
   "keywords": [],
   "license": "MIT",
-  "homepage": "https://github.com/chaos1ee/everythingflow/tree/main/packages/eslint-config-react#readme",
+  "homepage": "https://github.com/chaos1ee/flow/tree/main/packages/eslint-config-react#readme",
   "repository": {
     "type": "git",
-    "url": "ssh://git@github.com/chaos1ee/everythingflow.git",
+    "url": "ssh://git@github.com/chaos1ee/flow.git",
     "directory": "packages/eslint-config-react"
   },
   "publishConfig": {
