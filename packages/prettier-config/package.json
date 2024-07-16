@@ -1,6 +1,6 @@
 {
   "name": "@flow97/prettier-config",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "Shared prettier configuration file.",
   "main": "index.js",
   "keywords": [],

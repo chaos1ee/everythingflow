@@ -1,5 +1,11 @@
 # @flow97/prettier-config
 
+## 0.0.6
+
+### Patch Changes
+
+- a3cb8c4: chore: change repo path
+
 ## 0.0.5
 
 ### Patch Changes

@@ -1,6 +1,6 @@
 {
   "name": "@flow97/eslint-config-react",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "main": "index.js",
   "keywords": [],
   "license": "MIT",
