@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.10.1
+
+### Patch Changes
+
+- a3cb8c4: chore: change repo path
+
 ## 0.10.0
 
 ### Minor Changes
