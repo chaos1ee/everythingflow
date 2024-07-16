@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "@ant-design/icons": "^5.3.7",
-    "@love1t/handsontable": "workspace:*",
+    "@flow97/handsontable": "workspace:*",
     "antd": "^5.18.0",
     "dayjs": "^1.11.11",
     "i18next": "^23.11.5",
