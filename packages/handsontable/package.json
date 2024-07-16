@@ -1,7 +1,7 @@
 {
-  "name": "@love1t/handsontable",
+  "name": "@flow97/handsontable",
   "type": "module",
-  "version": "0.1.10",
+  "version": "0.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
