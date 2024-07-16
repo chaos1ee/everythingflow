@@ -32,6 +32,7 @@ const GameSelect = () => {
         return !(typeof key === 'string' && key.startsWith('/api/usystem/game/all'))
       },
       undefined,
+      // TODO: set revalidate to false, and refresh data of QueryList component by other way
       { revalidate: true },
     )
   }
