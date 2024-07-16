@@ -30,10 +30,10 @@
     "lint": "eslint --fix ."
   },
   "author": "chaos1ee <chaos.maybeeee@gmail.com>",
-  "homepage": "https://github.com/chaos1ee/everythingflow/tree/main/packages/react-toolkits#readme",
+  "homepage": "https://github.com/chaos1ee/flow/tree/main/packages/react-toolkits#readme",
   "repository": {
     "type": "git",
-    "url": "ssh://git@github.com/chaos1ee/everythingflow.git",
+    "url": "ssh://git@github.com/chaos1ee/flow.git",
     "directory": "packages/react-toolkits"
   },
   "publishConfig": {

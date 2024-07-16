@@ -1,4 +1,4 @@
-# @everythingflow/prettier-config
+# @flow97/prettier-config
 
 ## Install
 

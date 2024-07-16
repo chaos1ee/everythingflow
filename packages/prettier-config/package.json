@@ -4,7 +4,7 @@
   "description": "Shared prettier configuration file.",
   "main": "index.js",
   "keywords": [],
-  "homepage": "https://github.com/chaos1ee/everythingflow/tree/main/packages/prettier-config#readme",
+  "homepage": "https://github.com/chaos1ee/flow/tree/main/packages/prettier-config#readme",
   "author": "chaos1ee <chaos.maybeeee@gmail.com>",
   "license": "MIT",
   "devDependencies": {
@@ -15,7 +15,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "ssh://git@github.com/chaos1ee/everythingflow.git",
+    "url": "ssh://git@github.com/chaos1ee/flow.git",
     "directory": "packages/prettier-config"
   },
   "publishConfig": {
