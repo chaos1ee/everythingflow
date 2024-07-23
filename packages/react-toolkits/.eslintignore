@@ -1,4 +1,3 @@
-lib/
-/locales/
 public/
-dist/
+lib/
+/locale/

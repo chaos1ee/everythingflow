@@ -1,13 +1,12 @@
-import type { HotTableProps } from '@handsontable/react'
+import type { HotTableClass, HotTableProps } from '@handsontable/react'
 import { HotTable } from '@handsontable/react'
-import type HotTableClass from '@handsontable/react/hotTableClass'
 import Empty from 'antd/es/empty'
 import Skeleton from 'antd/es/skeleton'
 import Space from 'antd/es/space'
 import type Handsontable from 'handsontable'
 import 'handsontable/dist/handsontable.full.min.css'
 import { registerLanguageDictionary, zhCN } from 'handsontable/i18n'
-import { AutoColumnSize, Search, registerPlugin } from 'handsontable/plugins'
+import { AutoColumnSize, registerPlugin, Search } from 'handsontable/plugins'
 import { forwardRef, useImperativeHandle, useRef, useState } from 'react'
 import CopyButton from './CopyButton'
 import SearchInput from './SearchInput'
@@ -97,6 +96,7 @@ const Table = forwardRef<TableRef, TableProps>(function FunTable(props, ref) {
 
   const onCopy = async () => {
     const hot = hotRef.current?.hotInstance
+
     if (!hot) return
     const htmlData = toHTML?.(hot) || instanceToHTML(hot)
     await copyHtmlToClipboard(htmlData)

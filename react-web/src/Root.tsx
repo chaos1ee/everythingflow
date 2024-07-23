@@ -15,8 +15,8 @@ import { SWRConfig } from 'swr'
 
 const PaginationList = lazy(() => import('./pages/list/Pagination'))
 const InfiniteList = lazy(() => import('./pages/list/Infinite'))
-const DiffTable = lazy(() => import('./pages//handsontable/DiffTable'))
-const DiffCollapse = lazy(() => import('./pages//handsontable/DiffCollapse'))
+const DiffTable = lazy(() => import('./pages/handsontable/diffTable'))
+const DiffCollapse = lazy(() => import('./pages/handsontable/diffCollapse'))
 
 const ConsoleRoot = () => {
   useTokenValidation()

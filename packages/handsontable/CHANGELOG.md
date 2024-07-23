@@ -1,4 +1,4 @@
-# @love1t/handsontable
+# @flow97/handsontable
 
 ## 0.0.1
 

@@ -1,6 +1,6 @@
 import type { SWRConfiguration } from 'swr'
 import useSWR from 'swr'
-import { useToolkitsContext } from '../components/ContextProvider'
+import { useToolkitsContext } from '../components/contextProvider'
 import { request } from '../utils/request'
 
 type PermissionCheckResult = { has_all: true } | { [k: string]: boolean }

@@ -10,8 +10,8 @@ import { ContextProvider, request, RequestError } from 'react-toolkits'
 import type { BareFetcher, SWRConfiguration, SWRHook, Key as SWRKey, SWRResponse } from 'swr'
 import { SWRConfig } from 'swr'
 import { LocaleDropdownMenu } from './components'
+import { useLocaleStore } from './components/localeDropdownMenu'
 import menuItems from './menu-items'
-import { useLocaleStore } from './stores/locale'
 
 const logger =
   (useSWRNext: SWRHook) =>
@@ -57,16 +57,16 @@ const responseInterceptor = async (response: Response, opts: RequestOptions) => 
   }
 }
 
+const appTitle = (
+  <Link to="/">
+    <span className="font-bold text-xl ">{import.meta.env.VITE_APP_TITLE}</span>
+  </Link>
+)
+
+const signInPageTitle = <span className="text-2xl font-bold">{import.meta.env.VITE_APP_TITLE}</span>
+
 const Providers: FC<PropsWithChildren> = ({ children }) => {
   const { locale } = useLocaleStore()
-
-  const appTitle = (
-    <Link to="/">
-      <span className="font-bold text-xl ">{import.meta.env.VITE_APP_TITLE}</span>
-    </Link>
-  )
-
-  const signInPageTitle = <span className="text-2xl font-bold">{import.meta.env.VITE_APP_TITLE}</span>
 
   return (
     <ConfigProvider

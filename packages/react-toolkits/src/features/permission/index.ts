@@ -1,5 +1,3 @@
-import PermissionList from './components/PermissionList'
-
+export { default as PermissionList } from './components/permissionList'
 export * from './hooks'
 export * from './types'
-export { PermissionList }

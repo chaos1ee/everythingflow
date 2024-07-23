@@ -2,7 +2,7 @@ import type { Options } from 'tsup'
 import { defineConfig } from 'tsup'
 import packageJson from './package.json'
 
-const commonOpts: Options = {
+const sharedOpts: Options = {
   format: ['esm'],
   sourcemap: false,
   minify: true,
@@ -10,6 +10,11 @@ const commonOpts: Options = {
   splitting: false,
   clean: true,
   dts: true,
+  external: Object.keys(packageJson.peerDependencies),
+  loader: {
+    '.png': 'copy',
+    '.svg': 'dataurl',
+  },
   outExtension() {
     return {
       js: '.js',
@@ -20,32 +25,16 @@ const commonOpts: Options = {
 
 const options: Options[] = [
   {
-    ...commonOpts,
+    ...sharedOpts,
     name: 'Build lib',
-    entry: ['src/index.tsx'],
+    entry: ['src/index.ts'],
     outDir: 'lib',
-    external: Object.keys(packageJson.peerDependencies),
-    loader: {
-      '.jpg': 'base64',
-      '.png': 'copy',
-      '.webp': 'file',
-      '.svg': 'dataurl',
-    },
   },
   {
-    ...commonOpts,
-    name: 'Build locales',
-    entry: ['src/locales/*.ts', '!src/locales/index.ts'],
-    outDir: 'locales',
-  },
-  {
-    ...commonOpts,
-    name: 'Build locale type',
-    entry: ['src/locales/index.ts'],
-    outDir: 'locales',
-    dts: {
-      only: true,
-    },
+    ...sharedOpts,
+    name: 'Build locale',
+    entry: ['src/components/locale/*.{ts,tsx}'],
+    outDir: 'locale',
   },
 ]
 

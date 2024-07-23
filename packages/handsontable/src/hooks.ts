@@ -1,12 +1,12 @@
 import { useWindowSize } from '@uidotdev/usehooks'
-import type { GridSettings } from 'handsontable/settings'
+import type Handsontable from 'handsontable'
 import { useMemo } from 'react'
 
 const BorderWidth = 1
 const LineHeight = 21
 const HeaderPadding = 2
 
-export function useRowHeights(data: GridSettings['data']) {
+export function useRowHeights(data: Handsontable.GridSettings['data']) {
   return useMemo(() => {
     const DefaultHandsontableRowHeight = 23
     const rowHeights: number[] = new Array(data?.length ?? 0).fill(DefaultHandsontableRowHeight)
@@ -25,14 +25,14 @@ export function useRowHeights(data: GridSettings['data']) {
   }, [data])
 }
 
-function useHeaderHeight(colHeaders?: GridSettings['colHeaders']) {
+function useHeaderHeight(colHeaders?: Handsontable.GridSettings['colHeaders']) {
   return colHeaders ? LineHeight + HeaderPadding * 2 + BorderWidth : 0
 }
 
 function useFixedHeight(
-  data: GridSettings['data'],
-  colHeaders?: GridSettings['colHeaders'],
-  fixedRowsTop?: GridSettings['fixedRowsTop'],
+  data: Handsontable.GridSettings['data'],
+  colHeaders?: Handsontable.GridSettings['colHeaders'],
+  fixedRowsTop?: Handsontable.GridSettings['fixedRowsTop'],
 ) {
   const rowHeights = useRowHeights(data)
   const headerHeight = useHeaderHeight(colHeaders)
@@ -40,9 +40,9 @@ function useFixedHeight(
 }
 
 export function useHeight(
-  data: GridSettings['data'],
-  colHeaders?: GridSettings['colHeaders'],
-  fixedRowsTop?: GridSettings['fixedRowsTop'],
+  data: Handsontable.GridSettings['data'],
+  colHeaders?: Handsontable.GridSettings['colHeaders'],
+  fixedRowsTop?: Handsontable.GridSettings['fixedRowsTop'],
   leftHeight = 200,
 ) {
   const size = useWindowSize()

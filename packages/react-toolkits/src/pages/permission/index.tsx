@@ -1,9 +1,9 @@
 import { lazy } from 'react'
 import { Navigate, Route, Routes } from 'react-router-dom'
 
-const UserList = lazy(() => import('./UserList'))
-const RoleList = lazy(() => import('./RoleList'))
-const RoleDetail = lazy(() => import('./RoleDetail'))
+const UserList = lazy(() => import('./userList'))
+const RoleList = lazy(() => import('./roleList'))
+const RoleDetail = lazy(() => import('./roleDetail'))
 
 const PermissionRoutes = () => {
   return (

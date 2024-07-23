@@ -1,4 +1,4 @@
-import '@love1t/handsontable/style.css'
+import '@flow97/handsontable/style.css'
 import { createRoot } from 'react-dom/client'
 import 'react-toolkits/style.css'
 import App from './App'
