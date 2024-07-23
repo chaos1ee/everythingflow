@@ -1,4 +1,4 @@
-import type HotTableClass from '@handsontable/react/hotTableClass'
+import { HotTableClass } from '@handsontable/react'
 import { BaseRenderer, textRenderer } from 'handsontable/renderers'
 import { useRef, type FC } from 'react'
 import type { TableProps } from './Table'

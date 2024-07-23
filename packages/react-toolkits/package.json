@@ -3,7 +3,7 @@
   "type": "module",
   "version": "0.10.1",
   "sideEffects": [
-    "**/*.css"
+    "*.css"
   ],
   "module": "./lib/index.js",
   "types": "./lib/index.d.ts",
@@ -13,16 +13,20 @@
       "import": "./lib/index.js",
       "types": "./lib/index.d.ts"
     },
-    "./locales/*": {
-      "import": "./locales/*.js",
-      "types": "./locales/*.d.ts"
+    "./locale": {
+      "import": "./locale/index.js",
+      "types": "./locale/index.d.ts"
+    },
+    "./locale/*": {
+      "import": "./locale/*.js",
+      "types": "./locale/*.d.ts"
     }
   },
   "files": [
     "README.md",
     "CHANGELOG.md",
-    "lib/",
-    "locales/"
+    "lib",
+    "locale"
   ],
   "license": "MIT",
   "scripts": {

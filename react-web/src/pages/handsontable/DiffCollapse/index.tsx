@@ -1,5 +1,5 @@
 import { CaretRightOutlined } from '@ant-design/icons'
-import { DiffTable } from '@love1t/handsontable'
+import { DiffTable } from '@flow97/handsontable'
 import { Card, Collapse } from 'antd'
 import { request } from 'react-toolkits'
 import useSWR from 'swr'

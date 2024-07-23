@@ -2,9 +2,11 @@
 import { pick } from 'lodash-es'
 import type { StringifyOptions } from 'query-string'
 import qs from 'query-string'
-import { contextStore } from '../components/ContextProvider'
-import { useGameStore } from '../components/GameSelect'
-import { useTokenStore } from '../stores/token'
+import { contextStore } from '../components/contextProvider'
+import { useGameStore } from '../components/gameSelect'
+import { useTokenStore } from '../hooks/token'
+
+// TODO: 使用 Axios 替换 fetch，方便处理请求拦截器和响应拦截器。
 
 export class RequestError extends Error {
   status!: number

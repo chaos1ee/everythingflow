@@ -3,14 +3,14 @@
 ## Installation
 
 ```bash
-pnpm install @love1t/handsontable
+pnpm install @flow97/handsontable
 ```
 
 ## Usage
 
 ```tsx
-import '@love1t/handsontable/style.css'
-import Table from '@love1t/handsontable'
+import '@flow97/handsontable/style.css'
+import Table from '@flow97/handsontable'
 
 const App = () => {
   const data: string[][] =[]
