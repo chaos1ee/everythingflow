@@ -85,6 +85,9 @@ importers:
         specifier: ^8.1.0
         version: 8.2.3(postcss@8.4.40)(typescript@5.5.4)
     devDependencies:
+      '@esbuild/linux-x64':
+        specifier: ^0.23.0
+        version: 0.23.0
       '@types/react':
         specifier: ^18.3.3
         version: 18.3.3
@@ -134,6 +137,9 @@ importers:
         specifier: ^4.5.4
         version: 4.5.4(@types/react@18.3.3)(immer@10.1.1)(react@18.3.1)
     devDependencies:
+      '@esbuild/linux-x64':
+        specifier: ^0.23.0
+        version: 0.23.0
       '@flow97/eslint-config-react':
         specifier: workspace:*
         version: link:../eslint-config-react
@@ -962,7 +968,6 @@ packages:
     cpu: [x64]
     os: [linux]
     requiresBuild: true
-    optional: true
 
   /@esbuild/netbsd-x64@0.23.0:
     resolution: {integrity: sha512-cRK+YDem7lFTs2Q5nEv/HHc4LnrfBCbH5+JHu6wm2eP+d8OZNoSMYgPZJq78vqQ9g+9+nMuIsAO7skzphRXHyw==}

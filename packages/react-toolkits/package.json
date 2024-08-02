@@ -55,6 +55,7 @@
     "zustand": "^4.5.4"
   },
   "devDependencies": {
+    "@esbuild/linux-x64": "^0.23.0",
     "@flow97/eslint-config-react": "workspace:*",
     "@types/lodash-es": "^4.17.12",
     "@types/node": "^22.0.2",
