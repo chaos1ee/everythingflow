@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.10.2
+
+### Patch Changes
+
+- c2cd888: feat: parse query string in standard url when using has mode router
+
 ## 0.10.1
 
 ### Patch Changes
