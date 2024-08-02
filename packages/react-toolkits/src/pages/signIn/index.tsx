@@ -1,6 +1,6 @@
 import { Alert, Button, Divider, Form, Input, Space, Typography } from 'antd'
 import { useEffect, type FC } from 'react'
-import { Navigate, useLocation, useNavigate, useSearchParams } from 'react-router-dom'
+import { Navigate, useLocation, useNavigate } from 'react-router-dom'
 import useSWRImmutable from 'swr/immutable'
 import { useToolkitsContext } from '../../components/contextProvider'
 import { useTranslation } from '../../components/locale'
@@ -43,16 +43,17 @@ export const RedirectToSignIn: FC<RedirectToSignInProps> = props => {
 }
 
 const SignIn: FC = () => {
-  const [searchParams] = useSearchParams()
   const location = useLocation()
+  // 当路由模式为 hash 模式时，Idaas 重定向会忽略 hash 部分，此时的登录页的地址为标准的 URL 结构 "/?ticket=xxx#/sign_in"。
+  // 然而 react-router-dom 无法从这种地址中获取到查询字符串，需要使用原生的 window.location.search。
+  const queryParams = new URLSearchParams(window.location.search)
   const { token, setToken } = useTokenStore()
   const { t } = useTranslation()
   const { signInPageTitle, localeDropdownMenu, signInSuccessRedirectUrl } = useToolkitsContext()
-
   const idaasRedirectUrl = encodeURIComponent(window.location.href)
 
   useSWRImmutable(
-    searchParams.has('ticket') ? `/api/usystem/user/login?ticket=${searchParams.get('ticket')}` : null,
+    queryParams.has('ticket') ? `/api/usystem/user/login?ticket=${queryParams.get('ticket')}` : null,
     url => request<{ token: string }>(url),
     {
       suspense: true,
@@ -63,11 +64,17 @@ const SignIn: FC = () => {
   )
 
   if (token) {
-    if (signInSuccessRedirectUrl) {
-      return <Navigate replace to={signInSuccessRedirectUrl} />
+    const hashMode = !!window.location.hash
+    const path = signInSuccessRedirectUrl ?? '/'
+
+    if (!hashMode) {
+      return <Navigate replace to={path} />
     }
 
-    return <Navigate replace to="/" />
+    // 移除 ticket
+    window.location.href = `${window.location.origin}${window.location.pathname}#${path}`
+
+    return <Navigate replace to={path} />
   }
 
   return (

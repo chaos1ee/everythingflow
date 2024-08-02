@@ -1,5 +1,5 @@
 import { App } from 'antd'
-import { createBrowserRouter, useRouteError } from 'react-router-dom'
+import { createHashRouter, useRouteError } from 'react-router-dom'
 import { RedirectToSignIn, RequestError } from 'react-toolkits'
 import Root from '../Root'
 
@@ -40,7 +40,7 @@ const RootErrorBoundary = () => {
   return <h1>Unknown Error</h1>
 }
 
-const router = createBrowserRouter([
+const router = createHashRouter([
   {
     path: '*',
     element: Root,
