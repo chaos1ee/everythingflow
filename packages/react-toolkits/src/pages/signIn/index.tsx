@@ -47,9 +47,9 @@ const SignIn: FC = () => {
   const location = useLocation()
   const { token, setToken } = useTokenStore()
   const { t } = useTranslation()
-  const { signInPageTitle, localeDropdownMenu, signInSuccessRedirectUrl, signInUrl } = useToolkitsContext()
+  const { signInPageTitle, localeDropdownMenu, signInSuccessRedirectUrl } = useToolkitsContext()
 
-  const idaasRedirectUrl = encodeURIComponent(window.location.origin + signInUrl)
+  const idaasRedirectUrl = encodeURIComponent(window.location.href)
 
   useSWRImmutable(
     searchParams.has('ticket') ? `/api/usystem/user/login?ticket=${searchParams.get('ticket')}` : null,
