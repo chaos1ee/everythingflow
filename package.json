@@ -2,7 +2,7 @@
   "name": "flow",
   "version": "0.0.0",
   "private": true,
-  "packageManager": "pnpm@8.12.0",
+  "packageManager": "pnpm@8.15.8",
   "scripts": {
     "dev": "turbo dev --filter=\"react-web\" --no-daemon",
     "build": "turbo build --parallel",
@@ -23,5 +23,10 @@
     "rimraf": "^5.0.7",
     "turbo": "^2.0.3"
   },
-  "prettier": "@flow97/prettier-config"
+  "prettier": "@flow97/prettier-config",
+  "pnpm": {
+    "overrides": {
+      "esbuild": "0.23.0"
+    }
+  }
 }

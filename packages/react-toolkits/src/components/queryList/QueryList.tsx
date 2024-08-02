@@ -4,13 +4,13 @@ import { Form, Result, Spin, Table } from 'antd'
 import type { AnyObject } from 'antd/es/_util/type'
 import type { TableProps } from 'antd/es/table'
 import type { ReactElement, ReactNode, Ref } from 'react'
-import { forwardRef, useEffect, useImperativeHandle, useRef } from 'react'
+import { cloneElement, forwardRef, useEffect, useImperativeHandle, useRef } from 'react'
 import useSWR from 'swr'
-import { useTranslation } from '../locale'
 import { usePermission } from '../../hooks/permission'
 import type { RequestOptions } from '../../utils/request'
 import { request } from '../../utils/request'
 import FilterFormWrapper from '../filterFormWrapper'
+import { useTranslation } from '../locale'
 import { useQueryListStore } from './store'
 import { deserialize } from './utils'
 
@@ -58,7 +58,7 @@ export interface QueryListProps<Item extends AnyObject = AnyObject, Values = any
   buttonsAlign?: 'left' | 'right'
   getBody?: (payload: QueryListPayload<Values>) => RequestOptions['body']
   getParams?: (payload: QueryListPayload<Values>) => RequestOptions['params']
-  renderForm?: (form: FormInstance<Values>) => ReactNode
+  renderForm?: (form: FormInstance<Values>) => ReactElement
   extra?: (opts: { form: FormInstance<Values>; data: Response | undefined }) => ReactNode
   afterSuccess?: (action: QueryListAction, data: QueryListDataType<Item>) => void
   getTotal?: (response: Response) => number
@@ -167,6 +167,7 @@ const InternalQueryList = <
   }
 
   const onConfirm = async () => {
+    console.log('onConfirm')
     listAction.current = QueryListAction.Confirm
     setPayload(action, { page: 1, formValues: internalForm.getFieldsValue() })
 
@@ -242,7 +243,13 @@ const InternalQueryList = <
         onReset={onReset}
         onConfirm={onConfirm}
       >
-        {renderForm(internalForm)}
+        {cloneElement(renderForm(internalForm), {
+          onKeyUp: (e: KeyboardEvent) => {
+            if (e.key === 'Enter') {
+              onConfirm()
+            }
+          },
+        })}
       </FilterFormWrapper>
     ) : (
       // 实例创建后不传给组件会触发 Antd Form 的警告。

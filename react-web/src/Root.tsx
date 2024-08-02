@@ -13,8 +13,8 @@ import {
 } from 'react-toolkits'
 import { SWRConfig } from 'swr'
 
-const PaginationList = lazy(() => import('./pages/list/Pagination'))
-const InfiniteList = lazy(() => import('./pages/list/Infinite'))
+const PaginationList = lazy(() => import('./pages/list/pagination'))
+const InfiniteList = lazy(() => import('./pages/list/infinite'))
 const DiffTable = lazy(() => import('./pages/handsontable/diffTable'))
 const DiffCollapse = lazy(() => import('./pages/handsontable/diffCollapse'))
 

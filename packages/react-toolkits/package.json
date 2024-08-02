@@ -45,36 +45,36 @@
     "registry": "https://registry.npmjs.org/"
   },
   "dependencies": {
-    "@ant-design/icons": "^5.3.7",
-    "dayjs": "^1.11.11",
+    "@ant-design/icons": "^5.4.0",
+    "dayjs": "^1.11.12",
     "immer": "^10.1.1",
     "jwt-decode": "^4.0.0",
     "lodash-es": "^4.17.21",
-    "query-string": "^9.0.0",
+    "query-string": "^9.1.0",
     "swr": "^2.2.5",
-    "zustand": "^4.5.2"
+    "zustand": "^4.5.4"
   },
   "devDependencies": {
     "@flow97/eslint-config-react": "workspace:*",
     "@types/lodash-es": "^4.17.12",
-    "@types/node": "^20.14.2",
+    "@types/node": "^22.0.2",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
-    "antd": "^5.18.0",
+    "antd": "^5.19.4",
     "autoprefixer": "^10.4.19",
     "cross-env": "^7.0.3",
     "eslint": "^8.38.0",
-    "postcss": "^8.4.38",
-    "prettier": "^3.3.2",
+    "postcss": "^8.4.40",
+    "prettier": "^3.3.3",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "react-router-dom": "^6.23.1",
+    "react-router-dom": "^6.26.0",
     "tailwind-config": "workspace:*",
-    "tailwindcss": "^3.4.4",
-    "ts-essentials": "^10.0.0",
+    "tailwindcss": "^3.4.7",
+    "ts-essentials": "^10.0.1",
     "tsconfig": "workspace:*",
     "tsup": "^8.1.0",
-    "typescript": "^5.4.5"
+    "typescript": "^5.5.4"
   },
   "peerDependencies": {
     "antd": "^5.12.2",
