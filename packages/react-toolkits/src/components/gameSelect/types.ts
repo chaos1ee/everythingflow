@@ -10,6 +10,8 @@ export interface GameState {
   game: Game | null
   games: Game[]
   isLoading: boolean
+  switching: boolean
   setGame: (id: string | number) => Promise<void>
   refetchGames: () => Promise<void>
+  setSwitching: (switching: boolean) => void
 }
