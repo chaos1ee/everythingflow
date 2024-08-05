@@ -4,7 +4,7 @@ import { Navigate, useLocation, useNavigate } from 'react-router-dom'
 import useSWRImmutable from 'swr/immutable'
 import { useToolkitsContext } from '../../components/contextProvider'
 import { useTranslation } from '../../components/locale'
-import Logo from '../../components/logo'
+import { Logo } from '../../components/logo'
 import { useTokenStore } from '../../hooks/token'
 import { request } from '../../utils/request'
 import backgroundUrl from './background.svg'
@@ -74,7 +74,7 @@ const SignIn: FC = () => {
     // 移除 ticket
     window.location.href = `${window.location.origin}${window.location.pathname}#${path}`
 
-    return <Navigate replace to={path} />
+    return null
   }
 
   return (

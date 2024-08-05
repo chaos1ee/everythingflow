@@ -10,7 +10,7 @@ const { Text } = Typography
 const GameSelect = () => {
   const { t } = useTranslation()
   const { gameFilter } = useToolkitsContext()
-  const { game, games, isLoading, setGame, refetchGames } = useGameStore()
+  const { game, games, isLoading, setGame, refetchGames, setSwitching } = useGameStore()
   const { mutate } = useSWRConfig()
 
   useEffect(() => {
@@ -25,16 +25,12 @@ const GameSelect = () => {
     }))
 
   const onGameChange = async (id: string) => {
-    // 清除 SWR 缓存
+    setSwitching(true)
+    await mutate(key => !(typeof key === 'string' && key.startsWith('/api/usystem/game/all')), undefined, {
+      revalidate: false,
+    })
     setGame(id)
-    await mutate(
-      key => {
-        return !(typeof key === 'string' && key.startsWith('/api/usystem/game/all'))
-      },
-      undefined,
-      // TODO: set revalidate to false, and refresh data of QueryList component by other way
-      { revalidate: true },
-    )
+    setSwitching(false)
   }
 
   return (

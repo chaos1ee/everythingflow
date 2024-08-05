@@ -4,7 +4,7 @@ import { Form, Result, Spin, Table } from 'antd'
 import type { AnyObject } from 'antd/es/_util/type'
 import type { TableProps } from 'antd/es/table'
 import type { ReactElement, ReactNode, Ref } from 'react'
-import { cloneElement, forwardRef, useEffect, useImperativeHandle, useRef } from 'react'
+import { cloneElement, forwardRef, useEffect, useImperativeHandle, useMemo, useRef } from 'react'
 import useSWR from 'swr'
 import { usePermission } from '../../hooks/permission'
 import type { RequestOptions } from '../../utils/request'
@@ -38,7 +38,7 @@ export interface QueryListDataType<Item> {
 }
 
 export interface QueryListRef<Item, Values, Response> {
-  data: QueryListDataType<Item>
+  data: QueryListDataType<Item> | undefined
   internalForm: FormInstance<Values>
   originalData: Response | undefined
 }
@@ -112,14 +112,15 @@ const InternalQueryList = <
   const { accessible, isLoading } = usePermission(code, isGlobal)
   const listAction = useRef<QueryListAction>(QueryListAction.Init)
   const { setProps, getPayload, setPayload, getSwrKey, updateSwrKey, removeFromStore } = useQueryListStore()
+  const swrKey = getSwrKey(action)
+  const payload = getPayload(action)
   const shouldPoll = useRef(false)
   const originalData = useRef<Response>()
 
   const { data, isValidating } = useSWR(
-    getSwrKey(action),
+    swrKey,
     async key => {
       const { url, params, body } = deserialize(key)
-      const payload = getPayload(action)
       const response = await request<Response>(url, {
         method,
         body,
@@ -136,10 +137,6 @@ const InternalQueryList = <
       }
     },
     {
-      fallbackData: {
-        dataSource: [],
-        total: 0,
-      },
       shouldRetryOnError: false,
       revalidateOnFocus: false,
       refreshInterval: shouldPoll.current ? refreshInterval : 0,
@@ -153,21 +150,24 @@ const InternalQueryList = <
     },
   )
 
-  const pagination = !onePage && {
-    showSizeChanger: true,
-    showQuickJumper: true,
-    current: getPayload(action)?.page,
-    pageSize: getPayload(action)?.size ?? defaultSize,
-    total: data.total,
-    onChange: async (currentPage: number, currentSize: number) => {
-      listAction.current = QueryListAction.Jump
-      setPayload(action, { page: currentPage, size: currentSize })
-      updateSwrKey(action)
-    },
-  }
+  const pagination = useMemo(
+    () =>
+      !onePage && {
+        showSizeChanger: true,
+        showQuickJumper: true,
+        current: payload?.page ?? 1,
+        pageSize: payload?.size ?? defaultSize,
+        total: data?.total,
+        onChange: async (currentPage: number, currentSize: number) => {
+          listAction.current = QueryListAction.Jump
+          setPayload(action, { page: currentPage, size: currentSize })
+          updateSwrKey(action)
+        },
+      },
+    [onePage, data?.total, payload],
+  )
 
   const onConfirm = async () => {
-    console.log('onConfirm')
     listAction.current = QueryListAction.Confirm
     setPayload(action, { page: 1, formValues: internalForm.getFieldsValue() })
 
@@ -264,7 +264,7 @@ const InternalQueryList = <
     <div>
       {formRenderer}
       {extraRenderer}
-      <Table {...tableProps} dataSource={data.dataSource} loading={isValidating} pagination={pagination} />
+      <Table {...tableProps} dataSource={data?.dataSource} loading={isValidating} pagination={pagination} />
     </div>
   )
 }

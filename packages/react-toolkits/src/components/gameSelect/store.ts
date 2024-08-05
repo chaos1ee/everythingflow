@@ -9,6 +9,7 @@ export const useGameStore = create<GameState>()(
     (set, get) => ({
       initialized: false,
       isLoading: false,
+      switching: false,
       game: null,
       games: [],
       async setGame(id) {
@@ -35,6 +36,7 @@ export const useGameStore = create<GameState>()(
           }
         }
       },
+      setSwitching: (switching: boolean) => set({ switching }),
     }),
     {
       name: 'game',
