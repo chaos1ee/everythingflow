@@ -16,7 +16,7 @@ export interface ContextState {
   locale?: Locale
   localeDropdownMenu?: ReactNode
   signInUrl: string // 登录地址
-  signInSuccessRedirectUrl?: string // 登录成功后的重定向地址
+  signInSuccessRedirectUrl: string // 登录成功后的重定向地址
   notFoundRedirectUrl?: string // 404 重定向地址
   layoutHeaderExtras?: { key: Key; children: ReactNode }[]
   gameFilter?: (game: Game) => boolean
