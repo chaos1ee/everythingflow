@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.11.0
+
+### Minor Changes
+
+- 6edd036: feat: store layout collapse state
+
 ## 0.10.3
 
 ### Patch Changes
