@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.11.2
+
+### Patch Changes
+
+- 45dfc1e: fix: swr http request should be triggered after game changed
+
 ## 0.11.1
 
 ### Patch Changes
