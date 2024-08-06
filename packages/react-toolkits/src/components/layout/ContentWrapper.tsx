@@ -1,20 +1,20 @@
 import * as Antd from 'antd'
 import { Card, Empty } from 'antd'
-import { Fragment, type FC, type PropsWithChildren } from 'react'
+import type { FC, PropsWithChildren } from 'react'
+import { Fragment } from 'react'
 import { useToolkitsContext } from '../contextProvider'
 import { useGameStore } from '../gameSelect'
 import { useTranslation } from '../locale'
 
 const { Spin } = Antd
 
-// FIXME: 切换游戏时有概率导致页面内的数据请求不触发，需要进一步排查。
 const ContentWrapper: FC<PropsWithChildren> = props => {
   const { children } = props
   const { usePermissionApiV2, hideGameSelect } = useToolkitsContext()
   const { game, isLoading, switching } = useGameStore()
   const { t } = useTranslation()
 
-  if (isLoading || switching) {
+  if (isLoading) {
     return (
       <Spin
         style={{
@@ -35,7 +35,11 @@ const ContentWrapper: FC<PropsWithChildren> = props => {
         </Card>
       )
     } else {
-      return <Fragment key={game.id}>{children}</Fragment>
+      return (
+        <Spin spinning={switching}>
+          <Fragment key={game.id}>{children}</Fragment>
+        </Spin>
+      )
     }
   }
 
