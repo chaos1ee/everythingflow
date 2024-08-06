@@ -1,7 +1,6 @@
 import * as Antd from 'antd'
 import { Card, Empty } from 'antd'
-import type { FC, PropsWithChildren } from 'react'
-import { Fragment } from 'react'
+import { type FC, type PropsWithChildren } from 'react'
 import { useToolkitsContext } from '../contextProvider'
 import { useGameStore } from '../gameSelect'
 import { useTranslation } from '../locale'
@@ -27,20 +26,12 @@ const ContentWrapper: FC<PropsWithChildren> = props => {
     )
   }
 
-  if (usePermissionApiV2 && !hideGameSelect) {
-    if (!game) {
-      return (
-        <Card>
-          <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description={t('RequireGame.description')} />
-        </Card>
-      )
-    } else {
-      return (
-        <Spin spinning={switching}>
-          <Fragment key={game.id}>{children}</Fragment>
-        </Spin>
-      )
-    }
+  if (usePermissionApiV2 && !hideGameSelect && !game) {
+    return (
+      <Card>
+        <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description={t('RequireGame.description')} />
+      </Card>
+    )
   }
 
   return children

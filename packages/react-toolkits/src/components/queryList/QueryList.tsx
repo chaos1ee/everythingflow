@@ -9,12 +9,14 @@ import useSWR from 'swr'
 import { usePermission } from '../../hooks/permission'
 import type { RequestOptions } from '../../utils/request'
 import { request } from '../../utils/request'
+import { useToolkitsContext } from '../contextProvider'
 import FilterFormWrapper from '../filterFormWrapper'
+import { useGameStore } from '../gameSelect'
 import { useTranslation } from '../locale'
 import { useQueryListStore } from './store'
 import { deserialize } from './utils'
 
-interface ListResponse<T = any> {
+export interface ListResponse<T = any> {
   list: T[]
   total: number
 }
@@ -53,7 +55,7 @@ export interface QueryListProps<Item extends AnyObject = AnyObject, Values = any
   // 无分页
   onePage?: boolean
   defaultSize?: number
-  headers?: RequestOptions['headers'] | ((payload: QueryListPayload<Values> | undefined) => RequestOptions['headers'])
+  headers?: RequestOptions['headers']
   form?: FormInstance<Values>
   buttonsAlign?: 'left' | 'right'
   getBody?: (payload: QueryListPayload<Values>) => RequestOptions['body']
@@ -116,17 +118,34 @@ const InternalQueryList = <
   const payload = getPayload(action)
   const shouldPoll = useRef(false)
   const originalData = useRef<Response>()
+  const { game } = useGameStore()
+  const { usePermissionApiV2 } = useToolkitsContext()
+
+  const key = useMemo(() => {
+    if (swrKey === null) {
+      return null
+    }
+
+    const opts = deserialize(swrKey)
+    const newHeaders = Object.assign(
+      {},
+      headers,
+      usePermissionApiV2 && !isGlobal && game ? { 'App-ID': game.id } : null,
+    )
+
+    return {
+      ...opts,
+      headers: newHeaders,
+    }
+  }, [swrKey])
 
   const { data, isValidating } = useSWR(
-    swrKey,
-    async key => {
-      const { url, params, body } = deserialize(key)
+    key,
+    async ({ url, ...restOpts }) => {
       const response = await request<Response>(url, {
         method,
-        body,
-        params,
         isGlobal,
-        headers: typeof headers === 'function' ? headers(payload) : headers,
+        ...restOpts,
       })
 
       originalData.current = response.data
@@ -235,26 +254,17 @@ const InternalQueryList = <
     return <Result status={403} subTitle={t('global.noEntitlement')} />
   }
 
-  const formRenderer =
-    typeof renderForm !== 'undefined' ? (
-      <FilterFormWrapper
-        buttonsAlign={buttonsAlign}
-        isConfirming={isValidating}
-        onReset={onReset}
-        onConfirm={onConfirm}
-      >
-        {cloneElement(renderForm(internalForm), {
-          onKeyUp: (e: KeyboardEvent) => {
-            if (e.key === 'Enter') {
-              onConfirm()
-            }
-          },
-        })}
-      </FilterFormWrapper>
-    ) : (
-      // 实例创建后不传给组件会触发 Antd Form 的警告。
-      <Form form={internalForm} />
-    )
+  const formRenderer = typeof renderForm === 'function' && (
+    <FilterFormWrapper buttonsAlign={buttonsAlign} isConfirming={isValidating} onReset={onReset} onConfirm={onConfirm}>
+      {cloneElement(renderForm(internalForm), {
+        onKeyUp: (e: KeyboardEvent) => {
+          if (e.key === 'Enter') {
+            onConfirm()
+          }
+        },
+      })}
+    </FilterFormWrapper>
+  )
 
   const extraRenderer = extra && (
     <div className="mt-2 mb-4">{extra({ form: internalForm, data: originalData.current })}</div>
