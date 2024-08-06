@@ -1,6 +1,5 @@
 import { Select, Space, Typography } from 'antd'
 import { useEffect } from 'react'
-import { useSWRConfig } from 'swr'
 import { useToolkitsContext } from '../contextProvider'
 import { useTranslation } from '../locale'
 import { useGameStore } from './store'
@@ -10,8 +9,7 @@ const { Text } = Typography
 const GameSelect = () => {
   const { t } = useTranslation()
   const { gameFilter } = useToolkitsContext()
-  const { game, games, isLoading, setGame, refetchGames, setSwitching } = useGameStore()
-  const { mutate } = useSWRConfig()
+  const { game, games, isLoading, refetchGames, setGame } = useGameStore()
 
   useEffect(() => {
     refetchGames()
@@ -25,12 +23,7 @@ const GameSelect = () => {
     }))
 
   const onGameChange = async (id: string) => {
-    setSwitching(true)
-    await mutate(key => !(typeof key === 'string' && key.startsWith('/api/usystem/game/all')), undefined, {
-      revalidate: false,
-    })
     setGame(id)
-    setSwitching(false)
   }
 
   return (
