@@ -6,4 +6,5 @@ export const defaultState: ContextState = {
   hideGameSelect: false,
   usePermissionApiV2: false,
   signInUrl: '',
+  signInSuccessRedirectUrl: '/',
 }

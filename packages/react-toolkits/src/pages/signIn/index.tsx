@@ -65,7 +65,7 @@ const SignIn: FC = () => {
 
   if (token) {
     const hashMode = !!window.location.hash
-    const path = signInSuccessRedirectUrl ?? '/'
+    const path = signInSuccessRedirectUrl
 
     if (!hashMode) {
       return <Navigate replace to={path} />

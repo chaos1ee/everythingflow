@@ -2,7 +2,8 @@ import { MenuFoldOutlined, MenuUnfoldOutlined } from '@ant-design/icons'
 import * as Antd from 'antd'
 import { Button, Divider, Space } from 'antd'
 import type { CSSProperties, FC, PropsWithChildren } from 'react'
-import { Suspense, useRef, useState } from 'react'
+import { Suspense, useRef } from 'react'
+import { Link } from 'react-router-dom'
 import type { TransitionStatus } from 'react-transition-group'
 import { Transition } from 'react-transition-group'
 import { useToolkitsContext } from '../contextProvider'
@@ -11,6 +12,7 @@ import { Logo } from '../logo'
 import { NavMenu } from '../navMenu'
 import UserWidget from '../userWidget'
 import ContentWrapper from './ContentWrapper'
+import { useLayoutStore } from './store'
 
 const { Spin, theme } = Antd
 const { Header, Sider, Content } = Antd.Layout
@@ -20,10 +22,17 @@ const Layout: FC<PropsWithChildren> = props => {
   const {
     token: { colorBgContainer, colorBorder },
   } = theme.useToken()
-  const { appTitle, usePermissionApiV2, hideGameSelect, localeDropdownMenu, layoutHeaderExtras } = useToolkitsContext()
-  const [collapsed, setCollapsed] = useState(false)
+  const {
+    appTitle,
+    usePermissionApiV2,
+    hideGameSelect,
+    localeDropdownMenu,
+    layoutHeaderExtras,
+    signInSuccessRedirectUrl,
+  } = useToolkitsContext()
+  const { collapsed, setCollapsed } = useLayoutStore()
   const nodeRef = useRef(null)
-  const duration = 200
+  const duration = 100
 
   const defaultStyle = {
     transition: `opacity ${duration}ms ease-in-out`,
@@ -60,7 +69,7 @@ const Layout: FC<PropsWithChildren> = props => {
           borderRightColor: colorBorder,
         }}
       >
-        <div className="flex gap-2 px-6 py-4">
+        <Link to={signInSuccessRedirectUrl} className="flex gap-2 px-6 py-4">
           <Logo width={32} height={32} />
           <Transition nodeRef={nodeRef} in={!collapsed} timeout={duration}>
             {state => (
@@ -75,7 +84,7 @@ const Layout: FC<PropsWithChildren> = props => {
               </div>
             )}
           </Transition>
-        </div>
+        </Link>
         <NavMenu />
       </Sider>
       <Antd.Layout>
