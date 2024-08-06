@@ -32,7 +32,7 @@ const Layout: FC<PropsWithChildren> = props => {
   } = useToolkitsContext()
   const { collapsed, setCollapsed } = useLayoutStore()
   const nodeRef = useRef(null)
-  const duration = 100
+  const duration = 250
 
   const defaultStyle = {
     transition: `opacity ${duration}ms ease-in-out`,
@@ -43,7 +43,7 @@ const Layout: FC<PropsWithChildren> = props => {
 
   const transitionStyles: Record<TransitionStatus, CSSProperties> = {
     entering: { opacity: 0, width: 0 },
-    entered: { opacity: 1, width: '100%' },
+    entered: { opacity: 1 },
     exiting: { opacity: 0 },
     exited: { opacity: 0 },
     unmounted: { opacity: 0 },
