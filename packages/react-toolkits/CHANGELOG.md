@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.12.0
+
+### Minor Changes
+
+- ea9eec6: feat: add App-id header in QueryList
+
 ## 0.11.2
 
 ### Patch Changes
