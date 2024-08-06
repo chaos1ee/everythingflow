@@ -1,4 +1,4 @@
-import type { ListResponse } from './types'
+import type { ListResponse } from './QueryList'
 
 export const defaultProps = {
   method: 'GET',

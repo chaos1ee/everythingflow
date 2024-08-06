@@ -57,7 +57,7 @@ export function genSwrKey(props: QueryListProps, payload?: QueryListPayload) {
               page,
               size,
             }
-        : {},
+        : null,
   )
 
   const body =

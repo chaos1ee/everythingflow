@@ -66,6 +66,7 @@ export async function request<T = any>(url: string, opts: RequestOptions = {}): 
     headers.set('Authorization', `Bearer ${token}`)
   }
 
+  // TODO: 把自动注入 App-ID 移除掉。
   if (contextStore.getState().usePermissionApiV2) {
     if (isGlobal) {
       headers.set('App-ID', 'global')
