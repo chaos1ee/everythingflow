@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.11.1
+
+### Patch Changes
+
+- 5abae83: feat: change layout animation duration
+
 ## 0.11.0
 
 ### Minor Changes
