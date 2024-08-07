@@ -91,26 +91,22 @@ const Layout: FC<PropsWithChildren> = props => {
       <Antd.Layout>
         <Header
           style={{
-            padding: 0,
+            padding: '0 24px',
             background: colorBgContainer,
           }}
         >
           <div className="flex justify-between items-center h-full">
-            <div>
+            <Space size="small" split={<Divider type="vertical" />} className="mr-6">
               <Button
                 type="text"
                 icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
-                style={{
-                  fontSize: '16px',
-                  width: 64,
-                  height: 64,
-                }}
+                style={{ fontSize: '16px' }}
                 onClick={onCollapse}
               />
               {usePermissionApiV2 && !hideGameSelect && <GameSelect />}
-            </div>
-            <Space size="small" split={<Divider type="vertical" />} className="mr-6">
               {layoutHeaderExtras?.map(extra => <span key={extra.key}>{extra.children}</span>)}
+            </Space>
+            <Space size="small" split={<Divider type="vertical" />}>
               {localeDropdownMenu}
               <UserWidget />
             </Space>
