@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 0.12.1
+
+### Patch Changes
+
+- df69243: refactor: change layoutHeaderExtras layout
+
 ## 0.12.0
 
 ### Minor Changes
