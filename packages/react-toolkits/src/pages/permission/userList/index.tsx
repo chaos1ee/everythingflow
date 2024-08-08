@@ -16,7 +16,7 @@ import { useFormModal } from '../../../hooks/formModal'
 
 const { Option } = Select
 
-export const action = '/api/usystem/user/list'
+export const url = '/api/usystem/user/list'
 
 interface FormSchema {
   id: string
@@ -58,12 +58,12 @@ const useModal = (isCreate?: boolean) => {
   const onConfirm: UseFormModalProps<FormSchema, ExtraValues>['onConfirm'] = async (values, extraValues) => {
     if (isCreate) {
       await create.trigger(values)
-      refetch(action, 1)
+      refetch(url, 1)
       message.success(t('UserList.createSuccessfully'))
     } else {
       await update.trigger(values)
       mutate<UserListItem>(
-        action,
+        url,
         prev => {
           return produce(prev, draft => {
             if (draft?.dataSource) {
@@ -179,7 +179,7 @@ const UserList: FC = () => {
                     id: value.id,
                     name: value.name,
                   })
-                  mutate(action, prev => {
+                  mutate(url, prev => {
                     return produce(prev, draft => {
                       const index = draft?.dataSource?.findIndex(item => item.id === value.id)
                       if (index) {
@@ -220,7 +220,7 @@ const UserList: FC = () => {
         <QueryList<UserListItem, undefined, { List: UserListItem[]; Total: number }>
           isGlobal
           code="100001"
-          action={action}
+          url={url}
           rowKey="id"
           columns={columns}
           getTotal={response => response.Total}

@@ -4,7 +4,6 @@ import antdLocale from 'antd/locale/zh_CN'
 import { pick } from 'lodash-es'
 import type { FC, PropsWithChildren } from 'react'
 import { Suspense } from 'react'
-import { Link } from 'react-router-dom'
 import type { RequestOptions } from 'react-toolkits'
 import { ContextProvider, request, RequestError } from 'react-toolkits'
 import type { BareFetcher, SWRConfiguration, SWRHook, Key as SWRKey, SWRResponse } from 'swr'
@@ -57,11 +56,7 @@ const responseInterceptor = async (response: Response, opts: RequestOptions) => 
   }
 }
 
-const appTitle = (
-  <Link to="/">
-    <span className="font-bold text-xl ">{import.meta.env.VITE_APP_TITLE}</span>
-  </Link>
-)
+const appTitle = <span className="font-bold text-xl ">{import.meta.env.VITE_APP_TITLE}</span>
 
 const signInPageTitle = <span className="text-2xl font-bold">{import.meta.env.VITE_APP_TITLE}</span>
 

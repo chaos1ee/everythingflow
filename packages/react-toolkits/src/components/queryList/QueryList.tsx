@@ -4,8 +4,8 @@ import { Form, Result, Spin, Table } from 'antd'
 import type { AnyObject } from 'antd/es/_util/type'
 import type { TableProps } from 'antd/es/table'
 import type { ReactElement, ReactNode, Ref } from 'react'
-import { cloneElement, forwardRef, useEffect, useImperativeHandle, useMemo, useRef } from 'react'
-import useSWR from 'swr'
+import { cloneElement, forwardRef, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react'
+import useSWR, { unstable_serialize } from 'swr'
 import { usePermission } from '../../hooks/permission'
 import type { RequestOptions } from '../../utils/request'
 import { request } from '../../utils/request'
@@ -14,7 +14,6 @@ import FilterFormWrapper from '../filterFormWrapper'
 import { useGameStore } from '../gameSelect'
 import { useTranslation } from '../locale'
 import { useQueryListStore } from './store'
-import { deserialize } from './utils'
 
 export interface ListResponse<T = any> {
   list: T[]
@@ -24,14 +23,14 @@ export interface ListResponse<T = any> {
 export interface QueryListPayload<FormValues = any> {
   page?: number
   size?: number
-  formValues?: FormValues
+  formValue?: FormValues
 }
 
 export enum QueryListAction {
-  Confirm = 'confirm',
-  Reset = 'reset',
-  Jump = 'jump',
-  Init = 'init',
+  Confirm,
+  Reset,
+  Jump,
+  Init,
 }
 
 export interface QueryListDataType<Item> {
@@ -39,129 +38,163 @@ export interface QueryListDataType<Item> {
   total: number
 }
 
-export interface QueryListRef<Item, Values, Response> {
-  data: QueryListDataType<Item> | undefined
-  internalForm: FormInstance<Values>
-  originalData: Response | undefined
+export interface QueryListRef<Item, Value, Response> {
+  response: Response | undefined
+  dataSource: Item[] | undefined
+  form: FormInstance<Value>
 }
 
-export interface QueryListProps<Item extends AnyObject = AnyObject, Values = any, Response = any>
+export interface QueryListProps<Item extends AnyObject = AnyObject, Value = any, Response = any>
   extends Omit<TableProps<Item>, 'pagination' | 'dataSource' | 'loading'> {
   code?: string
   isGlobal?: boolean
-  action: string
-  method?: string
+  url: string
+  method?: 'GET' | 'POST'
   refreshInterval?: number
   // 无分页
   onePage?: boolean
   defaultSize?: number
   headers?: RequestOptions['headers']
-  form?: FormInstance<Values>
   buttonsAlign?: 'left' | 'right'
-  getBody?: (payload: QueryListPayload<Values>) => RequestOptions['body']
-  getParams?: (payload: QueryListPayload<Values>) => RequestOptions['params']
-  renderForm?: (form: FormInstance<Values>) => ReactElement
-  extra?: (opts: { form: FormInstance<Values>; data: Response | undefined }) => ReactNode
-  afterSuccess?: (action: QueryListAction, data: QueryListDataType<Item>) => void
-  getTotal?: (response: Response) => number
-  getDataSource?: (response: Response, form: FormInstance<Values>) => Item[]
+  body?: RequestOptions['body'] | ((payload: QueryListPayload<Value>) => RequestOptions['body'])
+  params?: RequestOptions['params'] | ((payload: QueryListPayload<Value>) => RequestOptions['params'])
+  renderForm?: (form: FormInstance<Value>) => ReactElement
+  extra?: (opts: { form: FormInstance<Value>; data: Response | undefined }) => ReactNode
+  afterSuccess?: (action: QueryListAction, response: Response) => void
+  getTotal?: (response: Response | undefined) => number | undefined
+  getDataSource?: (response: Response | undefined, form: FormInstance<Value>) => Item[] | undefined
 }
 
 const InternalQueryList = <
   Item extends AnyObject = AnyObject,
-  Values = any,
+  Value = any,
   // 默认接口返回值类型为 ListResponse<Item>，当符合时无需设置 getTotal、getDataSource 就可以让组件正确获取 total 与 dataSource。
   Response = ListResponse<Item>,
 >(
-  props: QueryListProps<Item, Values, Response>,
-  ref: Ref<QueryListRef<Item, Values, Response>>,
+  props: QueryListProps<Item, Value, Response>,
+  ref: Ref<QueryListRef<Item, Value, Response>>,
 ) => {
   const internalProps = {
     method: 'GET',
     defaultSize: 10,
     refreshInterval: 0,
-    getTotal: (response: ListResponse) => response.total,
-    getDataSource: (response: ListResponse) => response.list,
+    getTotal: (response: Response | undefined) => (response as ListResponse<Item>)?.total,
+    getDataSource: (response: Response | undefined) => (response as ListResponse<Item>)?.list,
     ...props,
   }
 
   const {
-    action,
+    url,
     code,
     headers,
     isGlobal,
     onePage,
     method,
-    form,
     buttonsAlign,
     defaultSize,
     refreshInterval,
     extra,
     renderForm,
     afterSuccess,
-    getBody,
-    getParams,
+    body,
+    params,
     getTotal,
     getDataSource,
     ...tableProps
   } = internalProps
 
   const { t } = useTranslation()
-  // 可以从外部传入 FormInstance，不传时会使用内部生成的实例
-  let [internalForm] = Form.useForm<Values>()
-  internalForm = form || internalForm
-
+  const [form] = Form.useForm<Value>()
   const { accessible, isLoading } = usePermission(code, isGlobal)
-  const listAction = useRef<QueryListAction>(QueryListAction.Init)
-  const { setProps, getPayload, setPayload, getSwrKey, updateSwrKey, removeFromStore } = useQueryListStore()
-  const swrKey = getSwrKey(action)
-  const payload = getPayload(action)
-  const shouldPoll = useRef(false)
+  const action = useRef<QueryListAction>(QueryListAction.Init)
   const originalData = useRef<Response>()
   const { game } = useGameStore()
   const { usePermissionApiV2 } = useToolkitsContext()
+  const [isValid, setIsValid] = useState(false)
+  const { keyMap, httpOptionMap, getPayload, setPayload } = useQueryListStore()
+  const { page, size = defaultSize, formValue = form.getFieldsValue() } = getPayload(url)
+  const payload = { page, size, formValue }
+
+  const _body = useMemo(() => {
+    return typeof body === 'function'
+      ? body(payload)
+      : method === 'POST'
+        ? {
+            ...formValue,
+            ...(!onePage ? { page, size } : null),
+            ...body,
+          }
+        : null
+  }, [onePage, method, page, size, formValue, body])
+
+  const _params = useMemo(
+    () =>
+      typeof params === 'function'
+        ? params(payload)
+        : method === 'GET'
+          ? {
+              ...formValue,
+              ...(!onePage ? { page, size } : null),
+              ...params,
+            }
+          : null,
+    [onePage, method, page, size, formValue, params],
+  )
+
+  const _headers = useMemo(() => {
+    const newHeaders = new Headers(headers)
+
+    if (usePermissionApiV2) {
+      if (isGlobal) {
+        newHeaders.set('App-ID', 'global')
+      } else if (game) {
+        newHeaders.set('App-ID', String(game.id))
+      }
+    }
+    return newHeaders
+  }, [usePermissionApiV2, isGlobal, game, headers])
 
   const key = useMemo(() => {
-    if (swrKey === null) {
+    if (!accessible || !isValid) {
       return null
     }
 
-    const opts = deserialize(swrKey)
-    const newHeaders = Object.assign(
-      {},
-      headers,
-      usePermissionApiV2 && !isGlobal && game ? { 'App-ID': game.id } : null,
-    )
-
-    return {
-      ...opts,
-      headers: newHeaders,
+    const httpOption = {
+      method,
+      url,
+      body: _body,
+      params: _params,
+      headers: _headers,
     }
-  }, [swrKey])
+
+    httpOptionMap.set(url, httpOption)
+
+    const serializedKey = unstable_serialize(httpOption)
+    keyMap.set(url, serializedKey)
+    return serializedKey
+  }, [method, url, _body, _params, _headers, isValid, accessible])
+
+  const shouldPoll = useRef(false)
 
   const { data, isValidating } = useSWR(
     key,
-    async ({ url, ...restOpts }) => {
+    async () => {
       const response = await request<Response>(url, {
         method,
-        isGlobal,
-        ...restOpts,
+        body: _body,
+        params: _params,
+        headers: _headers,
       })
 
-      originalData.current = response.data
-
-      return {
-        dataSource: getDataSource(response.data as Response as any, internalForm),
-        total: getTotal(response.data as Response as any) ?? 0,
-      }
+      return response.data
     },
     {
       shouldRetryOnError: false,
       revalidateOnFocus: false,
       refreshInterval: shouldPoll.current ? refreshInterval : 0,
-      onSuccess(listData) {
+      onSuccess(response) {
         shouldPoll.current = true
-        afterSuccess?.(listAction.current, listData)
+        afterSuccess?.(action.current, response)
       },
       onError() {
         shouldPoll.current = false
@@ -169,72 +202,80 @@ const InternalQueryList = <
     },
   )
 
+  const dataSource = useMemo(() => getDataSource(data, form), [data, form, getDataSource])
+  const total = useMemo(() => getTotal(data), [data, getTotal])
+
   const pagination = useMemo(
     () =>
       !onePage && {
         showSizeChanger: true,
         showQuickJumper: true,
-        current: payload?.page ?? 1,
-        pageSize: payload?.size ?? defaultSize,
-        total: data?.total,
+        current: page,
+        pageSize: size,
+        total,
         onChange: async (currentPage: number, currentSize: number) => {
-          listAction.current = QueryListAction.Jump
-          setPayload(action, { page: currentPage, size: currentSize })
-          updateSwrKey(action)
+          action.current = QueryListAction.Jump
+          setPayload(url, {
+            page: currentPage,
+            size: currentSize,
+          })
         },
       },
-    [onePage, data?.total, payload],
+    [page, size, onePage, total],
   )
 
   const onConfirm = async () => {
-    listAction.current = QueryListAction.Confirm
-    setPayload(action, { page: 1, formValues: internalForm.getFieldsValue() })
+    action.current = QueryListAction.Confirm
+    setPayload(url, {
+      page: 1,
+      formValue: form.getFieldsValue(),
+    })
 
     try {
-      await internalForm.validateFields()
-      updateSwrKey(action)
+      await form.validateFields()
+      setIsValid(true)
     } catch (error) {
-      updateSwrKey(action, null)
+      setIsValid(false)
     }
   }
 
   const onReset = async () => {
-    listAction.current = QueryListAction.Reset
-    internalForm.resetFields()
-    setPayload(action, { page: 1, formValues: internalForm.getFieldsValue() })
+    action.current = QueryListAction.Reset
+    form.resetFields()
+    setPayload(url, {
+      page: 1,
+      formValue: form.getFieldsValue(),
+    })
 
     try {
-      await internalForm.validateFields({ validateOnly: true })
-      updateSwrKey(action)
+      await form.validateFields({ validateOnly: true })
+      setIsValid(true)
     } catch (error) {
-      updateSwrKey(action, null)
+      setIsValid(false)
     }
   }
 
   useEffect(() => {
-    setProps(action, internalProps)
+    // 在表单字段注册到 Form 实例前调用 validateFields 会得到错误的结果，所以需要延迟调用。
+    const timer = setTimeout(async () => {
+      try {
+        form.resetFields()
+        await form.validateFields({ validateOnly: true })
+        setIsValid(true)
+      } catch (err) {
+        setIsValid(false)
+      }
+    }, 0)
 
     return () => {
-      removeFromStore(action)
+      clearTimeout(timer)
     }
-  }, [])
-
-  useEffect(() => {
-    const init = async () => {
-      if (accessible) {
-        setPayload(action, { page: 1, size: defaultSize, formValues: internalForm.getFieldsValue() })
-        await internalForm.validateFields({ validateOnly: true })
-        updateSwrKey(action)
-      }
-    }
-
-    init()
-  }, [accessible])
+  }, [form, game])
 
   useImperativeHandle(ref, () => ({
-    data,
-    originalData: originalData.current,
-    internalForm,
+    response: data,
+    dataSource,
+    form,
   }))
 
   if (isLoading) {
@@ -256,7 +297,7 @@ const InternalQueryList = <
 
   const formRenderer = typeof renderForm === 'function' && (
     <FilterFormWrapper buttonsAlign={buttonsAlign} isConfirming={isValidating} onReset={onReset} onConfirm={onConfirm}>
-      {cloneElement(renderForm(internalForm), {
+      {cloneElement(renderForm(form), {
         onKeyUp: (e: KeyboardEvent) => {
           if (e.key === 'Enter') {
             onConfirm()
@@ -266,25 +307,23 @@ const InternalQueryList = <
     </FilterFormWrapper>
   )
 
-  const extraRenderer = extra && (
-    <div className="mt-2 mb-4">{extra({ form: internalForm, data: originalData.current })}</div>
-  )
+  const extraRenderer = extra && <div className="mt-2 mb-4">{extra({ form, data: originalData.current })}</div>
 
   return (
     <div>
       {formRenderer}
       {extraRenderer}
-      <Table {...tableProps} dataSource={data?.dataSource} loading={isValidating} pagination={pagination} />
+      <Table {...tableProps} dataSource={dataSource} loading={isValidating} pagination={pagination} />
     </div>
   )
 }
 
 const QueryList = forwardRef(InternalQueryList) as <
   Item extends AnyObject = AnyObject,
-  Values extends object | undefined = undefined,
+  Value extends object | undefined = undefined,
   Response = ListResponse<Item>,
 >(
-  props: QueryListProps<Item, Values, Response> & { ref?: Ref<QueryListRef<Item, Values, Response>> },
+  props: QueryListProps<Item, Value, Response> & { ref?: Ref<QueryListRef<Item, Value, Response>> },
 ) => ReactElement
 
 export default QueryList

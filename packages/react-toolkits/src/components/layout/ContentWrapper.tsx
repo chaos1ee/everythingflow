@@ -1,5 +1,5 @@
 import * as Antd from 'antd'
-import { Card, Empty } from 'antd'
+import { Empty } from 'antd'
 import { type FC, type PropsWithChildren } from 'react'
 import { useToolkitsContext } from '../contextProvider'
 import { useGameStore } from '../gameSelect'
@@ -10,7 +10,7 @@ const { Spin } = Antd
 const ContentWrapper: FC<PropsWithChildren> = props => {
   const { children } = props
   const { usePermissionApiV2, hideGameSelect } = useToolkitsContext()
-  const { game, isLoading, switching } = useGameStore()
+  const { game, isLoading } = useGameStore()
   const { t } = useTranslation()
 
   if (isLoading) {
@@ -27,11 +27,7 @@ const ContentWrapper: FC<PropsWithChildren> = props => {
   }
 
   if (usePermissionApiV2 && !hideGameSelect && !game) {
-    return (
-      <Card>
-        <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description={t('RequireGame.description')} />
-      </Card>
-    )
+    return <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description={t('RequireGame.description')} />
   }
 
   return children

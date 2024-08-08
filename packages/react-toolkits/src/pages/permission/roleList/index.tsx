@@ -16,7 +16,7 @@ import { useFormModal } from '../../../hooks/formModal'
 import { usePermission } from '../../../hooks/permission'
 import { request } from '../../../utils/request'
 
-const action = '/api/usystem/role/list'
+const url = '/api/usystem/role/list'
 
 interface FormSchema {
   name: string
@@ -53,7 +53,7 @@ const useModal = (isCreate?: boolean) => {
         name: `role_${values.name}`,
         permissions: values.permissions,
       })
-      refetch(action, 1)
+      refetch(url, 1)
       message.success(t('RoleList.createSuccessfully'))
     } else {
       await update.trigger({
@@ -62,7 +62,7 @@ const useModal = (isCreate?: boolean) => {
         permissions: values.permissions,
       })
       mutate(
-        action,
+        url,
         prev =>
           produce(prev, draft => {
             const match = draft?.dataSource?.find(item => item.id === extraValues?.id)
@@ -176,7 +176,7 @@ const RoleList = () => {
                       id: record.id,
                       name: record.name,
                     })
-                    mutate(action, prev => {
+                    mutate(url, prev => {
                       return produce(prev, draft => {
                         const index = draft?.dataSource?.findIndex(item => item.id === record.id)
                         if (index) {
@@ -220,7 +220,7 @@ const RoleList = () => {
           rowKey="name"
           columns={columns}
           code="200001"
-          action={action}
+          url={url}
           getTotal={response => response.Total}
           getDataSource={response => response.List}
         />
