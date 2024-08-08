@@ -1,93 +1,46 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import type { MutatorCallback, MutatorOptions } from 'swr'
 import { mutate } from 'swr'
-import type { MutatorCallback, MutatorOptions } from 'swr/_internal'
 import { create } from 'zustand'
-import type { QueryListDataType, QueryListPayload, QueryListProps } from './QueryList'
-import { genSwrKey } from './utils'
-
-type QueryListMutator = <Item = any>(
-  action: string,
-  data?: QueryListDataType<Item> | Promise<QueryListDataType<Item>> | MutatorCallback<QueryListDataType<Item>>,
-  opts?: MutatorOptions<QueryListDataType<Item>>,
-) => void
+import type { QueryListPayload } from './QueryList'
 
 interface QueryListState {
-  swrKeyMap: Map<string, string | null>
+  keyMap: Map<string, string | null>
   payloadMap: Map<string, QueryListPayload>
-  propsMap: Map<string, QueryListProps>
-  getSwrKey(action: string): string | null
-  updateSwrKey(action: string, key?: string | null): void
-  getPayload: (action: string) => QueryListPayload | undefined
-  setPayload(action: string, payload: Partial<QueryListPayload>): void
-  mutate: QueryListMutator
-  refetch(action: string, page?: number): void
-  removeFromStore(action: string): void
-  setProps: (action: string, props: QueryListProps) => void
+  httpOptionMap: Map<string, any>
+  getPayload(url: string): QueryListPayload
+  setPayload(url: string, payload: QueryListPayload): void
+  mutate<Data = any, T = Data>(
+    url: string,
+    data?: T | Promise<T> | MutatorCallback<T>,
+    opts?: boolean | MutatorOptions<Data, T>,
+  ): Promise<T | undefined>
+  jump(url: string, page: number): void
 }
 
 export const useQueryListStore = create<QueryListState>((set, get) => ({
-  swrKeyMap: new Map(),
+  keyMap: new Map(),
   payloadMap: new Map(),
-  propsMap: new Map(),
-  getSwrKey(action) {
-    const { swrKeyMap } = get()
-    return swrKeyMap.get(action) ?? null
+  httpOptionMap: new Map(),
+  getPayload(url) {
+    return get().payloadMap.get(url) ?? { page: 1 }
   },
-  updateSwrKey(action, key) {
-    const { propsMap, payloadMap, swrKeyMap, getSwrKey } = get()
-    const prevKey = getSwrKey(action)
+  setPayload(url, payload) {
+    set(state => ({
+      payloadMap: new Map(state.payloadMap).set(url, payload),
+    }))
+  },
+  mutate(url, data, opts) {
+    const key = get().keyMap.get(url)
+    return mutate(key, data, opts)
+  },
+  jump(url, page) {
+    const currentPage = get().getPayload(url).page
 
-    if (key === null) {
-      swrKeyMap.set(action, null)
-      mutate(prevKey, undefined, false)
-    } else if (key === undefined) {
-      if (!propsMap.has(action)) {
-        throw new Error(`The action "${action}" is not registered in QueryList`)
-      }
-
-      const nextKey = genSwrKey(propsMap.get(action) as QueryListProps, payloadMap.get(action))
-
-      if (prevKey !== nextKey) {
-        set({ swrKeyMap: new Map(swrKeyMap).set(action, nextKey) })
-      } else {
-        mutate(prevKey, undefined, true)
-      }
+    if (currentPage !== page) {
+      get().setPayload(url, { page })
     } else {
-      set({ swrKeyMap: new Map(swrKeyMap).set(action, key) })
+      get().mutate(url)
     }
-  },
-  getPayload(action) {
-    const { payloadMap } = get()
-    return payloadMap.get(action)
-  },
-  setPayload(action, payload) {
-    const { payloadMap, getPayload, propsMap } = get()
-    const { defaultSize } = propsMap.get(action) ?? {}
-    set({
-      payloadMap: new Map(payloadMap).set(action, {
-        page: 1,
-        size: defaultSize,
-        ...(getPayload(action) ?? {}),
-        ...payload,
-      }),
-    })
-  },
-  mutate: (action, data, opts) => {
-    const { swrKeyMap } = get()
-    const swrKey = swrKeyMap.get(action)
-    mutate(swrKey, data, opts)
-  },
-  refetch(action, page) {
-    const { setPayload, updateSwrKey, payloadMap } = get()
-    setPayload(action, { page: page ?? payloadMap.get(action)?.page })
-    updateSwrKey(action)
-  },
-  removeFromStore(action) {
-    get().swrKeyMap.delete(action)
-    get().payloadMap.delete(action)
-    get().propsMap.delete(action)
-  },
-  setProps(action, props) {
-    get().propsMap.set(action, props)
   },
 }))

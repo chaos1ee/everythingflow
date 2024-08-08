@@ -5,7 +5,7 @@ import type { InfiniteListResponse } from '../../types'
 import { jsonResolver, listResolver } from '../../utils/mock'
 
 const handlers = [
-  http.post(
+  http.get(
     '/api/list',
     listResolver<ListItem>(() => ({
       id: randNumber(),

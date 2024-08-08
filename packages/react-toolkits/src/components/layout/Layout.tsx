@@ -7,7 +7,7 @@ import { Link } from 'react-router-dom'
 import type { TransitionStatus } from 'react-transition-group'
 import { Transition } from 'react-transition-group'
 import { useToolkitsContext } from '../contextProvider'
-import { GameSelect, useGameStore } from '../gameSelect'
+import { GameSelect } from '../gameSelect'
 import { Logo } from '../logo'
 import { NavMenu } from '../navMenu'
 import UserWidget from '../userWidget'
@@ -30,7 +30,6 @@ const Layout: FC<PropsWithChildren> = props => {
     layoutHeaderExtras,
     signInSuccessRedirectUrl,
   } = useToolkitsContext()
-  const { game } = useGameStore()
   const { collapsed, setCollapsed } = useLayoutStore()
   const nodeRef = useRef(null)
   const duration = 250
@@ -131,7 +130,7 @@ const Layout: FC<PropsWithChildren> = props => {
               />
             }
           >
-            <ContentWrapper key={game?.id}>{children}</ContentWrapper>
+            <ContentWrapper>{children}</ContentWrapper>
           </Suspense>
         </Content>
       </Antd.Layout>

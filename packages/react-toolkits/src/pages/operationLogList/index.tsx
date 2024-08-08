@@ -82,10 +82,9 @@ const OperationLogList: FC = () => {
         rowKey="id"
         columns={columns}
         tableLayout="fixed"
-        action="/api/usystem/log/list"
-        getParams={({ page, size, formValues }) => ({ ...formValues, page, size })}
-        getTotal={response => response.Total}
-        getDataSource={response => response.List}
+        url="/api/usystem/log/list"
+        getTotal={response => response?.Total}
+        getDataSource={response => response?.List}
         renderForm={form => (
           <Form form={form} layout="inline">
             <Form.Item label={t('global.username')} name="uname">
