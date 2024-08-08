@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 1.0.0
+
+### Major Changes
+
+- 6b556df: release: first major release
+
 ## 0.12.1
 
 ### Patch Changes
