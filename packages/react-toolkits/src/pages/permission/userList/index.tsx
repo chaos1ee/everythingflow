@@ -31,7 +31,7 @@ interface ExtraValues {
 const useModal = (isCreate?: boolean) => {
   const { message } = App.useApp()
   const { t } = useTranslation()
-  const { refetch, mutate } = useQueryListStore()
+  const { jump, mutate } = useQueryListStore()
   const { data: roles, isLoading } = useAllRoles()
   const create = useCreateUser()
   const update = useUpdateUser()
@@ -58,18 +58,18 @@ const useModal = (isCreate?: boolean) => {
   const onConfirm: UseFormModalProps<FormSchema, ExtraValues>['onConfirm'] = async (values, extraValues) => {
     if (isCreate) {
       await create.trigger(values)
-      refetch(url, 1)
+      jump(url, 1)
       message.success(t('UserList.createSuccessfully'))
     } else {
       await update.trigger(values)
-      mutate<UserListItem>(
+      mutate<{ List: UserListItem[]; Total: number }>(
         url,
         prev => {
           return produce(prev, draft => {
-            if (draft?.dataSource) {
-              const index = draft.dataSource?.findIndex(item => item.id === extraValues?.id)
+            if (draft?.List) {
+              const index = draft.List?.findIndex(item => item.id === extraValues?.id)
               if (index !== -1) {
-                draft.dataSource[index].roles = values.roles
+                draft.List[index].roles = values.roles
               }
             }
           })
@@ -179,11 +179,11 @@ const UserList: FC = () => {
                     id: value.id,
                     name: value.name,
                   })
-                  mutate(url, prev => {
+                  mutate<{ List: UserListItem[]; Total: number }>(url, prev => {
                     return produce(prev, draft => {
-                      const index = draft?.dataSource?.findIndex(item => item.id === value.id)
+                      const index = draft?.List?.findIndex(item => item.id === value.id)
                       if (index) {
-                        draft?.dataSource?.splice(index, 1)
+                        draft?.List?.splice(index, 1)
                       }
                     })
                   })
@@ -223,8 +223,8 @@ const UserList: FC = () => {
           url={url}
           rowKey="id"
           columns={columns}
-          getTotal={response => response.Total}
-          getDataSource={response => response.List}
+          getTotal={response => response?.Total}
+          getDataSource={response => response?.List}
         />
       </Card>
       {createModal}

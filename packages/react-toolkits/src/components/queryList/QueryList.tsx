@@ -111,7 +111,7 @@ const InternalQueryList = <
   const { game } = useGameStore()
   const { usePermissionApiV2 } = useToolkitsContext()
   const [isValid, setIsValid] = useState(false)
-  const { keyMap, httpOptionMap, getPayload, setPayload } = useQueryListStore()
+  const { keyMap, getPayload, refetch } = useQueryListStore()
   const { page, size = defaultSize, formValue = form.getFieldsValue() } = getPayload(url)
   const payload = { page, size, formValue }
 
@@ -167,8 +167,6 @@ const InternalQueryList = <
       headers: _headers,
     }
 
-    httpOptionMap.set(url, httpOption)
-
     const serializedKey = unstable_serialize(httpOption)
     keyMap.set(url, serializedKey)
     return serializedKey
@@ -215,7 +213,7 @@ const InternalQueryList = <
         total,
         onChange: async (currentPage: number, currentSize: number) => {
           action.current = QueryListAction.Jump
-          setPayload(url, {
+          refetch(url, {
             page: currentPage,
             size: currentSize,
           })
@@ -226,7 +224,7 @@ const InternalQueryList = <
 
   const onConfirm = async () => {
     action.current = QueryListAction.Confirm
-    setPayload(url, {
+    refetch(url, {
       page: 1,
       formValue: form.getFieldsValue(),
     })
@@ -242,7 +240,7 @@ const InternalQueryList = <
   const onReset = async () => {
     action.current = QueryListAction.Reset
     form.resetFields()
-    setPayload(url, {
+    refetch(url, {
       page: 1,
       formValue: form.getFieldsValue(),
     })

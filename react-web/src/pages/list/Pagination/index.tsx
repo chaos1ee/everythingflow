@@ -26,8 +26,8 @@ const Pagination = () => {
         url={url}
         rowKey="id"
         columns={columns}
-        getTotal={response => response.Total}
-        getDataSource={response => response.List}
+        getTotal={response => response?.Total}
+        getDataSource={response => response?.List}
         renderForm={form => (
           <Form form={form} autoComplete="off">
             <Form.Item label="名称" name="name" rules={[{ required: true }]}>

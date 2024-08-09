@@ -20,13 +20,13 @@ const url = '/api/usystem/role/list'
 
 interface FormSchema {
   name: string
-  permissions: RoleV1['permissions'] | RoleV2['permissions']
+  permissions: RoleListItem['permissions']
 }
 
 const useModal = (isCreate?: boolean) => {
   const { message } = App.useApp()
   const { t } = useTranslation()
-  const { refetch, mutate } = useQueryListStore()
+  const { jump, mutate } = useQueryListStore()
   const create = useCreateRole()
   const update = useUpdateRole()
 
@@ -53,7 +53,7 @@ const useModal = (isCreate?: boolean) => {
         name: `role_${values.name}`,
         permissions: values.permissions,
       })
-      refetch(url, 1)
+      jump(url, 1)
       message.success(t('RoleList.createSuccessfully'))
     } else {
       await update.trigger({
@@ -61,11 +61,11 @@ const useModal = (isCreate?: boolean) => {
         name: `role_${values.name}`,
         permissions: values.permissions,
       })
-      mutate(
+      mutate<{ List: RoleListItem[]; Total: number }>(
         url,
         prev =>
           produce(prev, draft => {
-            const match = draft?.dataSource?.find(item => item.id === extraValues?.id)
+            const match = draft?.List?.find(item => item.id === extraValues?.id)
 
             if (match) {
               match.permissions = values.permissions
@@ -176,11 +176,11 @@ const RoleList = () => {
                       id: record.id,
                       name: record.name,
                     })
-                    mutate(url, prev => {
+                    mutate<{ List: RoleListItem[]; Total: number }>(url, prev => {
                       return produce(prev, draft => {
-                        const index = draft?.dataSource?.findIndex(item => item.id === record.id)
+                        const index = draft?.List?.findIndex(item => item.id === record.id)
                         if (index) {
-                          draft?.dataSource?.splice(index, 1)
+                          draft?.List?.splice(index, 1)
                         }
                       })
                     })
@@ -221,8 +221,8 @@ const RoleList = () => {
           columns={columns}
           code="200001"
           url={url}
-          getTotal={response => response.Total}
-          getDataSource={response => response.List}
+          getTotal={response => response?.Total}
+          getDataSource={response => response?.List}
         />
       </Card>
       {createModal}
