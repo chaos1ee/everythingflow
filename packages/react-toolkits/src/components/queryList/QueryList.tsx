@@ -58,6 +58,7 @@ export interface QueryListProps<Item extends AnyObject = AnyObject, Value = any,
   buttonsAlign?: 'left' | 'right'
   body?: RequestOptions['body'] | ((payload: QueryListPayload<Value>) => RequestOptions['body'])
   params?: RequestOptions['params'] | ((payload: QueryListPayload<Value>) => RequestOptions['params'])
+  tableExtra?: ReactNode | ((form: FormInstance<Value>) => ReactNode)
   renderForm?: (form: FormInstance<Value>) => ReactElement
   extra?: (opts: { form: FormInstance<Value>; data: Response | undefined }) => ReactNode
   afterSuccess?: (action: QueryListAction, response: Response) => void
@@ -93,6 +94,7 @@ const InternalQueryList = <
     buttonsAlign,
     defaultSize,
     refreshInterval,
+    tableExtra,
     extra,
     renderForm,
     afterSuccess,
@@ -311,6 +313,7 @@ const InternalQueryList = <
     <div>
       {formRenderer}
       {extraRenderer}
+      {typeof tableExtra === 'function' ? tableExtra(form) : tableExtra}
       <Table {...tableProps} dataSource={dataSource} loading={isValidating} pagination={pagination} />
     </div>
   )
