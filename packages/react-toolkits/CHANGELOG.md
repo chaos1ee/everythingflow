@@ -1,5 +1,15 @@
 # react-toolkits
 
+## 2.0.0
+
+### Major Changes
+
+- 98f4b1f: release: first major release
+
+### Patch Changes
+
+- 98f4b1f: fix: some issues of QueryList
+
 ## 1.0.0
 
 ### Major Changes
