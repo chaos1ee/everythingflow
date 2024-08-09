@@ -1,5 +1,11 @@
 # react-toolkits
 
+## 2.0.1
+
+### Patch Changes
+
+- f9456d8: feat: add 'tableExtra' prop
+
 ## 2.0.0
 
 ### Major Changes
